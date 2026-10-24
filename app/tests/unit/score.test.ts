@@ -74,3 +74,32 @@ describe('score and truthful accuracy', () => {
     expect(meter.kcal).toBeCloseTo(20 / 4184 / 0.25);
   });
 });
+describe('per-gesture breakdown', () => {
+  it('counts chart totals per type and each hit once, independently of misses', () => {
+    const notes = (['slash', 'slash', 'smash', 'beam', 'beam', 'beam'] as const).map((type, id) => ({
+      id,
+      t: id * 500,
+      type,
+      col: 0 as const,
+      row: 0 as const,
+      dir: 'any' as const,
+      strength: 1,
+    }));
+    const score = new ScoreState({ notes, obstacles: [] });
+    score.hit('perfect', 'slash');
+    score.hit('good', 'beam');
+    score.miss();
+    score.hit('great', 'beam');
+    const stats = score.snapshot();
+    expect(stats.byType).toEqual({
+      slash: { hits: 1, total: 2 },
+      smash: { hits: 0, total: 1 },
+      beam: { hits: 2, total: 3 },
+    });
+    // Snapshot is a copy: later hits do not mutate the returned stats.
+    score.hit('perfect', 'smash');
+    expect(stats.byType.smash.hits).toBe(0);
+    const total = stats.byType.slash.hits + stats.byType.smash.hits + stats.byType.beam.hits;
+    expect(total).toBe(stats.counts.perfect + stats.counts.great + stats.counts.good);
+  });
+});

@@ -97,6 +97,8 @@ export interface SessionStats {
     obstaclesHit: number;
     obstaclesDodged: number;
   };
+  /** Notes hit per gesture type versus chart totals; every hit judgement counts once ([07]). */
+  byType: Record<'slash' | 'smash' | 'beam', { hits: number; total: number }>;
   kineticJoules: number;
   kcal: number; // playful motion estimate; never measured exercise calories
   peakComboSongTimeMs: number;

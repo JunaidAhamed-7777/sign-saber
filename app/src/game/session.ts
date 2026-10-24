@@ -419,7 +419,7 @@ export class GameSession {
     const judgement = judgeTiming(error, this.windowScale);
     if (!judgement || live.state !== 'live') return;
     const oldMax = this.scoring.maxCombo;
-    const scoreDelta = this.scoring.hit(judgement);
+    const scoreDelta = this.scoring.hit(judgement, live.note.type);
     live.state = 'hit';
     updateLiveNote(live, songTime, this.map.approachMs);
     const impactPos = {
@@ -582,6 +582,8 @@ export class GameSession {
     this.stats.rank = rankFor(this.stats.accuracy);
     this.stats.maxCombo = this.scoring.maxCombo;
     Object.assign(this.stats.counts, this.scoring.counts);
+    for (const type of ['slash', 'smash', 'beam'] as const)
+      Object.assign(this.stats.byType[type], this.scoring.byType[type]);
     this.stats.peakComboSongTimeMs = this.peakComboSongTime;
     this.stats.kineticJoules = this.kinetic.joules;
     this.stats.kcal = this.kinetic.kcal;

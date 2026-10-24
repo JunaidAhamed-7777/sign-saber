@@ -146,6 +146,7 @@ describe('results presentation', () => {
         rank: 'C',
         maxCombo: 4,
         counts,
+        byType: { slash: { hits: 1, total: 4 }, smash: { hits: 0, total: 2 }, beam: { hits: 1, total: 4 } },
         kineticJoules: 1500,
         kcal: 0.1,
         peakComboSongTimeMs: 0,

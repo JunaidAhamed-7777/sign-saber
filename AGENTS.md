@@ -52,7 +52,8 @@ Cross-track changes go through a quick message, not a surprise diff. This is how
 4. Commit before a handoff, a break, or sleep. Incomplete work gets an honest `wip:` message.
 5. Short, descriptive messages: `feat(tracking): worker posts TrackingFrame at 30 Hz`, `fix(judge): bad cut no longer scores`, `docs: record ADR-007 fallback decision`.
 6. Do not create empty commits, backdate, squash away the event record, force-push, or rewrite shared history.
-7. Push to `origin/main` after every checkpoint when the network allows. Resolve conflicts with care; folder ownership should make them rare.
+7. **Do not add co-author trailers.** No `Co-Authored-By:` lines for AI assistants (or anyone) in commit messages or PR descriptions. AI contributions are recorded in [AI_USAGE.md](AI_USAGE.md), not in git metadata.
+8. Push to `origin/main` after every checkpoint when the network allows. Resolve conflicts with care; folder ownership should make them rare.
 
 ## Check work and protect credentials
 

@@ -47,7 +47,6 @@ These documents are the **single source of truth** for what gets built, how, and
 sign-saber/
 ├── README.md                 project overview, run instructions
 ├── AGENTS.md                 working conventions for humans and AI agents
-├── SUBMISSION.md             submission form (fill at the end)
 ├── CHANGELOG.md              dated record of meaningful changes
 ├── AI_USAGE.md               AI usage record (intentionally blank until the build starts)
 ├── docs/                     this folder — the specification

@@ -7,7 +7,7 @@ This guide is for everyone who commits to this repository, human or AI coding as
 - Implementation is built at the hackathon. Before kick-off the repository holds the specification in `docs/` and documented module stubs only.
 - Libraries, APIs, and public datasets are welcome. Document their sources and licenses in `README.md`.
 - Record every meaningful AI-assistant contribution in [AI_USAGE.md](AI_USAGE.md) once the build starts. It stays empty until then.
-- Prepare the code repository, short project description, and working demo in [SUBMISSION.md](SUBMISSION.md). Follow whatever submission method and deadline the organisers announce.
+- Keep `README.md` submission-ready at all times: short description, run steps, demo steps, known limitations, and the final commit SHA. Follow whatever submission method and deadline the organisers announce.
 
 ## The docs are the contract
 
@@ -64,8 +64,8 @@ Cross-track changes go through a quick message, not a surprise diff. This is how
 
 ## Before submission
 
-- Complete [SUBMISSION.md](SUBMISSION.md); replace all placeholders.
+- Fill the README's "Current status" and "Submission" sections; no placeholders may remain.
 - Confirm the README's run steps work on a clean clone (`npm install`, `npm run models`, `npm run dev`).
 - Run the manual QA checklist in [docs/17-testing-and-qa.md](docs/17-testing-and-qa.md) and record the results.
-- Update the changelog and AI usage record, commit the final coherent change, push, and record the SHA in `SUBMISSION.md`.
+- Update the changelog and AI usage record, commit the final coherent change, push, and record the SHA in `README.md` §Submission.
 - Follow the organisers' actual submission method and timing.

@@ -13,6 +13,13 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: `npm run check` 424 tests in 50 files and build passed; trial: MediaPipe detected pose and both hands in 100% of rendered frames, handedness 690/690. Calibration was not accepted at 3.5 Hz / 311 ms inference under 82–86% machine load, so no notes were scored through the camera.
 - Limits: synthetic render, not a person or webcam; the avatar's head renders tilted (face error ~0.5 shoulder widths); play-to-results comparison with the logic replay still needs an idle machine.
 
+## 2026-10-25T05:20:00+05:30 — Back-facing avatar and neutral run labels
+
+- Changed: The arena avatar is rotated 180° so the viewer sees its back; tracking/performer joints keep their screen sides and forward reach goes into the lane (`AVATAR_FACE_AWAY`). The virtual-camera performer pose still faces the camera. Removed the visible dataset/synthetic/no-camera banner, status, captions and pre-roll copy; buttons now read **Play level** and **Watch auto-play**. Added HANDOFF summary of the multi-agent round.
+- Why: Direct user requests: avatar back turned to the player, and no on-screen "dataset instead of camera" wording. Camera integration is paused by the user.
+- Validation: Full `npm run check` passed (481 tests). Exported diagnostics still name the source lane.
+- Limits: Hand shapes on the turned avatar use reflected landmark geometry; not tuned.
+
 ## 2026-10-25T04:58:00+05:30 — Rigged avatar replaces the outline and line figure
 
 - Changed: `render/renderer.ts` loads `avatar.glb` (tier `AVATAR_TIER_FIGURE`; low tier and load failure keep the line skeleton) and drives it from tracking/dataset/synthetic frames, an illustrative idle in the menu placeholder (static in Calm), a frozen pose when paused and the saved pose in results; the mask silhouette and line skeleton hide while the avatar shows. The avatar draws after the arena and before a depth-clear sentinel so all targets/effects render over it, in both the post-FX and direct paths. `MenuShell` `Figure` shows the SVG outline only when the avatar failed or is disabled and reports the placeholder state to the renderer. Fixed side mapping for ears/eyes/hand points in retargeting. Placeholder scale/height retuned.

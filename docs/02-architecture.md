@@ -601,6 +601,28 @@ Used by `performer/*` to plan a performance that satisfies a chart under the gam
 | `PERFORMER_LEAN_SHOULDERS` | 0.9 | Torso shift (shoulder widths) used to clear a wall |
 | `PERFORMER_LEAN_EASE_MS` | 250 | Lean ease in/out duration |
 
+### Rigged upper-body avatar (presentation only)
+
+Used by `render/avatar*.ts` to retarget tracked, dataset, synthetic or idle joints onto the Blender-authored rig ([10](10-rendering-silhouette.md#11-rigged-avatar), [18](18-blender-mcp-asset-pipeline.md#11-rigged-avatar)). They never affect hit detection, scoring, calibration or tracking evidence.
+
+| Name | Value | Meaning |
+| --- | --- | --- |
+| `AVATAR_URL` | `/assets/models/avatar.glb` | Same-origin skinned avatar |
+| `AVATAR_TIER_FIGURE` | high/medium `avatar`, low `skeleton` | Figure requested per fixed tier; GLB failure also uses the line skeleton |
+| `AVATAR_DEPTH_GAIN` / `AVATAR_DEPTH_MAX_M` | 0.6 / 1.1 m | World-landmark depth → play-space depth gain and clamp |
+| `AVATAR_STRETCH_MAX` | 1.15 | Maximum arm lengthening so hands reach tracked wrists |
+| `AVATAR_SMOOTH_MS` / `AVATAR_MISSING_SMOOTH_MS` | 55 / 320 | Rotation smoothing for tracked bones / bones easing toward neutral |
+| `AVATAR_ROOT_SMOOTH_MS` / `AVATAR_SCALE_SMOOTH_MS` | 70 / 450 | Root translation and scale smoothing |
+| `AVATAR_HOLD_MS` | 250 | A briefly missing joint holds its last target before easing |
+| `AVATAR_LIMITS_DEG` | torso twist 45, lean 60, head 70, clavicle 16, wrist 85, MCP −25…95, PIP −5…110, DIP −5…85, spread 22, thumb base 50, thumb −15…75 | Joint limits relative to the parent |
+| `AVATAR_RELAXED_CURL` | 0.22 | Finger curl without hand landmarks |
+| `AVATAR_IDLE` | breath 4.6 s / 6 mm, sway 7.4 s / 12 mm, look 11.3 s / 6°, arm swing 12 mm, curl ±0.12 | Illustrative idle (static in Calm) |
+| `AVATAR_PLACEHOLDER_SCALE` / `AVATAR_PLACEHOLDER_HIP_Y` | 2.85 / 0.12 m | Menu placeholder scale and hip height on the play plane |
+| `AVATAR_RIM_COLOR_A` / `AVATAR_RIM_COLOR_B` | `#19F5FF` / `#B36BFF` | Fresnel rim gradient |
+| `AVATAR_FILL_COLOR` / `AVATAR_ACCENT_COLOR` | `#070B16` / `#19F5FF` | Dark glass body and seam glow |
+| `AVATAR_RIM_POWER` / `AVATAR_RIM_GAIN` / `AVATAR_ACCENT_GAIN` / `AVATAR_AUDIO_GAIN` | 2.6 / 1.5 / 2.2 / 0.9 | Fresnel exponent, rim, seam and music-energy gains |
+| `AVATAR_OUTLINE_M` | 0.0045 | Outline hull offset (model metres) |
+
 ### Companion service (YouTube)
 
 | Name | Value |

@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:16:00+05:30 — wip: pure avatar retargeting and avatar runtime module
+
+- Changed: Added `render/avatarRetarget.ts` (play-space targets from MediaPipe pose/hands with mirror mapping, world or limb-foreshortening depth and camera-ray placement; torso/head/clavicle solve, two-bone arm IK with bounded stretch and pronation sharing, hand frames, per-joint finger flexion/spread with limits, hold-then-ease to neutral, slerp smoothing, idle and explicit-joint inputs) and `render/avatar.ts` (GLB loading/validation, holographic skinned shader with outline hull, natural PBR variant, placement, snapshot/restore, `poseFromJoints`). Registered the `AVATAR_*` constants in `core/constants.ts` and docs02, documented the asset/retargeting in docs10 §11 and docs18 §11, and added `pose_avatar_preview.py` deformation renders.
+- Why: Drive the authored person model from tracked, dataset and synthetic skeletons instead of thin lines.
+- Validation: 16 new assertions against the actual exported GLB (rest identity, horizontal raise with hand on wrist, 90°/120° elbows, bounded stretch, fist/point/open recovered from 21-point landmarks, hold-then-ease, head turn and limit, mirroring/handedness, 2D depth, camera-ray placement, leg indices ignored, explicit joints, static Calm idle). Typecheck clean. Blender pose renders show clean fist and raised-arm deformation.
+- Limits: Not yet wired into the renderer or menu; no browser or webcam check.
+
 ## 2026-10-25T03:40:00+05:30 — wip: Blender-authored rigged upper-body avatar source
 
 - Changed: Added `assets-src/blender/generate_avatar.py` (signed-distance primitives polygonised by surface nets, projected/relaxed, decimated; standard-named armature; bone-heat suit/hand weights, procedural head weights; vertex-colour face details; landmark anchors in armature extras), `render_avatar_preview.py`, the dedicated `signsaber_avatar.blend`, and the exported skinned `avatar.glb` with `avatar-manifest.json` (15,134 triangles, 507,252 bytes). Head, neck, torso to a closed hip finish, arms and five-digit hands only; no legs.

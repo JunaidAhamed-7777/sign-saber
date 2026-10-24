@@ -218,7 +218,13 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
     </Button>
   );
   const performer = (
-    <Button runtime={runtime} id="performer-trial" disabled={!s.map || s.loading || !s.audioReady}>
+    <Button
+      runtime={runtime}
+      id="performer-trial"
+      disabled={!s.map || s.loading || !s.audioReady}
+      busy={preparing}
+      className="with-caption"
+    >
       <span>{t.performerTrial}</span>
       <small>{t.performerTrialCaption}</small>
     </Button>
@@ -323,15 +329,27 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
         {difficulty}
         <div className="action-pair">
           {sound}
-          {arrange}
+          {performer}
         </div>
         {start}
-        {performer}
         {notice}
       </>
     ),
   };
-  let rightPages: MenuPage[] = [readyPage];
+  // The trial prepares its own cut; the explicit preparation lives on its own page with its explanation.
+  const cutPage: MenuPage = {
+    id: 'cut',
+    label: t.arrange,
+    content: (
+      <>
+        <RailHeading eyebrow={t.musicOptions} title={t.arrange} />
+        <p className="note">{t.arrangementAbout}</p>
+        {arrangementChip && <div className="chips">{arrangementChip}</div>}
+        {arrange}
+      </>
+    ),
+  };
+  let rightPages: MenuPage[] = [readyPage, cutPage];
   const status = (
     <>
       <p className="compact-track">
@@ -356,11 +374,20 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
           {sound}
           {start}
           {performer}
-          {arrange}
         </>
       ),
     },
     { id: 'difficulty', label: t.difficulty, content: <>{difficulties}</> },
+    {
+      id: 'cut',
+      label: t.arrange,
+      content: (
+        <>
+          {arrange}
+          <p className="note">{t.arrangementAbout}</p>
+        </>
+      ),
+    },
   ];
   let compactStatus = status;
   if (s.camera.mode === 'camera-setup') {

@@ -71,7 +71,7 @@ describe('figure-centred paged menu structure', () => {
     expect(ids).not.toContain('camera');
     expect(ids).toContain('audio');
     expect(ids).toContain('dataset-trial');
-    expect(ids).toContain('arrange');
+    expect(ids).toContain('performer-trial');
     expect(ids).toContain('ui:left:next');
     expect(ids).toContain('ui:right:next');
     expect(new Set(ids).size).toBe(ids.length);
@@ -99,7 +99,6 @@ describe('figure-centred paged menu structure', () => {
       'audio',
       'dataset-trial',
       'performer-trial',
-      'arrange',
       'ui:compact:next',
     ]);
     expect(new Set(ids).size).toBe(ids.length);

@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T03:39:48+05:30 — Ready page with performer action and separate cut page
+
+- Changed: After merging main's synthetic performer trial, the ready page pairs Enable sound/Preview with “Watch synthetic performer” (captioned, busy while a cut is prepared) above the primary dataset action; “Make 80-second cut” moved to its own Music options page with the arrangement explanation and status chip, and to a separate compact page. Side-rail pagers show position and dots only (the page heading names the page; the label remains for assistive technology). Narrow rails tighten the action pair so the ready page fits 1100×700 without scrolling.
+- Why: Adding the performer button overflowed the ready page at 1280×720; the trial already prepares its own cut.
+- Validation: `npm run check` passed (typecheck, lint, all assertions, build); compact ids in `uiPaging.test.tsx` updated. Measured rail pages without overflow at 1280×720 and 1100×700 in headless Chrome and inspected 1440×900/800×600 screenshots.
+- Limits: Presentation-only; performer behaviour itself is main's work and was not re-verified here.
+
 ## 2026-10-25T03:34:38+05:30 — Opaque boot splash and arrangement source card
 
 - Changed: BOOT is now an opaque void splash (hidden header, unwrapped wordmark, indeterminate bar); `index.html` shows a static pre-boot mark until React mounts and its description no longer claims full-body play. After an 80-second cut is prepared (which clears the bundled selection), the source song card is marked “Arrangement ready” and the ready header keeps the source cover/artist.

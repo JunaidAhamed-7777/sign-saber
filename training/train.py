@@ -4,6 +4,7 @@ import argparse
 from datetime import datetime, timezone
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import platform
@@ -27,8 +28,35 @@ def input_fingerprint(records):
         digest.update((relative + ":" + file_hash(DATA / relative) + "\n").encode())
     return {"uniqueImages": len(unique), "imageBytesAggregateSha256": digest.hexdigest()}
 
+def learning_rate_scale(step: int, total_steps: int) -> float:
+    """Linear warmup, then cosine decay to the configured floor; a pure function of the optimizer step so resume is exact."""
+    warmup = CONFIG["warmupSteps"]
+    if step < warmup:
+        return (step + 1) / warmup
+    progress = min(1.0, (step - warmup) / max(1, total_steps - warmup))
+    floor = CONFIG["minLearningRateFraction"]
+    return floor + (1 - floor) * 0.5 * (1 + math.cos(math.pi * progress))
+
+def epoch_batches(length: int, epoch: int):
+    """The same seeded permutation the previous shuffled DataLoader used, materialized so resume skips batches without decoding them."""
+    generator = torch.Generator().manual_seed(CONFIG["seed"] + epoch)
+    torch.empty((), dtype=torch.int64).random_(generator=generator)  # DataLoader drew its worker base seed from this generator first.
+    order = torch.randperm(length, generator=generator).tolist()
+    return [order[start:start + CONFIG["batchSize"]] for start in range(0, length, CONFIG["batchSize"])]
+
+def make_loader(dataset, **arguments):
+    workers = CONFIG["dataLoaderWorkers"]
+    extra = {"num_workers": workers, "prefetch_factor": CONFIG["dataLoaderPrefetchFactor"], "persistent_workers": False} if workers > 0 else {"num_workers": 0}
+    return DataLoader(dataset, **arguments, **extra)
+
+def mean_pck(evaluation) -> float | None:
+    """Labelled-joint PCK pooled over all joints (each joint weighted by its normalized samples)."""
+    joints = [joint for joint in evaluation["joints"].values() if joint["pck"] is not None]
+    samples = sum(joint["pckSamples"] for joint in joints)
+    return sum(joint["pck"] * joint["pckSamples"] for joint in joints) / samples if samples else None
+
 def save_checkpoint(path, model, optimizer, epoch, next_batch, global_step, manifest):
-    value = {"version": 1, "model": model.state_dict(), "optimizer": optimizer.state_dict(), "epoch": epoch, "nextBatch": next_batch, "globalStep": global_step, "torchRng": torch.get_rng_state(), "config": CONFIG, "configSha256": manifest["configSha256"], "dataFingerprint": manifest["dataFingerprint"], "kind": manifest["kind"]}
+    value = {"version": 1, "model": model.state_dict(), "optimizer": optimizer.state_dict(), "epoch": epoch, "nextBatch": next_batch, "globalStep": global_step, "torchRng": torch.get_rng_state(), "config": CONFIG, "configSha256": manifest["configSha256"], "dataFingerprint": manifest["dataFingerprint"], "kind": manifest["kind"], "epochSummaries": manifest.get("epochSummaries", [])}
     temporary = path.with_suffix(".tmp")
     torch.save(value, temporary)
     temporary.replace(path)
@@ -36,7 +64,8 @@ def save_checkpoint(path, model, optimizer, epoch, next_batch, global_step, mani
 
 def load_checkpoint(path):
     path = Path(path).resolve()
-    if not path.is_relative_to(ROOT.resolve()):
+    # runs/ may be a directory junction to a shared local data folder, so accept its resolved target too.
+    if not any(path.is_relative_to(base.resolve()) for base in [ROOT, ROOT / "runs"]):
         raise ValueError("Only a local training checkpoint is accepted")
     receipt = json.loads(path.with_suffix(".sha256.json").read_text(encoding="utf-8"))
     if file_hash(path) != receipt["sha256"]:
@@ -57,6 +86,8 @@ def main():
     torch.set_num_threads(CONFIG["cpuThreads"])
     torch.set_num_interop_threads(1)
     torch.use_deterministic_algorithms(True)
+    # NaN-filling fresh allocations is a debugging aid of deterministic mode (about 13% of profiled step time); algorithms stay deterministic.
+    torch.utils.deterministic.fill_uninitialized_memory = False
     torch.manual_seed(CONFIG["seed"])
     np.random.seed(CONFIG["seed"])
     random.seed(CONFIG["seed"])
@@ -87,7 +118,7 @@ def main():
     selection = {"version": 1, "datasets": args.datasets, "train": [row["sampleId"] for row in train_rows], "validation": [row["sampleId"] for row in validation_rows]}
     write_json(folder / "selection.json", selection)
     fingerprint["selectionSha256"] = file_hash(folder / "selection.json")
-    manifest = {"version": 1, "kind": "real-data-preflight" if preflight else "full-eligible-dataset-training", "status": "initializing", "startedAt": datetime.now(timezone.utc).isoformat(), "device": "cpu", "cpuThreads": CONFIG["cpuThreads"], "python": platform.python_version(), "torch": torch.__version__, "numpy": np.__version__, "config": CONFIG, "configSha256": file_hash(ROOT / "config.json"), "dataFingerprint": fingerprint, "trainData": train_info, "validationData": validation_info, "requestedEpochs": args.epochs, "requestedPreflightSteps": args.preflight_steps, "completedEpochs": 0, "completedSteps": 0, "fullDatasetTrainingCompleted": False, "publication": "local-noncommercial-research-only", "knownLimitations": ["No live-webcam evaluation", "No calibrated landmark visibility head", "Finger landmarks are not supervised by this body model", "A preflight checkpoint is not a production model", "Ground-truth upper-body ROI used; production person localization is a separate requirement"]}
+    manifest = {"version": 1, "kind": "real-data-preflight" if preflight else "full-eligible-dataset-training", "status": "initializing", "startedAt": datetime.now(timezone.utc).isoformat(), "device": "cpu", "cpuThreads": CONFIG["cpuThreads"], "dataLoaderWorkers": CONFIG["dataLoaderWorkers"], "batchSize": CONFIG["batchSize"], "python": platform.python_version(), "torch": torch.__version__, "numpy": np.__version__, "config": CONFIG, "configSha256": file_hash(ROOT / "config.json"), "dataFingerprint": fingerprint, "trainData": train_info, "validationData": validation_info, "requestedEpochs": args.epochs, "requestedPreflightSteps": args.preflight_steps, "completedEpochs": 0, "completedSteps": 0, "fullDatasetTrainingCompleted": False, "publication": "local-noncommercial-research-only", "knownLimitations": ["No live-webcam evaluation", "No calibrated landmark visibility head", "Finger landmarks are not supervised by this body model", "A preflight checkpoint is not a production model", "Ground-truth upper-body ROI used; production person localization is a separate requirement"]}
     manifest["gitHead"] = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT.parent, text=True).strip()
     manifest["dirtyTree"] = bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT.parent, text=True).strip())
     write_json(folder / "run.json", manifest)
@@ -97,8 +128,13 @@ def main():
         manifest["initialization"] = {"kind": "ImageNet pretrained RGB backbone; newly initialized pose head", "source": CONFIG["pretrainedUrl"], "sha256": file_hash(pretrained), "bodyPoseWeightsPreviouslyTrainedByThisProject": False}
         optimizer = torch.optim.AdamW([{"params": model.head.parameters(), "lr": CONFIG["headLearningRate"]}, {"params": model.backbone.parameters(), "lr": CONFIG["backboneLearningRate"]}], weight_decay=CONFIG["weightDecay"])
         dataset = UpperBodyDataset(train_rows, augment=True)
-        validation = DataLoader(UpperBodyDataset(validation_rows), batch_size=CONFIG["batchSize"], shuffle=False, num_workers=0)
+        validation = make_loader(UpperBodyDataset(validation_rows), batch_size=CONFIG["batchSize"], shuffle=False)
         epoch, next_batch, step = 0, 0, 0
+        batches_per_epoch = math.ceil(len(dataset) / CONFIG["batchSize"])
+        total_steps = batches_per_epoch * args.epochs
+        base_rates = [CONFIG["headLearningRate"], CONFIG["backboneLearningRate"]]
+        manifest["schedule"] = {"kind": CONFIG["learningRateSchedule"], "batchesPerEpoch": batches_per_epoch, "totalSteps": total_steps, "warmupSteps": CONFIG["warmupSteps"], "minLearningRateFraction": CONFIG["minLearningRateFraction"]}
+        manifest["epochSummaries"] = []
         if args.resume:
             checkpoint = load_checkpoint(args.resume)
             if checkpoint["configSha256"] != manifest["configSha256"] or checkpoint["dataFingerprint"] != fingerprint or checkpoint["kind"] != manifest["kind"]:
@@ -115,6 +151,7 @@ def main():
                 raise ValueError("Resume epoch limit must exceed the checkpoint's completed epochs")
             manifest["completedEpochs"] = epoch
             manifest["completedSteps"] = step
+            manifest["epochSummaries"] = checkpoint.get("epochSummaries", [])
         checkpoint_epoch, checkpoint_next_batch = epoch, next_batch
         baseline = evaluate(model, validation)
         write_json(folder / "baseline.json", baseline)
@@ -127,12 +164,17 @@ def main():
                 dataset.epoch = current_epoch
                 model.set_backbone_trainable(current_epoch >= CONFIG["freezeBackboneEpochs"])
                 model.train()
-                sampler = torch.Generator().manual_seed(CONFIG["seed"] + current_epoch)
-                loader = DataLoader(dataset, batch_size=CONFIG["batchSize"], shuffle=True, generator=sampler, num_workers=0)
-                for batch_index, batch in enumerate(loader):
-                    if current_epoch == epoch and batch_index < next_batch:
-                        continue
+                first_batch = next_batch if current_epoch == epoch else 0
+                loader = make_loader(dataset, batch_sampler=epoch_batches(len(dataset), current_epoch)[first_batch:])
+                epoch_started = time.perf_counter()
+                epoch_loss, epoch_steps, epoch_step_ms, epoch_wait_ms = 0.0, 0, 0.0, 0.0
+                waiting = time.perf_counter()
+                for offset, batch in enumerate(loader):
+                    batch_index = first_batch + offset
                     started = time.perf_counter()
+                    scale = learning_rate_scale(step, total_steps)
+                    for group, base in zip(optimizer.param_groups, base_rates):
+                        group["lr"] = base * scale
                     optimizer.zero_grad(set_to_none=True)
                     loss = masked_heatmap_loss(model(batch["image"]), batch["target"], batch["weights"])
                     if not torch.isfinite(loss):
@@ -141,31 +183,40 @@ def main():
                     optimizer.step()
                     step += 1
                     checkpoint_epoch, checkpoint_next_batch = current_epoch, batch_index + 1
-                    row = {"step": step, "epoch": current_epoch, "batch": batch_index, "sampleIds": batch["sampleId"], "loss": loss.item(), "batchSamples": len(batch["image"]), "stepWallMs": (time.perf_counter() - started) * 1000, "backboneTrainable": model.backbone_trainable}
+                    step_ms, wait_ms = (time.perf_counter() - started) * 1000, (started - waiting) * 1000
+                    epoch_loss, epoch_steps, epoch_step_ms, epoch_wait_ms = epoch_loss + loss.item(), epoch_steps + 1, epoch_step_ms + step_ms, epoch_wait_ms + wait_ms
+                    row = {"step": step, "epoch": current_epoch, "batch": batch_index, "sampleIds": batch["sampleId"], "loss": loss.item(), "batchSamples": len(batch["image"]), "stepWallMs": step_ms, "dataWaitMs": wait_ms, "learningRateScale": scale, "backboneTrainable": model.backbone_trainable}
                     trace.write(json.dumps(row, allow_nan=False) + "\n")
                     manifest["completedSteps"] = step
                     if step % CONFIG["checkpointEverySteps"] == 0 or (preflight and step >= args.preflight_steps):
                         save_checkpoint(folder / "latest.pt", model, optimizer, current_epoch, batch_index + 1, step, manifest)
                         write_json(folder / "run.json", manifest)
-                    if step % CONFIG["validationEverySteps"] == 0:
-                        measured = evaluate(model, validation)
-                        write_json(folder / f"evaluation-step-{step}.json", measured)
-                        model.train()
-                    if step % 10 == 0:
-                        print(f"step={step} epoch={current_epoch} loss={loss.item():.6f} batch={len(batch['image'])}", flush=True)
+                    if step % 20 == 0:
+                        elapsed = time.perf_counter() - epoch_started
+                        print(f"step={step}/{total_steps} epoch={current_epoch} batch={batch_index + 1}/{batches_per_epoch} loss={loss.item():.6f} lrScale={scale:.4f} stepMs={step_ms:.0f} waitMs={wait_ms:.0f} epochElapsedS={elapsed:.0f}", flush=True)
                     if preflight and step >= args.preflight_steps:
                         stop = True
                         break
+                    waiting = time.perf_counter()
                 if stop:
                     break
+                summary = {"epoch": current_epoch, "steps": epoch_steps, "meanTrainingLoss": epoch_loss / max(1, epoch_steps), "wallSeconds": time.perf_counter() - epoch_started, "meanStepWallMs": epoch_step_ms / max(1, epoch_steps), "meanDataWaitMs": epoch_wait_ms / max(1, epoch_steps), "backboneTrainable": model.backbone_trainable, "endLearningRateScale": learning_rate_scale(step - 1, total_steps), "resumedPartialEpoch": first_batch > 0}
                 manifest["completedEpochs"] = current_epoch + 1
                 next_batch = 0
                 checkpoint_epoch, checkpoint_next_batch = current_epoch + 1, 0
+                if current_epoch + 1 < args.epochs and (current_epoch + 1) % CONFIG["validationEveryEpochs"] == 0:
+                    measured = evaluate(model, validation)
+                    write_json(folder / f"evaluation-epoch-{current_epoch + 1}.json", measured)
+                    summary["validation"] = {"meanHeatmapLoss": measured["meanHeatmapLoss"], "meanPck": mean_pck(measured)}
+                manifest["epochSummaries"].append(summary)
+                print(json.dumps({"epochCompleted": summary}, allow_nan=False), flush=True)
                 save_checkpoint(folder / "latest.pt", model, optimizer, current_epoch + 1, 0, step, manifest)
                 write_json(folder / "run.json", manifest)
         final = evaluate(model, validation)
         write_json(folder / "evaluation.json", final)
         manifest["evaluation"] = final
+        if manifest["epochSummaries"] and not stop:
+            manifest["epochSummaries"][-1]["validation"] = {"meanHeatmapLoss": final["meanHeatmapLoss"], "meanPck": mean_pck(final)}
         manifest["completedSteps"] = step
         manifest["status"] = "preflight_completed_not_production" if preflight else "training_completed_evaluation_pending"
         manifest["fullDatasetTrainingCompleted"] = not preflight and manifest["completedEpochs"] == args.epochs

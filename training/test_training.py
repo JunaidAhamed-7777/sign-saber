@@ -1,11 +1,12 @@
 """Pipeline assertions; synthetic tensors here are unit tests, never training/evaluation evidence."""
 import json
+import random
 import tempfile
 import unittest
 from pathlib import Path
 import numpy as np
 import torch
-from upper_body import CONFIG, DATA, KEYPOINTS, UpperBodyDataset, UpperBodyNet, decode_heatmaps, load_records, make_heatmaps, masked_heatmap_loss, upper_body_roi
+from upper_body import CONFIG, DATA, KEYPOINTS, UpperBodyDataset, UpperBodyNet, crop_input, decode_heatmaps, load_records, make_heatmaps, masked_heatmap_loss, upper_body_roi
 from train import load_checkpoint, save_checkpoint
 
 torch.set_num_threads(CONFIG["cpuThreads"])
@@ -53,6 +54,62 @@ class UpperBodyTests(unittest.TestCase):
         coordinates, scores = decode_heatmaps(heatmaps, torch.tensor([[10.0, 20.0, 192.0, 192.0]]))
         torch.testing.assert_close(coordinates[0, 0], torch.tensor([106.0, 68.0]))
         self.assertTrue((scores == 2).all())
+
+    def test_quarter_cell_refinement_moves_toward_larger_neighbour(self):
+        heatmaps = torch.zeros((1, 13, 48, 48))
+        heatmaps[:, :, 12, 24] = 2
+        heatmaps[:, :, 12, 25] = 1
+        heatmaps[:, :, 11, 24] = 0.5
+        heatmaps[:, 1, 0, 0] = 9  # Border peaks have no two-sided neighbour and stay unrefined.
+        coordinates, _ = decode_heatmaps(heatmaps, torch.tensor([[0.0, 0.0, 48.0, 48.0]]))
+        torch.testing.assert_close(coordinates[0, 0], torch.tensor([24.25, 11.75]))
+        torch.testing.assert_close(coordinates[0, 1], torch.tensor([0.0, 0.0]))
+
+    def test_augmented_crop_labels_follow_the_pixels(self):
+        from PIL import Image
+        size = CONFIG["imageSize"]
+        flips, rotations = 0, 0
+        for seed in range(24):
+            source = Image.new("RGB", (400, 300))
+            source.paste((255, 255, 255), (197, 147, 204, 154))  # 7x7 block whose continuous centre is (200.5, 150.5)
+            points = np.zeros((13, 3), dtype=np.float32)
+            points[5] = points[6] = [200.5, 150.5, 2]  # Both shoulders, so a left/right flip swap keeps the same location.
+            rng = random.Random(seed)
+            image, mapped = crop_input(source, points, np.array([100, 60, 240, 240], dtype=np.float32), rng)
+            replay = random.Random(seed)
+            flips += replay.random() < CONFIG["flipProbability"]
+            replay.random()
+            rotations += replay.random() < CONFIG["rotationProbability"]
+            pixels = np.asarray(image, dtype=np.float32).mean(axis=2)
+            ys, xs = np.nonzero(pixels > 0.5 * pixels.max())
+            centre = np.array([xs.mean() + 0.5, ys.mean() + 0.5])  # Continuous centre of the bright block in the crop.
+            self.assertTrue(0 <= mapped[5, 0] < size and 0 <= mapped[5, 1] < size)
+            self.assertLess(float(np.abs(centre - mapped[5, :2]).max()), 1.0, f"seed {seed}")
+            torch.testing.assert_close(torch.from_numpy(mapped[5]), torch.from_numpy(mapped[6]))
+        self.assertGreater(flips, 0)
+        self.assertGreater(rotations, 0)
+
+    def test_unaugmented_crop_is_the_exact_oracle_extent(self):
+        from PIL import Image
+        source = Image.new("RGB", (64, 64))
+        points = np.zeros((13, 3), dtype=np.float32)
+        points[5] = [16, 32, 2]
+        _, mapped = crop_input(source, points, np.array([0, 16, 32, 32], dtype=np.float32))
+        torch.testing.assert_close(torch.from_numpy(mapped[5]), torch.tensor([96.0, 96.0, 2.0]))
+
+    def test_schedule_and_resumable_epoch_order(self):
+        from torch.utils.data import DataLoader
+        from train import epoch_batches, learning_rate_scale
+        warmup, floor = CONFIG["warmupSteps"], CONFIG["minLearningRateFraction"]
+        self.assertAlmostEqual(learning_rate_scale(0, 10_000), 1 / warmup)
+        self.assertAlmostEqual(learning_rate_scale(warmup - 1, 10_000), 1.0)
+        self.assertAlmostEqual(learning_rate_scale(warmup, 10_000), 1.0)
+        self.assertAlmostEqual(learning_rate_scale(10_000, 10_000), floor)
+        decay = [learning_rate_scale(step, 10_000) for step in range(warmup, 10_001, 97)]
+        self.assertTrue(all(a >= b for a, b in zip(decay, decay[1:])))
+        for epoch in [0, 3]:
+            expected = [batch.tolist() for batch in DataLoader(range(103), batch_size=CONFIG["batchSize"], shuffle=True, generator=torch.Generator().manual_seed(CONFIG["seed"] + epoch))]
+            self.assertEqual(epoch_batches(103, epoch), expected)
 
     def test_actual_rgb_architecture_and_frozen_backbone(self):
         model = UpperBodyNet(pretrained=False)

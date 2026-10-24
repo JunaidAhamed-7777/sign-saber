@@ -22,7 +22,7 @@ The primary publisher/license links and exact annotation hashes are in the manif
 
 ## Reproduce locally
 
-The inspected Windows host has Python 3.12.14 in an isolated environment, PyTorch 2.9.1+cpu, 16 GB RAM and an AMD RX6600M. No supported GPU training stack was verified. The commands below use a bounded two-thread CPU run from [config.json](config.json).
+The inspected Windows host has Python 3.12.14 in an isolated environment, PyTorch 2.9.1+cpu, 16 GB RAM and an AMD RX6600M. No supported GPU training stack was verified. The commands below use the CPU settings in [config.json](config.json): six PyTorch threads, three spawned DataLoader workers and batch 32 (the earlier preflights used two threads, batch 8 and no workers). Leave headroom for other local work; lower `cpuThreads`/`dataLoaderWorkers` on a busier or smaller machine.
 
 ```powershell
 uv venv --python 3.12 training/.venv
@@ -51,7 +51,7 @@ Every run saves real input hashes, an exact sample-ID selection, per-batch IDs/l
 After all selected images are acquired, a full run uses:
 
 ```powershell
-training/.venv/Scripts/python.exe training/train.py --datasets coco2017 mpii --epochs 20 --run-name upper-body-research
+training/.venv/Scripts/python.exe training/train.py --datasets coco2017 mpii --epochs 9 --run-name upper-body-research
 ```
 
 This full two-dataset run has **not completed**. It refuses missing indexed images. Loss and PCK are reported on every labelled joint, including occlusion; PCK uses the declared shoulder-span fraction and is **not COCO AP**. Actual first-epoch CPU step times are narrow pipeline observations, not a browser/frame-rate benchmark or an estimate of full convergence. The current preflight head is not suitable for gameplay.

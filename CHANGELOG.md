@@ -13,6 +13,13 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: `npm run check` 367 tests in 48 files and build passed; docs tests 2/2 and docs checker 0 errors. Trial: canvas stream and Chrome fake webcam both reached GPU preview; pose detected on 24/24 photos; median per-photo joint error 0.118 shoulder widths; handedness agreement 369/393 under the new mapping; calibration with the declared-rule photo never framed (one hand); with the measured photo framing became ready but Confirm was not accepted under 2.6–5.5 Hz tracking.
 - Limits: whole-machine CPU was 52–100% busy before and ~100% during lanes from unrelated training/Blender/agent work, so timings are not performance evidence and the play → Results → Retry flow was not reached. Still photos only; not webcam evidence.
 
+## 2026-10-25T04:22:47+05:30 — 200% zoom and narrow compact tiers
+
+- Changed: At ≤520 px tall the compact rails hide page captions, button sub-captions and chips and use 16 px button text; at ≤760 px wide compact song cards drop the cover so titles fit. Targets stay at `MENU_TARGET_MIN_PX` with `MENU_TARGET_GAP_PX` gaps. The breakpoint test whitelists these documented sub-tiers.
+- Why: A 720×450 (200% zoom of 1440×900) screenshot showed the bottom rail scrolling and truncated song titles.
+- Validation: After merging main, `npm ci`, typecheck, lint, 369/369 assertions in 48 files (`--testTimeout=90000` because of 100% CPU from parallel jobs), build and prettier check passed. Headless Chrome screenshots at 720×450 (menu, pause), 1024×640 (performer pre-roll) and 1440×900 (pause run summary with autofocused Resume) were inspected.
+- Limits: Zoom was emulated by viewport size, not browser zoom; no human readability check.
+
 ## 2026-10-25T04:20:00+05:30 — Readable, playable charts (generator v3)
 
 - Changed: Rewrote `app/src/beatmap/assign.ts`. Charts now pick musical events by salience under hard caps instead of turning nearly every onset into a note: lower `MAX_DENSITY_PER_S` (0.75/1.5/2.5) and larger `MIN_NOTE_GAP_MS` (700/400/260), new `MAX_VISIBLE_NOTES` (3/4/5 notes per approach span), an energy-scaled local gap, deliberate phrase rests (`PHRASE_MAX_MS`/`PHRASE_REST_MS`), rare strong two-hand chords (`CHORD_MIN_STRENGTH`/`CHORD_MIN_SPACING_MS`, none on Easy), a phrase-local smash share (`SMASH_MAX_SHARE`) so strong kicks punch and other accents slash, relative-sustain beams (`BEAM_SUSTAIN_PERCENTILE`/`BEAM_SUSTAIN_MAX_DB`) spaced by a longer `BEAM_MIN_SPACING_MS`, a per-hand recovery budget (`FLOW_HAND_LEAD_MS`/`FLOW_HAND_FOLLOW_MS`/`FLOW_GESTURE_CHANGE_MS`, exported as `handGapMs`) with each hand on its own side, and walls planned first on the beat cadence (`OBSTACLE_PERIOD_BEATS`/`OBSTACLE_SPACING_MS`) with notes moved to the open side. Removed `EASY_SMASH_TO_SLASH_EVERY`, `FLOW_HAND_MIN_GAP_MS`, `FLOW_GESTURE_SWITCH_MIN_MS`, `FLOW_MAX_COLUMN_STEP`, `OBSTACLE_EMPTY_WINDOW_MS` and `OBSTACLE_LOOKAHEAD_*`. The validator enforces the on-screen cap and `handGapMs`. `GENERATOR_VERSION` is 3; all nine bundled maps, receipts and the manifest were regenerated with `npm run beatmaps`. The in-app 80-second arrangement uses the same generator. Added `scripts/chart-report.mjs`, `tests/unit/chartQuality.test.mjs` and assignment tests; the performer replay now covers all nine charts. Docs 02 registry, 08 §9–§10 and the tracks README describe the rules with before/after counts.
@@ -33,12 +40,6 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: Drive the authored person model from tracked, dataset and synthetic skeletons instead of thin lines.
 - Validation: 16 new assertions against the actual exported GLB (rest identity, horizontal raise with hand on wrist, 90°/120° elbows, bounded stretch, fist/point/open recovered from 21-point landmarks, hold-then-ease, head turn and limit, mirroring/handedness, 2D depth, camera-ray placement, leg indices ignored, explicit joints, static Calm idle). Typecheck clean. Blender pose renders show clean fist and raised-arm deformation.
 - Limits: Not yet wired into the renderer or menu; no browser or webcam check.
-## 2026-10-25T04:22:47+05:30 — 200% zoom and narrow compact tiers
-
-- Changed: At ≤520 px tall the compact rails hide page captions, button sub-captions and chips and use 16 px button text; at ≤760 px wide compact song cards drop the cover so titles fit. Targets stay at `MENU_TARGET_MIN_PX` with `MENU_TARGET_GAP_PX` gaps. The breakpoint test whitelists these documented sub-tiers.
-- Why: A 720×450 (200% zoom of 1440×900) screenshot showed the bottom rail scrolling and truncated song titles.
-- Validation: After merging main, `npm ci`, typecheck, lint, 369/369 assertions in 48 files (`--testTimeout=90000` because of 100% CPU from parallel jobs), build and prettier check passed. Headless Chrome screenshots at 720×450 (menu, pause), 1024×640 (performer pre-roll) and 1440×900 (pause run summary with autofocused Resume) were inspected.
-- Limits: Zoom was emulated by viewport size, not browser zoom; no human readability check.
 
 ## 2026-10-25T04:07:42+05:30 — Pause run summary, performer footer label and short-window tier
 

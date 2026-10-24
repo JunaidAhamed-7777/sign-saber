@@ -175,7 +175,7 @@ export const MIN_TRACK_MS = 5000,
 export const PLAYBACK_DECODE_SR = 44100,
   GAPLESS_LENGTH_TOLERANCE_SAMPLES = 2;
 export const ANALYSIS_CACHE_MAX = 30,
-  GENERATOR_VERSION = 3;
+  GENERATOR_VERSION = 4;
 export const DSP_EPSILON = 1e-12,
   ANALYSIS_PEAK_TARGET = 0.95,
   SILENCE_PEAK_MAX = 1e-4,
@@ -189,6 +189,9 @@ export const ONSET_RAW_RMS_MIN = 0.002,
   TEMPO_DETREND_FRAMES = 16,
   TEMPO_HARMONIC_WEIGHT = 0.5,
   TEMPO_OCTAVE_SWITCH_RATIO = 1.15;
+/** Fine beat-period search around the autocorrelation estimate (fractions of the period). */
+export const TEMPO_REFINE_RANGE = 0.01,
+  TEMPO_REFINE_STEP = 0.0001;
 export const TEMPO_SUPPORT_MIN_STRENGTH = 0.4,
   TEMPO_MIN_SUPPORT_ONSETS = 4,
   BEAT_MIN_PERIOD_FACTOR = 0.5,
@@ -263,7 +266,7 @@ export const ANALYSER_SMOOTH = 0.6,
   ANALYSER_PEAK_FLOOR = 0.15,
   ANALYSER_RMS_GAIN = 3;
 export const SFX_POLYPHONY = 6,
-  SFX_PITCH_JITTER_CENTS = 69;
+  SFX_PITCH_JITTER_CENTS = 35;
 export const SFX_JUDGEMENT_RATE = { perfect: 1.03, great: 1, good: 0.97 } as const;
 export const SFX_STOP_RAMP_S = 0.01,
   MASTER_GAIN_DEFAULT = 0.8,
@@ -354,18 +357,106 @@ export const CHROMA_DROP_OFFSET = 0.004,
   PYLON_SPACING_M = 8,
   PYLON_X = 5.5,
   HIGHLIGHT_RT_SIZE = 768;
-// Original procedural SFX fallback (docs02 registry addition).
-export const SFX_SYNTH_DURATION_S = 0.18,
-  SFX_SYNTH_GAIN = 0.12;
-export const SFX_SYNTH_FREQUENCIES = {
-  slash: 880,
-  smash: 110,
-  beam: 1320,
-  miss: 90,
-  badcut: 180,
-  dodge: 440,
-  count: 660,
+// --- Original synthesized SFX and audio feel (docs02 §Audio; docs15 §6). Recipe internals are authored
+// sound content inside audio/sfxSynth.ts, pinned by assets-src/audio/sfx-receipt.json. ---
+/**
+ * Momentary loudness (BS.1770, 400 ms window, LUFS) each rendered sound is normalized to, before the bus
+ * and master gain. Loudness rather than peak keeps noisy cues consistent across seeds and sample rates.
+ * Keys define `SfxId`.
+ */
+export const SFX_LOUDNESS_LUFS = {
+  slash: -24,
+  smash: -22.5,
+  zap: -23,
+  poof: -26.5,
+  sparkle: -27,
+  glint: -32,
+  badcut: -24,
+  miss: -34,
+  wallWarn: -27,
+  wallHit: -21.5,
+  dodge: -25.5,
+  combo: -21,
+  milestone: -19,
+  comboBreak: -34,
+  drop: -15,
+  count: -27,
+  countGo: -24.5,
+  countNeutral: -31.5,
+  charge: -31.5,
+  resultsHigh: -16,
+  resultsLow: -19,
+  resume: -30,
+  uiHover: -42,
+  uiConfirm: -30,
+  uiBack: -32,
+  uiSelect: -32,
+  uiArm: -36,
+  uiEnable: -24,
 } as const;
+/** No rendered sample exceeds this; a soft knee above SFX_PEAK_KNEE × ceiling shapes rare spikes. */
+export const SFX_PEAK_CEILING_DBFS = -5,
+  SFX_PEAK_KNEE = 0.85;
+/** Calm renders are low-passed and normalized this much quieter (LU). */
+export const SFX_CALM_LOUDNESS_DB = -3,
+  SFX_CALM_LOWPASS_HZ = 4500;
+/** Deterministic synthesis seed (mixed with the sound id) and seed for cosmetic pitch jitter. */
+export const SFX_SEED = 0x5167_5abe;
+/** Pitched cues fold the estimated track tonic into [root, 2·root); menus use a fixed root. */
+export const SFX_DEFAULT_ROOT_HZ = 523.25,
+  SFX_UI_ROOT_HZ = 880;
+/** Combo/milestone transposition (semitones) by ladder/milestone index; pentatonic-safe intervals. */
+export const SFX_COMBO_STEP_SEMITONES = { major: [0, 0, 4, 7], minor: [0, 0, 3, 7] } as const;
+export const SFX_MILESTONE_SEMITONES = { major: [0, 4, 7, 12], minor: [0, 3, 7, 12] } as const;
+/** Cheap tonal-centre estimate for SFX tuning only: FFT size/frames, analysed band and minimum profile correlation. */
+export const SFX_TONIC_FFT = 4096,
+  SFX_TONIC_FRAMES = 40,
+  SFX_TONIC_MIN_HZ = 130,
+  SFX_TONIC_MAX_HZ = 1760,
+  SFX_TONIC_MIN_CORRELATION = 0.5;
+/** Global voice cap across all sounds and per-sound overrides of `SFX_POLYPHONY`. */
+export const SFX_MAX_VOICES = 24;
+export const SFX_VOICE_LIMITS: Partial<Record<keyof typeof SFX_LOUDNESS_LUFS, number>> = {
+  charge: 2,
+  resultsHigh: 1,
+  resultsLow: 1,
+  drop: 2,
+  wallWarn: 3,
+  milestone: 2,
+  combo: 3,
+  uiEnable: 1,
+  uiHover: 2,
+};
+/** Safety limiter on the SFX bus; Web Audio applies spec makeup gain, which the bus trims back out. */
+export const SFX_LIMITER = { thresholdDb: -3, kneeDb: 0, ratio: 20, attackS: 0.001, releaseS: 0.08 } as const;
+/** Spec/Blink compressor pre-delay; future-scheduled cues start this much earlier to compensate. */
+export const SFX_LIMITER_LOOKAHEAD_S = 0.006;
+/** Bounded rendered-buffer cache (LRU entries across voicings). */
+export const SFX_CACHE_MAX_BUFFERS = 96;
+/** An early-arriving hit sounds at its chart time if that is at most this far ahead (cosmetic only). */
+export const SFX_BEAT_SNAP_MS = 40,
+  SFX_LOOKAHEAD_MS = 120,
+  SFX_LATE_SKIP_MS = 20;
+/** Stereo placement: lane/hand pan, wall side pan, beam hand pan. */
+export const SFX_PAN_LANE = 0.45,
+  SFX_PAN_HAND = 0.1,
+  SFX_PAN_WALL = 0.55,
+  SFX_PAN_BEAM = 0.3;
+/** Swing-speed dynamics for gesture hits: dB range and speed ratio (to the gesture minimum) for full level. */
+export const SFX_DYNAMICS_DB = { min: -2, max: 1 } as const,
+  SFX_DYNAMICS_FULL_RATIO = 2.5;
+/** The wall-warning swell peaks this long after it starts, aligned to the wall reaching the player. */
+export const SFX_WALL_WARN_LEAD_S = 0.52;
+/** Charge cue starts above this charge, releases after this drop from its peak and fades over this time. */
+export const SFX_CHARGE_START = 0.05,
+  SFX_CHARGE_CANCEL_DROP = 0.1,
+  SFX_RELEASE_S = 0.04;
+/** Rate limits for repeated feedback, minimum broken combo for the soft break cue, final neutral tick rate. */
+export const SFX_MISS_MIN_GAP_MS = 90,
+  SFX_UI_MIN_GAP_MS = 45,
+  SFX_BREAK_MIN_COMBO = 10,
+  SFX_NEUTRAL_GO_RATE = 1.25;
+// --- end synthesized SFX ---
 // Admission limits and bounded telemetry (implementation registry additions).
 export const VALIDATION_MAX_ERRORS = 32,
   ASSET_TEXT_MAX_CHARS = 512,
@@ -553,7 +644,7 @@ export const BLOCK_NEAR_GLOW_M = 8,
   BLOCK_CORE_SPIN_RAD_S = 0.9;
 export const GLYPH_FRONT_GAIN = 1.15,
   GLYPH_EDGE_GAIN = 0.3,
-  SHARD_INNER_GAIN = 1.4,
+  SHARD_INNER_GAIN = 1.25,
   SHARD_FLASH_MS = 80,
   SLICE_CAP_HEAT_MS = 300,
   SLICE_CAP_HEAT_GAIN = 2.5;
@@ -682,3 +773,10 @@ export const BEAM_ORB_RADIUS = 0.27,
   GLYPH_PROUD_M = 0.012;
 export const SHATTER_DEPTH_FRACTION = 0.35,
   SHATTER_RECEDE_MPS = 2.4;
+// Hands (docs12): blade length spring and particle presence easing.
+export const BLADE_LENGTH_SPRING_RAD_S = 22,
+  HAND_PRESENCE_FADE_MS = 120,
+  TRAIL_PARTICLE_SIZE_MIN_M = 0.012,
+  TRAIL_PARTICLE_SIZE_MAX_M = 0.035;
+export const SHATTER_PIECE_SCALE = 0.8,
+  SHATTER_VISIBLE_FRACTION = 0.6;

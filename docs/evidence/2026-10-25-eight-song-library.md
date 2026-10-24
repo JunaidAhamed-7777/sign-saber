@@ -1,6 +1,16 @@
 # Eight-song local library — 2026-10-25
 
-**Current acceptance uses generator version 3.** Immediately after the initial PR opened, main integrated the awaited chart branch in 93e411e. The branch normally integrated that work and regenerated the entire eight-song/24-map pack again, resolving generated JSON conflicts only through the shared generator. Original MP3/acquisition/attribution bytes and canonical audio hashes remain unchanged.
+**Current frozen acceptance: generator version 4 from upstream 09671b7b6f5a6f1d89fa756cd6c825f58abd4bba.** After main added real tempo-period refinement, the branch normally integrated that exact checkpoint and regenerated all 24 maps/receipts/manifest once more. Original audio/acquisition/attribution bytes and canonical PCM hashes are unchanged. The explicit source freeze avoids attributing these results to later unrelated main changes.
+
+The full npm run check passed typecheck, lint, 54 suites/558 assertions and production build. All 24 charts passed structural/readability checks and full synthetic InputPipeline/GameSession replays. [The current v4 chart diagnostic](2026-10-25-eight-song-chart-report-v4.txt) reports zero unplayable notes on every chart.
+
+[The frozen v4 browser report](2026-10-25-eight-song-library-v4-browser.json) passed at 1440×900 and 1024×640: all eight songs/all 24 current maps selected through native controls, original preview started/stopped, library/credits paged and every exact attribution/source/license link checked with external page requests blocked. No external page requests were attempted; there were zero CSP violations, JavaScript-console errors or failed music requests. Existing favicon 404 responses remain recorded. Manifest SHA-256 is c0d70d68751eb90593e9b8c55fca15a3a6611ef91e1f7e4a5c5a8760cbfc460a.
+
+The current shared PNG links throughout this document now show this frozen v4 run and were inspected. Older sections retain their actual source SHAs, results and failures; their screenshots were inspected at those checkpoints but have been replaced in the shared filenames.
+
+## Earlier checkpoints
+
+**Earlier acceptance used generator version 3.** Immediately after the initial PR opened, main integrated the awaited chart branch in 93e411e. The branch normally integrated that work and regenerated the entire eight-song/24-map pack again, resolving generated JSON conflicts only through the shared generator. Original MP3/acquisition/attribution bytes and canonical audio hashes remain unchanged.
 
 The current pack passed the complete npm run check: typecheck, lint, 50 suites/502 assertions and production build. Upstream readability and full synthetic InputPipeline/GameSession replay tests now cover all 24 charts. [The v3 chart diagnostic](2026-10-25-eight-song-chart-report-v3.txt) reports zero unplayable notes on every chart. These are algorithmic/synthetic checks, not webcam or human musical-quality evidence.
 

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatorVersion": 3,
+  "generatorVersion": 4,
   "song": {
     "title": "Chipper Doodle v2",
     "artist": "Kevin MacLeod",
@@ -8,8 +8,8 @@
     "sourceHash": "addaad1315a5b1d3dd37ff22690941b1ca2575a7769d25fc2fa6e6b95a4d364a",
     "audioUrl": "/assets/tracks/chipper-doodle-v2/audio.mp3",
     "durationMs": 172173.92290249432,
-    "bpm": 92.1,
-    "beatOffsetMs": 87.63039711550505
+    "bpm": 92,
+    "beatOffsetMs": 17.780742531432452
   },
   "difficulty": "normal",
   "approachMs": 2000,
@@ -1468,91 +1468,91 @@
     {
       "id": 0,
       "t": 10462.448979591838,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 1,
       "t": 20885.079365079364,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 2,
       "t": 31319.909297052152,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 3,
       "t": 41752.471655328794,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 4,
       "t": 52187.21088435374,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 5,
       "t": 62621.95011337869,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 6,
       "t": 73059.22902494331,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 7,
       "t": 83491.79138321996,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 8,
       "t": 93945.03401360544,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 9,
       "t": 104368.5260770975,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 10,
       "t": 114776.2358276644,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 11,
       "t": 125085.89569160997,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 12,
       "t": 135667.84580498867,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 13,
       "t": 146102.04081632654,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 14,
       "t": 156525.7142857143,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     }
   ],
@@ -2113,14 +2113,14 @@
       "intensity": 1
     },
     {
-      "t": 69352.33560090703,
+      "t": 69471.47392290249,
       "kind": "kick",
       "intensity": 1
     },
     {
-      "t": 69794.96598639456,
+      "t": 69988.34467120182,
       "kind": "kick",
-      "intensity": 0.9535772800445557
+      "intensity": 1
     },
     {
       "t": 70326.25850340136,
@@ -2209,11 +2209,6 @@
     },
     {
       "t": 80885.07936507936,
-      "kind": "kick",
-      "intensity": 1
-    },
-    {
-      "t": 81210.97505668933,
       "kind": "kick",
       "intensity": 1
     },
@@ -2799,11 +2794,6 @@
     },
     {
       "t": 151324.3083900227,
-      "kind": "kick",
-      "intensity": 1
-    },
-    {
-      "t": 151650.2947845805,
       "kind": "kick",
       "intensity": 1
     },

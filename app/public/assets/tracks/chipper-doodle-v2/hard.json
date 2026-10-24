@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatorVersion": 3,
+  "generatorVersion": 4,
   "song": {
     "title": "Chipper Doodle v2",
     "artist": "Kevin MacLeod",
@@ -8,8 +8,8 @@
     "sourceHash": "addaad1315a5b1d3dd37ff22690941b1ca2575a7769d25fc2fa6e6b95a4d364a",
     "audioUrl": "/assets/tracks/chipper-doodle-v2/audio.mp3",
     "durationMs": 172173.92290249432,
-    "bpm": 92.1,
-    "beatOffsetMs": 87.63039711550505
+    "bpm": 92,
+    "beatOffsetMs": 17.780742531432452
   },
   "difficulty": "hard",
   "approachMs": 1600,
@@ -1981,115 +1981,115 @@
     {
       "id": 0,
       "t": 15665.578231292518,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 1,
       "t": 23494.0589569161,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 2,
       "t": 31319.909297052152,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 3,
       "t": 39145.487528344675,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 4,
       "t": 46970.11337868481,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 5,
       "t": 54813.51473922903,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 6,
       "t": 62621.95011337869,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 7,
       "t": 70466.75736961451,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 8,
       "t": 78292.74376417232,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 9,
       "t": 86102.67573696145,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 10,
       "t": 93945.03401360544,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 11,
       "t": 101770.20408163266,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 12,
       "t": 109580.95238095238,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 13,
       "t": 117260.77097505669,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 14,
       "t": 125085.89569160997,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 15,
       "t": 132940.9523809524,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 16,
       "t": 140889.88662131518,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     },
     {
       "id": 17,
       "t": 148711.2925170068,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallRight"
     },
     {
       "id": 18,
       "t": 156525.7142857143,
-      "durationMs": 1302.9315960912054,
+      "durationMs": 1304.3478260869565,
       "kind": "wallLeft"
     }
   ],
@@ -2650,14 +2650,14 @@
       "intensity": 1
     },
     {
-      "t": 69352.33560090703,
+      "t": 69471.47392290249,
       "kind": "kick",
       "intensity": 1
     },
     {
-      "t": 69794.96598639456,
+      "t": 69988.34467120182,
       "kind": "kick",
-      "intensity": 0.9535772800445557
+      "intensity": 1
     },
     {
       "t": 70326.25850340136,
@@ -2746,11 +2746,6 @@
     },
     {
       "t": 80885.07936507936,
-      "kind": "kick",
-      "intensity": 1
-    },
-    {
-      "t": 81210.97505668933,
       "kind": "kick",
       "intensity": 1
     },
@@ -3336,11 +3331,6 @@
     },
     {
       "t": 151324.3083900227,
-      "kind": "kick",
-      "intensity": 1
-    },
-    {
-      "t": 151650.2947845805,
       "kind": "kick",
       "intensity": 1
     },

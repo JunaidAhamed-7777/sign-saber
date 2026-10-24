@@ -78,7 +78,7 @@ npm run check
 npm run beatmaps
 ```
 
-`check` runs typecheck, lint, asserted Vitest suites and production build; it no longer permits empty test suites. The eight-song generator-v3 checkpoint passed 502 assertions, including integrity/readability/full synthetic replays of all 24 charts; [its evidence](docs/evidence/2026-10-25-eight-song-library.md) distinguishes these checks from human/live-camera proof. `beatmaps` is a real shared-DSP generation/validation command and requires ffmpeg for canonical PCM. Bundled MP3 iTunSMPB trim is honoured before analysis; browser source-zero/resampling checks caught and corrected real errors.
+`check` runs typecheck, lint, asserted Vitest suites and production build; it no longer permits empty test suites. The eight-song generator-v4 checkpoint passed 558 assertions, including integrity/readability/full synthetic replays of all 24 charts; [its evidence](docs/evidence/2026-10-25-eight-song-library.md) distinguishes these checks from human/live-camera proof. `beatmaps` is a real shared-DSP generation/validation command and requires ffmpeg for canonical PCM. Bundled MP3 iTunSMPB trim is honoured before analysis; browser source-zero/resampling checks caught and corrected real errors.
 
 From the root:
 
@@ -103,7 +103,7 @@ The browser numeric harness requires Chrome (or `BROWSER_BINARY`) and ffmpeg; it
 
 ## Sources and licenses
 
-Code and original authored geometry are [MIT](LICENSE). Music retains CC-BY terms and fonts retain OFL terms; their notices are packaged separately. The locked runtime uses [Three.js](https://github.com/mrdoob/three.js/blob/dev/LICENSE), [React](https://github.com/facebook/react/blob/main/LICENSE), [Zustand](https://github.com/pmndrs/zustand/blob/main/LICENSE), [Vite](https://github.com/vitejs/vite/blob/main/LICENSE) and [postprocessing](https://github.com/pmndrs/postprocessing/blob/main/LICENSE.md). MediaPipe's project is [Apache-2.0](https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE); model pins/terms are recorded with the model preparation sources. The game uses Web Audio's output clock; procedural fallback SFX are original generated buffers.
+Code and original authored geometry are [MIT](LICENSE). Music retains CC-BY terms and fonts retain OFL terms; their notices are packaged separately. The locked runtime uses [Three.js](https://github.com/mrdoob/three.js/blob/dev/LICENSE), [React](https://github.com/facebook/react/blob/main/LICENSE), [Zustand](https://github.com/pmndrs/zustand/blob/main/LICENSE), [Vite](https://github.com/vitejs/vite/blob/main/LICENSE) and [postprocessing](https://github.com/pmndrs/postprocessing/blob/main/LICENSE.md). MediaPipe's project is [Apache-2.0](https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE); model pins/terms are recorded with the model preparation sources. The game uses Web Audio's output clock. All sound effects are original MIT work synthesized at runtime from code (`app/src/audio/sfxSynth.ts`, receipt in `assets-src/audio/sfx-receipt.json`); no third-party or recorded SFX are used and no SFX dependency was added.
 
 ## Submission
 

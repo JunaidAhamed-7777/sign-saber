@@ -1,4 +1,4 @@
-/** Readability and gesture-mix assertions on all packaged charts (generator v3). These are
+/** Readability and gesture-mix assertions on all packaged charts. These are
  * algorithmic chart properties, not human comfort or musical-quality evidence. */
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -22,7 +22,7 @@ const slugs = JSON.parse(readFileSync(new URL('manifest.json', tracks), 'utf8'))
 const difficulties = ['easy', 'normal', 'hard'];
 const cases = slugs.flatMap((slug) => difficulties.map((difficulty) => [slug, difficulty]));
 
-describe('packaged chart readability (generator v3)', () => {
+describe('packaged chart readability', () => {
   it.each(cases)('%s %s mixes slashes, smashes and occasional beams', (slug, difficulty) => {
     const { notes } = load(slug, difficulty);
     const share = (type) => notes.filter((n) => n.type === type).length / notes.length;

@@ -18,7 +18,7 @@
         "normal": "/assets/tracks/pamgaea/normal.json",
         "hard": "/assets/tracks/pamgaea/hard.json"
       },
-      "generatorVersion": 3,
+      "generatorVersion": 4,
       "warnings": [
         "lowTempoConfidence",
         "humanRhythmAndComfortReviewPending"
@@ -27,9 +27,9 @@
         "audioSha256": "9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586",
         "canonicalPcmSha256": "5eb6351ed7f6effe372371b5e25d83d50a1ab91f5c72c871e21a62dd1216d668",
         "maps": {
-          "easy": "feedf20aa518b0e45a8aeb3fd40adf0dfe1ad3a36800bb14219dc2a42cdde20d",
-          "normal": "a53fc3a54185f84f2f3b2d6b5eb1e79a74d469a318c1d19a218d27bf2beaaaa2",
-          "hard": "1179dbf93064796bee64b4fc105b981ee7f47bdf6d629fccc5ffe5219ec323f4"
+          "easy": "dbde4e9a4bee2b3dc4312e696f7805706d315f530e74e315186c868bdf60f2ed",
+          "normal": "332a345ed404f3c92ef5ba53f01c1b467cf4253f2d5234eec1994e03a02b5432",
+          "hard": "c93c9a19adbf038cb0df556a3917d15f4779a409330c30b15495e89be7ab8b94"
         }
       },
       "rights": {
@@ -47,9 +47,9 @@
       "role": "groove",
       "audioUrl": "/assets/tracks/electro-cabello/audio.mp3",
       "durationMs": 190769.75056689343,
-      "bpm": null,
+      "bpm": 117,
       "preview": {
-        "startMs": 418.0952380952381,
+        "startMs": 400.4648526077098,
         "durationMs": 15000
       },
       "difficultyMaps": {
@@ -57,18 +57,17 @@
         "normal": "/assets/tracks/electro-cabello/normal.json",
         "hard": "/assets/tracks/electro-cabello/hard.json"
       },
-      "generatorVersion": 3,
+      "generatorVersion": 4,
       "warnings": [
-        "lowTempoConfidence",
         "humanRhythmAndComfortReviewPending"
       ],
       "hashes": {
         "audioSha256": "f304151035c2647de56dbf1995dcc90f3c942c656edfe7516541e7b76e4044ef",
         "canonicalPcmSha256": "38edda4d82a3702920ebd64475b576744929068bee4b9ae651b8be45b87fad1e",
         "maps": {
-          "easy": "d9d44f761ba996b35cfd367def545ebbaf392a5c8d62873d3a562fca7fb39a53",
-          "normal": "f04a87de274422a8f7534c9c49e83a8f8d15d4a6e2bb745027459481fe218ffc",
-          "hard": "94047cfec6aca98505cdd8c5ad4798ac16b69a555a99047cc0fe5e1b31c5fc23"
+          "easy": "e55f85c5170fa5fd1ae4774484f52bcb3f27cc4192db2eba9c01133bd464acfc",
+          "normal": "85a7b8fdb3962c99780def9c5d1fdf33100449a5044cf8fbd8e4bb843d5d6820",
+          "hard": "d0633c8a71c4b0c837909f5392f8cb2d78638738bce335b396b42b87780f1780"
         }
       },
       "rights": {
@@ -86,7 +85,7 @@
       "role": "showcase",
       "audioUrl": "/assets/tracks/cipher/audio.mp3",
       "durationMs": 231200,
-      "bpm": null,
+      "bpm": 150,
       "preview": {
         "startMs": 817.0068027210884,
         "durationMs": 15000
@@ -96,18 +95,17 @@
         "normal": "/assets/tracks/cipher/normal.json",
         "hard": "/assets/tracks/cipher/hard.json"
       },
-      "generatorVersion": 3,
+      "generatorVersion": 4,
       "warnings": [
-        "lowTempoConfidence",
         "humanRhythmAndComfortReviewPending"
       ],
       "hashes": {
         "audioSha256": "d3d0614535a61d748e2fd8d5117fc4d781022a7624794802a2462d8af3fdd522",
         "canonicalPcmSha256": "d03027294c2fc4caf995b668f205cf66f605f40abfce762a6be6393790517071",
         "maps": {
-          "easy": "6ccc2a9c18e54e1183f4602984e43c6ddf7a3bfdd045bccdb50f13c20c14c584",
-          "normal": "655fbc4579f3cc56880c65cee64d8f71adf785849f51524f69f662bbd57a11e1",
-          "hard": "6e363f1edd4e259d7568b314593f8c74f269700001914e0ea6beeb4b2c74bf9d"
+          "easy": "ae9a54f7c748df50da6bef5ed879f6c6c1b769309701eb0c82bdb2713a762887",
+          "normal": "da2ee89e2b2eec813cb740a2ed098b5f70d2f109af7faba90047792773bbb3da",
+          "hard": "16380fc5bd751a3c1e771b5494c566d5840427dbd21d15f4c83d4fceb2d0a301"
         }
       },
       "rights": {
@@ -135,7 +133,7 @@
         "normal": "/assets/tracks/chipper-doodle-v2/normal.json",
         "hard": "/assets/tracks/chipper-doodle-v2/hard.json"
       },
-      "generatorVersion": 3,
+      "generatorVersion": 4,
       "warnings": [
         "lowTempoConfidence",
         "humanRhythmAndComfortReviewPending"
@@ -144,9 +142,9 @@
         "audioSha256": "addaad1315a5b1d3dd37ff22690941b1ca2575a7769d25fc2fa6e6b95a4d364a",
         "canonicalPcmSha256": "2f95f8614095681cbd929b6b6dd6b4c77d88d9f7249cd44cf09b23fb8ff88421",
         "maps": {
-          "easy": "0f0b5c82fc9532b97d8ab50a2472ef883cb874d1fa00d287eb4e131303e5bd1e",
-          "normal": "5701074b3cb3048b485f2faeefcf7d590c3deada28f228c15823877719180432",
-          "hard": "05da48ddeb20c6f6b46900b5dff97e6cd3db86e12862a6ddf4b7d4df134b721b"
+          "easy": "49ff4fc238ab6b4f20c3dae7518979297560e7fb6ff0bfe22a4d5a52eb151abe",
+          "normal": "2a15fb267a46101db541150f3db6ce582e76a6683d645b5aef85ba21f751e5b2",
+          "hard": "57820d358a89373661015bd1e7810504281e951d4549e24018325bd2389a48d2"
         }
       },
       "rights": {
@@ -174,7 +172,7 @@
         "normal": "/assets/tracks/funkorama/normal.json",
         "hard": "/assets/tracks/funkorama/hard.json"
       },
-      "generatorVersion": 3,
+      "generatorVersion": 4,
       "warnings": [
         "lowTempoConfidence",
         "humanRhythmAndComfortReviewPending"
@@ -183,9 +181,9 @@
         "audioSha256": "6be229815d85a0b99382b944d31098b882702c04ac7ad899e44ab7f8ba89b5ad",
         "canonicalPcmSha256": "28d2e61ca919d88d0056a141c64ed8a60e2d679e77f6bd0802c21f57b911020c",
         "maps": {
-          "easy": "a0b7f4ab7c2ea9ef34ba5b66c1c527461892fb91aead79d56192c929f294f3a7",
-          "normal": "c7ecfcd0a80fd9c0e989a57514732b78e886f17df3f809832db27c98480a4387",
-          "hard": "134d248c632d4ac2fc138881200208637b387840b0cda0999b2c9052dacb882a"
+          "easy": "8b198883b2c027799a398898563514af4229c661d92077b7033e481ace77f151",
+          "normal": "c9e4e23dbba2b566ab44de9a9480926ddd50450926a10717b5ed04c0495bcbb0",
+          "hard": "a96fe2806d0fc56d07fecc1a49981247551d11c5b3089c2f2bdbe2d159018426"
         }
       },
       "rights": {
@@ -203,9 +201,9 @@
       "role": "groove",
       "audioUrl": "/assets/tracks/cut-and-run/audio.mp3",
       "durationMs": 214766.39455782314,
-      "bpm": null,
+      "bpm": 107,
       "preview": {
-        "startMs": 574.0589569160998,
+        "startMs": 436.3492063492064,
         "durationMs": 15000
       },
       "difficultyMaps": {
@@ -213,18 +211,17 @@
         "normal": "/assets/tracks/cut-and-run/normal.json",
         "hard": "/assets/tracks/cut-and-run/hard.json"
       },
-      "generatorVersion": 3,
+      "generatorVersion": 4,
       "warnings": [
-        "lowTempoConfidence",
         "humanRhythmAndComfortReviewPending"
       ],
       "hashes": {
         "audioSha256": "ddfa5637036e97a313a2e7a01d37d00f85226469cf4df896c83da07f7f2c353e",
         "canonicalPcmSha256": "8002e1f4f7a28635254ca65ed7ebf1c7ebfee404a46a7bc7cad6cb76fb7cbe0f",
         "maps": {
-          "easy": "b81980a3b788dddc8d63e54afc3f33f3a17fbd47fc1bf356cdbf739e53e0e759",
-          "normal": "3073c2c7f1f82c09d16b9e6bc9249ccdf0fda4e415fc1c711a4162da1ac8a22f",
-          "hard": "ec3908e01a1d264df5f94231a817bf07574fdfd4e4eb9b18e45c54e3adf20767"
+          "easy": "62e9ffc331bf09d0b7c6f4ca9f2f238293edfcb4331f1e43a2d1f0ca78548899",
+          "normal": "cfb8c32b88a84726b6e096ba281e3dbbf0584e34bad08e1e3219d2ce8d1a5e4b",
+          "hard": "d71cce4a2668b3ce595cbd77f27b23a50e337b277977bb419a5ab579d1b859f0"
         }
       },
       "rights": {
@@ -242,7 +239,7 @@
       "role": "showcase",
       "audioUrl": "/assets/tracks/rhinoceros/audio.mp3",
       "durationMs": 203809.5238095238,
-      "bpm": null,
+      "bpm": 126,
       "preview": {
         "startMs": 1947.4376417233561,
         "durationMs": 15000
@@ -252,18 +249,17 @@
         "normal": "/assets/tracks/rhinoceros/normal.json",
         "hard": "/assets/tracks/rhinoceros/hard.json"
       },
-      "generatorVersion": 3,
+      "generatorVersion": 4,
       "warnings": [
-        "lowTempoConfidence",
         "humanRhythmAndComfortReviewPending"
       ],
       "hashes": {
         "audioSha256": "a73fa6059d078700c7d07d0c89343753acdaa368dc78f5c843bc23ec29036fec",
         "canonicalPcmSha256": "a0b7110bb98873992482838181327f17623ca60f7b86070869e75aa5880eedd4",
         "maps": {
-          "easy": "e6da46fde8e9efac65d6eefd06355e70b14926d3c5d1aa8374ee42eb2529e6df",
-          "normal": "c69a2cc032c1430ade242ae21c109eb2d11f77e2987dd19edd21a380cd803fe5",
-          "hard": "7e0a987a7784be1ba56e485818e37ec746e60a00909061106a3ebd23c73c3a53"
+          "easy": "d81b64092c242c4ae99403f41ea8cfaad57c40cc519701804964acd7a980d3b1",
+          "normal": "4849ef0cc3ee466795802411e48f9c5f6b76b291a400e5ed9fe776309c5dae9c",
+          "hard": "90c1ce957cf9d93e8c4d056116957513861a8effbf0d792d470d74def35b0e46"
         }
       },
       "rights": {
@@ -281,7 +277,7 @@
       "role": "showcase",
       "audioUrl": "/assets/tracks/marty-gots-a-plan/audio.mp3",
       "durationMs": 168000,
-      "bpm": null,
+      "bpm": 140,
       "preview": {
         "startMs": 299.8639455782313,
         "durationMs": 15000
@@ -291,18 +287,17 @@
         "normal": "/assets/tracks/marty-gots-a-plan/normal.json",
         "hard": "/assets/tracks/marty-gots-a-plan/hard.json"
       },
-      "generatorVersion": 3,
+      "generatorVersion": 4,
       "warnings": [
-        "lowTempoConfidence",
         "humanRhythmAndComfortReviewPending"
       ],
       "hashes": {
         "audioSha256": "948e7a1253da8af51dc30b71b3c1c08deebaaf5454547367a23736d3df6a2667",
         "canonicalPcmSha256": "29f526bcd404649d9c707afa45d6ba4fbdaf9b5eb3187b293b68116faf840876",
         "maps": {
-          "easy": "e6f85692d09d6cd6e8c62f7ef652f72c774102cd3e5a143a4fd1bca677792f5d",
-          "normal": "733d8ee006cef37fa4534e6cde7e59a1a930f36ea79a5daff678db605f681f1c",
-          "hard": "a50c64513b15014b4fe1bac7a6bb338c3478d42f510d0280874fddc244473345"
+          "easy": "b1f1347fd0a7680d82f0060c20a2d44e8b09ac9f11bfa5368cdf76ac23f5d25a",
+          "normal": "3e3175bbbc6aff1b1a0d46b44741522acff770c99a9d189be4eb8c2fd20edb3e",
+          "hard": "d107e80b546c77e4bf68ad1b2d2da44c66b552e8703b8202ee73419feda9501e"
         }
       },
       "rights": {

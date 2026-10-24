@@ -3,27 +3,27 @@
 **Dynamic arrangements:** `audio/arrange.ts` selects one continuous source window using measured energy/onset evidence: 10 s raised-cosine amplitude fade-in, 60 s highlight and 10 s fade-out for sources at least 80 s long. It does not claim chorus detection or human judgement of the “best” part. Confident beat alignment is supported; missing confidence remains disclosed. Short sources scale the parts proportionally and report actual duration. One continuous window makes the joins sample-continuous; no unrelated phrases are pasted across a hidden hard cut. Actual derivative float32 WAV/PCM hashes and source/sample/fade bounds are retained in the edit receipt. A fresh chart is generated from that edited audio; old note times are never shifted under it.
 
 
-**Implementation checkpoint (generator v3):** DSP, assignment, validation, upload cancellation and grouped caching are implemented and tested. v3 replaced onset-per-note assignment with salience selection under readability caps, phrase rests, a per-phrase gesture mix and a per-hand recovery budget (§9). The three bundled tracks remain disclosed onset-only maps because measured tempo confidence is low. Held-out musical F1, comfort and performance targets are not yet established.
+**Implementation checkpoint (generator v4):** DSP, assignment, validation, upload cancellation and grouped caching are implemented and tested. v3 replaced onset-per-note assignment with salience selection under readability caps, phrase rests, a per-phrase gesture mix and a per-hand recovery budget (§9). v4 adds a fine beat-period search (§5): Electro Cabello (117.0 BPM, confidence 0.496) and Cipher (150.0 BPM, 0.558) now produce confident beat-snapped maps; Pamgaea (94.0 BPM, 0.252) remains a disclosed onset-only map because its strong onsets are mostly syncopated against the beat. Held-out musical F1, comfort and performance targets are not yet established.
 
 The implemented onset path gates raw spectral novelty and local RMS rise before percentile normalization, refines each onset to a supported positive PCM-power derivative within the FFT half-window, and anchors nearby tracked beats to those supported sample-zero-relative onsets. Tempo octave selection retains the BPM prior and refines period from supported long onset spans. Analysis resampling uses a registered windowed-sinc kernel; browser tests exposed unacceptable aliasing from the earlier native AudioBufferSourceNode resampling path.
 
 Sustained mid/high beam candidates reserve real measured onsets and an isolation zone before other notes are chosen (§9.2). All final chord groups, density, on-screen and hand-recovery constraints pass the shared validator. Canonical decoding honours iTunSMPB gapless trim before analysis; gameplay applies no compensating second offset.
 
-**Measured effect of v3 on the bundled charts** (`node scripts/chart-report.mjs`; unplayable = notes the synthetic performer's two hands cannot reach under the game's contact rules):
+**Measured effect of v3/v4 on the bundled charts** (`node scripts/chart-report.mjs`; unplayable = notes the synthetic performer's two hands cannot reach under the game's contact rules):
 
-| Chart | v2 notes (slash/smash/beam) | v2 unplayable | v3 notes (slash/smash/beam) | v3 unplayable |
+| Chart | v2 notes (slash/smash/beam) | v2 unplayable | v4 notes (slash/smash/beam) | v4 unplayable |
 | --- | --- | --- | --- | --- |
 | Pamgaea Easy | 133 (76/51/6) | 0 | 89 (45/34/10) | 0 |
 | Pamgaea Normal | 269 (122/140/7) | 2 (0.7%) | 178 (97/69/12) | 0 |
 | Pamgaea Hard | 426 (258/161/7) | 59 (13.8%) | 230 (112/100/18) | 0 |
-| Electro Cabello Easy | 172 (88/84/0) | 0 | 116 (52/54/10) | 0 |
-| Electro Cabello Normal | 329 (9/320/0) | 23 (7.0%) | 183 (110/62/11) | 0 |
-| Electro Cabello Hard | 578 (168/410/0) | 149 (25.8%) | 285 (129/140/16) | 0 |
-| Cipher Easy | 166 (95/60/11) | 0 | 116 (65/42/9) | 0 |
-| Cipher Normal | 310 (112/183/15) | 6 (1.9%) | 202 (106/83/13) | 0 |
-| Cipher Hard | 405 (179/211/15) | 56 (13.8%) | 267 (120/131/16) | 0 |
+| Electro Cabello Easy | 172 (88/84/0) | 0 | 117 (57/51/9) | 0 |
+| Electro Cabello Normal | 329 (9/320/0) | 23 (7.0%) | 176 (104/64/8) | 0 |
+| Electro Cabello Hard | 578 (168/410/0) | 149 (25.8%) | 281 (132/135/14) | 0 |
+| Cipher Easy | 166 (95/60/11) | 0 | 111 (59/41/11) | 0 |
+| Cipher Normal | 310 (112/183/15) | 6 (1.9%) | 195 (98/82/15) | 0 |
+| Cipher Hard | 405 (179/211/15) | 56 (13.8%) | 266 (108/140/18) | 0 |
 
-Average density fell from 0.7–0.9 / 1.3–1.7 / 1.8–3.0 notes per second (Easy/Normal/Hard) to 0.5–0.6 / 0.9–1.1 / 1.2–1.5, and at most 3/4/5 notes share the screen. These are algorithmic and synthetic-performer results, not human comfort or musical-quality evidence.
+Average density fell from 0.7–0.9 / 1.3–1.7 / 1.8–3.0 notes per second (Easy/Normal/Hard) to 0.5–0.6 / 0.8–1.1 / 1.2–1.5, and at most 3/4/5 notes share the screen. These are algorithmic and synthetic-performer results, not human comfort or musical-quality evidence.
 
 The generator turns an audio file into a `BeatmapV1` ([09](09-beatmap-format.md)) with no human authoring. Pillar P4 (*the music is the author*) means notes follow musical evidence, density/reach constraints keep them playable, and silence is rejected. Noisy or beatless material may be unsuitable; show uncertainty rather than manufacturing a convincing tempo.
 
@@ -218,6 +218,8 @@ for L in lagMin..lagMax:                  // tempo candidates remain in range
 Sub-frame refinement: fit a parabola only when neighbouring scores are defined and the denominator is non-degenerate; otherwise keep the integer winner. Clamp the refined candidate to `BPM_MIN..BPM_MAX`. Candidate period `T = L* frames`, `bpm = 60 · FRAME_HZ / L*`.
 
 **Octave disambiguation.** Consider `T/2` and `2T` only when BPM remains in range. Compare `ac(T) + TEMPO_HARMONIC_WEIGHT * (ac(2T) + ac(T/2))` using defined interpolation neighbours; compute required support lags before lookup. Switch only when `alternativeSum ≥ winnerSum * TEMPO_OCTAVE_SWITCH_RATIO`; ties choose closest to `BPM_PRIOR`, then the smaller lag.
+
+**Fine period search.** Autocorrelation and span refinement work in whole or interpolated STFT hops (23.2 ms). A period off by a few hundredths of a BPM keeps local beats but makes a song-long grid drift by more than `SNAP_MAX_MS` within a minute, and syncopated onsets bias the span refinement. The final period is therefore searched in steps of `TEMPO_REFINE_STEP` within ±`TEMPO_REFINE_RANGE` of the refined estimate. Each candidate scores the number of supported onsets within ±`SNAP_MAX_MS` of its best rigid-grid phase (`gridAlignment`, a circular two-pointer count). The tolerance makes the maximum a plateau; the plateau's middle is taken, and ties between plateaus keep the one closest to the estimate. On the bundled songs this moved 94.1 → 94.0, 117.2 → 117.0 and 150.8 → 150.0 BPM, matching the publisher's catalog tempi (94/117/150), which the search does not use. A syncopated 117 BPM synthetic click test fails without the search (117.2 BPM, low confidence) and passes with it. The search maximises the same alignment the confidence uses, so it carries a small upward selection bias; the catalog agreement is the independent check for the bundled tracks, not a general accuracy result.
 
 **Confidence.**
 

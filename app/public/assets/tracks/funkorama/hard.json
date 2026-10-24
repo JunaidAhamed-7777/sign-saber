@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatorVersion": 3,
+  "generatorVersion": 4,
   "song": {
     "title": "Funkorama",
     "artist": "Kevin MacLeod",
@@ -8,8 +8,8 @@
     "sourceHash": "6be229815d85a0b99382b944d31098b882702c04ac7ad899e44ab7f8ba89b5ad",
     "audioUrl": "/assets/tracks/funkorama/audio.mp3",
     "durationMs": 201386.16780045352,
-    "bpm": 100.7,
-    "beatOffsetMs": 594.1107497741339
+    "bpm": 101,
+    "beatOffsetMs": 48.7649189579962
   },
   "difficulty": "hard",
   "approachMs": 1600,
@@ -2332,157 +2332,157 @@
     {
       "id": 0,
       "t": 14273.968253968254,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallLeft"
     },
     {
       "id": 1,
       "t": 21402.49433106576,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallRight"
     },
     {
       "id": 2,
       "t": 28531.38321995465,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallLeft"
     },
     {
       "id": 3,
       "t": 35660.725623582766,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallRight"
     },
     {
       "id": 4,
       "t": 42788.79818594104,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallLeft"
     },
     {
       "id": 5,
       "t": 49917.142857142855,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallRight"
     },
     {
       "id": 6,
       "t": 57047.61904761905,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallLeft"
     },
     {
       "id": 7,
       "t": 64174.33106575963,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallRight"
     },
     {
       "id": 8,
       "t": 71300.63492063493,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallLeft"
     },
     {
       "id": 9,
       "t": 78434.14965986395,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallRight"
     },
     {
       "id": 10,
       "t": 85561.04308390024,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallLeft"
     },
     {
       "id": 11,
       "t": 92689.56916099774,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallRight"
     },
     {
       "id": 12,
       "t": 99818.45804988661,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallLeft"
     },
     {
       "id": 13,
       "t": 106946.98412698413,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallRight"
     },
     {
       "id": 14,
       "t": 114075.69160997732,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallLeft"
     },
     {
       "id": 15,
       "t": 121204.39909297052,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallRight"
     },
     {
       "id": 16,
       "t": 128333.2879818594,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallLeft"
     },
     {
       "id": 17,
       "t": 135461.81405895692,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallRight"
     },
     {
       "id": 18,
       "t": 142590.7029478458,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallLeft"
     },
     {
       "id": 19,
       "t": 149720.27210884355,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallRight"
     },
     {
       "id": 20,
       "t": 156848.1179138322,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallLeft"
     },
     {
       "id": 21,
       "t": 163976.4172335601,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallRight"
     },
     {
       "id": 22,
       "t": 171105.53287981858,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallLeft"
     },
     {
       "id": 23,
       "t": 178233.92290249432,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallRight"
     },
     {
       "id": 24,
       "t": 185362.947845805,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallLeft"
     },
     {
       "id": 25,
       "t": 192491.2925170068,
-      "durationMs": 1191.6583912611718,
+      "durationMs": 1188.118811881188,
       "kind": "wallRight"
     }
   ],
@@ -2538,6 +2538,11 @@
       "intensity": 1
     },
     {
+      "t": 12194.69387755102,
+      "kind": "kick",
+      "intensity": 1
+    },
+    {
       "t": 12505.668934240362,
       "kind": "kick",
       "intensity": 1
@@ -2579,6 +2584,11 @@
     },
     {
       "t": 16650.022675736964,
+      "kind": "kick",
+      "intensity": 1
+    },
+    {
+      "t": 16947.16553287982,
       "kind": "kick",
       "intensity": 1
     },
@@ -2888,6 +2898,11 @@
       "intensity": 1
     },
     {
+      "t": 50214.467120181405,
+      "kind": "kick",
+      "intensity": 1
+    },
+    {
       "t": 50524.30839002268,
       "kind": "kick",
       "intensity": 1
@@ -2924,6 +2939,11 @@
     },
     {
       "t": 54669.56916099773,
+      "kind": "kick",
+      "intensity": 1
+    },
+    {
+      "t": 54966.9387755102,
       "kind": "kick",
       "intensity": 1
     },
@@ -2973,6 +2993,11 @@
       "intensity": 1
     },
     {
+      "t": 59719.41043083901,
+      "kind": "kick",
+      "intensity": 1
+    },
+    {
       "t": 60029.25170068027,
       "kind": "kick",
       "intensity": 1
@@ -3014,6 +3039,11 @@
     },
     {
       "t": 64174.33106575963,
+      "kind": "kick",
+      "intensity": 1
+    },
+    {
+      "t": 64471.882086167796,
       "kind": "kick",
       "intensity": 1
     },
@@ -3193,9 +3223,14 @@
       "intensity": 0.9202570915222168
     },
     {
-      "t": 83777.41496598639,
+      "t": 83481.768707483,
       "kind": "kick",
-      "intensity": 0.6352394819259644
+      "intensity": 0.8213216066360474
+    },
+    {
+      "t": 83972.97052154195,
+      "kind": "kick",
+      "intensity": 1
     },
     {
       "t": 85160.09070294784,
@@ -3224,6 +3259,11 @@
     },
     {
       "t": 87937.09750566893,
+      "kind": "kick",
+      "intensity": 1
+    },
+    {
+      "t": 88234.24036281179,
       "kind": "kick",
       "intensity": 1
     },
@@ -3264,6 +3304,11 @@
     },
     {
       "t": 92689.56916099774,
+      "kind": "kick",
+      "intensity": 1
+    },
+    {
+      "t": 92986.71201814059,
       "kind": "kick",
       "intensity": 1
     },
@@ -3493,6 +3538,11 @@
       "intensity": 1
     },
     {
+      "t": 126254.01360544219,
+      "kind": "kick",
+      "intensity": 1
+    },
+    {
       "t": 126565.3514739229,
       "kind": "kick",
       "intensity": 1
@@ -3529,6 +3579,11 @@
     },
     {
       "t": 130709.3424036281,
+      "kind": "kick",
+      "intensity": 1
+    },
+    {
+      "t": 131006.48526077098,
       "kind": "kick",
       "intensity": 1
     },
@@ -3753,9 +3808,9 @@
       "intensity": 1
     },
     {
-      "t": 156848.1179138322,
+      "t": 156726.1224489796,
       "kind": "kick",
-      "intensity": 0.893015444278717
+      "intensity": 0.8227761387825012
     },
     {
       "t": 157470.20408163266,
@@ -3824,6 +3879,11 @@
     },
     {
       "t": 163976.4172335601,
+      "kind": "kick",
+      "intensity": 1
+    },
+    {
+      "t": 164273.78684807257,
       "kind": "kick",
       "intensity": 1
     },
@@ -3958,6 +4018,11 @@
       "intensity": 1
     },
     {
+      "t": 178531.20181405896,
+      "kind": "kick",
+      "intensity": 1
+    },
+    {
       "t": 178840.31746031746,
       "kind": "kick",
       "intensity": 1
@@ -3988,9 +4053,14 @@
       "intensity": 1
     },
     {
-      "t": 182987.57369614512,
+      "t": 182703.12925170068,
       "kind": "kick",
-      "intensity": 0.8416752219200134
+      "intensity": 1
+    },
+    {
+      "t": 183283.67346938775,
+      "kind": "kick",
+      "intensity": 0.6277874708175659
     },
     {
       "t": 183594.0589569161,
@@ -4071,6 +4141,11 @@
       "t": 192491.2925170068,
       "kind": "kick",
       "intensity": 0.6209461092948914
+    },
+    {
+      "t": 192788.61678004535,
+      "kind": "kick",
+      "intensity": 0.6504204869270325
     },
     {
       "t": 193380.6349206349,

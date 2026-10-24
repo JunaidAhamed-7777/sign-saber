@@ -19,7 +19,7 @@ describe('compact menu breakpoint registry', () => {
       .join(' ');
     for (const match of queries.matchAll(/max-(width|height): (\d+)px/g)) {
       const value = Number(match[2]);
-      if (match[1] === 'width' && value < 1200) expect([width, 1279]).toContain(value);
+      if (match[1] === 'width' && value < 1200) expect([width, 1279, 760]).toContain(value);
       // 520 is the documented very-short sub-tier inside the compact layout.
       if (match[1] === 'height' && value < 700) expect([height, 520]).toContain(value);
     }

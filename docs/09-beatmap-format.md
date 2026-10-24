@@ -3,7 +3,7 @@
 Local arrangements use the existing `source: 'upload'` in-memory File playback path even when their original source was bundled. The separate versioned edit receipt retains original identity/rights/hash, source sample bounds, fade/highlight intervals and new WAV/PCM hashes. The derived `song.sourceHash` identifies the actual edited WAV; the original map cannot be reused.
 
 
-A beatmap is JSON produced by [08](08-beatmap-generation.md), cached in IndexedDB, bundled under `app/public/assets/tracks/<slug>/<difficulty>.json`, and consumed by the [spawner](07-hit-detection-and-scoring.md). The v1 schema, validator and bundled loaders are implemented; generated maps currently use generator version 3. Human edits must pass the same validator and carry an accurate provenance record; do not describe a hand-patched demo chart as untouched generator output.
+A beatmap is JSON produced by [08](08-beatmap-generation.md), cached in IndexedDB, bundled under `app/public/assets/tracks/<slug>/<difficulty>.json`, and consumed by the [spawner](07-hit-detection-and-scoring.md). The v1 schema, validator and bundled loaders are implemented; generated maps currently use generator version 4. Human edits must pass the same validator and carry an accurate provenance record; do not describe a hand-patched demo chart as untouched generator output.
 
 ## TypeScript definition
 
@@ -122,11 +122,12 @@ Accept `unknown`, validate structure before dereferencing, and return bounded `{
 8. No note in covered columns occurs within `[obstacle.t - WALL_NOTE_MARGIN_MS, obstacle.t + durationMs + WALL_NOTE_MARGIN_MS]`.
 9. Obstacles are ≥ `MIN_OBSTACLE_GAP_MS` apart; `durationMs ∈ [MIN_OBSTACLE_MS, MAX_OBSTACLE_MS]`.
 10. Count every note, including chord members, in each candidate-anchored half-open `[t, t + DENSITY_WINDOW_MS)` window; count ≤ `floor(MAX_DENSITY_PER_S[difficulty] * DENSITY_WINDOW_MS / 1000)`. The initial window is four seconds; changing it updates generation and validation together.
+10a. At most `MAX_VISIBLE_NOTES[difficulty]` notes have hit times inside any `[t, t + APPROACH_MS[difficulty])` span, so the screen never holds more than 3/4/5 approaching notes (generator v3+).
 11. `sourceHash` is 64 lowercase hexadecimal SHA-256 characters; metadata strings have bounded lengths and render as text. Source is one of the declared values. Bundled `audioUrl` resolves only to the expected local track asset path; reject arbitrary URLs/path traversal. Upload/companion maps do not persist executable or remote resource references.
 12. `analysis.beats` and onsets are sorted, finite and inside the song. Energy values lie in `[0,1]`, with length bounded by the duration and `ENERGY_HOP_MS`; empty diagnostics are allowed for a hand-authored fixture. Unknown generator versions are not silently treated as locally generated proof.
 13. At least one note exists for a playable map. Silence/unsuitable audio produces an error/disabled Start, not an empty successful level.
 14. Simulated approach/active windows fit the logical note/obstacle capacities. Cosmetic pool exhaustion is allowed to reduce effects, never gameplay objects. Reject unsupported concurrency before PLAYING.
-15. The final assignment passes the ergonomic checks in [08 §9](08-beatmap-generation.md#9-note-assignment-assignts), including beam/gesture transition space and wall safety. Imported maps receive the same checks; density alone does not establish playability.
+15. The final assignment passes the ergonomic checks in [08 §9](08-beatmap-generation.md#9-note-assignment-assignts), including wall safety and the per-side hand budget: consecutive notes on one side (columns 0–1 or 2–3) are at least `handGapMs(previous.type, next.type) = FLOW_HAND_FOLLOW_MS[kind(previous)] + FLOW_HAND_LEAD_MS[kind(next)] + (types differ ? FLOW_GESTURE_CHANGE_MS : 0)` apart, where `kind` is `beam` or `strike`. Imported maps receive the same checks; density alone does not establish playability.
 
 ## Example (synthetic validation fixture)
 

@@ -102,8 +102,8 @@
         "annotations": "https://datasets.d2.mpi-inf.mpg.de/andriluka14cvpr/mpii_human_pose_v1_u12_2.zip",
         "images": "https://datasets.d2.mpi-inf.mpg.de/andriluka14cvpr/mpii_human_pose_v1.tar.gz"
       },
-      "status": "archive_verified_images_unextracted_training_pending",
-      "downloaded": false,
+      "status": "images_extracted_and_decoded_training_pending",
+      "downloaded": true,
       "trained": false,
       "localAnnotations": {
         "version": 1,
@@ -126,7 +126,7 @@
         "note": "SHA records actual acquired bytes; no publisher-provided checksum was found. Local research only."
       },
       "archiveDownloaded": true,
-      "individualImageFilesReady": false,
+      "individualImageFilesReady": true,
       "localArchiveVerification": {
         "verifiedAt": "2026-10-24T20:43:22.342829+00:00",
         "archiveBytes": 12088943206,
@@ -169,6 +169,33 @@
           "No publisher checksum was available; independent SHA matches the actual acquisition receipt, not a publisher signature",
           "Archive headers and gzip CRC verified; JPEG image pixels not individually decoded",
           "Archive remains local and unextracted; no MPII model training performed"
+        ]
+      },
+      "localExtractionVerification": {
+        "verifiedAt": "2026-10-24T21:30:58.694166+00:00",
+        "command": "training/prepare.py --dataset mpii --extract-mpii-images; training/prepare.py --verify-mpii-images",
+        "extractedJpegFiles": 24984,
+        "extractedJpegBytes": 12140043353,
+        "matchesArchiveCountAndBytes": true,
+        "preparedIndexSha256Unchanged": true,
+        "indexedUniqueImages": {
+          "train": 15727,
+          "val": 1677
+        },
+        "missingIndexedImages": 0,
+        "decodedIndexedImages": 17404,
+        "decodeFailureCount": 0,
+        "mostCommonSizes": {
+          "1280x720": 8328,
+          "1920x1080": 4670,
+          "640x480": 1873,
+          "854x480": 792,
+          "720x480": 337
+        },
+        "supersedes": "Archive-audit extraction/decode fields above describe the earlier unextracted state",
+        "limitations": [
+          "Per-file hashes were not recorded by the archive audit; extracted files are checked by count and total bytes",
+          "Unindexed archive images were counted, not decoded"
         ]
       }
     },

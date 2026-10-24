@@ -33,6 +33,7 @@ training/.venv/Scripts/python.exe training/prepare.py
 node training/acquire.mjs coco-images
 node training/acquire.mjs mpii-images
 training/.venv/Scripts/python.exe training/prepare.py --dataset mpii --extract-mpii-images
+training/.venv/Scripts/python.exe training/prepare.py --verify-mpii-images
 training/.venv/Scripts/python.exe -m unittest discover -s training -p test_training.py -v
 ```
 

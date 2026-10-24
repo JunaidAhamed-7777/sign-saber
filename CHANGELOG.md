@@ -12,6 +12,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: The user wants to see whether the game works without a camera; the performer makes the full loop visible and exercises the runtime, renderer and results path with genuine hits.
 - Validation: In the desktop app's embedded Chromium, Pamgaea → Enable sound → Watch synthetic performer built the 80-second cut and played with PERFECT judgements (screenshot during play: score 4,000, combo 18, accuracy 100%). Full `npm run check` passed.
 - Limits: Planned synthetic landmarks only; no pixels, MediaPipe, webcam or human. The skeleton is still the line figure until the avatar branch lands.
+## 2026-10-25T03:39:48+05:30 — Ready page with performer action and separate cut page
+
+- Changed: After merging main's synthetic performer trial, the ready page pairs Enable sound/Preview with “Watch synthetic performer” (captioned, busy while a cut is prepared) above the primary dataset action; “Make 80-second cut” moved to its own Music options page with the arrangement explanation and status chip, and to a separate compact page. Side-rail pagers show position and dots only (the page heading names the page; the label remains for assistive technology). Narrow rails tighten the action pair so the ready page fits 1100×700 without scrolling.
+- Why: Adding the performer button overflowed the ready page at 1280×720; the trial already prepares its own cut.
+- Validation: `npm run check` passed (typecheck, lint, all assertions, build); compact ids in `uiPaging.test.tsx` updated. Measured rail pages without overflow at 1280×720 and 1100×700 in headless Chrome and inspected 1440×900/800×600 screenshots.
+- Limits: Presentation-only; performer behaviour itself is main's work and was not re-verified here.
 
 ## 2026-10-25T03:34:38+05:30 — Opaque boot splash and arrangement source card
 

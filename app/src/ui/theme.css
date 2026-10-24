@@ -266,10 +266,12 @@ button:disabled,
   letter-spacing: 0.04em;
   opacity: 0.78;
 }
-.btn.native {
+.btn.native,
+.btn.with-caption {
   flex-direction: column;
   gap: 2px;
 }
+.btn.with-caption small,
 .btn.native small {
   font-size: 13px;
   font-weight: 600;
@@ -611,6 +613,14 @@ button:disabled,
   text-align: center;
   font-size: 15px;
   line-height: 1.15;
+}
+.page-navigation .page-label {
+  /* Rail pages carry their own headings; the label stays available to assistive technology. */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
 }
 .page-label {
   max-width: 100%;
@@ -1895,9 +1905,6 @@ button:disabled,
   .page-navigation {
     grid-template-columns: var(--target) minmax(0, 1fr) var(--target);
   }
-  .page-navigation .page-label {
-    display: none;
-  }
   .track-copy .eyebrow,
   .song-meta-tempo {
     display: none;
@@ -1915,6 +1922,13 @@ button:disabled,
   .btn.song-card {
     gap: 12px;
     padding-inline: 12px;
+  }
+  .action-pair .btn {
+    padding: 6px;
+    font-size: 15px;
+  }
+  .action-pair .btn small {
+    font-size: 11px;
   }
   .rail-heading h1,
   .rail-heading h2 {

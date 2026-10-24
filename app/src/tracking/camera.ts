@@ -3,7 +3,7 @@
  *
  * Responsibility: one injectable MediaStream source (webcam by default, or the labelled dataset camera),
  * requestVideoFrameCallback capture, 16:9 centre-crop, ImageBitmap resize to INFER_W×INFER_H.
- * Spec: docs/05-tracking-pipeline.md §Camera capture, §1.4 Dataset camera
+ * Spec: docs/05-tracking-pipeline.md §Camera capture, §1.3 Dataset camera
  * Inputs: CameraStreamSource → MediaStream
  * Outputs: ImageBitmap + tCapture per frame
  *
@@ -14,6 +14,7 @@ import type { HandCursor, TrackingFrame } from '../core/types';
 import { TRACK_STALL_MS, TRACK_FIRST_RESULT_TIMEOUT_MS, INPUT_MAX_AGE_MS } from '../core/constants';
 import { TrackingClient } from './workerClient';
 import { WebcamSource, type CameraStreamSource } from './cameraSource';
+import { HAND_LABEL_MAPPING } from './protocol';
 export function cameraError(error: unknown): string {
   const name = error instanceof Error ? error.name : '';
   if (name === 'NotAllowedError' || name === 'SecurityError')
@@ -30,6 +31,7 @@ export class CameraController {
   private generation = 0;
   private stream: MediaStream | null = null;
   private source: CameraStreamSource | null = null;
+  private stoppedEvidence: Record<string, unknown> | null = null;
   private video: HTMLVideoElement | null = null;
   private watchdog: ReturnType<typeof setInterval> | null = null;
   private lastResult = 0;
@@ -84,7 +86,7 @@ export class CameraController {
         width: video.videoWidth,
         height: video.videoHeight,
         crop: 'center-16:9',
-        mapping: 'raw-selfie-swap-v1',
+        mapping: HAND_LABEL_MAPPING,
         player: generation,
       });
       const fail = (message: string) => {
@@ -155,8 +157,11 @@ export class CameraController {
   observeProcessed(tCapture: number, hands: readonly HandCursor[]): void {
     this.source?.observeProcessed?.(tCapture, hands);
   }
+  /** Current source evidence, or the last stopped source's evidence so failed runs stay inspectable. */
   sourceEvidence(): unknown {
-    return this.source?.evidence?.() ?? null;
+    const current = this.source?.evidence?.();
+    if (current) return { active: true, ...current };
+    return this.stoppedEvidence ? { active: false, ...this.stoppedEvidence } : null;
   }
   setCaptureVisible(visible: boolean): void {
     this.captureVisible = visible;
@@ -176,6 +181,9 @@ export class CameraController {
     this.client.dispose();
     if (this.source) {
       this.source.onFailure = null;
+      const evidence = this.source.evidence?.();
+      this.stoppedEvidence =
+        evidence && typeof evidence === 'object' ? (evidence as Record<string, unknown>) : null;
       this.source.close();
     }
     this.source = null;

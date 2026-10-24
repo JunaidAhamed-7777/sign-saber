@@ -20,9 +20,9 @@ Open [localhost:5173](http://localhost:5173). The initial menu requests no camer
 
 1. Choose Pamgaea, Electro Cabello or Cipher.
 2. Choose **Enable sound** with mouse/keyboard.
-3. **Try level with dataset** automatically builds the short cut; **Make 80-second cut** also lets you prepare it separately. The engine renders 10 seconds fading in, a 60-second energy/onset-supported highlight and 10 seconds fading out, then generates a fresh chart from the edited WAV. Short admitted files disclose proportionally shorter sections. This is a musical heuristic, not verified chorus detection.
+3. **Try level with dataset** automatically builds the short cut; **Make 80-second cut** (the next right-rail page, Music options) also lets you prepare it separately. The engine renders 10 seconds fading in, a 60-second energy/onset-supported highlight and 10 seconds fading out, then generates a fresh chart from the edited WAV. Short admitted files disclose proportionally shorter sections. This is a musical heuristic, not verified chorus detection.
 4. Choose **Try level with dataset**. A visible banner identifies independent, attributed COCO still annotations. They contain no recorded movement, hand gestures, metric depth or masks; missing gesture input produces real misses. The browser trial reached actual results with 131 Miss and zero invented hits.
-5. Esc/Space pauses. Resume, Retry and Songs use the same guarded lifecycle. Side-rail pages expose difficulty, preview, volume, appearance, credits and optional live-camera controls.
+5. Esc/Space pauses. Resume, Retry and Songs use the same guarded lifecycle. Difficulty and preview sit on the first ready page; further side-rail pages expose the cut, volume, appearance, menu hand, credits and optional live-camera controls. Windows at or below 1099 px wide or 699 px tall reflow the rails above and below the figure instead of covering it.
 
 All three full original songs remain available. The arrangement uses one continuous source window with raised-cosine amplitude fades, avoiding hard joins. It retains exact source/sample/fade bounds and original/new hashes; the old chart is never reused under edited audio. User audio upload is local, bounded and cancellable.
 
@@ -49,6 +49,16 @@ npm run build
 Camera setup lives in Settings, independently of song choice. It requires a deliberate native permission action and labelled positioning preview; matching calibration is required for live Start. Head/shoulders/hands/hips must be visible. Only head, arms/hands and torso through hips are retained/displayed. The upstream pretrained pose network may internally infer legs, but application outputs, masks and recordings exclude them. Raw camera pixels stay local; the dependency's disclosed metrics attempts are blocked by the prepared server's same-origin response policy.
 
 Bounded buffers, capture-time scoring, palm-to-point menu navigation, gesture hysteresis, charge, torso walls and recovery are implemented. Native camera setup reached GPU preview and Cancel retained browsing. **No consenting person has yet completed matching calibration or a verified live scored hit.** Dataset/synthetic evidence cannot establish webcam accuracy, handedness or latency.
+
+### Dataset camera (testing aid, not a webcam)
+
+The dataset camera streams attributed COCO CC-BY photos through the **unchanged live camera path** (video element, worker, MediaPipe, calibration, gestures, judgement) as a real canvas `MediaStream`. It is labelled "Dataset camera — not a webcam" everywhere and exports the `dataset-camera` evidence lane. Photos are prepared locally from the ignored research data and are never committed:
+
+```powershell
+node scripts/prepare-dataset-camera.mjs --coco training/data/coco2017
+```
+
+Then open the app with `?camera=dataset` (Set up camera uses it) or choose **Use dataset camera** in Settings. `?reel=sweep` cycles every photo during setup preview; `?stats=1` adds diagnostics export. Still photos contain no swings or gestures, so play produces misses. `node scripts/dataset-camera-trial.mjs` drives the real UI through Chrome DevTools in three lanes: the in-app dataset camera, a setup-preview sweep, and Chrome's fake capture device fed a Y4M of the same reel (the page's own `getUserMedia` sees it as a webcam). It needs Chrome (or `BROWSER_BINARY`), ffmpeg and prepared models; see [the trial evidence](docs/evidence/2026-10-25-dataset-camera-trial.md) for results and limits.
 
 ## Assets and content
 
@@ -77,6 +87,7 @@ node --test scripts/check-docs.test.mjs
 node scripts/check-docs.mjs
 node --test scripts/serve.test.mjs
 node --test scripts/check-model-assets.test.mjs
+node --test scripts/prepare-dataset-camera.test.mjs
 node scripts/check-model-assets.mjs
 node scripts/check-audio-resampling.mjs
 node scripts/check-audio-resampling.mjs --arrangement

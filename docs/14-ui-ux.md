@@ -13,7 +13,7 @@ The React screens and shared menu are implemented experimental UI, not stubs. Th
 
 Camera setup and **Live camera play** remain reachable in secondary Settings pages, independently of song choice. The original requirement for a prominent first-launch **Set up camera** action is deferred under the dataset-first steering; acceptance for that requirement is not passed. The live path retains fresh-hand/matching-calibration guards. A labelled camera preview and Cancel have been exercised; completed consenting-person calibration, live scored hits and live hand-menu coverage remain open.
 
-The current HUD has score/combo/accuracy, peripheral gesture labels/glyphs, beam charge arcs/percentages, one recent judgement and song progress. Missing/stale/dataset hand data stays unavailable. Expanded details below—numeric tweening, multiplier/milestone treatment, projected multi-pop queues, drop markers, measured tracking-rate display and the full wave/coaching UI—remain target work unless separately evidenced. Standing-distance, complete zoom/layout, human comfort and P4/P5 acceptance are not implied by the implementation.
+The current HUD has edge-anchored score (exponentially tweened by `HUD_TWEEN_TAU_MS`; exact in Calm), a centre multiplier ring with combo count and `HUD_COMBO_MILESTONES` callout, accuracy, peripheral gesture icons/labels on readable backings, beam charge arcs/percentages, one recent judgement that re-pops per terminal outcome (`judgementSeq`) and a styled song progress bar. Missing/stale/dataset hand data stays unavailable. Projected multi-pop queues at hit positions, timing-error text, combo-break shake, drop markers, measured tracking-rate display and the wave meter remain target work unless separately evidenced. Standing-distance, complete zoom/layout, human comfort and P4/P5 acceptance are not implied by the implementation.
 
 ## Design language
 
@@ -35,7 +35,7 @@ The initial library contains at least three attributed bundled starter tracks fr
 
 Use large separated targets with the minimum dimensions/gaps in [25](25-menu-and-hand-navigation.md), stable positions and a full label. Hand hover, armed/point confirmation, pressed, selected, keyboard focus, disabled and busy states are distinct. Selection changes a track/difficulty; only the separate live Start action begins live calibration. Dataset trial is a distinct labelled source-specific action. No preview audio or state-changing action starts merely because a hand passes over a control.
 
-At smaller supported laptop viewports or 200% zoom, reduce the number of visible library rows and paginate long detail/stat groups inside their rails. Keep the figure stage and the primary/Back actions visible rather than overlaying the centre. Mouse users may scroll the rail, while large Previous/Next or More/Back buttons expose the same content to hands and keyboard. The app remains a desktop product; reflow does not imply mobile tracking support.
+At smaller supported laptop viewports or 200% zoom, reduce the number of visible library rows and paginate long detail/stat groups inside their rails. Keep the figure stage and the primary/Back actions visible rather than overlaying the centre. **Implemented:** at or below `MENU_COMPACT_MAX_WIDTH_PX` wide or `MENU_COMPACT_MAX_HEIGHT_PX` tall, `MenuShell` places a top rail (all song cards of a library page in one row, or a non-interactive screen summary) above the stage and a bottom rail (a persistent status line plus one grouped page of full-size actions with inline Previous/Next) below it; the stage keeps the remaining height. Between 1100 and 1279 px wide the side rails drop secondary text (tempo on cards, eyebrow above the track title) instead of shrinking targets. Mouse users may scroll the rail, while large Previous/Next or More/Back buttons expose the same content to hands and keyboard. The app remains a desktop product; reflow does not imply mobile tracking support.
 
 ## Typography
 
@@ -538,12 +538,15 @@ Subscribe once per adapter lifetime and return an unsubscribe/dispose function; 
 | `screens/Hud` | Score/combo/accuracy, local `HandIndicator` ×2, recent judgement and elapsed/total progress. |
 | `screens/Paused` | Source-aware guarded Resume/Songs and countdown around the labelled frozen pose. |
 | `screens/Results` | Actual rank/counts/statistics, source-appropriate motion/proxy explanation and guarded Retry/Songs around a labelled saved moment. |
-| `components/MenuShell` | Exports shared `MenuShell`, `Figure`, `RailPager`, `Button` and `StatusMessage`; owns stable rail/compact composition and secondary Settings pages. |
+| `components/MenuShell` | Exports shared `MenuShell`, `Figure`, `RailPager` (side-rail and inline variants), `RailHeading`, `Button` (mirrors the hand pointer's hover/armed/confirming/latched phase and busy state onto the targeted control), `StatusMessage` and `useCompactMenu`; owns stable rail/compact composition and the grouped Settings pages. |
+| `components/CoverArt`, `ui/coverArt.ts` | Deterministic procedural cover per track from slug/title/role/duration/tempo; decorative, no external image or rights record. |
+| `components/GestureIcon` | Original stroke icons for open/fist/point/lean used by the legend, calibration moves and HUD; always paired with text. |
+| `ui/hudModel.ts` | Pure multiplier-ring progress and combo-milestone helpers from `MULTIPLIER_LADDER` / `HUD_COMBO_MILESTONES`. |
 | `ui/menuTargets.ts` | Registers semantic targets, geometry, allowed surface/epoch, native-only and disabled guards for shared actions. |
 | `strings.ts` | Shared player copy; the full catalogue above is a target, not proof that every proposed nested key exists. |
 | `theme.css` | Tokens, fonts, panel/button base styles, reduced-motion rules. |
 
-The earlier proposed standalone `Numeric`, `MultiplierRing`, `JudgementPops`, `WaveMeter`, `Tooltip`, `DebugOverlay` and world-to-screen pop helper are not current UI modules. Their behaviours remain acceptance/design work above; do not import phantom component paths or claim those details from the existing aggregate HUD.
+The earlier proposed standalone `Numeric`, `JudgementPops`, `WaveMeter`, `Tooltip`, `DebugOverlay` and world-to-screen pop helper are not current UI modules (a multiplier ring is drawn inside `Hud.tsx`). Their behaviours remain acceptance/design work above; do not import phantom component paths or claim those details from the existing aggregate HUD.
 
 ## Acceptance criteria
 

@@ -275,7 +275,8 @@ export class PageSession {
   }
   async screenshot() {
     const { data } = await this.send("Page.captureScreenshot", {
-      format: "png",
+      format: "jpeg",
+      quality: 80,
     });
     return Buffer.from(data, "base64");
   }

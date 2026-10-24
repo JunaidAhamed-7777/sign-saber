@@ -284,7 +284,7 @@ class Lane {
     this.log(`click ${id}`);
   }
   async screenshot(step) {
-    const file = `${prefix}-${this.name}-${step}.png`;
+    const file = `${prefix}-${this.name}-${step}.jpg`;
     await writeFile(path.join(outDir, file), await this.page.screenshot());
     this.screenshots.push(file);
     this.log(`screenshot ${step}`, { file });
@@ -342,6 +342,107 @@ class Lane {
   }
 }
 
+/**
+ * Clicks a real control whenever it is enabled until `done(snapshot)` holds — like a person pressing a
+ * button again after a guarded action was refused. Returns the attempt count; throws on timeout.
+ */
+async function clickUntil(
+  lane,
+  id,
+  done,
+  { timeoutMs = 30000, settleMs = 1500, label = id } = {},
+) {
+  const end = Date.now() + timeoutMs;
+  let attempts = 0;
+  let last = null;
+  while (Date.now() < end) {
+    last = await lane.snapshot();
+    lane.sample(last);
+    if (done(last)) return { attempts, snapshot: last };
+    if (
+      last.camera?.state === "error" &&
+      id !== "camera" &&
+      id !== "camera-dataset"
+    ) {
+      const error = new Error(
+        `Camera error while waiting for ${label}: ${last.camera.error}`,
+      );
+      error.snapshot = last;
+      throw error;
+    }
+    const box = await lane.page.targetBox(id);
+    if (!box.missing && !box.disabled && box.width > 0) {
+      try {
+        await lane.click(id);
+      } catch (error) {
+        // The guard can flip between the check and the click (e.g. freshness); treat as not yet clickable.
+        if (!/disabled|not on the current page|not visible/.test(error.message))
+          throw error;
+        await delay(150);
+        continue;
+      }
+      attempts++;
+      const settle = Date.now() + settleMs;
+      while (Date.now() < settle) {
+        last = await lane.snapshot();
+        lane.sample(last);
+        if (done(last)) return { attempts, snapshot: last };
+        await delay(150);
+      }
+    } else await delay(150);
+  }
+  const error = new Error(
+    `Timed out after ${timeoutMs} ms (${attempts} clicks) waiting for ${label}`,
+  );
+  error.snapshot = last;
+  throw error;
+}
+
+/** Camera setup with up to `maxAttempts` user retries after a reported setup error. */
+async function setupCamera(lane, control, maxAttempts = 3) {
+  const attempts = [];
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const start = Date.now();
+    await lane.reveal(control);
+    await lane.click(control);
+    const preview = await lane.waitFor(
+      "first tracking result",
+      (s) =>
+        s.camera.state === "error" ||
+        (s.camera.mode === "camera-setup" &&
+          s.tracking.returned > 0 &&
+          /preview|Preparing/.test(s.cameraStage)),
+      90000,
+    );
+    if (preview.camera.state !== "error") {
+      attempts.push({ attempt, firstResultMs: Date.now() - start, ok: true });
+      lane.log("preview", {
+        note: `${preview.tracking.delegate} · ${preview.cameraStage}`,
+      });
+      return { attempts, preview, start };
+    }
+    attempts.push({
+      attempt,
+      ok: false,
+      error: preview.camera.error,
+      tracking: preview.tracking,
+    });
+    lane.fail(
+      `camera setup attempt ${attempt}`,
+      new Error(preview.camera.error),
+      preview,
+    );
+    await delay(1000);
+  }
+  const error = new Error(`Camera setup failed ${maxAttempts} times`);
+  error.attempts = attempts;
+  throw error;
+}
+
+async function exportViaHook(lane) {
+  return lane.page.evaluate("window.__signSaberDiagnostics.evidence()");
+}
+
 /** Shared full-game flow: song → sound → 80 s cut → camera setup → calibrate → play → results → retry → quit. */
 async function playLane(lane, cameraControl, downloadDir) {
   const outcome = { reachedResults: false };
@@ -357,100 +458,108 @@ async function playLane(lane, cameraControl, downloadDir) {
     240000,
     500,
   );
-  lane.log("arrangement ready", { status: arranged.status });
+  lane.log("arrangement ready", { note: arranged.status });
 
-  let setupStart = Date.now();
-  await lane.click(cameraControl);
-  let preview = await lane.waitFor(
-    "first tracking result",
-    (s) =>
-      s.camera.state === "error" ||
-      (s.camera.mode === "camera-setup" && s.tracking.returned > 0),
-    60000,
-  );
-  if (preview.camera.state === "error") {
-    // A person would read the error and choose the same setup action again; record both attempts.
-    lane.fail(
-      "camera setup attempt 1",
-      new Error(preview.camera.error),
-      preview,
-    );
-    outcome.setupAttempts = [
-      { error: preview.camera.error, tracking: preview.tracking },
-    ];
-    await delay(1000);
-    setupStart = Date.now();
-    await lane.click(cameraControl);
-    preview = await lane.waitFor(
-      "first tracking result (retry)",
-      (s) =>
-        s.camera.state === "error" ||
-        (s.camera.mode === "camera-setup" && s.tracking.returned > 0),
-      60000,
-    );
-    if (preview.camera.state === "error")
-      throw new Error(`Camera setup failed twice: ${preview.camera.error}`);
+  // Setup + calibration; a setup error (e.g. first-result deadline or stall) is retried like a person would.
+  outcome.setupAttempts = [];
+  for (
+    let round = 1;
+    round <= 3 && outcome.calibration !== "accepted";
+    round++
+  ) {
+    let setup;
+    try {
+      setup = await setupCamera(lane, cameraControl, 3);
+    } catch (error) {
+      outcome.setupAttempts.push(...(error.attempts ?? []));
+      throw error;
+    }
+    outcome.setupAttempts.push(...setup.attempts);
+    outcome.setup = {
+      delegate: setup.preview.tracking.delegate,
+      initMs: setup.preview.tracking.initMs,
+      cameraSource: setup.preview.cameraSource,
+      stage: setup.preview.cameraStage,
+    };
+    try {
+      await lane.waitFor(
+        "calibration framing",
+        (s) => s.calibrationReady || s.camera.state === "error",
+        30000,
+      );
+      outcome.setup.calibrationReadyMs = Date.now() - setup.start;
+      if (round === 1) await lane.screenshot("setup-preview");
+      const confirmed = await clickUntil(
+        lane,
+        "camera-confirm",
+        (s) => s.camera.calibrationValid,
+        {
+          timeoutMs: 30000,
+          label: "calibration accepted",
+        },
+      );
+      outcome.calibration = "accepted";
+      outcome.calibrationConfirmClicks = confirmed.attempts;
+      lane.log("calibration accepted", {
+        note: `${confirmed.attempts} click(s) · ${confirmed.snapshot.status}`,
+      });
+    } catch (error) {
+      lane.fail(`calibration round ${round}`, error, error.snapshot);
+      outcome.calibration = error.snapshot?.calibrationReady
+        ? "confirm-not-accepted"
+        : "framing-not-ready";
+      if (round === 1) await lane.screenshot("setup-not-ready").catch(() => {});
+      const s = await lane.snapshot();
+      if (s.camera.mode === "camera-setup")
+        await lane.click("camera-cancel").catch(() => {});
+      if (
+        error.snapshot?.calibrationReady === false &&
+        !error.snapshot?.camera?.error
+      )
+        break;
+    }
   }
-  outcome.setup = {
-    firstResultMs: Date.now() - setupStart,
-    delegate: preview.tracking.delegate,
-    initMs: preview.tracking.initMs,
-    stage: preview.cameraStage,
-    cameraSource: preview.cameraSource,
-  };
-  lane.log("preview", {
-    note: `${preview.tracking.delegate} · ${preview.cameraStage}`,
-  });
-  try {
-    const ready = await lane.waitFor(
-      "calibration framing",
-      (s) => s.calibrationReady,
-      30000,
-    );
-    outcome.setup.calibrationReadyMs = Date.now() - setupStart;
-    lane.log("calibration framing ready", { note: ready.cameraStage });
-  } catch (error) {
-    lane.fail("calibration framing", error, error.snapshot);
-    outcome.calibration = "framing-not-ready";
-    await lane.screenshot("setup-not-ready");
+  if (outcome.calibration !== "accepted") {
+    outcome.appEvidence = await exportViaHook(lane);
+    outcome.appEvidenceVia =
+      "read-only diagnostics hook (calibration was not accepted)";
     return outcome;
   }
-  await lane.screenshot("setup-preview");
-  await lane.click("camera-confirm");
-  const calibrated = await lane.waitFor(
-    "calibration accepted",
-    (s) => s.camera.calibrationValid,
-    5000,
-  );
-  outcome.calibration = "accepted";
-  lane.log("calibration accepted", { note: calibrated.status });
 
-  await lane.click("start");
-  await lane.waitFor("CALIBRATION", (s) => s.state === "CALIBRATION", 10000);
   try {
-    await lane.waitFor(
-      "start framing",
-      (s) => s.calibrationReady && s.trackingReady,
-      20000,
+    await clickUntil(lane, "start", (s) => s.state === "CALIBRATION", {
+      timeoutMs: 30000,
+      label: "CALIBRATION",
+    });
+    const counted = await clickUntil(
+      lane,
+      "confirm",
+      (s) => s.state === "PLAYING",
+      {
+        timeoutMs: 60000,
+        settleMs: 7000,
+        label: "count-in to PLAYING",
+      },
     );
-    await lane.click("confirm");
-    await lane.waitFor("PLAYING", (s) => s.state === "PLAYING", 30000);
+    outcome.countIn = { completed: true, confirmClicks: counted.attempts };
   } catch (error) {
     lane.fail("count-in", error, error.snapshot);
-    outcome.countIn = "failed";
+    outcome.countIn = { completed: false };
+    outcome.appEvidence = await exportViaHook(lane);
+    outcome.appEvidenceVia =
+      "read-only diagnostics hook (count-in did not complete)";
     return outcome;
   }
-  outcome.countIn = "completed";
   lane.log("playing");
 
   const pauses = [];
   let manualPauseDone = false;
   let playingShot = false;
-  const deadline = Date.now() + 240000;
+  const deadline = Date.now() + 300000;
   while (Date.now() < deadline) {
     const s = await lane.snapshot();
     lane.sample(s);
-    if (s.state === "RESULTS") break;
+    if (s.state === "RESULTS" || s.state === "SELECT") break;
     if (s.state === "PLAYING" && !playingShot && s.songTimeMs > 12000) {
       playingShot = true;
       await lane.screenshot("playing");
@@ -468,53 +577,64 @@ async function playLane(lane, cameraControl, downloadDir) {
         reason: paused.pauseReason,
         songTimeMs: paused.songTimeMs,
         manual: true,
-        resumed: false,
       };
       pauses.push(entry);
       await lane.screenshot("paused");
       await delay(1500);
-      const resumeStart = Date.now();
-      while (Date.now() - resumeStart < 30000) {
-        const p = await lane.snapshot();
-        if (p.state === "PLAYING") break;
-        if (
-          (await lane.page.targetBox("resume")).disabled === false &&
-          !entry.resumeClickedAt
-        ) {
-          await lane.click("resume");
-          entry.resumeClickedAt = Date.now() - resumeStart;
-        } else if (
-          entry.resumeClickedAt &&
-          Date.now() - resumeStart - entry.resumeClickedAt > 6000
-        ) {
-          entry.resumeClickedAt = 0;
-        }
-        entry.lastStatus = p.status;
-        await delay(500);
-      }
-      const after = await lane.snapshot();
-      entry.resumed = after.state === "PLAYING";
-      entry.resumeMs = Date.now() - resumeStart;
-      lane.log(entry.resumed ? "resumed" : "resume refused", {
-        note: entry.lastStatus,
-      });
-      if (!entry.resumed) {
-        await lane.click("songs");
+      try {
+        const resumed = await clickUntil(
+          lane,
+          "resume",
+          (x) => x.state === "PLAYING",
+          {
+            timeoutMs: 45000,
+            settleMs: 4500,
+            label: "resume to PLAYING",
+          },
+        );
+        entry.resumed = true;
+        entry.resumeClicks = resumed.attempts;
+        lane.log("resumed", { note: `${resumed.attempts} click(s)` });
+      } catch (error) {
+        entry.resumed = false;
+        entry.status = error.snapshot?.status;
+        lane.fail("resume", error, error.snapshot);
+        await lane.click("songs").catch(() => {});
         outcome.quitAfterRefusedResume = true;
         break;
       }
       continue;
     }
-    if (s.state === "PAUSED" && !pauses.some((p) => !p.manual && p.open)) {
-      const entry = {
-        reason: s.pauseReason,
-        songTimeMs: s.songTimeMs,
-        manual: false,
-        open: true,
-        status: s.status,
-      };
-      pauses.push(entry);
-      lane.log("automatic pause", { note: `${s.pauseReason}: ${s.status}` });
+    if (s.state === "PAUSED") {
+      const open = pauses.find((p) => !p.manual && p.open);
+      if (!open) {
+        const entry = {
+          reason: s.pauseReason,
+          songTimeMs: s.songTimeMs,
+          manual: false,
+          open: true,
+          status: s.status,
+        };
+        pauses.push(entry);
+        lane.log("automatic pause", { note: `${s.pauseReason}: ${s.status}` });
+        if (s.pauseReason === "fatal") {
+          entry.open = false;
+          await lane.screenshot("fatal-pause").catch(() => {});
+          await lane.click("songs").catch(() => {});
+          outcome.fatalPause = s.status || s.error;
+          break;
+        }
+      } else if (
+        open.reason !== "tracking" &&
+        Date.now() - (open.triedAt ?? 0) > 6000
+      ) {
+        // Non-tracking pauses (hidden/audio/manual) need the player's Resume.
+        open.triedAt = Date.now();
+        await clickUntil(lane, "resume", (x) => x.state === "PLAYING", {
+          timeoutMs: 20000,
+          settleMs: 4500,
+        }).catch(() => {});
+      }
     }
     if (s.state === "PLAYING")
       for (const p of pauses)
@@ -529,6 +649,8 @@ async function playLane(lane, cameraControl, downloadDir) {
   if (final.state !== "RESULTS") {
     outcome.finalState = final.state;
     lane.fail("results", new Error(`Ended in ${final.state}`), final);
+    outcome.appEvidence = await exportViaHook(lane);
+    outcome.appEvidenceVia = "read-only diagnostics hook (results not reached)";
     return outcome;
   }
   outcome.reachedResults = true;
@@ -537,30 +659,25 @@ async function playLane(lane, cameraControl, downloadDir) {
   await lane.screenshot("results");
   try {
     outcome.appEvidence = await lane.exportThroughUi(downloadDir);
+    outcome.appEvidenceVia = "Settings → Export diagnostics (browser download)";
   } catch (error) {
     lane.fail("UI diagnostics export", error);
-    outcome.appEvidence = await lane.page.evaluate(
-      "window.__signSaberDiagnostics.evidence()",
-    );
+    outcome.appEvidence = await exportViaHook(lane);
     outcome.appEvidenceVia =
       "read-only diagnostics hook after UI export failure";
   }
 
   // Retry → count-in → play briefly → pause → Songs (quit).
   try {
-    await lane.click("retry");
-    await lane.waitFor(
-      "retry CALIBRATION",
-      (s) => s.state === "CALIBRATION",
-      10000,
-    );
-    await lane.waitFor(
-      "retry framing",
-      (s) => s.calibrationReady && s.trackingReady,
-      20000,
-    );
-    await lane.click("confirm");
-    await lane.waitFor("retry PLAYING", (s) => s.state === "PLAYING", 30000);
+    await clickUntil(lane, "retry", (s) => s.state === "CALIBRATION", {
+      timeoutMs: 30000,
+      label: "retry",
+    });
+    await clickUntil(lane, "confirm", (s) => s.state === "PLAYING", {
+      timeoutMs: 60000,
+      settleMs: 7000,
+      label: "retry count-in",
+    });
     await delay(6000);
     await lane.page.key("Escape", "Escape", 27);
     await lane.waitFor("retry pause", (s) => s.state === "PAUSED", 5000);
@@ -570,7 +687,8 @@ async function playLane(lane, cameraControl, downloadDir) {
       (s) => s.state === "SELECT",
       10000,
     );
-    outcome.retry = { completed: true, score: back.hud.score };
+    outcome.retry = { completed: true, scoreAtQuit: back.hud.score };
+    lane.log("retry played and quit");
   } catch (error) {
     lane.fail("retry/quit", error, error.snapshot);
     outcome.retry = { completed: false };
@@ -584,10 +702,11 @@ async function playLane(lane, cameraControl, downloadDir) {
   }
   // Camera off, then setup → cancel.
   try {
-    await lane.click("camera-off");
+    const before = await lane.snapshot();
+    if (before.camera.calibrationValid) await lane.click("camera-off");
     const off = await lane.waitFor(
       "camera off",
-      (s) => s.camera.state === "not-set-up" && !s.cameraSource,
+      (s) => s.camera.state !== "ready" && !s.cameraSource,
       5000,
     );
     await lane.click(cameraControl);
@@ -626,64 +745,68 @@ async function playLane(lane, cameraControl, downloadDir) {
 /** Setup-preview only: cycle all photos by stream time and read the in-app evaluation. */
 async function sweepLane(lane, count) {
   await lane.waitFor("SELECT", (s) => s.state === "SELECT", 30000);
-  const start = Date.now();
-  await lane.click("camera-dataset");
-  const preview = await lane.waitFor(
-    "first tracking result",
-    (s) => s.camera.state === "error" || s.tracking.returned > 0,
-    60000,
-  );
+  const segments = [];
   let setupAttempts = [];
-  if (preview.camera.state === "error") {
-    lane.fail(
-      "camera setup attempt 1",
-      new Error(preview.camera.error),
-      preview,
-    );
-    setupAttempts = [
-      { error: preview.camera.error, tracking: preview.tracking },
-    ];
-    await delay(1000);
-    await lane.click("camera-dataset");
-    const retry = await lane.waitFor(
-      "first tracking result (retry)",
-      (s) => s.camera.state === "error" || s.tracking.returned > 0,
-      60000,
-    );
-    if (retry.camera.state === "error")
-      throw new Error(`Dataset camera failed twice: ${retry.camera.error}`);
+  let hidden = null;
+  let cameraErrorAfterHide = null;
+  const sweepMs = 20000 + count * sweepHoldMs + 4000;
+  const deadline = Date.now() + 3 * (sweepMs + 30000);
+  while (Date.now() < deadline) {
+    const setup = await setupCamera(lane, "camera-dataset", 3);
+    setupAttempts.push(...setup.attempts);
+    if (!hidden) {
+      await delay(4000);
+      hidden = await lane.hideTab(3000);
+      const afterHidden = await lane.snapshot();
+      cameraErrorAfterHide = afterHidden.camera.error;
+      lane.log("tab hidden and restored", {
+        note: JSON.stringify({ ...hidden, error: cameraErrorAfterHide }),
+      });
+    }
+    const end = setup.start + sweepMs + (segments.length === 0 ? 3000 : 0);
+    let failed = null;
+    while (Date.now() < end) {
+      const s = await lane.snapshot();
+      lane.sample(s);
+      if (s.camera.state === "error") {
+        failed = s;
+        break;
+      }
+      await delay(500);
+    }
+    const evidence = await exportViaHook(lane);
+    segments.push({
+      endedBy: failed
+        ? `camera error: ${failed.camera.error}`
+        : "sweep duration",
+      appEvidence: evidence,
+    });
+    if (!failed) {
+      await lane.click("camera-cancel").catch(() => {});
+      await lane
+        .waitFor(
+          "cancel",
+          (x) => x.camera.mode === "browse" && !x.cameraSource,
+          5000,
+        )
+        .catch(() => {});
+      break;
+    }
+    lane.fail("sweep segment", new Error(failed.camera.error), failed);
   }
-  lane.log("preview", {
-    note: `${preview.tracking.delegate} · ${preview.cameraStage}`,
-  });
-  await delay(4000);
-  const hidden = await lane.hideTab(3000);
-  const afterHidden = await lane.snapshot();
-  lane.log("tab hidden and restored", {
-    note: JSON.stringify({ ...hidden, error: afterHidden.camera.error }),
-  });
-  const total = 20000 + count * sweepHoldMs + 2000;
-  const end = start + total + 3000 + 6000;
-  while (Date.now() < end) {
-    lane.sample(await lane.snapshot());
-    await delay(500);
-  }
-  const s = await lane.snapshot();
-  const evidence = await lane.page.evaluate(
-    "window.__signSaberDiagnostics.evidence()",
-  );
-  await lane.click("camera-cancel");
-  await lane.waitFor(
-    "cancel",
-    (x) => x.camera.mode === "browse" && !x.cameraSource,
-    5000,
-  );
+  const final = segments.at(-1);
   return {
     setupAttempts,
     hidden,
-    cameraErrorAfterHide: afterHidden.camera.error,
-    finalStage: s.cameraStage,
-    appEvidence: evidence,
+    cameraErrorAfterHide,
+    segments: segments.slice(0, -1).map((segment) => ({
+      endedBy: segment.endedBy,
+      evaluation: segment.appEvidence?.datasetCamera?.evaluation
+        ? { ...segment.appEvidence.datasetCamera.evaluation, items: undefined }
+        : null,
+    })),
+    finalSegmentEndedBy: final?.endedBy,
+    appEvidence: final?.appEvidence,
     appEvidenceVia:
       "read-only diagnostics hook (setup preview has no Settings export)",
   };
@@ -890,6 +1013,10 @@ async function main() {
       );
       const lane = new Lane(name, page, chrome.browser);
       const record = {
+        harnessLane:
+          name === "fake-webcam"
+            ? "chrome-fake-webcam-dataset"
+            : "dataset-camera",
         url: `/${query}`,
         browserArgs: extra.map((arg) => arg.replace(temp, "<temp>")),
         gpuProgramCache:

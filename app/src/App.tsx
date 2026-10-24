@@ -31,8 +31,9 @@ function Status() {
   const replay = useStore((s) => s.replay);
   const camera = useStore((s) => s.camera);
   const ready = useStore((s) => s.trackingReady);
-  const tone = replay ? 'dataset' : camera.calibrationValid ? (ready ? 'active' : 'warning') : 'idle';
   const datasetCamera = useStore((s) => s.cameraSource === 'dataset');
+  const tone =
+    replay || datasetCamera ? 'dataset' : camera.calibrationValid ? (ready ? 'active' : 'warning') : 'idle';
   return (
     <span className={`camera-status ${tone}`} role="status">
       <i aria-hidden="true" />
@@ -111,11 +112,11 @@ function Credits({ runtime }: { runtime: GameRuntime }) {
   );
 }
 function Legend({ replay }: { replay: boolean }) {
+  const trial = useTrialCopy();
   if (replay)
     return (
       <footer className="app-footer">
-        <p className="legend-dataset">{t.datasetControls}</p>
-        <p className="legend-keys">{t.keyboardHint}</p>
+        <p className="legend-dataset">{trial.controls}</p>
       </footer>
     );
   return (
@@ -136,7 +137,6 @@ function Legend({ replay }: { replay: boolean }) {
         </li>
         <li className="legend-rearm">{t.legendRearm}</li>
       </ul>
-      <p className="legend-keys">{t.keyboardHint}</p>
     </footer>
   );
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-24T22:50:49.693Z",
+  "checkedAt": "2026-10-24T22:52:32.492Z",
   "authoringRoute": "official Blender MCP add-on JSON TCP execute_code; local 127.0.0.1 dedicated instance",
   "blenderVersion": "5.2.2 LTS",
   "shardMode": "seeded 14-cell Voronoi (bmesh bisect_plane + holes_fill); Cell Fracture operator unavailable",

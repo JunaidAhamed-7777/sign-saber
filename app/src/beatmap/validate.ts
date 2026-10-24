@@ -1,7 +1,6 @@
 import {
   APPROACH_MS,
   ASSET_TEXT_MAX_CHARS,
-  BEAM_CHARGE_MS,
   BEAM_ESCAPE_MS,
   BEAM_ISOLATION_MS,
   BEAM_LEAD_MS,
@@ -11,14 +10,13 @@ import {
   EASY_OBSTACLE_MIN_GAP_MS,
   ENERGY_HOP_MS,
   FLOW_FULL_ROW_JUMP_MIN_GAP_MS,
-  FLOW_GESTURE_SWITCH_MIN_MS,
-  FLOW_HAND_MIN_GAP_MS,
   GENERATOR_VERSION,
   INPUT_MAX_AGE_MS,
   MAX_DENSITY_PER_S,
   MAX_LIVE_NOTES,
   MAX_OBSTACLE_MS,
   MAX_TRACK_MS,
+  MAX_VISIBLE_NOTES,
   MIN_NOTE_GAP_MS,
   MIN_OBSTACLE_GAP_MS,
   MIN_OBSTACLE_MS,
@@ -31,6 +29,7 @@ import {
 } from '../core/constants';
 import type { BeatmapV1, Difficulty, Note, Obstacle, Onset } from './types';
 import { HOP_MS } from './dsp/stft';
+import { handGapMs } from './assign';
 
 export interface ValidationError {
   path: string;
@@ -233,6 +232,7 @@ export function validateBeatmap(value: unknown): ValidationResult {
     previousGroupTime = -Infinity,
     lowRow = -Infinity;
   let densityEnd = 0,
+    visibleEnd = 0,
     onsetStart = 0;
   const densityCap = Math.floor((MAX_DENSITY_PER_S[difficulty] * DENSITY_WINDOW_MS) / 1000);
   for (let i = 0; i < notes.length; i++) {
@@ -266,22 +266,19 @@ export function validateBeatmap(value: unknown): ValidationResult {
     }
     while (densityEnd < notes.length && notes[densityEnd]!.t < note.t + DENSITY_WINDOW_MS) densityEnd++;
     if (densityEnd - i > densityCap) fail(`notes[${i}]`, 'Sliding-window density exceeds preset');
+    while (visibleEnd < notes.length && notes[visibleEnd]!.t < note.t + APPROACH_MS[difficulty]) visibleEnd++;
+    if (visibleEnd - i > MAX_VISIBLE_NOTES[difficulty])
+      fail(`notes[${i}]`, 'Too many notes share the screen within one approach span');
     if (note.type === 'beam') {
       if (
         (prior && note.t - prior.t <= BEAM_ISOLATION_MS) ||
         (notes[i + 1] && notes[i + 1]!.t - note.t <= BEAM_ISOLATION_MS)
       )
         fail(`notes[${i}]`, 'Beam lacks isolation');
-      if (prior && note.t - prior.t < BEAM_CHARGE_MS + FLOW_GESTURE_SWITCH_MIN_MS)
-        fail(`notes[${i}]`, 'Beam lacks gesture/charge preparation');
     }
     const side = note.col < 2 ? 0 : 1,
       priorHand = lastSide[side];
-    if (
-      priorHand &&
-      (note.t - priorHand.t < FLOW_HAND_MIN_GAP_MS ||
-        (priorHand.type !== note.type && note.t - priorHand.t < FLOW_GESTURE_SWITCH_MIN_MS))
-    )
+    if (priorHand && note.t - priorHand.t < handGapMs(priorHand.type, note.type))
       fail(`notes[${i}]`, 'Expected hand lacks recovery/gesture transition space');
     lastSide[side] = note;
     if (prior && Math.abs(note.row - prior.row) === 2 && note.t - prior.t < FLOW_FULL_ROW_JUMP_MIN_GAP_MS)

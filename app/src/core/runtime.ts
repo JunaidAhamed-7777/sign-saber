@@ -656,7 +656,9 @@ export class GameRuntime {
       this.player!.prepare(this.buffer!);
       const map = useStore.getState().map!;
       this.renderer.setApproachMs(map.approachMs);
-      this.trace.reset(`dataset-static-annotation-trial epoch ${this.machine.epoch}`);
+      this.trace.reset(
+        `${source === 'performer' ? 'synthetic-performer-logic-replay' : 'dataset-static-annotation-trial'} epoch ${this.machine.epoch}`,
+      );
       this.session = new GameSession(map, {
         songClock: this.player!.clock,
         epoch: this.machine.epoch,
@@ -796,13 +798,12 @@ export class GameRuntime {
     }
   }
   private confirmCamera(): void {
-    if (
-      this.machine.state !== 'SELECT' ||
-      useStore.getState().camera.mode !== 'camera-setup' ||
-      !this.fresh() ||
-      !this.pipeline.result.calibrationReady
-    )
+    if (this.machine.state !== 'SELECT' || useStore.getState().camera.mode !== 'camera-setup') return;
+    if (!this.fresh() || !this.pipeline.result.calibrationReady) {
+      // Readiness can lapse between the visible state and the click; say so instead of ignoring it.
+      display({ status: strings.framingRequired });
       return;
+    }
     const calibration = this.pipeline.calibrate(this.camera.identity);
     if (!calibration || calibration.identity !== this.camera.identity) return;
     this.machine.transition('camera:ready', { ready: true });

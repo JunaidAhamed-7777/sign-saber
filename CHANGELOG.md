@@ -6,6 +6,14 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:22:29+05:30 — Verify music pack against newer main
+
+- Changed: Normally integrated main 752acf3 and then 52e9c81 into the issue #2 branch after the content checkpoint, preserving their camera Settings, footer/ARIA, training and other upstream work. Refreshed the final music/credits screenshots and retained both final integration browser reports. Generator version 2 and all music-generation sources are unchanged from the final full-pack regeneration.
+- Why: Main changed before opening the PR; the extra Settings page moves the Credits navigation target, and the subsequent interface update changes the footer.
+- Validation: Full npm run check passed on code commits d49bbf7 (380 assertions) and 0ec036c (48 suites/382 assertions), including typecheck, lint and production build. Native Chrome at 1440×900 and 1024×640 booted, navigated to/selected the eighth song and traversed the updated Settings/credits pages; every exact attribution passed with zero CSP, console or external-request failures. PNG screenshots were captured explicitly after upstream changed its generic screenshot helper to JPEG. Root docs checks passed 2/2 and the link checker passed; they are rerun after this evidence update. Scoped formatting checks passed.
+- Limits: The existing favicon 404 and large-bundle warning remain explicit, separate from music acceptance. No human, webcam, musical-quality or performance proof is inferred.
+
+
 ## 2026-10-25T04:10:41+05:30 — Eight licensed full songs and 24 generated charts (issue #2)
 
 - Changed: Extended the explicit music acquisition/generation lists with Chipper Doodle v2, Funkorama, Cut and Run, Rhinoceros and Marty Gots a Plan. Added five unchanged official CC-BY 4.0 MP3s (35,593,862 bytes total), exact attribution/acquisition receipts and 15 generated maps; regenerated the entire eight-song/24-map pack with main's generator version 2 after integrating cfdcc40. Refreshed the manifest, measured metadata, credits/docs and audio/PCM/map integrity tests. Existing paging assertions now use the registered page capacity instead of assuming the entire library fits in one page; production UI is unchanged.

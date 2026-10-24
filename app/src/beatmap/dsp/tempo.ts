@@ -12,6 +12,8 @@ import {
   TEMPO_MIN_SUPPORT_ONSETS,
   TEMPO_OCTAVE_SWITCH_RATIO,
   TEMPO_PRIOR_SIGMA_OCT,
+  TEMPO_REFINE_RANGE,
+  TEMPO_REFINE_STEP,
   TEMPO_SUPPORT_MIN_STRENGTH,
 } from '../../core/constants';
 import type { Onset } from '../types';
@@ -32,6 +34,26 @@ export function distinctOnsets(onsets: Onset[]): Onset[] {
     if (!anchor || onset.t - anchor.t >= CHORD_WINDOW_MS) groups.push(onset);
   }
   return groups;
+}
+
+/** Support onsets within ±SNAP_MAX_MS of the best rigid-grid phase for a beat period (ms). */
+export function gridAlignment(times: readonly number[], periodMs: number): number {
+  if (!times.length) return 0;
+  const phases = times.map((t) => ((t % periodMs) + periodMs) % periodMs).sort((a, b) => a - b);
+  const n = phases.length;
+  let best = 0,
+    hi = 0;
+  // Circular two-pointer count of phases within the tolerance after each candidate phase centre.
+  const unwrapped = phases.concat(phases.map((p) => p + periodMs));
+  let lo = 0;
+  for (let i = n; i < 2 * n; i++) {
+    const centre = unwrapped[i]!;
+    while (unwrapped[lo]! < centre - SNAP_MAX_MS) lo++;
+    hi = Math.max(hi, i);
+    while (hi + 1 < unwrapped.length && unwrapped[hi + 1]! <= centre + SNAP_MAX_MS) hi++;
+    best = Math.max(best, Math.min(n, hi - lo + 1));
+  }
+  return best;
 }
 
 export function estimateTempo(sum: Float32Array, onsets: Onset[]): TempoResult {
@@ -102,6 +124,34 @@ export function estimateTempo(sum: Float32Array, onsets: Onset[]): TempoResult {
       (60 * frameHz) / BPM_MAX,
       Math.min((60 * frameHz) / BPM_MIN, totalSpan / totalPeriods / HOP_MS),
     );
+  // A rigid grid whose period is off by a fraction of a hop drifts out of phase over minutes. Search
+  // nearby periods for the one most supported onsets agree with. The tolerance makes the maximum a
+  // plateau of periods; its middle is the estimate, and ties between plateaus keep the closest one.
+  if (support.length >= TEMPO_MIN_SUPPORT_ONSETS) {
+    const times = support.map((o) => o.t);
+    const base = periodFrames;
+    const steps = Math.round(TEMPO_REFINE_RANGE / TEMPO_REFINE_STEP);
+    const counts: number[] = [];
+    for (let k = -steps; k <= steps; k++) {
+      const candidate = base * (1 + k * TEMPO_REFINE_STEP);
+      const inRange = candidate >= (60 * frameHz) / BPM_MAX && candidate <= (60 * frameHz) / BPM_MIN;
+      counts.push(inRange ? gridAlignment(times, candidate * HOP_MS) : -1);
+    }
+    const best = Math.max(...counts);
+    let chosen = steps,
+      chosenDistance = Infinity;
+    for (let start = 0; start < counts.length; start++) {
+      if (counts[start] !== best || counts[start - 1] === best) continue;
+      let end = start;
+      while (counts[end + 1] === best) end++;
+      const middle = (start + end) / 2;
+      if (Math.abs(middle - steps) < chosenDistance) {
+        chosen = middle;
+        chosenDistance = Math.abs(middle - steps);
+      }
+    }
+    periodFrames = base * (1 + (chosen - steps) * TEMPO_REFINE_STEP);
+  }
   const periodMs = periodFrames * HOP_MS;
   let phaseMs = 0,
     bestSupport = 0,

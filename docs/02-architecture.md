@@ -452,6 +452,7 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `ENERGY_HOP_MS` | 100 | Energy envelope sampling for `analysis.energy` |
 | `TEMPO_PRIOR_SIGMA_OCT` | 0.9 | Log-Gaussian tempo prior width, octaves |
 | `TEMPO_MIN_CONFIDENCE` | 0.35 | Below this → onset-only mode with a warning badge |
+| `TEMPO_REFINE_RANGE` / `TEMPO_REFINE_STEP` | 0.01 / 0.0001 | Fine beat-period search span and step, as fractions of the period; maximises supported onsets on a rigid grid ([08 §5](08-beatmap-generation.md#5-tempo-estimation-dsptempots)) |
 | `BEAM_SUSTAIN_MS` / `BEAM_SUSTAIN_DB` | 500 / 3 | Mid/high-band power within this many dB for this long → beam candidate |
 | `BEAM_SUSTAIN_PERCENTILE` / `BEAM_SUSTAIN_MAX_DB` | 10 / 12 | Otherwise the song's most sustained mid/high onsets (this percentile of their dB variation) qualify, never above the ceiling |
 | `BEAM_MIN_SPACING_MS` | `{ easy: 12000, normal: 8000, hard: 6000 }` | Minimum time between beam notes |
@@ -465,7 +466,7 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `PLAYBACK_DECODE_SR` | 44100 Hz | Offline playback decode rate before a live `AudioContext` exists; keeps full-band music (analysis still uses `ANALYSIS_SR`) |
 | `GAPLESS_LENGTH_TOLERANCE_SAMPLES` | 2 | Extra output-sample tolerance (plus the resampling ratio) when matching decoded MP3 length to iTunSMPB trimmed/untrimmed counts |
 | `ANALYSIS_CACHE_MAX` | 30 | Complete source-analysis groups kept, including their difficulty maps |
-| `GENERATOR_VERSION` | 3 | Cache key component |
+| `GENERATOR_VERSION` | 4 | Cache key component |
 
 ### DSP windows, section detection and playable flow
 

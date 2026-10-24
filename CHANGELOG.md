@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T02:33:00+05:30 — Fixed-tier consumers and requested implementation handoff
+
+- Changed: Connected runtime tier/contrast flags to actual drawing-buffer scale, bounded effect caps/lifetimes, low-tier complete geometry/poof counts, pylon totals and owned upper-body joint markers. Unsupported bloom/AA/trail/probe features remain explicit. Updated UI/navigation/roadmap status to the actual dataset-first flow and added HANDOFF.md with evidence, local-only training status and remaining implementation/release gaps.
+- Why: Finish the coherent in-progress increment and preserve all work for the next agent, as explicitly requested by the user.
+- Validation: Targeted quality/render checks passed 57 assertions. Final full application check passed typecheck, lint, 307 assertions across 41 suites and production build; source formatting passed. Root documentation tests passed 2/2, with 47 Markdown files / 514 local links and zero errors. Git diff checks passed before commit.
+- Limits: Latest tier presentation has no new native pixel/performance evidence; live camera, human comfort, musical quality, complete post-FX/trails/harness and P0–P5 acceptance remain open. No additional training or feature work was started after the handoff request.
+
 ## 2026-10-25T02:29:16+05:30 — Canonical cosmetic presets and retained workflow evidence
 
 - Changed: Exported the complete frozen quality-tier registry and pure validated resolution API, with explicit implemented/unsupported features and HDR guards. Retained exact clean-clone Node22 evidence, the original failed checksum report, later actual browser dataset completion/recovery and compact-menu screenshots.

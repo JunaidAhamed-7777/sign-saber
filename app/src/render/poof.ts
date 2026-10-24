@@ -72,10 +72,15 @@ export class PoofPool {
   private readonly texture = softCircle();
   private index = 0;
   private disposed = false;
-  constructor(private readonly scene: THREE.Scene) {
+  constructor(
+    private readonly scene: THREE.Scene,
+    private readonly sparkCount: number = POOF_SPARKS,
+  ) {
+    if (!Number.isInteger(sparkCount) || sparkCount <= 0 || sparkCount > POOF_SPARKS)
+      throw new RangeError('Invalid poof spark capacity.');
     for (let i = 0; i < POOF_POOL; i++) {
-      const positions = new Float32Array(POOF_SPARKS * 3),
-        velocities = new Float32Array(POOF_SPARKS * 3),
+      const positions = new Float32Array(sparkCount * 3),
+        velocities = new Float32Array(sparkCount * 3),
         sparkGeometry = new THREE.BufferGeometry();
       sparkGeometry.setAttribute(
         'position',
@@ -164,7 +169,7 @@ export class PoofPool {
     slot.flash.position.copy(slot.ring.position);
     slot.sparks.position.copy(slot.body.position);
     slot.flash.scale.setScalar(POOF_FLASH_SIZE_M);
-    for (let i = 0; i < POOF_SPARKS; i++) {
+    for (let i = 0; i < this.sparkCount; i++) {
       const at = i * 3,
         z = unitNoise(event.note.id, i * 3) * 2 - 1,
         angle = unitNoise(event.note.id, i * 3 + 1) * Math.PI * 2,
@@ -212,7 +217,7 @@ export class PoofPool {
       if (age >= POOF_POWERDOWN_MS) {
         const seconds = (age - POOF_POWERDOWN_MS) / 1000;
         slot.sparks.visible = visible;
-        for (let i = 0; i < POOF_SPARKS; i++) {
+        for (let i = 0; i < this.sparkCount; i++) {
           const at = i * 3;
           slot.positions[at] = slot.velocities[at]! * seconds;
           slot.positions[at + 1] =
@@ -228,7 +233,7 @@ export class PoofPool {
   }
   get occupancy(): number {
     let total = 0;
-    for (const slot of this.slots) if (slot.active) total += POOF_SPARKS;
+    for (const slot of this.slots) if (slot.active) total += this.sparkCount;
     return total;
   }
   get oldestBirth(): number {

@@ -3,6 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as THREE from 'three';
 import type * as ThreeModule from 'three';
 import { ArenaRenderer } from '../src/render/renderer';
+import type { ArenaRendererOptions } from '../src/render/renderer';
+import type { QualityTier } from '../src/render/quality';
 import { TypedEmitter } from '../src/utils/emitter';
 import type { GameEvents } from '../src/core/events';
 import { syntheticFrame } from './tracking-fixtures';
@@ -16,6 +18,9 @@ import {
   MAX_LIVE_NOTES,
   POOF_SPARKS,
   BEAM_ESCAPE_VISUAL_MS,
+  CONTRAST_MASK_THRESHOLD,
+  CONTRAST_EDGE_GAIN,
+  QUALITY_TIER_PRESETS,
 } from '../src/core/constants';
 vi.mock('three', async () => {
   const actual = await vi.importActual<typeof ThreeModule>('three');
@@ -50,12 +55,141 @@ afterEach(() => {
   renderers.length = 0;
   vi.unstubAllGlobals();
 });
-function create() {
+function create(options?: ArenaRendererOptions) {
   const events = new TypedEmitter<GameEvents>(),
-    renderer = new ArenaRenderer({ append: vi.fn() } as unknown as HTMLElement, events);
+    renderer = new ArenaRenderer({ append: vi.fn() } as unknown as HTMLElement, events, options);
   renderers.push(renderer);
   return { renderer, events };
 }
+function effectHit(id: number, type: 'slash' | 'smash' | 'beam'): GameEvents['note:hit'] {
+  return {
+    note: { id, t: 1000, type, col: 2, row: 1, dir: 'any', strength: 1 },
+    judgement: 'perfect',
+    timingErrorMs: 0,
+    hand: 'right',
+    impactPos: { x: 0.6, y: 1.5, z: 0 },
+    impactVel: { x: 3, y: 0, z: 0 },
+    scoreDelta: 100,
+    combo: 1,
+    multiplier: 1,
+  };
+}
+
+describe('fixed cosmetic tiers applied to real scene objects (mocked GPU)', () => {
+  it.each(['high', 'medium', 'low'] as const)(
+    'applies %s resolution and bounded complete effects',
+    (tier) => {
+      vi.stubGlobal('devicePixelRatio', 2);
+      const { renderer, events } = create({ tier }),
+        preset = QUALITY_TIER_PRESETS[tier];
+      expect(renderer.quality.pixelRatio).toBe(preset.renderScale);
+      expect(renderer.renderer.setPixelRatio).toHaveBeenLastCalledWith(preset.renderScale);
+      expect(renderer.quality.antialiasing).toBe('none');
+      expect(renderer.quality.bloomEnabled).toBe(false);
+      expect(renderer.quality.unsupported.some((entry) => entry.feature === 'bloom')).toBe(true);
+      expect(renderer.quality.unsupported.some((entry) => entry.feature === 'mask-sampling')).toBe(true);
+      expect((renderer.scene.getObjectByName('supplemental_pylons') as THREE.InstancedMesh).count).toBe(
+        preset.pylons,
+      );
+      const firstShard = renderer.scene.getObjectByName('smash_shard_0') as THREE.InstancedMesh;
+      expect(firstShard.geometry === renderer.assets.assets.shards[0]!.geometry).toBe(tier !== 'low');
+      renderer.setMode('play');
+      renderer.draw(1000);
+      events.emit('note:hit', effectHit(0, 'beam'));
+      renderer.draw(1200);
+      expect(renderer.effectOccupancy).toBe(preset.poofSparks);
+      const sparks = renderer.scene.getObjectByName('poof_sparks_0') as THREE.Points;
+      expect(sparks.geometry.getAttribute('position').count).toBe(preset.poofSparks);
+      for (let i = 1; i < 100; i++) {
+        events.emit('note:hit', effectHit(i, i % 3 === 0 ? 'beam' : i % 3 === 1 ? 'smash' : 'slash'));
+        expect(renderer.effectOccupancy).toBeLessThanOrEqual(preset.fragmentCap);
+      }
+      renderer.draw(1200);
+      const shardCounts = renderer.scene.children
+        .filter((object) => object.name.startsWith('smash_shard_'))
+        .map((object) => (object as THREE.InstancedMesh).count);
+      expect(shardCounts).toHaveLength(8);
+      expect(new Set(shardCounts).size).toBe(1);
+      renderer.draw(1200 + renderer.quality.fragmentLifetimeMs + 1);
+      expect(renderer.effectOccupancy).toBe(0);
+    },
+  );
+  it('recomputes medium tall-viewport resolution on resize without changing the DOM or gameplay', () => {
+    const { renderer } = create({ tier: 'medium' });
+    const before = renderer.quality;
+    vi.stubGlobal('innerHeight', 1600);
+    vi.stubGlobal('devicePixelRatio', 2);
+    renderer.resize();
+    expect(renderer.quality.renderScale).toBe(0.85);
+    expect(renderer.renderer.setPixelRatio).toHaveBeenLastCalledWith(0.85);
+    expect(renderer.renderer.setSize).toHaveBeenLastCalledWith(1280, 1600);
+    expect(Object.isFrozen(renderer.quality)).toBe(true);
+    expect(renderer.quality.preset).toBe(before.preset);
+  });
+  it.each(['high', 'low'] as readonly QualityTier[])(
+    'preserves authored pylons and supplements exactly the %s total',
+    async (tier) => {
+      const { renderer } = create({ tier }),
+        environment = new THREE.Group();
+      for (let i = 0; i < 8; i++) {
+        const pylon = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial());
+        pylon.name = `arena_pylon_${i % 2 === 0 ? 'left' : 'right'}_${Math.floor(i / 2)
+          .toString()
+          .padStart(2, '0')}`;
+        environment.add(pylon);
+      }
+      renderer.assets.assets.environment = environment;
+      for (let i = 0; i < 12; i++) await Promise.resolve();
+      expect(environment.children.every((child) => child.visible)).toBe(true);
+      const extra = renderer.scene.getObjectByName('supplemental_pylons') as THREE.InstancedMesh;
+      expect(extra.count + environment.children.length).toBe(QUALITY_TIER_PRESETS[tier].pylons);
+      expect(extra.visible).toBe(tier === 'high');
+    },
+  );
+  it('keeps known upper-body joints in low quality and owns their paused/results snapshots', () => {
+    const { renderer, events } = create({ tier: 'low' }),
+      frame = syntheticFrame(0, 1000);
+    renderer.setMode('play');
+    renderer.tracking(frame, true);
+    renderer.draw(1000);
+    const joints = renderer.scene.getObjectByName('player_joint_markers') as THREE.InstancedMesh,
+      matrix = new THREE.Matrix4();
+    expect(joints.visible).toBe(true);
+    expect(joints.count).toBe(8);
+    expect(renderer.scene.getObjectByName('player_skeleton')!.visible).toBe(false);
+    expect(renderer.scene.getObjectByName('player_head_marker')!.visible).toBe(true);
+    joints.getMatrixAt(0, matrix);
+    const saved = matrix.clone();
+    events.emit('highlight:capture', { songTimeMs: 1000 });
+    renderer.hideTracking();
+    frame.pose!.landmarks.fill(0);
+    renderer.setMode('paused');
+    renderer.draw(5000);
+    joints.getMatrixAt(0, matrix);
+    expect(matrix.equals(saved)).toBe(true);
+    renderer.setMode('results');
+    renderer.draw(6000);
+    joints.getMatrixAt(0, matrix);
+    expect(matrix.equals(saved)).toBe(true);
+  });
+  it('applies the registered contrast threshold and edge gain without claiming measured contrast ratios', () => {
+    const standard = create().renderer,
+      contrast = create({ contrast: true }).renderer,
+      shader = (renderer: ArenaRenderer) =>
+        (
+          renderer.scene.getObjectByName('player_silhouette') as THREE.Mesh<
+            THREE.PlaneGeometry,
+            THREE.ShaderMaterial
+          >
+        ).material;
+    expect(shader(standard).uniforms.threshold!.value).toBe(0.5);
+    expect(shader(standard).uniforms.edgeGain!.value).toBe(1);
+    expect(shader(contrast).uniforms.threshold!.value).toBe(CONTRAST_MASK_THRESHOLD);
+    expect(shader(contrast).uniforms.edgeGain!.value).toBe(CONTRAST_EDGE_GAIN);
+    expect(contrast.contrast).toBe(true);
+  });
+});
+
 describe('upper-body figure and restrained music response', () => {
   it('keeps live required cues ahead of terminal follow-through when the shared target pool is full', () => {
     const { renderer } = create(),

@@ -35,7 +35,12 @@ export class SlicePool {
   private readonly zAxis = new THREE.Vector3(0, 0, 1);
   private readonly plane: Plane = { normal: { x: 1, y: 0, z: 0 }, point: { x: 0, y: 0, z: 0 } };
   fallbackCuts = 0;
-  constructor(private readonly scene: THREE.Scene) {
+  constructor(
+    private readonly scene: THREE.Scene,
+    private readonly lifetimeMs: number = HALF_LIFETIME_MS,
+  ) {
+    if (!Number.isFinite(lifetimeMs) || lifetimeMs <= 0)
+      throw new RangeError('Invalid sliced-half lifetime.');
     for (let slot = 0; slot < Math.floor(SLICE_POOL / 2); slot++) {
       const slicer = new CubeSlicer(),
         halves: HalfMesh[] = [];
@@ -148,12 +153,12 @@ export class SlicePool {
   update(time: number, visible: boolean, calm: boolean): void {
     for (const slot of this.slots) {
       const age = time - slot.birth;
-      if (slot.active && (age < 0 || age > HALF_LIFETIME_MS)) slot.active = false;
+      if (slot.active && (age < 0 || age > this.lifetimeMs)) slot.active = false;
       for (const half of slot.halves) {
         half.mesh.visible = slot.active && visible;
         if (!slot.active) continue;
         const t = age / 1000,
-          fade = 1 - Math.max(0, (age / HALF_LIFETIME_MS - 0.6) / 0.4);
+          fade = 1 - Math.max(0, (age / this.lifetimeMs - 0.6) / 0.4);
         half.mesh.position.set(
           half.origin.x + half.velocity.x * t,
           half.origin.y + half.velocity.y * t - GRAVITY_MPS2 * 0.5 * t * t,

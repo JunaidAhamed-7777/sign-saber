@@ -47,7 +47,9 @@ export class ShatterPool {
   constructor(
     private readonly scene: THREE.Scene,
     shards: readonly ShardAsset[],
+    private readonly lifetimeMs: number = FRAGMENT_LIFETIME_MS,
   ) {
+    if (!Number.isFinite(lifetimeMs) || lifetimeMs <= 0) throw new RangeError('Invalid shatter lifetime.');
     this.configure(shards);
   }
   configure(shards: readonly ShardAsset[]): void {
@@ -67,6 +69,7 @@ export class ShatterPool {
     }));
     for (const shard of shards) {
       const mesh = new THREE.InstancedMesh(shard.geometry, this.material, capacity);
+      mesh.name = `smash_shard_${this.meshes.length}`;
       mesh.count = 0;
       mesh.frustumCulled = false;
       mesh.layers.set(1);
@@ -105,12 +108,12 @@ export class ShatterPool {
     for (const slot of this.slots) {
       if (!slot.active) continue;
       const age = time - slot.birth;
-      if (age < 0 || age > FRAGMENT_LIFETIME_MS) {
+      if (age < 0 || age > this.lifetimeMs) {
         slot.active = false;
         continue;
       }
       const seconds = age / 1000,
-        fade = 1 - Math.max(0, (age / FRAGMENT_LIFETIME_MS - 0.7) / 0.3);
+        fade = 1 - Math.max(0, (age / this.lifetimeMs - 0.7) / 0.3);
       for (let i = 0; i < this.meshes.length; i++) {
         const at = i * 3;
         this.transform.position.set(

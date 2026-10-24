@@ -3,7 +3,9 @@
 **Current user scope (2026-10-25):** retain and show only the head, arms/hands and torso through the hips. Legs are excluded from live/setup/frozen/results figures, the placeholder, replay exports and game input. The upstream pretrained pose task may internally infer a full pose; indices 25–32 are zeroed at the application boundary. Only actual visible head/hips/shoulders plus hand readiness can establish calibration. No new training result is implied by filtering outputs.
 
 
-**[CORE] planned behavior.** The menu is part of the game: three bundled starter songs, a person at its centre, and the same app-owned actions reachable with mouse, keyboard or hand. An open palm moves a cursor; changing to a pointing finger clicks the chosen control. Merely waiting over a button never clicks it. The current app is a scaffold; none of this interaction is implemented yet.
+**[CORE] contract with an implemented experimental menu.** Three bundled songs, the labelled upper-body figure stage, shared native/hand action registry, open-palm → point controller and paged rails are implemented. Pure/replay assertions exercise menu guards; this does not establish successful live hand navigation or release acceptance. An open palm moves a cursor; changing to a pointing finger clicks the chosen control. Merely waiting over a button never clicks it.
+
+**Current execution steering — 2026-10-25:** **Try level with dataset** is the primary ready-music action; camera setup and live Start are secondary Settings pages. This is a deliberate dataset-first implementation order, not a claim that the original prominent first-launch **Set up camera** requirement has passed. The live setup/hand algorithms below remain the required contract. The separately labelled [dataset exception](#dataset-trial-exception) never establishes camera/calibration readiness.
 
 This document owns the menu input contract and camera-onboarding behavior. [14](14-ui-ux.md) owns screen composition, shared visual tokens and copy; [04](04-state-machine.md) owns lifecycle guards; [09](09-beatmap-format.md) and the [track registry](../app/public/assets/tracks/README.md) own the bundled music. [02](02-architecture.md#constants) owns the named defaults.
 
@@ -25,7 +27,7 @@ The player is the centrepiece. On the supported laptop layout, reserve a clear c
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-The drawing names roles, not fake tracks or telemetry. Real titles/credits come from the installed manifest. The three-song starter pack appears immediately on a prepared build; users do not need an upload, URL, account or network to choose their first level. Starting still requires valid camera/calibration and audio readiness.
+The drawing is the live-onboarding reference composition, not a screenshot of the current dataset-first action priority. It names roles, not fake tracks or telemetry. Real titles/credits come from the installed manifest. The three-song starter pack appears immediately on a prepared build; users do not need an upload, URL, account or network to choose their first level. **Live Start** requires valid camera/calibration and audio readiness. The separately named dataset action has the source-specific guards below.
 
 All gesture targets have at least `MENU_TARGET_MIN_PX` width and height and `MENU_TARGET_GAP_PX` separation, measured in CSS pixels. Use whole cards as track buttons, discrete difficulty/volume controls, and explicit Previous/Next controls for larger libraries. Hover can highlight or reveal persistent help; it never selects a song, starts a preview or changes difficulty. Preview and Stop are deliberate actions. Do not require a drag, tiny slider thumb or hover-only submenu for the bundled-song path.
 
@@ -33,13 +35,21 @@ When side rails cannot fit, use stable pages of controls above/below the central
 
 CALIBRATION keeps coaching/actions beside the figure, positioning marks in the stage and countdown digits in the status strip. Restore gameplay projection before armed pre-roll; menu fitting never changes a scored input coordinate. PAUSED keeps Resume/Quit beside the frozen figure. RESULTS keeps statistics and Retry/Songs beside the central actual saved 2.5D highlight, or a clearly labelled static placeholder when no valid snapshot exists. Native browser dialogs are outside this app layout contract.
 
+## Dataset trial exception
+
+The current **Try level with dataset** action requires a validated selected map, decoded audio, a running user-enabled audio context and a usable renderer; it does not request camera permission, tracking models or body calibration. On its first start it prepares the 80-second arrangement and regenerates the chart from the edited WAV; **Make 80-second cut** exposes the same preparation separately. Changing selection or cancelling invalidates stale work. The full source songs remain in the library. See the [music registry](../app/public/assets/tracks/README.md#dynamic-arrangements) for the heuristic, short-file fallback and provenance.
+
+The local fixture contains eight independent attributed COCO still annotations. Show the **DATASET TRIAL** banner and source labels, never a live-camera label. It is not a temporal recording or model inference. The adapter supplies no finger/gesture, mask or metric-depth evidence; the hand HUD stays unavailable and missing gesture input produces genuine misses. Synthetic success, interpolated gesture ground truth and invented calibrated-player measurements are prohibited. An actual saved dataset moment is labelled as such.
+
+Dataset Pause/Resume and Retry retain the audio/lifecycle/async guards while bypassing unavailable live-hand/calibration checks only for the active dataset session. Returning to Songs clears that trial source. Live Start, live Resume and live Retry still require their actual matching calibration and fresh required inputs. Dataset input cannot arm the hand pointer or set `CameraSetupState.ready`. The [recorded browser trial](evidence/2026-10-25-dataset-trial.md) is scoped level/audio/results evidence, not live navigation, recognition or latency evidence.
+
 ## Camera setup and placeholder
 
 ### Before setup
 
 BOOT reaches SELECT when the shell, renderer and bundled catalog are usable. Camera permission, model download/initialization and a successful tracking sample are **not** prerequisites for browsing. Show a stylized, clearly illustrative placeholder person in the central stage whenever the current camera/body calibration is absent or invalid. Use a static outline in Calm mode; optional decoration must not imply live motion, sensor readiness or a tracked person.
 
-Show the literal action **Set up camera**, with “Set up your camera to see yourself and use hand controls.” The action is available without selecting a song. Mouse and keyboard can browse tracks, choose a difficulty and explicitly preview music if audio has been enabled. Start explains its missing requirements; it cannot bypass setup.
+The original live-onboarding requirement is to show the literal action **Set up camera** prominently, with “Set up your camera to see yourself and use hand controls.” The implemented secondary Settings action is available without selecting a song, but does not satisfy that original prominence acceptance. Mouse and keyboard can browse tracks, choose a difficulty and explicitly preview music if audio has been enabled. Live Start explains its missing requirements; it cannot bypass setup. The dataset action is the explicit exception above, not a calibrated-camera shortcut.
 
 The placeholder is a local visual asset or procedural outline. It supplies no `TrackingFrame`, mask, `BodyState`, score input or tracking-rate sample. Never show `TRACKING OK`, “calibrated,” a camera-rate number or a successful benchmark because the placeholder is animating.
 
@@ -152,6 +162,8 @@ Gesture recognition is application input; it does not create a trusted browser u
 
 Required checks include:
 
+These are release acceptance checks, not implementation-status checkmarks. In particular, camera setup being reachable in Settings and a successful dataset trial do not pass the original first-launch prominence or live-play checks. Current scoped evidence/status is in [README](../README.md) and the [roadmap](../ROADMAP.md).
+
 - [ ] First load with no camera permission reaches the music menu with a placeholder and **Set up camera**; it never shows fabricated tracking success. No calibration is needed to browse.
 - [ ] Setup succeeds/cancels/fails independently of song choice; the live figure replaces the browse placeholder only after matching calibration succeeds. Reconfigure/revoke restores the correct state.
 - [ ] A user selects a song/difficulty, starts, resumes and retries by mouse/key and by open-palm/point actions after setup. Outcomes and guards agree.
@@ -161,3 +173,4 @@ Required checks include:
 - [ ] Central figure space remains clear in every menu/setup/pause/results layout, with all core controls reachable and no hover-only help.
 - [ ] A prepared offline build exposes all three songs and can complete one without upload/network; credits and track identity match the actual installed assets.
 - [ ] Browser-owned actions request native input honestly; no synthetic event is represented as permission/audio/picker success.
+- [ ] Dataset start/resume/retry remains clearly source-labelled, requires actual ready audio/chart data, never fabricates hand input and cannot weaken the separate live Start/calibration guards.

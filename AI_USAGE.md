@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Fixed-tier integration and requested handoff
+
+- An agent connected actual cosmetic tier/contrast consumers and eight integration assertions, with explicit unsupported features. Another refreshed the UI/navigation/roadmap status. Codex froze parallel work on the user's handoff request, preserved a concise implementation/evidence inventory and ran the final checks before committing/pushing all repository changes.
+
 ## 2026-10-25 — Quality contracts and reproducibility evidence
 
 - An agent implemented and tested immutable tier resolution, then retained exact clean-clone failures/successes. Codex recorded actual browser dataset and compact-menu observations separately from unrun release/performance gates.

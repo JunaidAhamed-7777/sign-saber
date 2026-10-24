@@ -5,11 +5,14 @@ import type { Note } from '../beatmap/types';
 import type { LiveNote, LiveObstacle } from '../game/liveObjects';
 import type { GameEvents } from '../core/events';
 import type { TypedEmitter } from '../utils/emitter';
-import { AssetRegistry } from './assets';
+import { AssetRegistry, fallbackShards } from './assets';
+import type { ShardAsset } from './assets';
 import { ShatterPool } from './shatter';
 import { SlicePool } from './slices';
 import { PoofPool } from './poof';
 import { TerminalNoteVisuals } from './failures';
+import { resolveQuality } from './quality';
+import type { ActiveQuality, QualityFeature, QualityTier } from './quality';
 import { beamAimTarget } from '../game/hit';
 import {
   BG_COLOR,
@@ -29,7 +32,7 @@ import {
   HAND_TINT_LEFT,
   HAND_TINT_RIGHT,
   MAX_FRAGMENTS,
-  FRAGMENT_LIFETIME_MS,
+  HALF_LIFETIME_MS,
   SHATTER_BURST_MIN,
   SHATTER_BURST_MAX,
   OBSTACLE_ALPHA,
@@ -49,6 +52,12 @@ import {
   LANE_Y,
   BEAM_HOVER_Y_OFFSET,
   BEAM_HOVER_Z,
+  QUALITY_TIER_PRESETS,
+  CONTRAST_MASK_THRESHOLD,
+  CONTRAST_EDGE_GAIN,
+  SIL_MASK_LOW,
+  SIL_MASK_HIGH,
+  SIL_JOINT_RADIUS_M,
 } from '../core/constants';
 const colors = { slash: 0x19f5ff, smash: 0xff2bd6, beam: 0xffc32b };
 const scratch = new THREE.Object3D();
@@ -59,6 +68,15 @@ const beamCenter = { x: 0, y: 0, z: 0 };
 const BAND_KEYS = ['low', 'mid', 'high', 'rms'] as const;
 const EMPTY_NOTES: readonly LiveNote[] = Object.freeze([]),
   EMPTY_OBSTACLES: readonly LiveObstacle[] = Object.freeze([]);
+const JOINT_IDS = [11, 12, 13, 14, 15, 16, 23, 24] as const;
+const IMPLEMENTED_QUALITY: readonly QualityFeature[] = Object.freeze([
+  'render-scale',
+  'skeleton',
+  'fragments',
+  'smash-geometry',
+  'poof-sparks',
+  'pylons',
+]);
 const connections = [
   [11, 12],
   [11, 13],
@@ -83,8 +101,16 @@ interface Effect {
   color: number;
   rotation: number;
 }
+export interface ArenaRendererOptions {
+  readonly tier?: QualityTier;
+  readonly contrast?: boolean;
+}
 export class ArenaRenderer {
   readonly renderer: THREE.WebGLRenderer;
+  readonly contrast: boolean;
+  private readonly requestedTier: QualityTier;
+  private activeQuality: ActiveQuality;
+  private readonly lowShards: readonly ShardAsset[] | null;
   readonly scene = new THREE.Scene();
   readonly assets = new AssetRegistry();
   private assetPending = false;
@@ -127,7 +153,7 @@ export class ArenaRenderer {
   private readonly pylons = new THREE.InstancedMesh(
     this.assets.assets.pylon,
     new THREE.MeshStandardMaterial({ color: 0x19283e, emissive: 0x081f2a, metalness: 0.5, roughness: 0.6 }),
-    12,
+    QUALITY_TIER_PRESETS.high.pylons,
   );
   private readonly shatter: ShatterPool;
   private readonly slices: SlicePool;
@@ -181,6 +207,14 @@ export class ArenaRenderer {
   private readonly silhouette: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
   private readonly joints = new Float32Array((connections.length + 1) * 6);
   private readonly skeleton: THREE.LineSegments;
+  private readonly jointMarkers = new THREE.InstancedMesh(
+    new THREE.SphereGeometry(SIL_JOINT_RADIUS_M, 12, 8),
+    new THREE.MeshBasicMaterial({ color: 0x64eaff, transparent: true, opacity: 0.8, depthTest: false }),
+    JOINT_IDS.length,
+  );
+  private readonly jointPositions = new Float32Array(JOINT_IDS.length * 3);
+  private readonly savedJointPositions = new Float32Array(JOINT_IDS.length * 3);
+  private readonly frozenJointPositions = new Float32Array(JOINT_IDS.length * 3);
   private readonly handMeshes: THREE.Mesh[] = [];
   private readonly handLines: THREE.Line[] = [];
   private readonly savedJoints = new Float32Array((connections.length + 1) * 6);
@@ -213,13 +247,20 @@ export class ArenaRenderer {
   private menuStage: HTMLElement | null = null;
   private mode: 'menu' | 'play' | 'paused' | 'results' = 'menu';
   private calm = false;
-  constructor(container: HTMLElement, events: TypedEmitter<GameEvents>) {
+  constructor(container: HTMLElement, events: TypedEmitter<GameEvents>, options: ArenaRendererOptions = {}) {
+    this.requestedTier = options.tier ?? 'medium';
+    this.contrast = options.contrast ?? false;
+    this.activeQuality = this.resolveQuality();
+    this.lowShards =
+      this.activeQuality.preset.smashGeometry === 'complete-eight-octant-fallback' ? fallbackShards() : null;
+    for (const shard of this.lowShards ?? []) this.assets.ownedGeometries.add(shard.geometry);
     this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      // Requested SMAA/FXAA are not implemented yet; report them as unsupported, never as MSAA.
+      antialias: false,
       alpha: false,
       powerPreference: 'high-performance',
     });
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+    this.renderer.setPixelRatio(this.activeQuality.pixelRatio);
     this.renderer.autoClear = false;
     this.renderer.setClearColor(BG_COLOR);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -248,17 +289,18 @@ export class ArenaRenderer {
       mesh.count = 0;
     }
     this.pylons.frustumCulled = false;
-    for (let i = 0; i < 12; i++) {
-      scratch.position.set(i % 2 === 0 ? -PYLON_X : PYLON_X, 0, -Math.floor(i / 2) * PYLON_SPACING_M);
-      scratch.rotation.set(0, 0, 0);
-      scratch.scale.setScalar(1);
-      scratch.updateMatrix();
-      this.pylons.setMatrixAt(i, scratch.matrix);
-    }
-    this.pylons.instanceMatrix.needsUpdate = true;
-    this.shatter = new ShatterPool(this.scene, this.assets.assets.shards);
-    this.slices = new SlicePool(this.scene);
-    this.poofs = new PoofPool(this.scene);
+    this.pylons.name = 'supplemental_pylons';
+    this.configurePylons();
+    this.shatter = new ShatterPool(
+      this.scene,
+      this.lowShards ?? this.assets.assets.shards,
+      this.activeQuality.fragmentLifetimeMs,
+    );
+    this.slices = new SlicePool(
+      this.scene,
+      HALF_LIFETIME_MS * this.activeQuality.preset.fragmentLifetimeScale,
+    );
+    this.poofs = new PoofPool(this.scene, this.activeQuality.preset.poofSparks);
     this.blocks.frustumCulled = false;
     this.blocks.name = 'lane_targets';
     this.blocks.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
@@ -333,15 +375,19 @@ export class ArenaRenderer {
           mask: { value: this.mask },
           color: { value: new THREE.Color(0x19f5ff) },
           pixel: { value: new THREE.Vector2(1 / MASK_W, 1 / MASK_H) },
+          threshold: { value: this.contrast ? CONTRAST_MASK_THRESHOLD : (SIL_MASK_LOW + SIL_MASK_HIGH) / 2 },
+          thresholdRange: { value: (SIL_MASK_HIGH - SIL_MASK_LOW) / 2 },
+          edgeGain: { value: this.contrast ? CONTRAST_EDGE_GAIN : 1 },
         },
         vertexShader:
           'varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
         fragmentShader:
-          'uniform sampler2D mask; uniform vec3 color; uniform vec2 pixel; varying vec2 vUv; void main(){vec2 uv=vec2(vUv.x,1.0-vUv.y);float m=texture2D(mask,uv).r;float edge=abs(m-texture2D(mask,uv+vec2(pixel.x*2.0,0.0)).r)+abs(m-texture2D(mask,uv+vec2(0.0,pixel.y*2.0)).r);float fill=smoothstep(.35,.65,m);gl_FragColor=vec4(color*(.25+edge*2.5),fill*.35+edge*.8);}',
+          'uniform sampler2D mask; uniform vec3 color; uniform vec2 pixel; uniform float threshold; uniform float thresholdRange; uniform float edgeGain; varying vec2 vUv; void main(){vec2 uv=vec2(vUv.x,1.0-vUv.y);float m=texture2D(mask,uv).r;float edge=(abs(m-texture2D(mask,uv+vec2(pixel.x*2.0,0.0)).r)+abs(m-texture2D(mask,uv+vec2(0.0,pixel.y*2.0)).r))*edgeGain;float fill=smoothstep(threshold-thresholdRange,threshold+thresholdRange,m);gl_FragColor=vec4(color*(.25+edge*2.5),fill*.35+edge*.8);}',
       }),
     );
     this.silhouette.position.set(0, CAM_POS.y + (PLAY_CENTER_Y - CAM_POS.y) * k, SILHOUETTE_Z);
     this.silhouette.visible = false;
+    this.silhouette.name = 'player_silhouette';
     this.scene.add(this.silhouette);
     const skeletonGeometry = new THREE.BufferGeometry();
     skeletonGeometry.setAttribute('position', new THREE.BufferAttribute(this.joints, 3));
@@ -353,6 +399,12 @@ export class ArenaRenderer {
     this.skeleton.name = 'player_skeleton';
     this.skeleton.visible = false;
     this.scene.add(this.skeleton);
+    this.jointMarkers.name = 'player_joint_markers';
+    this.jointMarkers.count = 0;
+    this.jointMarkers.visible = false;
+    this.jointMarkers.frustumCulled = false;
+    this.jointMarkers.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    this.scene.add(this.jointMarkers);
     this.headMarker.name = 'player_head_marker';
     this.headMarker.visible = false;
     this.scene.add(this.headMarker);
@@ -422,6 +474,7 @@ export class ArenaRenderer {
       this.headPresent = this.savedHeadPresent;
       this.headMarker.position.set(this.savedHead.x, this.savedHead.y, this.savedHead.z);
       this.joints.set(this.savedJoints);
+      this.jointPositions.set(this.savedJointPositions);
       this.maskData.set(this.savedMask);
       this.mask.needsUpdate = true;
       (this.skeleton.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
@@ -432,6 +485,7 @@ export class ArenaRenderer {
       this.headPresent = this.frozenHeadPresent;
       this.headMarker.position.set(this.frozenHead.x, this.frozenHead.y, this.frozenHead.z);
       this.joints.set(this.frozenJoints);
+      this.jointPositions.set(this.frozenJointPositions);
       this.maskData.set(this.frozenMask);
       this.mask.needsUpdate = true;
       (this.skeleton.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
@@ -454,7 +508,21 @@ export class ArenaRenderer {
   get hasMaskFrame(): boolean {
     return this.hasMask;
   }
+  get quality(): ActiveQuality {
+    return this.activeQuality;
+  }
+  private resolveQuality(): ActiveQuality {
+    return resolveQuality(this.requestedTier, {
+      viewportHeightCss: innerHeight,
+      devicePixelRatio,
+      // No HDR render target is constructed. This describes the active pipeline, not a GPU probe.
+      hdrSupported: false,
+      implemented: IMPLEMENTED_QUALITY,
+    });
+  }
   resize(): void {
+    this.activeQuality = this.resolveQuality();
+    this.renderer.setPixelRatio(this.activeQuality.pixelRatio);
     this.renderer.setSize(innerWidth, innerHeight);
     this.camera.aspect = innerWidth / innerHeight;
     this.camera.updateProjectionMatrix();
@@ -481,6 +549,15 @@ export class ArenaRenderer {
       this.mask.needsUpdate = true;
     }
     if (frame.pose) {
+      for (let i = 0; i < JOINT_IDS.length; i++) {
+        const source = JOINT_IDS[i]! * 4,
+          at = i * 3,
+          p = frame.pose.landmarks;
+        this.jointPositions[at] = (p[source]! - 0.5) * PLAY_W;
+        this.jointPositions[at + 1] =
+          p[source + 3]! >= 0.5 ? PLAY_CENTER_Y + (0.5 - p[source + 1]!) * PLAY_H : -100;
+        this.jointPositions[at + 2] = -0.06;
+      }
       for (let i = 0; i < connections.length; i++) {
         const c = connections[i]!;
         const segmentVisible =
@@ -516,6 +593,7 @@ export class ArenaRenderer {
     }
     if (visible && this.hasPose) {
       this.frozenJoints.set(this.joints);
+      this.frozenJointPositions.set(this.jointPositions);
       if (this.hasMask) this.frozenMask.set(this.maskData);
       this.frozenPose = true;
       this.frozenMaskPresent = this.hasMask;
@@ -679,7 +757,9 @@ export class ArenaRenderer {
     const bodyVisible =
       this.mode === 'results' ? this.snapshotValid : this.mode === 'paused' ? this.frozenPose : this.visible;
     this.silhouette.visible = bodyVisible && this.hasMask;
-    this.skeleton.visible = bodyVisible && this.hasPose;
+    this.skeleton.visible =
+      bodyVisible && this.hasPose && this.activeQuality.preset.skeleton === 'joints-and-bones';
+    this.drawJoints(bodyVisible && this.hasPose);
     this.headMarker.visible = bodyVisible && this.headPresent;
     for (const material of this.neonMaterials)
       material.emissiveIntensity = this.calm
@@ -714,6 +794,46 @@ export class ArenaRenderer {
     this.camera.updateProjectionMatrix();
     this.renderer.render(this.scene, this.camera);
     this.renderer.setScissorTest(false);
+  }
+  private drawJoints(visible: boolean): void {
+    this.jointMarkers.visible = visible;
+    if (!visible) return;
+    let count = 0;
+    for (let i = 0; i < JOINT_IDS.length; i++) {
+      const at = i * 3;
+      if (this.jointPositions[at + 1] === -100) continue;
+      scratch.position.set(
+        this.jointPositions[at]!,
+        this.jointPositions[at + 1]!,
+        this.jointPositions[at + 2]!,
+      );
+      scratch.rotation.set(0, 0, 0);
+      scratch.scale.setScalar(1);
+      scratch.updateMatrix();
+      this.jointMarkers.setMatrixAt(count++, scratch.matrix);
+    }
+    this.jointMarkers.count = count;
+    this.jointMarkers.instanceMatrix.needsUpdate = true;
+  }
+  private configurePylons(): void {
+    const requested = this.activeQuality.preset.pylons;
+    let authored = 0;
+    this.environment?.traverse((object) => {
+      if (/^arena_pylon_(left|right)_\d+$/.test(object.name)) object.visible = authored++ < requested;
+    });
+    const retained = Math.min(authored, requested),
+      count = requested - retained;
+    for (let i = 0; i < count; i++) {
+      const index = retained + i;
+      scratch.position.set(index % 2 === 0 ? -PYLON_X : PYLON_X, 0, -Math.floor(index / 2) * PYLON_SPACING_M);
+      scratch.rotation.set(0, 0, 0);
+      scratch.scale.setScalar(1);
+      scratch.updateMatrix();
+      this.pylons.setMatrixAt(i, scratch.matrix);
+    }
+    this.pylons.count = count;
+    this.pylons.visible = count > 0;
+    this.pylons.instanceMatrix.needsUpdate = true;
   }
   private drawTarget(
     note: Note,
@@ -799,7 +919,7 @@ export class ArenaRenderer {
       Object.assign(slot, {
         active: true,
         birth: this.currentTime,
-        life: FRAGMENT_LIFETIME_MS,
+        life: this.activeQuality.fragmentLifetimeMs,
         x: e.impactPos.x,
         y: e.impactPos.y,
         z: e.impactPos.z,
@@ -819,7 +939,7 @@ export class ArenaRenderer {
     return count;
   }
   private balanceEffects(): void {
-    while (this.effectOccupancy > MAX_FRAGMENTS) {
+    while (this.effectOccupancy > this.activeQuality.preset.fragmentCap) {
       let oldest: Effect | null = null;
       for (const effect of this.effects)
         if (effect.active && (!oldest || effect.birth < oldest.birth)) oldest = effect;
@@ -852,7 +972,7 @@ export class ArenaRenderer {
     this.pylons.geometry = assets.pylon;
     for (const type of ['slash', 'smash', 'beam'] as const)
       this.glyphMeshes[type].geometry = assets.glyphs[type];
-    this.shatter.configure(assets.shards);
+    this.shatter.configure(this.lowShards ?? assets.shards);
     if (assets.environment && this.environment !== assets.environment) {
       this.environment = assets.environment;
       this.environment.traverse((object) => {
@@ -868,12 +988,13 @@ export class ArenaRenderer {
             }
       });
       this.scene.add(this.environment);
-      this.pylons.visible = false;
     }
+    this.configurePylons();
   }
   capture(): void {
     if (!this.visible || !this.hasPose) return;
     this.savedJoints.set(this.joints);
+    this.savedJointPositions.set(this.jointPositions);
     this.savedMask.set(this.maskData);
     this.savedHasMask = this.hasMask;
     this.savedHasPose = this.hasPose;
@@ -892,6 +1013,8 @@ export class ArenaRenderer {
     this.frozenPose = false;
     this.headPresent = this.frozenHeadPresent = this.savedHeadPresent = false;
     this.headMarker.visible = false;
+    this.jointMarkers.visible = false;
+    this.jointMarkers.count = 0;
     this.effectIndex = 0;
     this.currentTime = 0;
     this.bands.low = this.bands.mid = this.bands.high = this.bands.rms = 0;

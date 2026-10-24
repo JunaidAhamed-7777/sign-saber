@@ -133,3 +133,7 @@ Keep five-second delivery/FPS rings. If delivered FPS stays below `FLOOR_FPS` fo
 - [ ] No logical pool overflow on admitted maps; all hot-path/resource ownership rules are checked.
 - [ ] Fixed/adaptive tiers are separate experiments; downgrades never change gameplay.
 - [ ] Soak and ten restart/song-change cycles show stable retained counts or an explicit failure.
+
+## Current fixed-tier implementation
+
+The runtime passes `?tier=low|medium|high` and `?contrast=1` to the renderer. Implemented consumers cover effective drawing-buffer DPR/render scale, complete-effect fragment caps/lifetimes, 12/24 poof points, complete eight-octant low-tier smash geometry, 8/14 pylon totals and owned upper-body joints/bones. Contrast changes the real mask threshold/edge uniforms. `renderer.quality` exposes the complete request and unsupported features. Bloom, HDR targets, FXAA/SMAA, the full particle/ribbon subsystem and automatic probing/adaptation remain unimplemented. Their preset entries are not runtime success claims. Fixed tiers never alter judgement or audio clocks; native visual and performance acceptance remain open.

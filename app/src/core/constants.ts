@@ -411,6 +411,7 @@ export const MISS_DIM_MS = 150,
   BADCUT_TINT = 0xff1e3c;
 export const BEAM_ESCAPE_RISE_M = 3,
   BEAM_ESCAPE_VISUAL_MS = 600;
+export const SIL_JOINT_RADIUS_M = 0.045;
 
 // QUALITY_*: single canonical cosmetic preset registry (docs16 §Quality tiers).
 export const QUALITY_DPR_CAP = 1,

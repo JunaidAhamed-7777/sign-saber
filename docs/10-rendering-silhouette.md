@@ -269,11 +269,12 @@ Allocate textures, mesh buffers, shader variants and joint scratch objects befor
 
 ## Constants required
 
-Rendering defaults below form the silhouette sub-registry linked by [02](02-architecture.md#constants). Export them centrally from `core/constants.ts` during P0; that file is currently a stub. Shader literals are illustrative defaults, not permission to scatter tunables through runtime code.
+Rendering defaults below form the silhouette sub-registry linked by [02](02-architecture.md#constants). Implemented defaults are exported centrally from `core/constants.ts`; exported values alone do not establish visual, live-camera or GPU acceptance. Shader literals are illustrative defaults, not permission to scatter tunables through runtime code.
 
 | Name | Value | Meaning |
 | --- | --- | --- |
 | `SIL_RIM_PX` | 6 | Rim width in pixels at 1080p |
+| `SIL_JOINT_RADIUS_M` / `SIL_HEAD_RADIUS_M` | 0.045 / 0.11 m | Upper-body joint spheres / actual-nose head marker radius |
 | `SIL_FILL_ALPHA` | 0.78 | In-game fill alpha (attract 0.55) |
 | `SIL_MASK_LOW` / `SIL_MASK_HIGH` | 0.35 / 0.65 | Soft threshold band |
 | `SIL_SKELETON_Z_OFFSET` | −0.06 m | Skeleton depth behind the plane |

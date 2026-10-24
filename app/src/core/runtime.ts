@@ -95,7 +95,10 @@ export class GameRuntime {
 
   constructor(container: HTMLElement) {
     try {
-      this.renderer = new ArenaRenderer(container, this.machine.events);
+      this.renderer = new ArenaRenderer(container, this.machine.events, {
+        tier: this.flags.tier,
+        contrast: this.flags.contrast,
+      });
     } catch (error) {
       this.renderer = null;
       display({ fatal: this.message(error) || strings.fatalHint });

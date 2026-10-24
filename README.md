@@ -4,7 +4,7 @@
 
 Sign Saber is an experimental browser rhythm game with a camera-free music menu, head-to-hips figure, local song analysis and a Three.js arena. **The current priority is a clearly labelled dataset trial.** Camera-free playback, an actual 80-second arrangement and genuine trial results have been exercised in the browser. Live calibrated gesture play, held-out music quality and P4/P5 release evidence remain open.
 
-Start with [ROADMAP.md](ROADMAP.md), [the subsystem index](docs/README.md), [DESIGN.md](DESIGN.md) and [AGENTS.md](AGENTS.md). The user's current scope excludes legs everywhere: placeholder, tracked input, live/setup view, pause and saved results.
+The current checkpoint and remaining work are in [HANDOFF.md](HANDOFF.md). Start with [ROADMAP.md](ROADMAP.md), [the subsystem index](docs/README.md), [DESIGN.md](DESIGN.md) and [AGENTS.md](AGENTS.md). The user's current scope excludes legs everywhere: placeholder, tracked input, live/setup view, pause and saved results.
 
 ## Run
 

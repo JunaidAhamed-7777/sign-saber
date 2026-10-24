@@ -7,7 +7,13 @@ The UI is a React 19 DOM overlay drawn above the Three.js canvas ([ADR-002](03-d
 
 Pillar reminder: **P1 Readable at a glance** governs every decision here. If a judge standing 2.5 m from the laptop cannot read it, it is wrong.
 
-This document specifies planned behaviour; the current React screens are stubs. Build mouse/keyboard and open-palm → point menu operation as `[CORE]`, alongside the P1 playable path, complete the P2 recovery paths, and add P3 presentation only after both work ([roadmap](../ROADMAP.md)). [25 — Menu & Hand Navigation](25-menu-and-hand-navigation.md) owns the hand-pointer protocol and geometry; this document owns screen composition, controls and feedback. Wireframes show illustrative content and do not assert that any track, screen or score already exists.
+The React screens and shared menu are implemented experimental UI, not stubs. This document retains the target behaviour and acceptance requirements; a wireframe or feature table is not proof that every detail has shipped. [25 — Menu & Hand Navigation](25-menu-and-hand-navigation.md) owns the hand-pointer protocol and geometry; this document owns screen composition, controls and feedback. The [roadmap](../ROADMAP.md) records the user's current work order and the still-open release gates.
+
+**Current implementation — 2026-10-25:** the music menu opens without camera permission/models, shows a labelled head-to-hips illustration and exposes three local credited songs, explicit audio enable/preview, difficulty, upload, paged rails and Settings. **Try level with dataset** is the primary action; it can automatically prepare a real 10 s fade-in / 60 s heuristic highlight / 10 s fade-out arrangement and a freshly generated chart. **Make 80-second cut** exposes that preparation separately. A visible dataset banner identifies independent static COCO annotations; actual trial results are produced without invented hand gestures or hits. The full source songs remain available. The [recorded browser trial](evidence/2026-10-25-dataset-trial.md) is level/audio/lifecycle evidence, not live tracking proof.
+
+Camera setup and **Live camera play** remain reachable in secondary Settings pages, independently of song choice. The original requirement for a prominent first-launch **Set up camera** action is deferred under the dataset-first steering; acceptance for that requirement is not passed. The live path retains fresh-hand/matching-calibration guards. A labelled camera preview and Cancel have been exercised; completed consenting-person calibration, live scored hits and live hand-menu coverage remain open.
+
+The current HUD has score/combo/accuracy, peripheral gesture labels/glyphs, beam charge arcs/percentages, one recent judgement and song progress. Missing/stale/dataset hand data stays unavailable. Expanded details below—numeric tweening, multiplier/milestone treatment, projected multi-pop queues, drop markers, measured tracking-rate display and the full wave/coaching UI—remain target work unless separately evidenced. Standing-distance, complete zoom/layout, human comfort and P4/P5 acceptance are not implied by the implementation.
 
 ## Design language
 
@@ -23,17 +29,17 @@ This document specifies planned behaviour; the current React screens are stubs. 
 
 ### Shared menu composition
 
-Every app-owned menu uses one `MenuShell`: left controls/selection rail, protected central figure stage, right details/actions rail, top status strip and bottom instruction strip. The renderer fits the visible figure into the stage rather than leaving a full-width figure behind opaque panels. Stage bounds and hand target geometry follow [25](25-menu-and-hand-navigation.md); do not independently resize the hit-test coordinate space when a card loads. SELECT browsing shows an illustrative human placeholder while the camera is not set up or calibration is invalid; after valid setup it shows the live silhouette. An explicitly labelled live positioning preview is allowed in the separate camera-setup mode before calibration passes. CALIBRATION uses live input, PAUSED a labelled frozen pose, and RESULTS a labelled owned 2.5D highlight.
+Every app-owned menu uses one `MenuShell`: left controls/selection rail, protected central figure stage, right details/actions rail, top status strip and bottom instruction strip. The renderer fits the visible figure into the stage rather than leaving a full-width figure behind opaque panels. Stage bounds and hand target geometry follow [25](25-menu-and-hand-navigation.md); do not independently resize the hit-test coordinate space when a card loads. SELECT browsing shows an illustrative human placeholder while the camera is not set up or calibration is invalid; after valid setup it shows the live silhouette. An explicitly labelled live positioning preview is allowed in the separate camera-setup mode before calibration passes. Live CALIBRATION uses live input, PAUSED a labelled frozen pose, and RESULTS a labelled owned 2.5D highlight. The separate dataset source uses labelled annotation skeletons/saved dataset moments; it never impersonates a calibrated live figure.
 
 The initial library contains at least three attributed bundled starter tracks from [09](09-beatmap-format.md), selectable without an upload, account, network request or companion service after asset preparation. Give the library a bounded visible page and large **Previous / Next** buttons for growth; no tiny scroll thumb, carousel drag or hover-only arrow is required for hand operation. Preserve the selected track when changing pages and disable the boundary action with a readable reason.
 
-Use large separated targets with the minimum dimensions/gaps in [25](25-menu-and-hand-navigation.md), stable positions and a full label. Hand hover, armed/point confirmation, pressed, selected, keyboard focus, disabled and busy states are distinct. Selection changes a track/difficulty; only the separate Start action begins calibration. No preview audio or state-changing action starts merely because a hand passes over a control.
+Use large separated targets with the minimum dimensions/gaps in [25](25-menu-and-hand-navigation.md), stable positions and a full label. Hand hover, armed/point confirmation, pressed, selected, keyboard focus, disabled and busy states are distinct. Selection changes a track/difficulty; only the separate live Start action begins live calibration. Dataset trial is a distinct labelled source-specific action. No preview audio or state-changing action starts merely because a hand passes over a control.
 
 At smaller supported laptop viewports or 200% zoom, reduce the number of visible library rows and paginate long detail/stat groups inside their rails. Keep the figure stage and the primary/Back actions visible rather than overlaying the centre. Mouse users may scroll the rail, while large Previous/Next or More/Back buttons expose the same content to hands and keyboard. The app remains a desktop product; reflow does not imply mobile tracking support.
 
 ## Typography
 
-Fonts are bundled as woff2 in `app/public/assets/fonts/`, with their licence/attribution files ([ADR-013](03-decisions.md#adr-013--everything-the-demo-needs-is-bundled-and-works-offline)). Preload the small required subset and use `font-display: swap` with metric-compatible fallbacks: a missing font must never hide Retry, camera permission guidance or Start. Reserve label/number widths to prevent layout jumps. Offline checks include failed-font behaviour, not only the happy path.
+Fonts are bundled as pinned TrueType Orbitron and Rajdhani files in `app/public/assets/fonts/`, with exact hashes and OFL notices in the [font registry](../app/public/assets/fonts/README.md) ([ADR-013](03-decisions.md#adr-013--everything-the-demo-needs-is-bundled-and-works-offline)). Runtime uses `font-display: swap`; preserve readable system fallbacks so a missing font never hides Retry, camera permission guidance or Start. Reserve label/number widths to prevent layout jumps. Offline checks include failed-font behaviour, not only the happy path; subset/preload optimization is not established by the existing packaged files.
 
 | Role | Family | Weight | Size (clamp) | Use |
 | --- | --- | --- | --- | --- |
@@ -48,7 +54,7 @@ Rules: HUD numbers MUST be ≥ 28 px at 1920×1080 (Display M minimum). Numbers 
 
 ## Colour tokens
 
-Visual palette/font roles are maintained in [DESIGN.md](../DESIGN.md); the excerpt below mirrors that source. During P0 map them once onto `:root` in the planned `ui/theme.css`. Components use tokens only; no literal hex in component files. UI behavior remains in this document and [25](25-menu-and-hand-navigation.md), with menu timings/geometry in [02](02-architecture.md#constants).
+Visual palette/font roles are maintained in [DESIGN.md](../DESIGN.md); the excerpt below mirrors that source. The runtime adapter is `app/src/ui/theme.css`'s `:root` palette. Components should use tokens rather than introducing independent colours. UI behavior remains in this document and [25](25-menu-and-hand-navigation.md), with menu timings/geometry in [02](02-architecture.md#constants).
 
 ```css
 :root {
@@ -102,14 +108,14 @@ Colour is never the only cue (§Accessibility): each block type also has a disti
 
 | Machine state | Screen component | Overlay type |
 | --- | --- | --- |
-| `BOOT` | `BootScreen` | Full-screen, opaque void until the renderer is ready |
-| `SELECT` | `SelectScreen` | Side rails around placeholder or calibrated live figure; camera-setup mode uses a labelled positioning preview |
-| `CALIBRATION` | `CalibrationScreen` | Side checklist/actions, central silhouette/outline, countdown in status strip |
+| `BOOT` | `Boot` | Full-screen, opaque void until the renderer is ready |
+| `SELECT` | `Select` | Side rails around placeholder or calibrated live figure; camera-setup mode uses a labelled positioning preview |
+| `CALIBRATION` | `Calibration` | Side checklist/actions, central silhouette/outline, countdown in status strip; dataset pre-roll is explicitly source-labelled |
 | `PLAYING` | `Hud` | Edge-anchored, no panels in the play area |
-| `PAUSED` | `PausedScreen` | Side recovery/actions around a labelled frozen central pose |
-| `RESULTS` | `ResultsScreen` | Side stats/actions around a labelled central 2.5D highlight |
+| `PAUSED` | `Paused` | Side recovery/actions around a labelled frozen central pose |
+| `RESULTS` | `Results` | Side stats/actions around a labelled central 2.5D highlight or saved dataset moment |
 
-`App.tsx` switches on `useStore(s => s.machineState)` and renders exactly one screen component; the `Hud` additionally renders `DebugOverlay` in development builds when enabled.
+`App.tsx` switches on `useStore(s => s.state)` and renders the current screen (or the explicitly opened credits surface). Its current diagnostics surface exposes scoped evidence export; the expanded `DebugOverlay` below remains target work, not an existing component.
 
 ### BOOT
 
@@ -140,6 +146,8 @@ Colour is never the only cue (§Accessibility): each block type also has a disti
 
 ### SELECT
 
+The wireframe below is the original live-onboarding reference. The implemented ready page instead prioritizes **Try level with dataset**, audio enable/preview and **Make 80-second cut**; camera setup/live Start are secondary Settings actions. This changed priority does not pass the original prominent-camera acceptance criterion.
+
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │  SIGN SABER                                  CAMERA NOT SET UP / INPUT MODE  │
@@ -165,19 +173,25 @@ Colour is never the only cue (§Accessibility): each block type also has a disti
 - **Upload zone**: drag & drop or click. During generation the zone becomes a progress bar with the label `strings.select.generating` and a percentage from the beatmap worker. On completion it shows BPM and note count; on tempo-fallback it shows the badge `strings.select.tempoFallback` in `--gold`.
 - **YouTube field**: optional secondary rail detail, never a central overlay or required starter step. Enable only when the companion service health check succeeded in the last `YT_HEALTH_INTERVAL_MS` ([23](23-youtube-companion-service.md)); otherwise show disabled offline copy. Text entry remains keyboard input. Enter submits the field once; a spinner replaces the submit icon while resolving. Opening these details keeps a large Back/Close target in the same rail.
 - **Difficulty**: segmented control, default Normal, persisted in `localStorage`.
-- **Start**: disabled (`--muted` 40 %) until `validateBeatmap` returns no errors and state-machine readiness permits calibration; its visible explanation names the unmet requirement. Mouse click, focused Enter/Space or a valid point-click fires the same `select:start` command once. Selecting a song does not also Start it. A held pointing pose cannot click through to calibration confirmation.
+- **Live Start**: disabled (`--muted` 40 %) until `validateBeatmap` returns no errors and state-machine readiness permits calibration; its visible explanation names the unmet requirement. Mouse click, focused Enter/Space or a valid point-click fires the same guarded `select:start` transition once. Selecting a song does not also Start it. A held pointing pose cannot click through to calibration confirmation. The current Settings location does not change these guards.
 - Upload accepts only supported, decodable local audio within [08](08-beatmap-generation.md)'s limits; an extension alone is not validation. Show file name, elapsed work and the active stage. Percentages must come from completed work units; decode and unknown-duration stages use indeterminate progress. Cancel returns to Select and invalidates the job token so a late worker result cannot overwrite a newer selection. Preserve the previous valid selection after an invalid upload, clearly identifying which track Start would launch.
 - If bundled tracks are missing, omit fake cards, show an actionable asset/setup failure and keep mouse/keyboard upload recovery. Fewer than the required starter tracks fails release acceptance; an upload field does not satisfy that requirement. TRACK A/B/C in the wireframe are structural placeholders for the licensed manifest, not song metadata or committed assets. An empty/quiet upload explains why no playable notes were found. A tempo-fallback badge is paired with its limitation rather than a precise BPM presented as detected truth.
-- Place a persistent, readable explanation beside disabled Start; disabled native controls cannot be relied on to expose a hover/focus tooltip. Show Standard/Calm intensity, volume and camera status before starting. Readiness remains the state machine's decision; the UI cannot bypass calibration.
+- Place a persistent, readable explanation beside disabled Start; disabled native controls cannot be relied on to expose a hover/focus tooltip. Show Standard/Calm intensity, volume and camera status before starting. Readiness remains the state machine's decision; live play cannot bypass calibration. Dataset readiness has the explicit separate contract below.
 - Preview is explicit and reversible: mouse/key/point activation of Preview starts the selected clip only after browser audio unlock; Stop and a changed selection stop it. No hover-preview. Use discrete volume −/+ and named intensity buttons for hands, while retaining accessible keyboard/native-pointer alternatives; hand operation never requires precise dragging. A visible control switches the active menu hand; tracking loss never silently transfers control to a bystander's or the other hand.
+
+#### Dataset trial within SELECT
+
+**Try level with dataset** becomes eligible only with a validated selected chart, decoded audio, running user-enabled sound and a usable renderer, with no active transition/loading conflict. It requests no camera, model or calibration. Its first start automatically creates the arrangement and regenerates the map from the exact new WAV; a selection change or cancelled/stale request cannot start an old result. The [track registry](../app/public/assets/tracks/README.md#dynamic-arrangements) specifies the continuous-window heuristic, fades, hashes and short-track fallback.
+
+The level visibly identifies its independent static annotations. There are no finger/gesture labels, temporal-motion recording, masks or metric depth; the hand HUD says unavailable. Run the real scoring/lifecycle path and retain actual misses/results rather than inventing hits or player performance. Dataset pre-roll does not ask the user to pass live calibration. Its Pause/Resume/Retry bypass only missing live input, retain audio/lifecycle guards and preserve the source label. See [25](25-menu-and-hand-navigation.md#dataset-trial-exception); this exception cannot set camera readiness or relax live Start/Resume/Retry guards.
 
 #### Camera setup within SELECT
 
-Set Up Camera is prominent before configuration and remains available as Reconfigure Camera afterward. It opens the `camera-setup` subflow within SELECT rather than pretending a song is already ready. It works without a selected song or playable audio: enable/request the camera, verify the chosen device and a real tracking sample, check mirroring and comfortable reach/body calibration, then return to browsing. A separate explicit audio-enable step appears only where the browser requires it.
+The original live-onboarding requirement is a prominent **Set Up Camera** action before configuration, retained as Reconfigure Camera afterward. The implemented dataset-first menu exposes it through Settings; that original prominence acceptance remains deferred. It opens the `camera-setup` subflow within SELECT rather than pretending a song is already ready. It works without a selected song or playable audio: enable/request the camera, verify the chosen device and a real tracking sample, check mirroring and comfortable reach/body calibration, then return to browsing. A separate explicit audio-enable step appears only where the browser requires it.
 
 While `mode === 'browse'` and calibration is invalid, the centre keeps a static, clearly illustrative human placeholder with the setup explanation. It does not mirror motion, show TRACKING OK, feed hit detection, or contribute latency/recognition evidence. In `mode === 'camera-setup'`, replace it with a clearly labelled **Live setup preview — not calibrated** only when real frames exist, so the player can position themselves. Before frames or after a denied/unavailable camera, retain the placeholder and actionable instructions in the side rails. Calm uses a static illustration without fake ambient hand movement.
 
-Setup success stores camera/calibration validity through the state machine; only then does the regular menu show the live neon figure. A changed device/crop, lost validity or a revoked permission restores the placeholder/status and requires reconfiguration. Error/Cancel returns to usable song browsing, retaining selection and native input. Start stays disabled until a validated selected map/audio and current camera/tracking/calibration readiness all pass; its explanation names the unmet condition. A hand pointer may assist the labelled setup after reliable tracking exists because its 2D mapping does not depend on completed body calibration, but no simulated or stale frame can activate an action.
+Setup success stores camera/calibration validity through the state machine; only then does the regular menu show the live neon figure. A changed device/crop, lost validity or a revoked permission restores the placeholder/status and requires reconfiguration. Error/Cancel returns to usable song browsing, retaining selection and native input. Live Start stays disabled until a validated selected map/audio and current camera/tracking/calibration readiness all pass; its explanation names the unmet condition. A hand pointer may assist the labelled setup after reliable tracking exists because its 2D mapping does not depend on completed body calibration, but no simulated or stale frame can activate an action.
 
 ### CALIBRATION
 
@@ -240,6 +254,8 @@ Setup success stores camera/calibration validity through the state machine; only
 | Debug overlay (dev only, key `D`) | right column, monospace | loop + tracking stats | Frame interval p50/p95/p99, tracking Hz, inference and capture-to-render age, live notes, pool high-water/overflow, quality tier and drawing-buffer size. Label capture-to-render age as an estimate; actual motion-to-photon needs the external measurement in [16](16-performance-budget.md). Display input mode LIVE/REPLAY prominently in diagnostics and evidence. Includes read-only landmark/hit-volume toggles. |
 
 The play area (the projected `PLAY_W × PLAY_H` rectangle) MUST stay free of HUD panels. Indicators sit outside it; the judgement pops are the only text inside.
+
+The implemented `Hud` uses `DisplayState.hud.left/right`, `leftPresent/rightPresent` and `leftCharge/rightCharge` for its peripheral indicators. It ignores every retained gesture/charge field when presence is false, floors the visible percentage so 99.9% does not claim full charge, and pairs gesture colour with text/glyphs. Absent symbols dim while **Unavailable / No hand data** text stays readable; no fake zero-to-full animation or per-frame live-region announcement is used. Dataset hands remain unavailable. These display assertions do not establish live recognizer accuracy or the pending expanded HUD features in the table.
 
 #### Projecting hit positions to screen
 
@@ -436,7 +452,9 @@ Retain `calib.coach.lowLight` as the existing key while correcting its meaning t
 
 ## Store
 
-`state/store.ts` (Zustand). The store holds **display state only**; the game core is the source of truth and the adapter copies into the store.
+`state/store.ts` (Zustand) exports the implemented `DisplayState`, `useStore` and `display`. It holds **display state only**; the game core and guarded `GameRuntime` remain authoritative. The current main fields are `state`, `epoch`, `camera`, `pointer`, `map`, `generation`, `arrangement`, `hud`, `results`, `calm` and the source label `replay`. `replay` alone does not distinguish dataset stills from logic replay; runtime source-specific labels/evidence must do so.
+
+The expanded `UiStore` below is a **target view-model design**, not a second existing export or a claim that every listed field/component is implemented. Its richer pop, tracking-rate, wave, debug and multiplier details remain pending. Shared `TrackingFrame`, `HandCursor`, `CameraSetupState`, `MenuPointerState`, events and constants retain their normative owners in [02](02-architecture.md); display-model evolution must not create a competing recognizer or bypass those contracts.
 
 ```ts
 export interface UiStore {
@@ -496,16 +514,16 @@ export interface HandIndicator { present: boolean; gesture: Gesture; charge: num
 
 ### Adapter and throttling
 
-`state/adapter.ts` subscribes to the event bus once:
+The implemented adapter lives in `core/runtime.ts`; there is no separate `state/adapter.ts` module in the current layout. It subscribes to lifecycle/game events once and copies display summaries via `display`. For the target expanded view model, retain this mapping:
 
-- `state:change` → `machineState`, `pauseReason` immediately.
+- `state:change` → current `DisplayState.state`/`epoch`/`pauseReason` immediately (the expanded example calls the state field `machineState`).
 - Camera setup events (`camera:setup`, `camera:ready`, `camera:error`, `camera:cancel`) → mirror the authoritative `CameraSetupState`; update placeholder/live-preview presentation and required native-input guidance without clearing the selected song. A rendered placeholder cannot set tracking/camera readiness.
 - Menu-controller output → `menuPointer`/`menuInput` summaries at display cadence. Draw pointer position/progress through a lightweight visual adapter from the newest authoritative controller snapshot at render cadence; do not rerender the entire menu or throttle accepted commands behind text updates. The pointer overlay uses viewport CSS coordinates, `pointer-events: none` and no independent hit-test logic. `ui/menuTargets.ts` owns current registered geometry; the shared action adapter revalidates targets before dispatch.
 - `song:progress`, `combo:change`, tracking updates, and every terminal judgement (`note:hit`, `note:miss`, `note:badcut`, `obstacle:hit`, `obstacle:dodged`) → mirror updated authoritative aggregates into a pending patch and flush at most every 50 ms (`UI_TEXT_HZ` = 20) via a single `set`. Live accuracy uses resolved objects as its denominator; use `null` and show an em dash before the first resolved object. RESULTS uses final `SessionStats.accuracy` over the whole map, as defined in [07](07-hit-detection-and-scoring.md).
 - `note:hit` / `note:miss` / `note:badcut` / `obstacle:dodged` → `pushPop` immediately (after projection); enforce one terminal pop/outcome per note ID. Bad-cut visual despawn is not a second miss.
 - `session:end` → `results` immediately.
 
-Components select narrowly (`useStore(s => s.hud.score)`) so a score change re-renders only the score element. Lists (library, pops) use stable ids as keys.
+Keep component subscriptions narrow as the richer HUD is split into independent views. The current `Hud` selects the display-rate `hud` aggregate; it is not a measured per-field-render optimization. Lists use stable ids as keys. Projected multi-pop queues and their target `pushPop` API above remain planned rather than an existing event-rendering path.
 
 Subscribe once per adapter lifetime and return an unsubscribe/dispose function; React development remounts must not double event handlers or score pops. Keep high-rate hand/charge geometry in the renderer; the DOM store uses display-rate summaries. Clear session-specific pending patches, generation tokens and pops on Quit/Retry; asynchronous results from a disposed session must not mutate the next screen. The renderer receives appearance preferences through a read-only adapter without UI writes to game state.
 
@@ -513,32 +531,23 @@ Subscribe once per adapter lifetime and return an unsubscribe/dispose function; 
 
 | Component | Responsibility |
 | --- | --- |
-| `App` | Chooses the screen by `machineState`; mounts `DebugOverlay` in dev. |
-| `screens/BootScreen` | Logo, progress, stage label, error card + retry. |
-| `screens/SelectScreen` | Composes `MenuShell`, bounded starter library/pager, selected-track actions, optional upload/URL details, camera-setup subflow, difficulty, preview and Start. |
-| `screens/CalibrationScreen` | Side checklist/confirmation/Back, `WaveMeter`, coaching strip and status countdown around a clear live figure stage. |
-| `screens/Hud` | Score, `MultiplierRing`, accuracy, `GestureIndicator` ×2, `JudgementPops`, `SongProgress`, tracking indicator, milestone flash. |
-| `screens/PausedScreen` | Side recovery/actions, resume countdown status, Resume/Songs and appearance controls around the labelled frozen pose. |
-| `screens/ResultsScreen` | Side rank/stats/`JudgementBars`, estimate explanation and Retry/Songs around the central owned highlight. |
-| `components/MenuShell` | Stable side rails, protected figure stage, top status and bottom instructions; shared across all menu states. |
-| `components/MenuPointer` | Non-intercepting cursor and phase/progress feedback from the canonical `MenuPointerState`, with no local classifier or dwell activation. |
-| `components/LibraryPager` | Bounded track rows, explicit Previous/Next and page status; retains selected track by stable slug. |
-| `components/CameraSetupPanel` | Explicit setup/retry/cancel actions, actual error guidance and validity status; no fabricated live input. |
-| `components/Panel` | Glass panel with accent glow prop. |
-| `components/Button` | Primary/secondary variants, focus ring, keyboard activation. |
-| `components/Numeric` | Tweened tabular number (`value`, `decimals`, `suffix`). |
-| `components/MultiplierRing` | SVG arc + centre label, flash on break. |
-| `components/GestureIndicator` | Glyph, label, charge arc, dim when absent. |
-| `components/JudgementPops` | Absolutely positioned pops; expires via `requestAnimationFrame` tick. |
-| `components/SongProgress` | Elapsed/total, drop markers, playhead. |
-| `components/WaveMeter` | Sparkline + reversal counter. |
-| `components/Tooltip` | Hover/focus tooltip with `role="tooltip"`. |
-| `components/DebugOverlay` | Monospace stats + toggles (dev only). |
-| `project.ts` | World → screen projection helper. |
-| `strings.ts` | All copy. |
+| `App` | Chooses the screen by `DisplayState.state`; owns current status, pointer, credits and scoped diagnostics/export surfaces. |
+| `screens/Boot` | Startup/error guidance and real retry; fine-grained weighted loading presentation remains target work. |
+| `screens/Select` | Composes `MenuShell`, bounded local library, native upload, difficulty, preview, dataset trial/arrangement and camera-setup subflow. |
+| `screens/Calibration` | Live readiness confirmation/Back and source-labelled pre-roll; the expanded wave/checklist visualization remains pending. |
+| `screens/Hud` | Score/combo/accuracy, local `HandIndicator` ×2, recent judgement and elapsed/total progress. |
+| `screens/Paused` | Source-aware guarded Resume/Songs and countdown around the labelled frozen pose. |
+| `screens/Results` | Actual rank/counts/statistics, source-appropriate motion/proxy explanation and guarded Retry/Songs around a labelled saved moment. |
+| `components/MenuShell` | Exports shared `MenuShell`, `Figure`, `RailPager`, `Button` and `StatusMessage`; owns stable rail/compact composition and secondary Settings pages. |
+| `ui/menuTargets.ts` | Registers semantic targets, geometry, allowed surface/epoch, native-only and disabled guards for shared actions. |
+| `strings.ts` | Shared player copy; the full catalogue above is a target, not proof that every proposed nested key exists. |
 | `theme.css` | Tokens, fonts, panel/button base styles, reduced-motion rules. |
 
+The earlier proposed standalone `Numeric`, `MultiplierRing`, `JudgementPops`, `WaveMeter`, `Tooltip`, `DebugOverlay` and world-to-screen pop helper are not current UI modules. Their behaviours remain acceptance/design work above; do not import phantom component paths or claim those details from the existing aggregate HUD.
+
 ## Acceptance criteria
+
+These remain release requirements, not a declaration of passes. The dataset-first action priority deliberately defers criterion 2's original camera prominence. Dataset results do not satisfy live calibration/hand checks; the separate source exception is documented in [25](25-menu-and-hand-navigation.md#dataset-trial-exception).
 
 1. Every machine state renders exactly one screen component; an unknown state shows a recoverable failure with Retry/Return to songs guidance and records the error. It never becomes a blank screen or fabricated success.
 2. No visible raw `<video>` element exists. Before valid camera setup/calibration, SELECT browsing shows a labelled illustrative human placeholder and prominent Set Up Camera action; a labelled live setup preview is confined to setup. Valid setup replaces the placeholder with the live neon figure; saved/frozen figures are labelled accurately.
@@ -547,7 +556,7 @@ Subscribe once per adapter lifetime and return an unsubscribe/dispose function; 
 5. The play area rectangle contains no DOM element other than judgement pops.
 6. Judgement pops appear within one frame of the event at the projected impact position, within 8 px of the projected block centre in the debug overlay check.
 7. Store text updates are flushed at ≤ 20 Hz (verified by counting `set` calls over 5 s in dev; ≤ 100 + pops).
-8. Start is disabled until the selected map/audio and current camera/tracking/calibration readiness all pass; disabled native or hand activation does nothing. The visible reason identifies the unmet condition.
+8. Live Start is disabled until the selected map/audio and current camera/tracking/calibration readiness all pass; disabled native or hand activation does nothing. The visible reason identifies the unmet condition. Dataset start has its separate labelled readiness guard and cannot weaken the live guard.
 9. Calibration ticks turn on only after `CALIB_PRESENCE_MS`; the coaching line shows the highest-priority string and updates within 200 ms of the condition changing.
 10. SELECT, eligible CALIBRATION actions, PAUSED and RESULTS are operable by mouse alone, keyboard alone, and the selected hand after setup. Native permission/audio/file/text boundaries show the required real-input action. PLAYING never treats a Point/Beam gesture as a menu click.
 11. RESULTS shows real `SessionStats`, a clearly labelled motion estimate, and the valid owned highlight if available; Enter retries and Esc returns to Select. Missing snapshots never hide real stats.
@@ -560,7 +569,7 @@ Subscribe once per adapter lifetime and return an unsubscribe/dispose function; 
 18. The protected figure stage stays free of opaque/intercepting menu panels at the supported laptop viewport/zoom sizes. Side-rail pagination keeps every action reachable; no central overlay or hand-only drag is needed to choose a starter song or start/retry/return.
 19. At least three attributed bundled starter tracks appear with real manifest metadata, support explicit preview/stop and can begin play without upload/network/companion after asset preparation. Missing assets produce an honest error and fail release acceptance.
 20. A point transition activates the last armed open-palm target once. Held pointing, entering a new screen while pointing, jitter beyond the guard, target movement, stale/lost tracking and native-input handover never create a repeated or wrong-target click. Replay and live checks cover both chosen hands.
-21. Camera-denied, no-camera and uncalibrated cases still open the usable music menu with a placeholder. Setup can run without any song/audio selected; Cancel/error preserves browsing. Only real tracking/valid calibration enables the corresponding status and Start guard.
+21. Camera-denied, no-camera and uncalibrated cases still open the usable music menu with a placeholder. Setup can run without any song/audio selected; Cancel/error preserves browsing. Only real tracking/valid calibration enables the corresponding live status and live Start guard.
 
 ## Constants required
 

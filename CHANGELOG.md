@@ -12,6 +12,7 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: exercise the real camera → MediaPipe → scoring path with a moving performer.
 - Validation: `npm run check` 424 tests in 50 files and build passed; trial: MediaPipe detected pose and both hands in 100% of rendered frames, handedness 690/690. Calibration was not accepted at 3.5 Hz / 311 ms inference under 82–86% machine load, so no notes were scored through the camera.
 - Limits: synthetic render, not a person or webcam; the avatar's head renders tilted (face error ~0.5 shoulder widths); play-to-results comparison with the logic replay still needs an idle machine.
+
 ## 2026-10-25T04:58:00+05:30 — Rigged avatar replaces the outline and line figure
 
 - Changed: `render/renderer.ts` loads `avatar.glb` (tier `AVATAR_TIER_FIGURE`; low tier and load failure keep the line skeleton) and drives it from tracking/dataset/synthetic frames, an illustrative idle in the menu placeholder (static in Calm), a frozen pose when paused and the saved pose in results; the mask silhouette and line skeleton hide while the avatar shows. The avatar draws after the arena and before a depth-clear sentinel so all targets/effects render over it, in both the post-FX and direct paths. `MenuShell` `Figure` shows the SVG outline only when the avatar failed or is disabled and reports the placeholder state to the renderer. Fixed side mapping for ears/eyes/hand points in retargeting. Placeholder scale/height retuned.

@@ -411,10 +411,6 @@ function useSettingsPages(runtime: GameRuntime, enabled: boolean): MenuPage[] {
             {camera.calibrationValid ? strings.cameraReconfigure : strings.cameraSetup}
           </Button>
           {!camera.calibrationValid && <p className="note native-note">{strings.nativeCamera}</p>}
-          <Button runtime={runtime} id="camera-dataset" nativeOnly disabled={camera.state === 'setting-up'}>
-            {strings.datasetCameraUse}
-          </Button>
-          <p className="note">{strings.datasetCameraAbout}</p>
           <Button runtime={runtime} id="start" disabled={!canStartLive}>
             {strings.startLive}
           </Button>
@@ -422,6 +418,20 @@ function useSettingsPages(runtime: GameRuntime, enabled: boolean): MenuPage[] {
           <Button runtime={runtime} id="camera-off" disabled={!camera.calibrationValid}>
             {strings.cameraOff}
           </Button>
+        </>
+      ),
+    });
+  if (state === 'SELECT')
+    pages.push({
+      id: 'settings-dataset-camera',
+      label: strings.datasetCameraUse,
+      content: (
+        <>
+          <RailHeading eyebrow={strings.settings} title={strings.datasetCameraUse} />
+          <Button runtime={runtime} id="camera-dataset" nativeOnly disabled={camera.state === 'setting-up'}>
+            {strings.datasetCameraUse}
+          </Button>
+          <p className="note">{strings.datasetCameraAbout}</p>
         </>
       ),
     });

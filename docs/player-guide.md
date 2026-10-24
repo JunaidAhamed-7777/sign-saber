@@ -68,7 +68,7 @@ npm run models
 
 If using production preview, rebuild after downloading them. On the menu, page to **Settings → Camera & live play**, choose **Set up camera** with mouse or keyboard, and allow browser camera access. No song needs to be selected first.
 
-Frame your head, shoulders, hands and hips in a clear, comfortable space. Hold still until both hands and the framing checklist are ready, then choose **Confirm camera & position**. Permission alone does not establish calibration. Choose music, enable sound and use **Start** on the camera/live-play page, then **Confirm ready** when the pre-play guide is ready. Cancel or Esc returns to music if setup cannot complete.
+Frame your head, shoulders, hands and hips in a clear, comfortable space. Hold still until both hands and the framing checklist are ready, then choose **Confirm camera & position**. Permission alone does not establish calibration. Choose music, enable sound and use **Start live play** on the camera/live-play page, then **Confirm ready** when the pre-play guide is ready. Cancel or Esc returns to music if setup cannot complete.
 
 After tracking is ready, an open palm moves the menu pointer. Point deliberately to click once, then open your palm again before the next click. The permission dialog, sound enable and file picker still need mouse or keyboard.
 
@@ -89,4 +89,4 @@ Page to **Settings → Sound & visuals** and toggle **Standard visuals** to **Ca
 
 For missing sound, unavailable tracks, camera errors or low frame rate, see [Troubleshooting](troubleshooting.md). Stop if movement hurts, and keep the space around you clear.
 
-The screenshots were captured on 2026-10-25 from a production build of [main commit cfdcc40](https://github.com/JunaidAhamed-7777/sign-saber/commit/cfdcc40) in headless Chrome 155.0.8059.86 on Windows, using SwiftShader with muted output. They are actual app captures encoded as WebP; they are not live-camera, audible-sync, accessibility or GPU-performance evidence.
+The screenshots were captured on 2026-10-25 from a production build of [main commit 752acf3](https://github.com/JunaidAhamed-7777/sign-saber/commit/752acf3) in headless Chrome 155.0.8059.86 on Windows, using SwiftShader with muted output. They are actual app captures encoded as WebP; they are not live-camera, audible-sync, accessibility or GPU-performance evidence.

@@ -22,7 +22,9 @@ describe('tracking contracts (synthetic, no webcam)', () => {
     const mask = new Uint8Array(2);
     copyMirroredMask(new Float32Array([0.2, 0.8]), 2, 1, mask, 2, 1);
     expect([...mask]).toEqual([204, 51]);
-    expect(playerHandFromModel('Left')).toBe('right'); // Adapter test is not a labelled live-right-hand validation.
+    // raw-model-label-v2 follows dataset-camera COCO wrist evidence; not a labelled live-hand validation.
+    expect(playerHandFromModel('Left')).toBe('left');
+    expect(playerHandFromModel('Right')).toBe('right');
   });
   it('returns transfer ownership without reusing detached buffers', () => {
     const buffers = allocateTrackingBuffers();

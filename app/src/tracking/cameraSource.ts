@@ -2,7 +2,7 @@
  * Sign Saber — tracking/cameraSource.ts
  *
  * Responsibility: injectable MediaStream acquisition for the single live camera path.
- * Spec: docs/05-tracking-pipeline.md §1.1 and §1.4
+ * Spec: docs/05-tracking-pipeline.md §1.1 and §1.3
  * Inputs: browser media APIs (webcam) or a labelled dataset reel (dataset camera)
  * Outputs: one MediaStream; everything after the stream is unchanged
  *

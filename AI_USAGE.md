@@ -7,6 +7,7 @@ The development workflow also occasionally includes collaboration with **Devin**
 ## 2026-10-25 — Player, troubleshooting and contributor guides (issue #5)
 
 - Codex wrote and independently reviewed guides against current UI/runtime sources, exact recovery messages and the constants/evidence contracts. It captured and inspected four actual production-app WebPs, including a complete labelled synthetic-performer run, and refreshed the wording/captures after concurrent main updates. No gameplay implementation or live-camera evidence is attributed to this documentation work.
+- After the first documentation milestone, Codex normally integrated main `752acf3`, rechecked the exact live-play label and dataset-camera distinction, refreshed all captures and repeated the full application/browser checks before opening the issue PR.
 
 ## 2026-10-25 — Fixed-tier integration and requested handoff
 

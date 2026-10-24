@@ -21,7 +21,7 @@ Start with [AGENTS.md](../AGENTS.md), [the roadmap](../ROADMAP.md), [the documen
 flowchart LR
     Camera["CameraController<br/>camera capture"] -->|"ImageBitmap + capture time"| Worker["Tracking worker<br/>MediaPipe inference"]
     Worker --> Frame["TrackingFrame"]
-    Dataset["Labelled dataset / synthetic / replay source"] --> Frame
+    Dataset["Still-annotation / synthetic / replay source"] --> Frame
     Frame --> Pipeline["InputPipeline<br/>filter, identity, gestures, lean"]
     Pipeline -->|"HandCursor + BodyState"| Session["GameSession<br/>contact, judge, score"]
     Clock["Audio SongClock + BeatmapV1"] --> Session
@@ -77,7 +77,7 @@ CI currently runs Node 22 application typecheck/lint/tests/build plus the two ro
 ## Keep evidence lanes separate
 
 - **Live:** actual consenting person, webcam pixels and inference. Record device/browser/environment and what was observed. A GPU preview alone is not calibrated gameplay or a scored live hit.
-- **Dataset:** independent attributed COCO still annotations. No temporal hand labels, masks or physical movement are invented; missing gestures produce misses.
+- **Dataset:** independent attributed COCO still annotations. No temporal hand labels, masks or physical movement are invented; missing gestures produce misses. The separate prepared-photo dataset-camera lane exercises inference, but is still not a live person or temporal motion dataset.
 - **Synthetic performer:** chart-planned motion through `InputPipeline` and `GameSession`. Positive scores prove those synthetic inputs exercised scoring; they say nothing about recognition accuracy.
 - **Logic replay:** deterministic fixtures/timestamps used to compare judgement sequences and totals, including alternate render cadences and late packets. Mark synthetic versus consented-recording provenance. Replay is never a substitute for a live-camera benchmark.
 

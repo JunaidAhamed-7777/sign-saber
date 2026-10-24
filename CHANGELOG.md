@@ -13,6 +13,14 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: New `tests/renderTrails.test.ts` (4 assertions: monotone growth to the measured length, hilt on the palm, retract/reset, no NaNs on stationary history, tier draw ranges). Typecheck, lint and build pass; full vitest 364/366 — the two failures are arrangement-audio tests timing out under concurrent Blender/Chrome load (20–60 s each), unrelated to rendering. Native Chrome synthetic-performer screenshots (planned motion, no camera) inspected.
 - Limits: Tip sparks, beam-noise cylinder and hit spark bursts are not implemented; no allocation profile or GPU timing was measured.
 
+## 2026-10-25T04:42:00+05:30 — Hit spark bursts and subtle gameplay camera response
+
+- Changed: `render/sparks.ts` adds a bounded spark pool (`HIT_SPARK_POOL` × `HIT_SPARKS`, one additive Points draw, closed-form motion, seeded directions) for Slash hits (spray flattened into the cut plane) and Smash hits; tier count follows the poof preset and Calm halves it. `render/cameraRig.ts` adds trauma-based smooth value-noise shake (hits, perfect, bad cut, obstacle, kick, drop; capped by `SHAKE_MAX_M`/`SHAKE_MAX_ROLL_DEG`) and a `CAMERA_BASS_FOV_DEG` breath, active only in play and never in Calm.
+- Why: Hit payoff and kinetic response from docs 11–13, kept restrained per the user's playability request.
+- Validation: Lint, build and 64 render/quality/slicer assertions pass; synthetic-performer trial screenshot in native Chrome inspected (planned motion, no camera).
+- Limits: No frame-safety projection test for the shake, no GPU timing, no flashing review.
+
+## 2026-10-25T04:37:00+05:30 — Blade ribbons, hand particles and a cleaner shatter
 ## 2026-10-25T04:41:00+05:30 — Dataset camera trial evidence and docs
 
 - Changed: added `docs/evidence/2026-10-25-dataset-camera-trial.md` with the final run's JSON, per-lane app evidence and setup screenshots; docs05 §1.3, docs17 §3, docs24 §2/§9 and README describe the dataset camera, harness and judgement trace (docs05 handedness link now points at the trial report). The camera controller keeps the last stopped source's evidence so failed dataset runs stay inspectable. A refused camera Confirm (readiness lapsed between display and click) now shows the existing framing status instead of being ignored silently. The harness treats a guard flipping between check and click as "not yet clickable", retries guarded clicks like a persistent user, waits for a genuinely new setup preview and handles fatal pauses.

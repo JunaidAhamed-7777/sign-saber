@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T03:46:00+05:30 — Watchable synthetic performer trial
+
+- Changed: Added `performer/trial.ts` and a **Watch synthetic performer** action. The runtime drives the selected (arranged) chart with planned performer frames through the same tracking consumer, renderer, scoring and results as other sources, calibrates the performer's lean reference once it stands still, shows hand HUD state and exports evidence lane `synthetic-performer-logic-replay`. A source-aware `ui/trialCopy.ts` labels banner, status, setup, figure and results honestly for annotations versus performer.
+- Why: The user wants to see whether the game works without a camera; the performer makes the full loop visible and exercises the runtime, renderer and results path with genuine hits.
+- Validation: In the desktop app's embedded Chromium, Pamgaea → Enable sound → Watch synthetic performer built the 80-second cut and played with PERFECT judgements (screenshot during play: score 4,000, combo 18, accuracy 100%). Full `npm run check` passed.
+- Limits: Planned synthetic landmarks only; no pixels, MediaPipe, webcam or human. The skeleton is still the line figure until the avatar branch lands.
+
 ## 2026-10-25T03:34:38+05:30 — Opaque boot splash and arrangement source card
 
 - Changed: BOOT is now an opaque void splash (hidden header, unwrapped wordmark, indeterminate bar); `index.html` shows a static pre-boot mark until React mounts and its description no longer claims full-body play. After an 80-second cut is prepared (which clears the bundled selection), the source song card is marked “Arrangement ready” and the ready header keeps the source cover/artist.
@@ -13,18 +20,19 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: `npm run check` passed on rerun (two arrangement/gapless tests timed out once under parallel-agent CPU load, then all 324 passed); headless Chrome boot (held manifest), compact settings/calibration/HUD (1024×640, 800×600) and 1920×1080 HUD/return-to-songs screenshots were inspected.
 - Limits: Presentation-only; no live camera or hand-navigation verification.
 
+## 2026-10-25T03:34:00+05:30 — wip: dataset camera source, photo reel and judgement trace
+
+- Changed: `tracking/camera.ts` now takes an injectable `CameraStreamSource` (`tracking/cameraSource.ts`): the default `WebcamSource` keeps the previous `getUserMedia` behaviour; `DatasetCameraSource` (`tracking/datasetCamera.ts`) streams a real `canvas.captureStream(CAM_REQ_FPS)` whose frames come from a pluggable `DatasetReel`. From the stream onward nothing changes (same video element, rVFC, ImageBitmap crop, worker, MediaPipe, calibration, judgement). `PhotoReel` (`tracking/datasetCameraReel.ts`) draws locally prepared, hash-pinned COCO CC-BY crops (bounded to current + one prefetched bitmap, closed on replacement) either synchronized to heard song time (`song`) or cycling by stream time (`?reel=sweep`). `DatasetCameraEvaluator` attributes captures to the drawn photo via a bounded draw timeline and reports per-photo pose/hand detection, MediaPipe-vs-annotation joint error normalized by shoulder width, wrist-handedness agreement and processed gestures. Enabled by `?camera=dataset` or the new SELECT Settings action **Use dataset camera**; labelled "Dataset camera — not a webcam" in statuses, header, banner and figure caption; evidence lane `dataset-camera`. New `core/judgementTrace.ts` `JudgementTraceRecorder` (typed bounded columns, emission order, explicit overflow/repeat counts, idempotent attach/detach, async SHA-256 excluding delivery timestamps) is attached by the runtime and exported with diagnostics (schema 2, now also calibration/results). `?stats=1` exposes a read-only `__signSaberDiagnostics` snapshot for automation. New `scripts/prepare-dataset-camera.mjs` (declared selection rules, ZIP-member reader, ffmpeg crop, manifest/attribution into ignored `app/public/dataset-camera/`), `scripts/cdp-client.mjs` and `scripts/dataset-camera-trial.mjs` (CDP-driven in-app, sweep and Chrome fake-webcam Y4M lanes). Registered the new constants in docs02.
+- Why: the existing dataset trial bypasses the camera and MediaPipe; this lets dataset input exercise the real live path, and supplies the docs24 judgement-trace checksum.
+- Validation: `npm run check` (typecheck, lint, 342 tests in 44 files, build) and prettier passed; `node --test scripts/prepare-dataset-camera.test.mjs` 5/5. Exploratory headless/headful sweep runs reached GPU preview through the canvas stream on all 24 photos (results to be recorded with the trial evidence).
+- Limits: still photos are not a webcam, a person, motion or swings; no gameplay hit is expected. Reel pixels are local only. Work in progress: trial evidence, docs and handedness findings follow.
+
 ## 2026-10-25T03:28:35+05:30 — Song card status line, upload heading and live-start label
 
 - Changed: Loading/failed status now replaces the song card's meta line (no title truncation); the selected card shows a compact check badge. The upload page uses its own heading with a visually hidden input label, the live camera action reads “Start live play”, and the decorative keyboard glyph was removed from native-only notes.
 - Why: Screenshot review showed the right-column status tag squeezing titles and duplicate upload headings.
 - Validation: `npm run check` passed (324 assertions, build); headless Chrome screenshots of a blocked-audio failure, settings pages and credits at 1440×900 and 800×600 were inspected.
 - Limits: Presentation-only; no live camera or hand-navigation verification.
-## 2026-10-25T03:46:00+05:30 — Watchable synthetic performer trial
-
-- Changed: Added `performer/trial.ts` and a **Watch synthetic performer** action. The runtime drives the selected (arranged) chart with planned performer frames through the same tracking consumer, renderer, scoring and results as other sources, calibrates the performer's lean reference once it stands still, shows hand HUD state and exports evidence lane `synthetic-performer-logic-replay`. A source-aware `ui/trialCopy.ts` labels banner, status, setup, figure and results honestly for annotations versus performer.
-- Why: The user wants to see whether the game works without a camera; the performer makes the full loop visible and exercises the runtime, renderer and results path with genuine hits.
-- Validation: In the desktop app's embedded Chromium, Pamgaea → Enable sound → Watch synthetic performer built the 80-second cut and played with PERFECT judgements (screenshot during play: score 4,000, combo 18, accuracy 100%). Full `npm run check` passed.
-- Limits: Planned synthetic landmarks only; no pixels, MediaPipe, webcam or human. The skeleton is still the line figure until the avatar branch lands.
 
 ## 2026-10-25T03:24:55+05:30 — Interface shell, generated covers and compact reflow
 

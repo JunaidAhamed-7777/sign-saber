@@ -1,5 +1,11 @@
 /** Player-facing copy. Technical acquisition/setup commands belong in the README. */
+import { DATASET_CAMERA_LABEL } from '../tracking/datasetCamera';
 export const strings = Object.freeze({
+  datasetCamera: DATASET_CAMERA_LABEL,
+  datasetCameraUse: 'Use dataset camera',
+  datasetCameraAbout:
+    'Testing aid: attributed still photos stream through the real camera pipeline. Not a webcam; photos contain no swings or gestures.',
+  datasetCameraBanner: 'DATASET CAMERA · still photos through the live camera path · not a webcam',
   calmSystem: 'Calm visuals follow your system reduced-motion preference.',
   datasetComplete: 'Dataset trial complete. These still poses contain no hand-gesture labels.',
   datasetSource: 'Dataset annotations · no webcam',

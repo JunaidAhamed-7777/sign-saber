@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import glsl from 'vite-plugin-glsl';
@@ -48,4 +49,7 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['@mediapipe/tasks-vision'],
   },
+  // Full-chart replays and real-asset decodes share the host with builds and training; keep
+  // timeouts generous so a busy CPU is not reported as a behavioural failure.
+  test: { testTimeout: 20000 },
 });

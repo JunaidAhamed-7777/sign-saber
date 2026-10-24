@@ -257,6 +257,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
   const mask = useStore((s) => s.maskAvailable);
   const replay = useStore((s) => s.replay);
   const trialSource = useStore((s) => s.trialSource);
+  const datasetCamera = useStore((s) => s.cameraSource === 'dataset');
   const live = available && (replay || camera.calibrationValid || camera.mode === 'camera-setup');
   const saved = state === 'RESULTS' && highlight !== null;
   const frozen = state === 'PAUSED' && !!runtime.renderer?.hasFrozenFigure;
@@ -322,6 +323,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
       {state !== 'PLAYING' && (
         <p className="figure-caption">
           {label}
+          {datasetCamera && !placeholder ? ` · ${strings.datasetCamera}` : ''}
           {saved ? ` · ${Math.max(0, highlight! / 1000).toFixed(1)} s` : ''}
         </p>
       )}
@@ -405,6 +407,10 @@ function useSettingsPages(runtime: GameRuntime, enabled: boolean): MenuPage[] {
             {camera.calibrationValid ? strings.cameraReconfigure : strings.cameraSetup}
           </Button>
           {!camera.calibrationValid && <p className="note native-note">{strings.nativeCamera}</p>}
+          <Button runtime={runtime} id="camera-dataset" nativeOnly disabled={camera.state === 'setting-up'}>
+            {strings.datasetCameraUse}
+          </Button>
+          <p className="note">{strings.datasetCameraAbout}</p>
           <Button runtime={runtime} id="start" disabled={!canStartLive}>
             {strings.startLive}
           </Button>

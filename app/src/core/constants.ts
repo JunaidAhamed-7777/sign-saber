@@ -394,6 +394,22 @@ export const ARENA_REACTIVE_GAIN = 2,
 export const DATASET_TRIAL_MAX_SAMPLES = 100,
   DATASET_TRIAL_MAX_CATCHUP_FRAMES = 300;
 
+// ── Begin dataset-camera / judgement-trace block (docs02 registry; docs05 §1.4; docs24 §9) ──
+// A labelled canvas MediaStream fed through the unchanged live path. Never webcam evidence.
+export const DATASET_CAMERA_MANIFEST_URL = '/dataset-camera/manifest.json',
+  DATASET_CAMERA_MAX_ITEMS = 200,
+  DATASET_CAMERA_MAX_FILE_BYTES = 4 * 1024 * 1024,
+  DATASET_CAMERA_HOLD_MS = 5000,
+  DATASET_CAMERA_HOLD_MIN_MS = 1000,
+  DATASET_CAMERA_HOLD_MAX_MS = 60000,
+  DATASET_CAMERA_SWEEP_FIRST_HOLD_MS = 20000,
+  DATASET_CAMERA_TRANSITION_GUARD_MS = 300,
+  DATASET_CAMERA_TIMELINE_CAPACITY = 1024,
+  DATASET_CAMERA_MATCH_SHOULDER_FRACTION = 0.5,
+  DATASET_CAMERA_PCK_SHOULDER_FRACTION = 0.5;
+export const JUDGEMENT_TRACE_CAPACITY = 8192;
+// ── End dataset-camera / judgement-trace block ──
+
 export const POOF_POOL = 6,
   POOF_SPARKS = 24,
   POOF_POWERDOWN_MS = 150,

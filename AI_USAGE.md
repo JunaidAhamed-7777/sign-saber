@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Prepared PR-integration verification
+
+- Codex reused the tracked browser journey to verify the newer normally integrated production build after all 481 application assertions passed. It retained the real 84-hit result and zero console/CSP errors as a separate prepared-build lane, keeping earlier clone/install and failure-control evidence at their actual SHAs.
+
 ## 2026-10-25 — Release-drill PR integration
 
 - Codex preserved the completed clean-clone evidence, normally integrated newer main for the opened PR, ran the updated 481-assertion application check, and exposed the unchanged browser journey for a separately labelled prepared-build integration smoke run.

@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:03:12+05:30 — Verify the PR's prepared integration build
+
+- Changed: Retained separately labelled prepared-build JSON/Markdown and linked them from docs17. The exact tracked browser journey was reused on committed integration `f68f84e933bb6495bc66f80da455f7b3ae5e3fd8` (main `db45982`); the earlier clean-clone and missing-asset artifacts keep their own tested SHAs. This publication changes documentation only.
+- Why: The opened PR needed a newer normal integration. Verify its actual presentation/audio/game flow without relabelling earlier installation evidence or duplicating a browser driver.
+- Validation: The integrated source passed full `npm run check` (481 assertions/55 suites/build). Its prepared production build passed BOOT → selection → native sound enable → real 80-second synthetic performer → Results (84 Perfect, zero misses, 54,700 score) → Retry → play → pause → Songs. Runtime/console, CSP and interception errors were zero; cleanup succeeded. Root documentation tests/checker passed for these artifacts.
+- Limits: This supplemental run is explicitly not a new clone/install exercise. Camera/models, people, recognition, audible sync and performance targets remain outside its scope. The separately recorded clean-clone pass and intentional catalog-404 failure remain the release-drill control evidence; later main commits are outside this frozen integration.
+
 ## 2026-10-25T05:25:00+05:30 — Synthetic performer reel for the dataset camera
 
 - Changed: new `tracking/performerReel.ts` renders the skinned avatar (`AvatarFigure.poseFromJoints`, natural variant, no outline) in a plain room from a virtual front camera framed to `PERFORMER_SHOULDER_WIDTH_NORM`, posed each frame from `Choreography`/`performerJoints` on the session song clock (rest pose outside a session; arm and face depth from the rig's proportions), drawn into the dataset-camera canvas. Enabled with `?camera=dataset&reel=performer`; evidence lane `dataset-camera-synthetic-performer` (reels may now declare their lane; the runtime keeps the last lane after the camera stops). `?stats=1` diagnostics expose the current dataset frame image (never for a webcam). Harness lane `performer` (low tier) saves the rendered camera frame. Registered the PERFORMER_REEL_* constants.

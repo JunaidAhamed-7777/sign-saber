@@ -10,7 +10,7 @@ export interface RuntimeFlags {
   /** `?camera=dataset` feeds the labelled dataset camera through the unchanged live camera path. */
   readonly camera: 'webcam' | 'dataset';
   /** Dataset-camera reel clock: `song` holds the calibration photo until song time 0; `sweep` cycles by stream time. */
-  readonly reel: 'song' | 'sweep';
+  readonly reel: 'song' | 'sweep' | 'performer';
   readonly reelHoldMs: number;
   /** 0 keeps the prepared manifest order; any other value deterministically reorders non-calibration photos. */
   readonly reelSeed: number;
@@ -31,7 +31,7 @@ export function readFlags(search: string, development: boolean): Readonly<Runtim
     contrast: p.get('contrast') === '1',
     difficulty: difficulty === 'easy' || difficulty === 'hard' ? difficulty : 'normal',
     camera: p.get('camera') === 'dataset' ? 'dataset' : 'webcam',
-    reel: p.get('reel') === 'sweep' ? 'sweep' : 'song',
+    reel: p.get('reel') === 'sweep' ? 'sweep' : p.get('reel') === 'performer' ? 'performer' : 'song',
     reelHoldMs:
       Number.isInteger(hold) && hold >= DATASET_CAMERA_HOLD_MIN_MS && hold <= DATASET_CAMERA_HOLD_MAX_MS
         ? hold

@@ -45,6 +45,14 @@ Under the load above, worker inference was 177–429 ms per frame (p50 177 ms sw
 
 Two further load-dependent failures were observed: the cold first GPU result exceeded the 15 s `TRACK_FIRST_RESULT_TIMEOUT_MS` on the first setup in a fresh profile (an exploratory headful run and the retained a-priori sweep; the immediate retry succeeded), and one sweep ended with the 1 s steady-state stall watchdog. On this machine earlier the same day under lighter load, an exploratory, unretained headless sweep ran at ~8 Hz with 128 ms inference. None of these numbers support a performance claim either way; the trial must be repeated on an otherwise idle machine before judging the live path's speed.
 
+## Synthetic performer reel (later the same night)
+
+`?camera=dataset&reel=performer` renders the skinned avatar (natural material, plain warm-grey room, front camera framed to shoulder width 0.24) posed every frame from the chart choreography on the session song clock, into the same dataset-camera canvas (lane `dataset-camera-synthetic-performer`). Command: `node scripts/dataset-camera-trial.mjs --lanes performer --tag performer`. Records: [trial](2026-10-25-dataset-camera-performer-trial.json), [app evidence](2026-10-25-dataset-camera-performer-performer-app-evidence.json), [rendered camera frame](2026-10-25-dataset-camera-performer-performer-camera-setup.jpg).
+
+- **MediaPipe sees the rendered avatar:** pose in 100% and two hands in 100% of 345 attributed frames; handedness agreed with the planned anatomical side for 690/690 matched hands. Errors against the planned joints (shoulder widths): shoulders 0.03–0.17, elbows 0.03–0.08, wrists 0.13–0.14, hips 0.15–0.22, face 0.42–0.55. The face error is real model mismatch: the avatar's head renders strongly tilted (visible in the frame) and its proportions differ from the performer geometry. The rest pose's relaxed hands classify as `none`, as intended.
+- **Calibration and play were not reached.** Machine CPU was 86% busy before launch and 82% during the lane (training still running); tracking ran at 3.5 Hz with 311 ms inference, so 270 of 345 results were older than `INPUT_MAX_AGE_MS` and freshness never held long enough to accept Confirm (17 clicks in 90 s). An earlier attempt at ~45–70% load gave 2.6 Hz/194 ms with the same outcome. The first setup attempt again hit the 15 s cold first-result deadline; the retry succeeded.
+- **Notes scored through the camera: 0 (not reached).** The logic replay of the same choreography (`tests/performer.test.mjs`) is the comparison baseline; it bypasses the camera and MediaPipe. A fair camera-path comparison needs an idle machine (≥ ~10 Hz, < ~150 ms inference).
+
 ## What remains
 
 - Repeat the full lane (calibrate → Start → count-in → play → pause/resume → Results → Retry → Songs → camera off/cancel) on an idle machine; the harness implements every step and retries guarded clicks like a persistent user.

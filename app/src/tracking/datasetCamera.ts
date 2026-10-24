@@ -31,6 +31,8 @@ export interface ReelClock {
  */
 export interface DatasetReel {
   readonly kind: string;
+  /** Evidence lane; defaults to `dataset-camera`. */
+  readonly lane?: string;
   /** Captures inside this window after a truth change are not attributed to either truth. */
   readonly transitionGuardMs: number;
   prepare(signal: AbortSignal): Promise<void>;
@@ -83,7 +85,9 @@ export class DrawTimeline {
 export class DatasetCameraSource implements CameraStreamSource {
   readonly kind = 'dataset' as const;
   readonly label = DATASET_CAMERA_LABEL;
-  readonly lane = 'dataset-camera';
+  get lane(): string {
+    return this.reel.lane ?? 'dataset-camera';
+  }
   readonly timeline = new DrawTimeline();
   readonly evaluator = new DatasetCameraEvaluator();
   private canvas: HTMLCanvasElement | null = null;
@@ -142,6 +146,10 @@ export class DatasetCameraSource implements CameraStreamSource {
   }
   observeProcessed(tCapture: number, hands: readonly HandCursor[]): void {
     this.evaluator.processed(this.timeline.at(tCapture, this.reel.transitionGuardMs), hands);
+  }
+  /** Current dataset frame as a JPEG data URL for diagnostics (dataset pixels only, never a webcam). */
+  frameDataUrl(): string | null {
+    return this.canvas && this.canvas.width ? this.canvas.toDataURL('image/jpeg', 0.85) : null;
   }
   evidence(): Record<string, unknown> {
     return {

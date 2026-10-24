@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Release-drill PR integration
+
+- Codex preserved the completed clean-clone evidence, normally integrated newer main for the opened PR, ran the updated 481-assertion application check, and exposed the unchanged browser journey for a separately labelled prepared-build integration smoke run.
+
 ## 2026-10-25 — Integrated release-drill proof
 
 - Codex reran the actual clean-clone/offline command on the normally integrated main snapshot after substantial chart, rendering and SFX changes. It recorded 480 passing assertions, 84 actual synthetic hits and zero console/CSP errors, preserved the prior positive and deliberately broken runs at their original SHAs, and updated the evidence links without claiming human or release acceptance.

@@ -211,7 +211,7 @@ async function waitFor(check, message, timeout = BROWSER_STEP_TIMEOUT_MS) {
   throw new Error(message);
 }
 
-async function browserJourney(clone, temporary, options, report, step) {
+export async function browserJourney(clone, temporary, options, report, step) {
   const { createStaticServer } = await import(
     pathToFileURL(join(clone, "scripts", "serve.mjs")).href
   );

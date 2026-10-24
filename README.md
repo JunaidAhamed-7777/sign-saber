@@ -104,7 +104,7 @@ The browser numeric harness requires Chrome (or `BROWSER_BINARY`) and ffmpeg; it
 
 ## Model research
 
-[Training notes](training/README.md) distinguish downloaded/licensed data, a real RGB training preflight and full training. New weights are not promoted into the game. The brief CPU preflight's validation loss worsened; exporting a numerically matching ONNX file is not proof of accurate tracking. Raw datasets, environments and research checkpoints remain local/ignored.
+[Training notes](training/README.md) distinguish downloaded/licensed data, a real RGB training preflight and full training. New weights are not promoted into the game. A partial COCO + MPII CPU run, stopped at 25% of planned steps, reached held-out PCK@0.2 0.334 on oracle crops. That is not good enough to replace MediaPipe; exporting a numerically matching ONNX file is not proof of accurate tracking. Raw datasets, environments and research checkpoints remain local/ignored.
 
 ## Sources and licenses
 

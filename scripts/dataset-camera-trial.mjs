@@ -6,6 +6,8 @@
  *   in-app       ?camera=dataset — the app's labelled canvas MediaStream ("Dataset camera — not a webcam"),
  *                photo reel synchronized to heard song time; per-photo MediaPipe-vs-annotation evaluation.
  *   sweep        ?camera=dataset&reel=sweep — setup preview only, every photo cycled by stream time.
+ *   performer    ?camera=dataset&reel=performer — the skinned avatar rendered (natural material) on the song
+ *                clock from the chart choreography; lane dataset-camera-synthetic-performer (synthetic).
  *   fake-webcam  Chrome --use-file-for-fake-video-capture=<reel>.y4m: the page's own unmodified
  *                getUserMedia sees the photo reel as a webcam. No app flag; the app cannot know.
  *
@@ -59,7 +61,7 @@ const lanes = option("lanes", "in-app,sweep,fake-webcam")
   .map((lane) => lane.trim())
   .filter(Boolean);
 for (const lane of lanes)
-  if (!["in-app", "sweep", "fake-webcam"].includes(lane))
+  if (!["in-app", "sweep", "fake-webcam", "performer"].includes(lane))
     throw new Error(`Unknown lane ${lane}`);
 const headless = args.includes("--headless");
 const song = option("song", "pamgaea");
@@ -283,6 +285,20 @@ class Lane {
     await this.page.click(id);
     this.log(`click ${id}`);
   }
+  /** Saves the dataset camera's own current frame (synthetic/dataset pixels only) for inspection. */
+  async datasetFrame(step) {
+    const url = await this.page.evaluate(
+      "window.__signSaberDiagnostics && window.__signSaberDiagnostics.datasetFrame ? window.__signSaberDiagnostics.datasetFrame() : null",
+    );
+    if (!url) return;
+    const file = `${prefix}-${this.name}-camera-${step}.jpg`;
+    await writeFile(
+      path.join(outDir, file),
+      Buffer.from(url.split(",")[1], "base64"),
+    );
+    this.screenshots.push(file);
+    this.log(`camera frame ${step}`, { file });
+  }
   async screenshot(step) {
     const file = `${prefix}-${this.name}-${step}.jpg`;
     await writeFile(path.join(outDir, file), await this.page.screenshot());
@@ -475,6 +491,8 @@ async function playLane(lane, cameraControl, downloadDir) {
       throw error;
     }
     outcome.setupAttempts.push(...setup.attempts);
+    if (round === 1 && lane.name === "performer")
+      await lane.datasetFrame("setup");
     outcome.setup = {
       delegate: setup.preview.tracking.delegate,
       initMs: setup.preview.tracking.initMs,
@@ -496,6 +514,8 @@ async function playLane(lane, cameraControl, downloadDir) {
         {
           timeoutMs: 30000,
           label: "calibration accepted",
+          timeoutMs: 90000,
+          settleMs: 300,
         },
       );
       outcome.calibration = "accepted";
@@ -563,6 +583,7 @@ async function playLane(lane, cameraControl, downloadDir) {
     if (s.state === "PLAYING" && !playingShot && s.songTimeMs > 12000) {
       playingShot = true;
       await lane.screenshot("playing");
+      if (lane.name === "performer") await lane.datasetFrame("playing");
     }
     if (s.state === "PLAYING" && !manualPauseDone && s.songTimeMs > 25000) {
       manualPauseDone = true;
@@ -1004,9 +1025,11 @@ async function main() {
       const query =
         name === "in-app"
           ? "?camera=dataset&stats=1"
-          : name === "sweep"
-            ? `?camera=dataset&reel=sweep&reelHold=${sweepHoldMs}&stats=1`
-            : "?stats=1";
+          : name === "performer"
+            ? "?camera=dataset&reel=performer&tier=low&stats=1"
+            : name === "sweep"
+              ? `?camera=dataset&reel=sweep&reelHold=${sweepHoldMs}&stats=1`
+              : "?stats=1";
       const page = await PageSession.attach(
         chrome.browser,
         `${origin}/${query}`,
@@ -1016,7 +1039,9 @@ async function main() {
         harnessLane:
           name === "fake-webcam"
             ? "chrome-fake-webcam-dataset"
-            : "dataset-camera",
+            : name === "performer"
+              ? "dataset-camera-synthetic-performer"
+              : "dataset-camera",
         url: `/${query}`,
         browserArgs: extra.map((arg) => arg.replace(temp, "<temp>")),
         gpuProgramCache:
@@ -1035,7 +1060,7 @@ async function main() {
             record,
             await playLane(
               lane,
-              name === "in-app" ? "camera-dataset" : "camera",
+              name === "fake-webcam" ? "camera" : "camera-dataset",
               path.join(temp, `downloads-${name}`),
             ),
           );

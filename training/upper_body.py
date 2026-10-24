@@ -127,20 +127,34 @@ def crop_input(image: Image.Image, original: np.ndarray, roi: np.ndarray, rng: r
     return image, points
 
 class UpperBodyDataset(Dataset):
+    """Compact per-sample arrays; the full index rows stay in the parent process and are not pickled to spawned workers."""
     def __init__(self, records, augment: bool = False):
         self.records, self.augment, self.epoch = records, augment, 0
+        self.images = [row["image"] for row in records]
+        self.sample_ids = [row["sampleId"] for row in records]
+        self.datasets = [row["dataset"] for row in records]
+        self.keypoints = np.asarray([row["keypoints"] for row in records], dtype=np.float32).reshape(len(records), len(KEYPOINTS), 3)
+        self.bboxes = np.asarray([row["bbox"] for row in records], dtype=np.float64).reshape(len(records), 4)
+        self.head_boxes = np.asarray([row.get("headBox") or [np.nan] * 4 for row in records], dtype=np.float64).reshape(len(records), 4)
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state.pop("records", None)
+        return state
     def __len__(self):
-        return len(self.records)
-    def __getitem__(self, index):
-        row = self.records[index]
-        path = (DATA / row["image"]).resolve()
-        original = np.asarray(row["keypoints"], dtype=np.float32)
-        with Image.open(path) as raw:
+        return len(self.images)
+    def sample(self, index):
+        """Real image and its annotation for one index (image path, keypoints, bbox, optional head box)."""
+        original = self.keypoints[index].copy()
+        with Image.open((DATA / self.images[index]).resolve()) as raw:
             image = raw.convert("RGB")
-        roi = upper_body_roi(original, row["bbox"], image.width, image.height, row.get("headBox"))
+        head = self.head_boxes[index]
+        return image, original, self.bboxes[index].tolist(), None if np.isnan(head).any() else head.tolist()
+    def __getitem__(self, index):
+        image, original, bbox, head_box = self.sample(index)
+        roi = upper_body_roi(original, bbox, image.width, image.height, head_box)
         rng = None
         if self.augment:
-            rng = random.Random(int.from_bytes(hashlib.sha256(f"{CONFIG['seed']}:{self.epoch}:{row['sampleId']}".encode()).digest()[:8], "big"))
+            rng = random.Random(int.from_bytes(hashlib.sha256(f"{CONFIG['seed']}:{self.epoch}:{self.sample_ids[index]}".encode()).digest()[:8], "big"))
         image, points = crop_input(image, original, roi, rng)
         size = CONFIG["imageSize"]
         heatmap_points = points.copy()
@@ -148,7 +162,7 @@ class UpperBodyDataset(Dataset):
         targets, weights = make_heatmaps(heatmap_points)
         pixels = np.asarray(image, dtype=np.float32) / 255
         tensor = torch.from_numpy(((pixels - IMAGE_MEAN) / IMAGE_STD).transpose(2, 0, 1).copy())
-        return {"image": tensor, "target": torch.from_numpy(targets), "weights": torch.from_numpy(weights), "groundTruth": torch.from_numpy(original.copy()), "roi": torch.from_numpy(roi), "sampleId": row["sampleId"], "dataset": row["dataset"]}
+        return {"image": tensor, "target": torch.from_numpy(targets), "weights": torch.from_numpy(weights), "groundTruth": torch.from_numpy(original.copy()), "roi": torch.from_numpy(roi), "sampleId": self.sample_ids[index], "dataset": self.datasets[index]}
 
 class UpperBodyNet(nn.Module):
     def __init__(self, pretrained: bool = True):

@@ -6,6 +6,20 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:25:00+05:30 — Synthetic performer reel for the dataset camera
+
+- Changed: new `tracking/performerReel.ts` renders the skinned avatar (`AvatarFigure.poseFromJoints`, natural variant, no outline) in a plain room from a virtual front camera framed to `PERFORMER_SHOULDER_WIDTH_NORM`, posed each frame from `Choreography`/`performerJoints` on the session song clock (rest pose outside a session; arm and face depth from the rig's proportions), drawn into the dataset-camera canvas. Enabled with `?camera=dataset&reel=performer`; evidence lane `dataset-camera-synthetic-performer` (reels may now declare their lane; the runtime keeps the last lane after the camera stops). `?stats=1` diagnostics expose the current dataset frame image (never for a webcam). Harness lane `performer` (low tier) saves the rendered camera frame. Registered the PERFORMER_REEL_* constants.
+- Why: exercise the real camera → MediaPipe → scoring path with a moving performer.
+- Validation: `npm run check` 424 tests in 50 files and build passed; trial: MediaPipe detected pose and both hands in 100% of rendered frames, handedness 690/690. Calibration was not accepted at 3.5 Hz / 311 ms inference under 82–86% machine load, so no notes were scored through the camera.
+- Limits: synthetic render, not a person or webcam; the avatar's head renders tilted (face error ~0.5 shoulder widths); play-to-results comparison with the logic replay still needs an idle machine.
+
+## 2026-10-25T04:59:57+05:30 — Resolve the release-drill PR's newer main integration
+
+- Changed: Normally integrated main `db45982567a217f861cd94e576d4629201a84a13` after the PR was opened; preserved its HUD/projection, camera-reel, training and historical work. Exported the existing browser journey unchanged so the post-integration prepared-build smoke check reuses the actual driver rather than duplicating it. The default release command still performs its fresh clone/install/check/build sequence.
+- Why: GitHub reported the focused PR needed integration with newer main. Keep the clean-clone evidence at its real `10bca5e` SHA and exercise the changed presentation path separately.
+- Validation: The integrated application passed typecheck, lint, 481 assertions in 55 suites and production build. Documentation validation passed. The exact browser journey follows on the committed prepared build; the earlier positive/negative clean-clone proof remains intact.
+- Limits: The supplemental prepared-build run is not a new clean-clone/install result and is labelled separately. No camera, person, recognition, audible-sync or performance claim is added.
+
 ## 2026-10-25T04:51:52+05:30 — Verify the normally integrated release-drill snapshot
 
 - Changed: Refreshed the canonical passing JSON/Markdown from the actual committed integration `10bca5ef1aa1aada09c06b1ead5139f7f4bf11c6` (main `09671b7`), archived the previous `d14c980` pass byte-for-byte, and updated docs17 to distinguish each tested source. This final evidence publication changes documentation only.
@@ -15,10 +29,19 @@ Implementation and historical specification work are recorded below. Automated, 
 
 ## 2026-10-25T04:50:00+05:30 — Blade ribbons, hand particles and a cleaner shatter
 
-- Changed: `render/blade.ts` adds per-hand blade ribbons (white-hot core plus tinted additive glow) rebuilt into preallocated buffers from the measured `HandCursor.history`, uniformly resampled by arc length, drawn length eased by a critically damped spring (`BLADE_LENGTH_SPRING_RAD_S`), reset on reacquisition and guarded against degenerate tangents. `render/trails.ts` adds tier-sized GPU particles per hand (two-ring orbit, fist knot, point cone; band-driven orbit speed, twinkle off in Calm) that elongate onto the blade spine. The renderer feeds the latest cursors (visual only) and hides trails in results/paused. Shatter pieces start at `SHATTER_PIECE_SCALE`, vanish by `SHATTER_VISIBLE_FRACTION` of the lifetime, use saturated magenta cross-sections and darker rims; the dev preview no longer has a hands toggle.
-- Why: The doc 12 blade/particle look was missing and busy smash runs still filled the near field with pale pieces.
-- Validation: New `tests/renderTrails.test.ts` (4 assertions: monotone growth to the measured length, hilt on the palm, retract/reset, no NaNs on stationary history, tier draw ranges). Typecheck, lint and build pass; full vitest 364/366 — the two failures are arrangement-audio tests timing out under concurrent Blender/Chrome load (20–60 s each), unrelated to rendering. Native Chrome synthetic-performer screenshots (planned motion, no camera) inspected.
-- Limits: Tip sparks, beam-noise cylinder and hit spark bursts are not implemented; no allocation profile or GPU timing was measured.
+## 2026-10-25T04:49:34+05:30 — Partial COCO + MPII run evaluated and exported
+
+- Changed: Compact dataset storage so worker processes no longer get a pickled copy of every index row (40.5 MB down to 12.9 MB per worker; items are byte-identical on 36 checked samples). Training now uses 1 DataLoader worker, and export checks the training contract instead of the raw config hash. STATUS.md/STATUS.json, training/README.md and README.md now record the partial run.
+- Why: The user asked to wrap up. The run was stopped at step 1,800 of 7,210 while the machine was memory-thrashing.
+- Validation: Full held-out evaluation (3,776 people, oracle crops): heatmap loss 0.00416 and pooled PCK@0.2 0.334 (COCO 0.393, MPII 0.310), compared with the untrained head (0.01808 / 0.016), the 3-step preflight (0.02128 / 0.014) and a mean-pose-in-crop guess (PCK 0.093). ONNX parity passed on 16 crops (1.8e-6). Unit tests pass 12/12.
+- Limits: This is a partial run: one epoch plus 358 batches, and the schedule never annealed. Results use oracle crops, with no detector and no browser or webcam evaluation. The model was not promoted, and the game keeps MediaPipe.
+
+## 2026-10-25T04:47:08+05:30 — Browser check of the synthesized SFX in the performer trial
+
+- Changed: Documentation only (this entry).
+- Why: Record what the headless browser run of the new SFX wiring actually showed.
+- Validation: Production build served by `scripts/serve.mjs` in headless Chrome (48 kHz, reported output latency 40 ms), driven over CDP with trusted clicks: Pamgaea → Enable sound → hover three buttons → Watch synthetic performer, one Escape pause and Resume, run to results. A read-only page probe counted buffer starts by shape: uiEnable 1, uiHover 3, countNeutral 3 (scheduled exactly −2.000/−1.339/−0.673 s before song start; final tick rate 1.25), smash 69, slash 58, sparkle 130, glint 1, zap 4, poof 4, charge 4, combo 3 (rates 1–1.498), milestone 4 (rates 1–2), wallWarn 2 (scheduled ahead, panned −0.55 toward the left wall), dodge 2, resume 2, resultsHigh 1; hit pans spanned −0.55…0.55, jitter rates 1.01–1.05. Analyser taps measured peak 0.623 on the master output and 0.654 after the SFX limiter, with no full-scale samples. No console errors.
+- Limits: Headless output, nothing heard; analyser polling every 20 ms can miss short peaks. The Vite dev server could not be used for a long run because the pinned HMR socket fails and reloads the page. The second `resume` cue was not traced.
 
 ## 2026-10-25T04:46:22+05:30 — Integrate current main before final release-drill verification
 
@@ -26,6 +49,20 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: The user requests frequent pulls; the current main contains material application changes beyond the earlier tested candidate, so its evidence cannot be borrowed from that older SHA.
 - Validation: The integrated worktree passed `npm run check`: typecheck, lint, 480 assertions in 54 suites and production build. Root docs tests passed 2/2; 53 Markdown files / 546 links checked with zero errors. The earlier positive and negative clean-clone runs remain explicitly tied to `d14c980`.
 - Limits: This integration's actual CLI/browser run follows after committing the exact snapshot. No new webcam, human, audible-sync or performance claim is made; later remote changes are outside this frozen candidate.
+
+## 2026-10-25T04:43:58+05:30 — Judgement pops at the hit position and combo-break note
+
+- Changed: `core/judgementPops.ts` keeps a pooled `MAX_POPS` queue of terminal judgements with world positions (impact point for hits, hit-plane note position for Miss/Bad Cut) and Great/Good timing error; the runtime pushes on `note:hit`/`note:miss`/`note:badcut`, prunes after `POP_LIFETIME_MS` at the UI tick (so Calm pops also expire) and clears outside PLAYING/PAUSED. The HUD projects each pop through `ui/projection.ts` (mirrors the static play camera: `CAM_POS`, `CAM_LOOK_AT`, `CAM_FOV_DEG`, full viewport) into six pooled slots, moving text out of the central `HUD_POP_TORSO_CLEAR_FRACTION` band; the central single judgement was removed. Breaking a combo of at least `HUD_COMBO_BREAK_MIN` briefly tints the ring/count and shows “Combo ended · N” (cleared by the next hit); no scene shake. Removed the interim `judgementSeq` field. Both constants are registered in docs02.
+- Why: Requested positional pops and readable, non-punishing combo-break feedback.
+- Validation: Typecheck, lint, 426/426 tests in 51 files (new queue test; HUD test renders a projected Great with timing), build, prettier and docs checks passed.
+- Limits: Not screenshot-verified in a browser this step; the projection must follow any future camera choreography. The compact pre-roll overlap item was not started.
+
+## 2026-10-25T04:42:00+05:30 — Hit spark bursts and subtle gameplay camera response
+
+- Changed: `render/sparks.ts` adds a bounded spark pool (`HIT_SPARK_POOL` × `HIT_SPARKS`, one additive Points draw, closed-form motion, seeded directions) for Slash hits (spray flattened into the cut plane) and Smash hits; tier count follows the poof preset and Calm halves it. `render/cameraRig.ts` adds trauma-based smooth value-noise shake (hits, perfect, bad cut, obstacle, kick, drop; capped by `SHAKE_MAX_M`/`SHAKE_MAX_ROLL_DEG`) and a `CAMERA_BASS_FOV_DEG` breath, active only in play and never in Calm.
+- Why: Hit payoff and kinetic response from docs 11–13, kept restrained per the user's playability request.
+- Validation: Lint, build and 64 render/quality/slicer assertions pass; synthetic-performer trial screenshot in native Chrome inspected (planned motion, no camera).
+- Limits: No frame-safety projection test for the shake, no GPU timing, no flashing review.
 
 ## 2026-10-25T04:41:00+05:30 — Dataset camera trial evidence and docs
 
@@ -40,6 +77,13 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: Issue #3 requires a reproducible clean-commit installation and actual offline browser journey, plus proof that a broken step yields failure evidence and a nonzero exit.
 - Validation: Both real commands tested `d14c980aca096e530586a771983edfb65ca22cdd` in fresh clones: install, full application check (367 assertions/48 suites) and explicit production build passed. The positive command exited 0 after BOOT → select → native sound enable → actual 80-second synthetic performer → Results (131 Perfect, 90,800 score) → Retry → play → pause → Songs, with 16 local requests and zero runtime/console/CSP/interception errors. The negative command removed only the cloned prepared catalog, observed its actual 404/menu error, wrote failure evidence and exited 1. Five pure-helper tests plus the real worker browser regression passed (6/6). A preceding worker-test rerun timed out because its fixture used the last ready page; the target-ID correction passed with an intentionally later blank page. Root documentation tests/checker passed.
 - Limits: These reports identify their exact tested SHA and exclude later main integrations. Installation uses network and a task-specific npm cache; only the browser stage blocks external destinations. Camera/model preparation, actual people, audible sync, performance and the remaining P5 gates are excluded. Auxiliary raw command logs are generated locally; committed JSON includes exit codes, timings and output tails. Cleanup failures remain failures with their own message and retained directory, not fabricated gameplay failures.
+
+## 2026-10-25T04:39:19+05:30 — Results hits by gesture
+
+- Changed: `render/blade.ts` adds per-hand blade ribbons (white-hot core plus tinted additive glow) rebuilt into preallocated buffers from the measured `HandCursor.history`, uniformly resampled by arc length, drawn length eased by a critically damped spring (`BLADE_LENGTH_SPRING_RAD_S`), reset on reacquisition and guarded against degenerate tangents. `render/trails.ts` adds tier-sized GPU particles per hand (two-ring orbit, fist knot, point cone; band-driven orbit speed, twinkle off in Calm) that elongate onto the blade spine. The renderer feeds the latest cursors (visual only) and hides trails in results/paused. Shatter pieces start at `SHATTER_PIECE_SCALE`, vanish by `SHATTER_VISIBLE_FRACTION` of the lifetime, use saturated magenta cross-sections and darker rims; the dev preview no longer has a hands toggle.
+- Why: The doc 12 blade/particle look was missing and busy smash runs still filled the near field with pale pieces.
+- Validation: New `tests/renderTrails.test.ts` (4 assertions: monotone growth to the measured length, hilt on the palm, retract/reset, no NaNs on stationary history, tier draw ranges). Typecheck, lint and build pass; full vitest 364/366 — the two failures are arrangement-audio tests timing out under concurrent Blender/Chrome load (20–60 s each), unrelated to rendering. Native Chrome synthetic-performer screenshots (planned motion, no camera) inspected.
+- Limits: Tip sparks, beam-noise cylinder and hit spark bursts are not implemented; no allocation profile or GPU timing was measured.
 
 ## 2026-10-25T04:39:19+05:30 — Results hits by gesture
 

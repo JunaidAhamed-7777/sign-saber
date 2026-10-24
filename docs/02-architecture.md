@@ -568,6 +568,8 @@ These are **initial, unmeasured design defaults** used by [08](08-beatmap-genera
 | `MENU_COMPACT_MAX_WIDTH_PX` / `MENU_COMPACT_MAX_HEIGHT_PX` | 1099 / 699 — at or below either bound the side rails reflow above/below the figure stage with grouped inline pages; `ui/theme.css` mirrors both values (asserted by `tests/unit/compactBreakpoint.test.mjs`) |
 | `HUD_TWEEN_TAU_MS` | 90 — exponential damping constant for the displayed HUD score; Calm shows the exact value |
 | `HUD_COMBO_MILESTONES` | `[10, 25, 50, 100]` — unbroken combo counts that show the HUD milestone callout |
+| `HUD_POP_TORSO_CLEAR_FRACTION` | 0.09 — half-width of the central viewport band that projected judgement-pop text is moved out of, so the player's torso stays clear |
+| `HUD_COMBO_BREAK_MIN` | 5 — smallest broken combo that shows the brief HUD “Combo ended” note |
 
 Menu defaults are initial unmeasured values; tune with held-out menu fixtures and live standing-distance trials, recording changes with their test results. `DWELL_SELECT_MS` is retired: point-click navigation is CORE rather than an optional dwell mode. Runtime central exports remain a P0 implementation task.
 
@@ -600,6 +602,8 @@ Menu defaults are initial unmeasured values; tune with held-out menu fixtures an
 | `DATASET_CAMERA_SWEEP_FIRST_HOLD_MS` | 20000 | `?reel=sweep` calibration-photo hold before cycling every photo by stream time |
 | `DATASET_CAMERA_TRANSITION_GUARD_MS` / `DATASET_CAMERA_TIMELINE_CAPACITY` | 300 / 1024 | Captures this soon after a drawn-photo change are not attributed; bounded draw history |
 | `DATASET_CAMERA_MATCH_SHOULDER_FRACTION` / `DATASET_CAMERA_PCK_SHOULDER_FRACTION` | 0.5 / 0.5 | Dataset-camera evaluation: wrist-to-hand match radius and PCK threshold, in annotated shoulder widths |
+| `PERFORMER_REEL_RENDER_W` / `PERFORMER_REEL_RENDER_H` / `PERFORMER_REEL_CAMERA_DISTANCE_M` | 960 / 540 / 3 | Synthetic performer reel: avatar render size and virtual front-camera distance |
+| `PERFORMER_REEL_IDLE_SONG_MS` / `PERFORMER_REEL_TRUTH_POOL` | −60000 / 128 | Rest-pose sample time outside a session; reused truth objects for evaluation |
 | `JUDGEMENT_TRACE_CAPACITY` | 8192 | Typed judgement-trace events per session; further events are counted as explicit overflow |
 | `ASSET_MODEL_MAX_BYTES` / `MAX_LIVE_OBSTACLES` | 1048576 / 8 | Model admission and pooled wall capacity |
 | `GRAVITY_MPS2` / `GLYPH_FACE_OFFSET_M` | 9.8 / 0.31 | Cosmetic ballistic gravity and block-front glyph plane |

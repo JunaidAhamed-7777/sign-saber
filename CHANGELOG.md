@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:16:02+05:30 — Integrate final avatar resource checkpoint (issue #4)
+
+- Changed: Normally merged upstream `30572bb`, preserving its rigged avatar and current UI copy while retaining the focused cache, WebGL and visibility fixes. Resolved the App overlap by keeping the fatal Boot route and upstream banner removal together. The harness reproduction now names the current **Watch auto-play** action while continuing to identify synthetic planned input in evidence metadata.
+- Why: The incoming avatar changes actual geometry/texture ownership, so resource evidence must be rerun on the integrated renderer rather than reused from `96aa536`.
+- Validation: Full `npm run check` passed typecheck, lint, 488 assertions in 55 files and production build after integration. Root docs/helper tests passed 7/7; checker found 49 Markdown files/547 local links with zero errors; whitespace and conflict-marker checks passed. The previous complete eight-case proof remains preserved under its exact source SHA.
+- Limits: This is the final frozen upstream renderer checkpoint; its new eight-case browser run is next. No later unrelated main change is included in this tested-source claim. Existing large-bundle warning is outside issue #4.
+
 ## 2026-10-25T05:14:53+05:30 — Preserve complete clean-source lifecycle proof (issue #4)
 
 - Changed: Saved the exact complete browser report and four inspected desktop/compact screenshots under `docs/evidence/2026-10-25-lifecycle-96aa536/`. Clarified the shared CDP client's Node 22+ requirement in the real command documentation.
@@ -33,12 +40,33 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: The first native browser probes found that IndexedDB denial/quota failure was hidden despite successful generation, and context loss kept audio/scoring and 172/200 observed frame callbacks running behind an unusable arena.
 - Validation: The original synthesized WAV generated 13 notes; its actual performer results contained 12 Perfect hits and one wall dodge. Repeated storage-denial/quota and menu/play context-loss probes pass their specific checks after the fixes. The partial harness correctly remains incomplete because other issue scenarios are unrun. Thirty targeted runtime/UI assertions passed. Full `npm run check` passed typecheck, lint, 428 assertions in 50 files and production build. Root docs checks and whitespace validation run before committing.
 - Limits: This is a scoped recovery milestone, not completion of issue #4's eight-scenario/20-cycle acceptance. Native browser input and synthetic motion only; no live-camera, audible-sync or performance claim. The upstream non-indexed-geometry warning remains recorded as a warning, and the existing bundle-size warning remains assigned to issue #1.
+## 2026-10-25T05:35:00+05:30 — README quick start
+
+- Changed: Rewrote the README run section as a quick start: requirements, clone/install/run commands, the play flow (pick song, Enable sound, Watch auto-play or Play level, pause), gesture summary, command table and troubleshooting.
+- Why: User asked for how-to-run instructions in the README.
+- Validation: Documentation checks passed.
+- Limits: Camera play is described as a later step; it is paused by the user.
+
 ## 2026-10-25T05:25:00+05:30 — Synthetic performer reel for the dataset camera
 
 - Changed: new `tracking/performerReel.ts` renders the skinned avatar (`AvatarFigure.poseFromJoints`, natural variant, no outline) in a plain room from a virtual front camera framed to `PERFORMER_SHOULDER_WIDTH_NORM`, posed each frame from `Choreography`/`performerJoints` on the session song clock (rest pose outside a session; arm and face depth from the rig's proportions), drawn into the dataset-camera canvas. Enabled with `?camera=dataset&reel=performer`; evidence lane `dataset-camera-synthetic-performer` (reels may now declare their lane; the runtime keeps the last lane after the camera stops). `?stats=1` diagnostics expose the current dataset frame image (never for a webcam). Harness lane `performer` (low tier) saves the rendered camera frame. Registered the PERFORMER_REEL_* constants.
 - Why: exercise the real camera → MediaPipe → scoring path with a moving performer.
 - Validation: `npm run check` 424 tests in 50 files and build passed; trial: MediaPipe detected pose and both hands in 100% of rendered frames, handedness 690/690. Calibration was not accepted at 3.5 Hz / 311 ms inference under 82–86% machine load, so no notes were scored through the camera.
 - Limits: synthetic render, not a person or webcam; the avatar's head renders tilted (face error ~0.5 shoulder widths); play-to-results comparison with the logic replay still needs an idle machine.
+
+## 2026-10-25T05:20:00+05:30 — Back-facing avatar and neutral run labels
+
+- Changed: The arena avatar is rotated 180° so the viewer sees its back; tracking/performer joints keep their screen sides and forward reach goes into the lane (`AVATAR_FACE_AWAY`). The virtual-camera performer pose still faces the camera. Removed the visible dataset/synthetic/no-camera banner, status, captions and pre-roll copy; buttons now read **Play level** and **Watch auto-play**. Added HANDOFF summary of the multi-agent round.
+- Why: Direct user requests: avatar back turned to the player, and no on-screen "dataset instead of camera" wording. Camera integration is paused by the user.
+- Validation: Full `npm run check` passed (481 tests). Exported diagnostics still name the source lane.
+- Limits: Hand shapes on the turned avatar use reflected landmark geometry; not tuned.
+
+## 2026-10-25T04:58:00+05:30 — Rigged avatar replaces the outline and line figure
+
+- Changed: `render/renderer.ts` loads `avatar.glb` (tier `AVATAR_TIER_FIGURE`; low tier and load failure keep the line skeleton) and drives it from tracking/dataset/synthetic frames, an illustrative idle in the menu placeholder (static in Calm), a frozen pose when paused and the saved pose in results; the mask silhouette and line skeleton hide while the avatar shows. The avatar draws after the arena and before a depth-clear sentinel so all targets/effects render over it, in both the post-FX and direct paths. `MenuShell` `Figure` shows the SVG outline only when the avatar failed or is disabled and reports the placeholder state to the renderer. Fixed side mapping for ears/eyes/hand points in retargeting. Placeholder scale/height retuned.
+- Why: The user asked for a moving person model built on the tracked skeleton instead of the stick outline and thin lines.
+- Validation: typecheck and lint clean; 480/480 tests across 54 files. Embedded browser at 1440×900: menu idle shows the holographic avatar; "Watch synthetic performer" pre-roll and play show it driven by the performer with hands on the cursor rings and open/fist hand shapes, targets drawn over it.
+- Limits: No live webcam exercise; dataset-trial visual check not repeated after the merge; no GPU timing. Holographic material and proportions are a first pass.
 
 ## 2026-10-25T04:50:00+05:30 — Blade ribbons, hand particles and a cleaner shatter
 

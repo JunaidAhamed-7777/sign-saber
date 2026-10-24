@@ -6,25 +6,42 @@ Sign Saber is an experimental browser rhythm game with a camera-free music menu,
 
 The current checkpoint and remaining work are in [HANDOFF.md](HANDOFF.md). Start with [ROADMAP.md](ROADMAP.md), [the subsystem index](docs/README.md), [DESIGN.md](DESIGN.md) and [AGENTS.md](AGENTS.md). The user's current scope excludes legs everywhere: placeholder, tracked input, live/setup view, pause and saved results.
 
-## Run
+## Quick start (how to run)
 
-Use a current Node 22 release (CI baseline) or the locally exercised Node 26.8.1/npm 12.2.1. From the repository root:
+**You need:** Node.js 22 or newer (includes npm) and a current Chrome or Edge. No webcam, account or internet connection is needed to play the bundled songs.
 
 ```powershell
-cd app
+git clone https://github.com/JunaidAhamed-7777/sign-saber.git
+cd sign-saber/app
 npm ci
 npm run dev
 ```
 
-Open [localhost:5173](http://localhost:5173). The initial menu requests no camera or models. The three songs, charts, fonts, dataset annotations and Blender assets are local repository files.
+Open [http://localhost:5173](http://localhost:5173), then:
 
-1. Choose Pamgaea, Electro Cabello or Cipher.
-2. Choose **Enable sound** with mouse/keyboard.
-3. **Try level with dataset** automatically builds the short cut; **Make 80-second cut** (the next right-rail page, Music options) also lets you prepare it separately. The engine renders 10 seconds fading in, a 60-second energy/onset-supported highlight and 10 seconds fading out, then generates a fresh chart from the edited WAV. Short admitted files disclose proportionally shorter sections. This is a musical heuristic, not verified chorus detection.
-4. Choose **Try level with dataset**. A visible banner identifies independent, attributed COCO still annotations. They contain no recorded movement, hand gestures, metric depth or masks; missing gesture input produces real misses. The browser trial reached actual results with 131 Miss and zero invented hits.
-5. Esc/Space pauses. Resume, Retry and Songs use the same guarded lifecycle. Difficulty and preview sit on the first ready page; further side-rail pages expose the cut, volume, appearance, menu hand, credits and optional live-camera controls. Windows at or below 1099 px wide or 699 px tall reflow the rails above and below the figure instead of covering it.
+1. **Pick a song** from the top row (Pamgaea, Electro Cabello or Cipher) and a difficulty (Easy / Normal / Hard).
+2. Click **Enable sound** (browsers only allow audio after a click or key press).
+3. Choose a mode:
+   - **Watch auto-play** — the avatar plays the chart for you, so you can see slashes, smashes, beams, combos and results without a camera.
+   - **Play level** — the 80-second cut of the song with the level running.
+4. **Esc** or **Space** pauses; from pause or results you can Resume, Retry or go back to Songs.
 
-All three full original songs remain available. The arrangement uses one continuous source window with raised-cosine amplitude fades, avoiding hard joins. It retains exact source/sample/fade bounds and original/new hashes; the old chart is never reused under edited audio. User audio upload is local, bounded and cancellable.
+Gestures, for when camera play is enabled later: **open palm** swipes slice cyan blades, a **fist** crushes magenta cracked cubes, **point and hold** fires a beam at gold far-away orbs, and **lean** sideways to dodge walls.
+
+Other useful commands (run inside `app/`):
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Development server at localhost:5173 |
+| `npm run build` then `npm run preview` | Production build served at 127.0.0.1:4173 |
+| `npm run check` | Typecheck, lint, all tests and production build |
+| `npm run models` | Downloads the pinned MediaPipe tracking models (only needed for the optional camera path) |
+
+Troubleshooting: if port 5173 is busy, stop the other process using it (the dev server uses a fixed port). If there is no sound, click **Enable sound** again and check the volume in Settings. If a song shows "Could not load", use its **Retry track** button.
+
+### Details
+
+The three songs, charts, fonts and Blender models are local repository files; the menu requests no camera or models at launch. Making a level renders a continuous 80-second cut (10 s fade-in, 60 s energy/onset highlight, 10 s fade-out) and generates a fresh chart from the edited audio — a musical heuristic, not verified chorus detection. Side-rail pages hold the cut, volume, appearance, menu hand, credits and the optional live-camera controls. Narrow or short windows (≤ 1099 px wide or ≤ 699 px tall) move the rails above and below the figure. User audio upload is local, bounded and cancellable.
 
 ## Prepared local build
 

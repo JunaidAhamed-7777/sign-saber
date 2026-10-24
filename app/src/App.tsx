@@ -39,13 +39,11 @@ function Status() {
       <i aria-hidden="true" />
       {replay
         ? trial.source
-        : datasetCamera
-          ? t.datasetCamera
-          : camera.calibrationValid
-            ? ready
-              ? t.cameraReady
-              : t.lostFigure
-            : t.cameraNotReady}
+        : camera.calibrationValid
+          ? ready
+            ? t.cameraReady
+            : t.lostFigure
+          : t.cameraNotReady}
     </span>
   );
 }
@@ -144,11 +142,9 @@ export function App({ runtime }: { runtime: GameRuntime }) {
   const state = useStore((s) => s.state);
   const calm = useStore((s) => s.calm);
   const credits = useStore((s) => s.credits);
-  const trial = useTrialCopy();
   const replay = useStore((s) => s.replay);
   const stats = useStore((s) => s.stats);
   const fatal = useStore((s) => s.fatal);
-  const datasetCamera = useStore((s) => s.cameraSource === 'dataset');
   useEffect(() => {
     document.documentElement.dataset.motion = calm ? 'calm' : 'standard';
   }, [calm]);
@@ -166,22 +162,6 @@ export function App({ runtime }: { runtime: GameRuntime }) {
         <Status />
         <span className="input-label">{t.nativeHelp}</span>
       </header>
-      {replay && (
-        <div className="replay-label" role="note">
-          <span className="replay-mark" aria-hidden="true">
-            ◆
-          </span>
-          {runtime.flags?.replay ? t.replay : trial.banner}
-        </div>
-      )}
-      {datasetCamera && !replay && (
-        <div className="replay-label" role="note">
-          <span className="replay-mark" aria-hidden="true">
-            ◆
-          </span>
-          {t.datasetCameraBanner}
-        </div>
-      )}
       {fatal ? (
         <Boot runtime={runtime} />
       ) : credits ? (

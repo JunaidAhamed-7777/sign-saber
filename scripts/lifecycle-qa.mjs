@@ -475,7 +475,7 @@ async function setupUpload(qa) {
 const scenarios = {
   async upload(item) {
     item.reproduction =
-      "Upload lifecycle-valid.wav, wait for analysis, choose Easy then Normal, Enable sound, Watch synthetic performer, wait for Results, choose Songs.";
+      "Upload lifecycle-valid.wav, wait for analysis, choose Easy then Normal, Enable sound, Watch auto-play (the planned synthetic performer), wait for Results, choose Songs.";
     await withPage(item, {}, async (qa) => {
       const ready = await qa.readyUpload();
       check(

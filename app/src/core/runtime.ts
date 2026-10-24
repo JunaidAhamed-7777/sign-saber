@@ -619,7 +619,7 @@ export class GameRuntime {
     display({
       loading: true,
       error: null,
-      status: source === 'performer' ? strings.performerLoading : strings.datasetLoading,
+      status: strings.runGetReady,
     });
     try {
       const data =
@@ -661,7 +661,7 @@ export class GameRuntime {
         highlightAt: null,
         cameraSource: null,
         camera: { state: 'not-set-up', mode: 'browse', calibrationValid: false, error: null },
-        status: source === 'performer' ? strings.performerLimitations : strings.datasetLimitations,
+        status: strings.runPlaying,
       });
       this.machine.transition(retry ? 'results:retry' : 'select:start', { ready: true });
       this.player!.prepare(this.buffer!);

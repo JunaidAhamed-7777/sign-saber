@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Final avatar/lifecycle integration (issue #4)
+
+- Codex normally integrated upstream avatar checkpoint `30572bb`, resolved the App overlap without restoring removed banners or dropping fatal recovery, reran all app/doc checks and preserved earlier complete evidence separately for comparison.
+
 ## 2026-10-25 — Complete clean-source lifecycle evidence (issue #4)
 
 - Codex captured and inspected the full eight-case/20-cycle browser result on clean source `96aa536`, preserving native resource IDs, graph disconnections, source hashes, earlier failures and current screenshots. The evidence is explicitly synthetic and separate from camera/audible-sync/performance claims.

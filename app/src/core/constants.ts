@@ -761,8 +761,10 @@ export const AVATAR_IDLE = Object.freeze({
   curlRange: 0.12,
 });
 /** Menu placeholder placement on the play plane: avatar scale and hip height (play metres). */
-export const AVATAR_PLACEHOLDER_SCALE = 2.85,
-  AVATAR_PLACEHOLDER_HIP_Y = 0.12;
+/** In the arena the avatar shows its back to the viewer (the player looks over its shoulders into the lane). */
+export const AVATAR_FACE_AWAY = true;
+export const AVATAR_PLACEHOLDER_SCALE = 4.4,
+  AVATAR_PLACEHOLDER_HIP_Y = -0.3;
 /** Holographic material: rim colours (DESIGN cyan→violet), fill, fresnel power and gains. */
 export const AVATAR_RIM_COLOR_A = 0x19f5ff,
   AVATAR_RIM_COLOR_B = 0xb36bff,

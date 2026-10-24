@@ -11,6 +11,8 @@ import bpy
 parser = argparse.ArgumentParser()
 parser.add_argument('--root', required=True)
 parser.add_argument('--addon', required=True)
+parser.add_argument('--port', type=int, default=9876, help='Local bridge port; use a distinct port per concurrent authoring instance')
+parser.add_argument('--blend', default='signsaber_assets.blend', help='Dedicated authoring file name under assets-src/blender')
 args = parser.parse_args(sys.argv[sys.argv.index('--') + 1:])
 root = pathlib.Path(args.root).resolve()
 addon_path = pathlib.Path(args.addon).resolve()
@@ -19,7 +21,11 @@ if bpy.data.filepath or bpy.data.is_dirty:
 expected = '8e193a249e2ed1262f3e794ee2254efd8e3d1f0224385245f2b989154c837083'
 if hashlib.sha256(addon_path.read_bytes()).hexdigest() != expected:
     raise RuntimeError('Official Blender MCP add-on hash does not match the pinned source')
-asset_file = root / 'assets-src' / 'blender' / 'signsaber_assets.blend'
+if pathlib.Path(args.blend).name != args.blend or not args.blend.endswith('.blend'):
+    raise RuntimeError('--blend must be a plain .blend file name under assets-src/blender')
+if not 1024 <= args.port <= 65535:
+    raise RuntimeError('--port must be an unprivileged TCP port')
+asset_file = root / 'assets-src' / 'blender' / args.blend
 asset_file.parent.mkdir(parents=True, exist_ok=True)
 if asset_file.exists():
     bpy.ops.wm.open_mainfile(filepath=str(asset_file))
@@ -40,7 +46,7 @@ bpy.context.scene.blendermcp_auto_start_server = False
 for name in ('blendermcp_use_polyhaven', 'blendermcp_use_hyper3d', 'blendermcp_use_sketchfab', 'blendermcp_use_hunyuan3d', 'blendermcp_use_polypizza'):
     if hasattr(bpy.context.scene, name):
         setattr(bpy.context.scene, name, False)
-server = addon.BlenderMCPServer(host='127.0.0.1', port=9876)
+server = addon.BlenderMCPServer(host='127.0.0.1', port=args.port)
 bpy.types.blendermcp_server = server
 server.start()
-print('SIGN_SABER_BLENDER_MCP_READY', bpy.app.version_string, str(asset_file), flush=True)
+print('SIGN_SABER_BLENDER_MCP_READY', bpy.app.version_string, str(asset_file), args.port, flush=True)

@@ -194,7 +194,7 @@ Behind the plane, glowing joints and bones give the "3D" quality the flat mask l
 
 ### 5.1 Joint set (13)
 
-Pose landmark indices: nose 0, shoulders 11/12, elbows 13/14, wrists 15/16, hips 23/24, knees 25/26, ankles 27/28. Bones (12): 11–12, 11–13, 13–15, 12–14, 14–16, 11–23, 12–24, 23–24, 23–25, 25–27, 24–26, 26–28. The head is a larger sphere at the nose with radius 0.11 m.
+Retained rendered joints (9): nose 0, shoulders 11/12, elbows 13/14, wrists 15/16 and hips 23/24. Upper-body bones: 11–12, 11–13, 13–15, 12–14, 14–16, 11–23, 12–24, 23–24, with head-to-shoulder connections 0–11/0–12 in the simple fallback. Knees, ankles and feet are excluded. Masks end at the hip line; the illustrative placeholder also ends at the hips. The head is a larger sphere at the nose with radius 0.11 m.
 
 ### 5.2 Placement
 

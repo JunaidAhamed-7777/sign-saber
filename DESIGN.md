@@ -33,7 +33,7 @@ omitted:
 
 The reference is a rhythm arena's control booth: the person is the live instrument, framed by quiet controls. The audience stands in front of a laptop and needs to see themselves, choose music and understand an action from normal playing distance. This is a product interface with a theatrical player reveal, rather than a marketing landing page or a dense dashboard. The initial language is English; no Japan-market or multilingual support is claimed.
 
-The memorable move is the clear central human stage: an illustrative placeholder with **Set up camera** before setup, a labelled positioning preview during setup, and the player's neon figure after calibration. Keep song cards and controls out of that space. The first core library has three full songs; palm movement and deliberate point-click are first-class menu input after bootstrap.
+The figure is upper body only: head, arms/hands and torso ending at the hips; never draw legs in the placeholder, live/setup view, pause or results. The memorable move is the clear central human stage: an illustrative placeholder with **Set up camera** before setup, a labelled positioning preview during setup, and the player's neon figure after calibration. Keep song cards and controls out of that space. The first core library has three full songs; palm movement and deliberate point-click are first-class menu input after bootstrap.
 
 Avoid full-screen menu panels over the player, tiny floating controls, unrelated decorative chrome, hover autoplay and fake tracked figures. Familiar buttons and explicit feedback carry the utility; the player and music carry the expression.
 

@@ -1,5 +1,8 @@
 # 01 — Vision & Pillars
 
+**Current user scope (2026-10-25):** retain and show only the head, arms/hands and torso through the hips. Legs are excluded from live/setup/frozen/results figures, the placeholder, replay exports and game input. The upstream pretrained pose task may internally infer a full pose; indices 25–32 are zeroed at the application boundary. Only actual visible head/hips/shoulders plus hand readiness can establish calibration. No new training result is implied by filtering outputs.
+
+
 ## One-sentence pitch
 
 **Sign Saber turns a webcam into a rhythm arena: fight the music with your bare hands while a neon reflection of your body moves with you.**
@@ -84,6 +87,6 @@ Outside this release: multiplayer, accounts, leaderboards, cloud inference, mobi
 
 Target a desktop laptop with WebGL2, a current supported Chrome/Edge build and a 30 Hz webcam. The reference integrated-GPU machine, OS, browser version, capture resolution, effective render resolution, DPR and quality tier are selected and recorded during P0, then held fixed for comparisons. A named GPU class alone is not a benchmark configuration.
 
-Use even front lighting and enough uncluttered space for comfortable arm movement. The suggested 1.5–2.5 m camera distance is setup guidance, not a universal body/reach assumption. Calibration adjusts for the player; if the full-body path cannot be used comfortably, explain the limit rather than presenting an untested accessibility mode as implemented.
+Use even front lighting and enough uncluttered space for comfortable arm movement. The suggested 1.5–2.5 m camera distance is setup guidance, not a universal body/reach assumption. Calibration adjusts for the player; if the upper-body path cannot be used comfortably, explain the limit rather than presenting an untested accessibility mode as implemented.
 
 At least three consenting first-time players should complete calibration and an Easy excerpt without a developer explaining every target. Record time to first successful hit, confusion, false Bad Cuts, tracking loss and comfort. This small usability check is evidence about the tested people and room, not a population-wide accuracy claim.

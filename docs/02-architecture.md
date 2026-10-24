@@ -89,8 +89,8 @@ export interface HandRaw {
 }
 
 export interface PoseRaw {
-  landmarks: Float32Array;        // 33 × (x, y, z, visibility) in MIRRORED image space
-  worldLandmarks: Float32Array;   // 33 × (x, y, z) metres, hip-centred
+  landmarks: Float32Array;        // 33 × (x, y, z, visibility) in MIRRORED image space; indices 25..32 are zeroed
+  worldLandmarks: Float32Array;   // 33 × (x, y, z) metres, hip-centred; indices 25..32 are zeroed
 }
 
 export interface MaskFrame {

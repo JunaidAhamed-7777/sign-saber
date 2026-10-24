@@ -1,5 +1,8 @@
 # Sign Saber — Build Roadmap
 
+**Execution steering — 2026-10-25:** the user now prioritizes a clearly labelled dataset-driven level trial, authored Blender MCP assets/background and dynamic 10 s fade-in → 60 s highlight → 10 s fade-out arrangements ahead of further webcam tuning. The figure/input contract is head-to-hips only. This explicitly changes work order; it does not turn dataset or synthetic probes into live-camera evidence or mark P0–P5 release gates complete. Unavailable human/hardware checks remain recorded while independent implementation continues.
+
+
 **Build one interaction that feels exceptional, then prove the entire game can sustain it.** This is the exact implementation sequence from the current documented scaffold to a judge-ready release. It replaces the previous event's timetable and folder ownership rules.
 
 **Starting point:** source modules and ten test files are stubs; no game or benchmark measurements exist. Typecheck, lint and production build pass on the scaffold; Vitest executes zero assertions. None of the gates below has been achieved. A checked box must link to real evidence, not a prediction.

@@ -4,6 +4,11 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Tracking, hand navigation and upper-body scope
+
+- A dedicated agent implemented bounded camera/worker/gesture/replay ownership, pinned model preparation and same-origin response policy. Real browser probes exposed and fixed loader/factory and cold-start watchdog problems; synthetic and native-camera setup observations are labelled separately.
+- The integrator applied the user's head/arms/torso-through-hips contract across rendering, data boundaries and documentation. No legs, new trained weights, calibrated live hit, human quality or performance success is claimed. User steering now prioritizes dataset trials, authored assets and dynamic short arrangements.
+
 ## 2026-10-25 — Bundled music, DSP and browser audio checks
 
 - A dedicated agent verified official music rights, acquired all three full starter songs and implemented deterministic DSP, assignment, validation, upload/caching and pinned local fonts. The integrator approved measured sustained-onset beam reservation and registered generator v2 behavior changes.

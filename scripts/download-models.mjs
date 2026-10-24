@@ -1,73 +1,100 @@
 #!/usr/bin/env node
-// Populates app/public/models/ with the MediaPipe WASM runtime and task models.
-// - WASM files are copied from the installed @mediapipe/tasks-vision package (no network).
-// - .task models are downloaded from Google's public model bucket (network needed once).
-//
-// Usage (from app/):  npm run models            → hand + pose lite
-//                     npm run models -- --with-segmenter  → also selfie_segmenter.tflite (ADR-003 fallback)
-//                     npm run models -- --force  → re-download even if present
-//
-// Spec: docs/05-tracking-pipeline.md §Model assets, docs/03-decisions.md ADR-013.
-
-import { createRequire } from 'node:module';
-import { mkdirSync, copyFileSync, existsSync, readdirSync, statSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const here = dirname(fileURLToPath(import.meta.url));
-const appDir = resolve(here, '..', 'app');
-const outDir = join(appDir, 'public', 'models');
-const wasmOut = join(outDir, 'wasm');
+/** Prepare a versioned, verified local runtime; no size-only cache acceptance. */
+import { createRequire } from "node:module";
+import { createHash, randomUUID } from "node:crypto";
+import {
+  mkdir,
+  readFile,
+  writeFile,
+  readdir,
+  rename,
+  rm,
+} from "node:fs/promises";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { modelAssets } from "./model-assets.mjs";
+const appDir = resolve(dirname(fileURLToPath(import.meta.url)), "..", "app");
+const outDir = join(appDir, "public", "models");
+const wasmOut = join(outDir, "wasm");
 const args = new Set(process.argv.slice(2));
-const force = args.has('--force');
-
-const MODELS = [
-  {
-    file: 'hand_landmarker.task',
-    url: 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/latest/hand_landmarker.task',
-  },
-  {
-    file: 'pose_landmarker_lite.task',
-    url: 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/latest/pose_landmarker_lite.task',
-  },
-];
-if (args.has('--with-segmenter')) {
-  MODELS.push({
-    file: 'selfie_segmenter.tflite',
-    url: 'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/latest/selfie_segmenter.tflite',
+const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
+async function atomicWrite(path, data) {
+  const temporary = `${path}.${randomUUID()}.tmp`;
+  try {
+    await writeFile(temporary, data);
+    await rename(temporary, path);
+  } finally {
+    await rm(temporary, { force: true });
+  }
+}
+await mkdir(wasmOut, { recursive: true });
+const require = createRequire(join(appDir, "package.json"));
+// package.json is not in the package's exports map. Resolve the public entry.
+const packageDir = dirname(require.resolve("@mediapipe/tasks-vision"));
+const pkg = JSON.parse(
+  await readFile(join(packageDir, "package.json"), "utf8"),
+);
+const files = [];
+for (const name of (await readdir(join(packageDir, "wasm"))).sort()) {
+  const bytes = await readFile(join(packageDir, "wasm", name));
+  await atomicWrite(join(wasmOut, name), bytes);
+  files.push({
+    path: `wasm/${name}`,
+    bytes: bytes.length,
+    sha256: sha256(bytes),
+    source: `@mediapipe/tasks-vision@${pkg.version}`,
+    license: "Apache-2.0",
   });
 }
-
-function copyWasm() {
-  const require = createRequire(join(appDir, 'package.json'));
-  const pkgJson = require.resolve('@mediapipe/tasks-vision/package.json');
-  const wasmSrc = join(dirname(pkgJson), 'wasm');
-  mkdirSync(wasmOut, { recursive: true });
-  let n = 0;
-  for (const f of readdirSync(wasmSrc)) {
-    copyFileSync(join(wasmSrc, f), join(wasmOut, f));
-    n++;
+await atomicWrite(join(wasmOut, "VERSION"), `${pkg.version}\n`);
+for (const model of modelAssets) {
+  if (model.optional && !args.has("--with-segmenter")) continue;
+  const dest = join(outDir, model.file);
+  let bytes = null;
+  try {
+    if (!args.has("--force")) bytes = await readFile(dest);
+  } catch {
+    /* Missing is a cache miss. */
   }
-  const version = require('@mediapipe/tasks-vision/package.json').version;
-  writeFileSync(join(wasmOut, 'VERSION'), `${version}\n`);
-  console.log(`wasm: copied ${n} files from @mediapipe/tasks-vision@${version}`);
+  if (
+    !bytes ||
+    bytes.length !== model.bytes ||
+    sha256(bytes) !== model.sha256
+  ) {
+    console.log(`${model.file}: downloading pinned revision 1`);
+    const response = await fetch(model.url, {
+      signal: AbortSignal.timeout(60000),
+    });
+    if (!response.ok) throw new Error(`${model.file}: HTTP ${response.status}`);
+    bytes = Buffer.from(await response.arrayBuffer());
+    if (bytes.length !== model.bytes || sha256(bytes) !== model.sha256)
+      throw new Error(
+        `${model.file}: integrity mismatch; existing asset was preserved`,
+      );
+    // Task models are ZIP containers; TFLite starts with its flatbuffer identifier.
+    const zipHeader = bytes.indexOf(Buffer.from([0x50, 0x4b, 0x03, 0x04]));
+    const formatOk = model.file.endsWith(".task")
+      ? zipHeader >= 0 && zipHeader <= 4
+      : bytes.subarray(4, 8).toString() === "TFL3";
+    if (!formatOk) throw new Error(`${model.file}: invalid file signature`);
+    await atomicWrite(dest, bytes);
+  } else console.log(`${model.file}: SHA-256 verified`);
+  files.push({
+    path: model.file,
+    bytes: bytes.length,
+    sha256: model.sha256,
+    source: model.url,
+    modelCard: model.modelCard,
+    license: "Apache-2.0",
+    licenseSource: model.modelCard,
+  });
 }
-
-async function download({ file, url }) {
-  const dest = join(outDir, file);
-  if (!force && existsSync(dest) && statSync(dest).size > 100_000) {
-    console.log(`${file}: present (${(statSync(dest).size / 1e6).toFixed(1)} MB), skipping`);
-    return;
-  }
-  process.stdout.write(`${file}: downloading… `);
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`${file}: HTTP ${res.status} from ${url}`);
-  const buf = Buffer.from(await res.arrayBuffer());
-  writeFileSync(dest, buf);
-  console.log(`${(buf.length / 1e6).toFixed(1)} MB`);
-}
-
-mkdirSync(outDir, { recursive: true });
-copyWasm();
-for (const m of MODELS) await download(m);
-console.log(`done → ${outDir}`);
+await atomicWrite(
+  join(outDir, "asset-manifest.json"),
+  `${JSON.stringify({ schemaVersion: 1, package: `@mediapipe/tasks-vision@${pkg.version}`, files }, null, 2)}\n`,
+);
+await atomicWrite(
+  join(outDir, "LICENSE-APACHE-2.0.txt"),
+  await readFile(new URL("./MEDIAPIPE-LICENSE.txt", import.meta.url)),
+);
+console.log(`Prepared ${files.length} verified assets in ${outDir}`);

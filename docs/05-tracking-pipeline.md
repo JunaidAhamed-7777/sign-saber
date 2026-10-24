@@ -1,5 +1,13 @@
 # 05 — Tracking Pipeline
 
+**Implementation checkpoint:** bounded worker/capture ownership, filters, gesture/cursor/body processing, independent setup/calibration, menu pointer, replay/recording seams and pinned model preparation are implemented. The installed 1.1.1 module factory requires distinct local loader URLs per task/delegate. A native synthetic-image probe exposed 5.7–9.8 s cold first-GPU inference; only the first submitted setup sample has a 15 s deadline, while no-frame/steady-state stalls retain 1 s. Old first samples still fail freshness/scoring guards. Native camera setup reached the GPU preview status and Cancel returned to a usable menu; no calibrated human hit or performance gate is claimed.
+
+The dependency discloses API metrics; response CSP is applied to the main document and workers with same-origin-only connections, blocking external telemetry attempts. This is enforced by the prepared local server, not by patching SDK internals. Masks are feathered entirely above the actual tilted hip line; missing/invalid hips suppress the mask rather than showing legs. Hand/body lower-limb coordinates cannot reach the game, recorder or exported replay.
+
+
+**Current user scope (2026-10-25):** retain and show only the head, arms/hands and torso through the hips. Legs are excluded from live/setup/frozen/results figures, the placeholder, replay exports and game input. The upstream pretrained pose task may internally infer a full pose; indices 25–32 are zeroed at the application boundary. Only actual visible head/hips/shoulders plus hand readiness can establish calibration. No new training result is implied by filtering outputs.
+
+
 Scope: everything between photons hitting the webcam and a smoothed, mirrored, timestamped `TrackingFrame` plus derived `BodyState` being available to the game core. Gesture classification and `HandCursor` construction are in [06](06-gesture-recognition.md). Contracts and constants come from [02 — Architecture](02-architecture.md); this doc never redefines them.
 
 ```

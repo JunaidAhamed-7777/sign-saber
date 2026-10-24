@@ -15,6 +15,13 @@ No gameplay implementation has been recorded yet. Documentation and scaffold mai
 - Limitations: <known issues or "None identified in these checks">
 ```
 
+## 2026-10-25T01:16:05+05:30 — Bounded tracking and head-to-hips input
+
+- Changed: Implemented optional camera setup, owned bounded worker buffers/capture, GPU→CPU initialization fallback, filters, calibrated body/hand cursors, gesture hysteresis/charge, palm-to-point anchor/confirmation/grace/latch/rearm/cancellation, deterministic replay and explicit opt-in recorder. Pinned model URLs/checksums/WASM/license. Added same-origin CSP prepared server/Vite model route and HTTP assertions. Per user instruction, lower-limb coordinates are zeroed before transfer/replay/recording and masks stop at the actual hip line; live and illustrative rendering changes integrate in the UI checkpoint.
+- Why: Keep the menu independent of permissions, share capture-time input paths and preserve privacy/ownership. Actual browser tests found Vite public-module routing and MediaPipe cached module-factory failures, then cold first-inference cost; fixes target those observed causes without weakening steady-state freshness.
+- Validation: 58 targeted tracking/gesture/replay assertions passed; model preparation passed exact hashes. Static server tests passed 5 with one symlink test skipped because this Windows environment cannot create it. Native Chrome synthetic model initialization/inference returned GPU results (not webcam performance). Native in-app camera setup subsequently reached GPU preview and Cancel preserved music browsing. Documentation checks passed before this checkpoint.
+- Limitations: No consenting person completed matching calibration or a live scored hit; no tracking accuracy/throughput, motion-to-photon or human menu-reach claim. The user redirected work to dataset trials and Blender assets rather than additional webcam tuning; release gates remain open. The upstream pose network still internally computes its pretrained full pose, while the app retains only head-to-hips outputs.
+
 ## 2026-10-25T01:05:30+05:30 — Local starter music and deterministic generation
 
 - Changed: Acquired unchanged official CC-BY 4.0 Pamgaea, Electro Cabello and Cipher audio with exact sources, acquisition/license receipts and attribution. Packaged nine validated Easy/Normal/Hard maps, measured previews/durations, hashes and manifest. Implemented FFT/STFT/flux/onsets/tempo/beats/energy, safe seeded assignment/chords/beam reservation/walls, strict schema/catalog/hash validation, cancellable upload worker, grouped optional IndexedDB cache and real acquisition/generation scripts. Pinned local Orbitron/Rajdhani fonts with OFL notices.

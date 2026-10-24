@@ -1,5 +1,8 @@
 # 14 — UI / UX
 
+**Current user scope (2026-10-25):** retain and show only the head, arms/hands and torso through the hips. Legs are excluded from live/setup/frozen/results figures, the placeholder, replay exports and game input. The upstream pretrained pose task may internally infer a full pose; indices 25–32 are zeroed at the application boundary. Only actual visible head/hips/shoulders plus hand readiness can establish calibration. No new training result is implied by filtering outputs.
+
+
 The UI is a React 19 DOM overlay drawn above the Three.js canvas ([ADR-002](03-decisions.md#adr-002--threejs-imperative-for-rendering-react-only-for-dom-ui)). It never touches the scene graph; it reads a Zustand store that a thin adapter fills from game events ([ADR-011](03-decisions.md#adr-011--zustand-for-ui-state-typed-event-bus-for-game-events)). Every screen below maps one-to-one to a state in [04 — State Machine](04-state-machine.md).
 
 Pillar reminder: **P1 Readable at a glance** governs every decision here. If a judge standing 2.5 m from the laptop cannot read it, it is wrong.

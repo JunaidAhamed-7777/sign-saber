@@ -1,5 +1,8 @@
 # 17 — Testing & QA
 
+**Implementation checkpoint:** asserted core/game/audio/music/tracking suites now run. Replay/recording schema 1 additionally records `source` (`synthetic` or `consented-recording`), seed and explicit `inferenceMs`; relative capture/infer/arrival timing is retained and rebased. Recorder output excludes masks/device IDs and lower-limb values. Recording is explicit opt-in/consent and ends at the first duration/byte/frame cap, reporting actual duration/reason. No participant recording has been created in this implementation pass. Numeric browser audio and synthetic-image model probes are separate from live webcam/human evidence.
+
+
 A webcam game needs three complementary layers: asserted unit tests for pure rules, deterministic replay for timing/collision regressions, and live manual trials with real people/cameras/lighting. [24 — Benchmark & Evidence Protocol](24-benchmark-and-evidence.md) owns performance targets, statistical definitions and evidence. **Current state: test files are empty documented stubs; no gameplay test or manual pass has been recorded.** A scaffold build is not evidence that these planned checks pass.
 
 Commands (from `app/`): `npm run test` (vitest, unit), `npm run test:watch`, `npm run typecheck`, `npm run lint`. CI runs all three plus `npm run build` on every push.

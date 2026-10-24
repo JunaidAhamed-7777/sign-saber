@@ -1,5 +1,8 @@
 # 25 — Menu, Hand Navigation & Camera Setup
 
+**Current user scope (2026-10-25):** retain and show only the head, arms/hands and torso through the hips. Legs are excluded from live/setup/frozen/results figures, the placeholder, replay exports and game input. The upstream pretrained pose task may internally infer a full pose; indices 25–32 are zeroed at the application boundary. Only actual visible head/hips/shoulders plus hand readiness can establish calibration. No new training result is implied by filtering outputs.
+
+
 **[CORE] planned behavior.** The menu is part of the game: three bundled starter songs, a person at its centre, and the same app-owned actions reachable with mouse, keyboard or hand. An open palm moves a cursor; changing to a pointing finger clicks the chosen control. Merely waiting over a button never clicks it. The current app is a scaffold; none of this interaction is implemented yet.
 
 This document owns the menu input contract and camera-onboarding behavior. [14](14-ui-ux.md) owns screen composition, shared visual tokens and copy; [04](04-state-machine.md) owns lifecycle guards; [09](09-beatmap-format.md) and the [track registry](../app/public/assets/tracks/README.md) own the bundled music. [02](02-architecture.md#constants) owns the named defaults.

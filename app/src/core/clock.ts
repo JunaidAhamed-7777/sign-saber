@@ -1,0 +1,11 @@
+/**
+ * Sign Saber — core/clock.ts
+ *
+ * Responsibility: Frame delta clamping and the bridge between performance.now() and song time.
+ * Spec: docs/15-audio-playback-sync.md §SongClock
+ * Inputs: AudioContext time, performance.now()
+ * Outputs: dt, songTime
+ *
+ * Implementation begins at the hackathon kick-off (docs/19-build-plan.md). This file documents the module contract only.
+ */
+export {};

@@ -1,0 +1,14 @@
+{
+  "name": "sign-saber-companion",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Optional local companion service: resolves a YouTube URL to an audio file via yt-dlp for Sign Saber.",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "server": "node src/index.mjs",
+    "start": "node src/index.mjs"
+  }
+}

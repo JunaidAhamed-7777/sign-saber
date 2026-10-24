@@ -1,0 +1,36 @@
+# Local secrets; sanitized example files may be committed.
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+
+# Common dependencies, build output, caches, and local tooling.
+node_modules/
+.next/
+dist/
+build/
+coverage/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.DS_Store
+Thumbs.db
+*.log
+*.tsbuildinfo
+.vite/
+
+# Sign Saber: large reproducible runtime assets (see app/public/models/README.md)
+app/public/models/*
+!app/public/models/README.md
+
+# Sign Saber: companion service download cache
+server/cache/*
+!server/cache/.gitkeep
+
+# Blender backups
+*.blend1
+*.blend2

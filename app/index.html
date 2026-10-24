@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="description" content="Sign Saber — controller-free, full-body 3D rhythm combat in your browser." />
+    <title>Sign Saber</title>
+    <style>
+      /* Minimal pre-boot styles; the real design tokens live in src/ui (docs/14-ui-ux.md). */
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #05060d;
+        color: #e8f1ff;
+        font-family: system-ui, sans-serif;
+        overflow: hidden;
+      }
+      #app {
+        position: fixed;
+        inset: 0;
+      }
+      #hud {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+      }
+      #hud > * {
+        pointer-events: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- WebGL canvas is created by src/render/renderer.ts inside #app. React mounts the DOM overlay into #hud. -->
+    <div id="app"></div>
+    <div id="hud"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

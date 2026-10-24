@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  app:
+    name: app — typecheck, lint, test, build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run build
+
+  docs:
+    name: docs — link check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check relative Markdown links resolve
+        shell: bash
+        run: |
+          set -euo pipefail
+          fail=0
+          while IFS= read -r -d '' f; do
+            dir=$(dirname "$f")
+            grep -oE '\]\(([^)#]+)(#[^)]*)?\)' "$f" | sed -E 's/^\]\(//; s/\)$//; s/#.*$//' | while read -r link; do
+              [ -z "$link" ] && continue
+              case "$link" in http://*|https://*|mailto:*) continue;; esac
+              if [ ! -e "$dir/$link" ]; then echo "::error file=$f::broken link → $link"; fail=1; fi
+            done
+          done < <(find . -name '*.md' -not -path './app/node_modules/*' -print0)
+          exit $fail

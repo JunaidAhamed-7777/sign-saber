@@ -26,7 +26,7 @@ export function Results({ runtime }: { runtime: GameRuntime }) {
   const motionLabel = replay ? trial.motion : t.motion;
   const motionAbout = replay ? trial.motionAbout : t.motionAbout;
   const songs = (
-    <Button runtime={runtime} id="songs">
+    <Button runtime={runtime} id="songs" autoFocus={!ready || !stats}>
       {t.songs}
     </Button>
   );
@@ -41,7 +41,7 @@ export function Results({ runtime }: { runtime: GameRuntime }) {
       />
     );
   const retry = (
-    <Button runtime={runtime} id="retry" disabled={!ready} primary className="hero">
+    <Button runtime={runtime} id="retry" disabled={!ready} primary className="hero" autoFocus={ready}>
       {t.playAgain}
     </Button>
   );

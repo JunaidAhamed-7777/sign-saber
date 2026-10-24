@@ -238,4 +238,91 @@ describe('camera ownership and cancellation with mocked browser boundaries', () 
     expect(error).toHaveBeenCalledWith(expect.stringContaining('not delivering'));
     camera.stop();
   });
+  it('runs an injected dataset source through the same capture path with labelled status and teardown', async () => {
+    const track = { stop: vi.fn(), getSettings: () => ({ width: 1280, height: 720 }), onended: null };
+    const stream = { getTracks: () => [track], getVideoTracks: () => [track] } as unknown as MediaStream;
+    const order: string[] = [];
+    const source = {
+      kind: 'dataset' as const,
+      label: 'Dataset camera — not a webcam',
+      lane: 'dataset-camera',
+      onFailure: null as ((message: string) => void) | null,
+      open: vi.fn(async () => stream),
+      close: vi.fn(),
+      setActive: vi.fn(),
+      observeFrame: vi.fn(() => order.push('observe')),
+      observeProcessed: vi.fn(),
+      evidence: vi.fn(() => ({ lane: 'dataset-camera' })),
+    };
+    const getUserMedia = vi.fn();
+    vi.stubGlobal('navigator', { mediaDevices: { getUserMedia } });
+    vi.stubGlobal(
+      'createImageBitmap',
+      vi.fn(async () => ({ close: vi.fn() })),
+    );
+    const camera = new CameraController();
+    const v = videoFixture();
+    const status = vi.fn();
+    const onFrame = vi.fn(() => order.push('frame'));
+    const error = vi.fn();
+    await camera.start(v.video, onFrame, error, status, source);
+    expect(getUserMedia).not.toHaveBeenCalled();
+    expect(status.mock.calls[0]![0]).toBe('Starting Dataset camera — not a webcam');
+    expect(status.mock.calls.at(-1)![0]).toContain('· Dataset camera — not a webcam');
+    expect(JSON.parse(camera.identity)).toMatchObject({ source: 'dataset-camera', crop: 'center-16:9' });
+    expect(camera.sourceKind).toBe('dataset');
+    expect(camera.sourceLane).toBe('dataset-camera');
+    expect(v.video.srcObject).toBe(stream);
+    v.frame(100);
+    await Promise.resolve();
+    FakeWorker.instances[0]!.onmessage?.({
+      data: {
+        type: 'result',
+        frame: syntheticFrame(0, performance.now()),
+        buffers: allocateTrackingBuffers(),
+        dropped: 0,
+        allocs: 0,
+      },
+    } as MessageEvent<FromTrackingWorker>);
+    expect(order).toEqual(['observe', 'frame']);
+    camera.observeProcessed(5, []);
+    expect(source.observeProcessed).toHaveBeenCalledWith(5, []);
+    expect(camera.sourceEvidence()).toEqual({ active: true, lane: 'dataset-camera' });
+    camera.setCaptureVisible(false);
+    expect(source.setActive).toHaveBeenLastCalledWith(false);
+    source.onFailure?.('Dataset camera — not a webcam: decode broke');
+    expect(error).toHaveBeenCalledWith('Dataset camera — not a webcam: decode broke');
+    expect(source.close).toHaveBeenCalledOnce();
+    expect(track.stop).toHaveBeenCalledOnce();
+    expect(camera.sourceKind).toBeNull();
+    expect(camera.sourceEvidence()).toEqual({ active: false, lane: 'dataset-camera' });
+    camera.stop();
+    expect(source.close).toHaveBeenCalledOnce();
+  });
+  it('closes a source whose stream arrives after cancellation and reports open failures', async () => {
+    let resolve!: (stream: MediaStream) => void;
+    const track = { stop: vi.fn() };
+    const source = {
+      kind: 'dataset' as const,
+      label: 'Dataset camera — not a webcam',
+      lane: 'dataset-camera',
+      open: vi.fn(() => new Promise<MediaStream>((r) => (resolve = r))),
+      close: vi.fn(),
+    };
+    const camera = new CameraController();
+    const start = camera.start(videoFixture().video, vi.fn(), vi.fn(), vi.fn(), source);
+    camera.stop();
+    resolve({ getTracks: () => [track] } as unknown as MediaStream);
+    await start;
+    expect(track.stop).toHaveBeenCalledOnce();
+    expect(source.close).toHaveBeenCalled();
+    const failing = {
+      ...source,
+      open: vi.fn(async () => Promise.reject(new Error('Dataset camera photos are not prepared'))),
+    };
+    await expect(camera.start(videoFixture().video, vi.fn(), vi.fn(), vi.fn(), failing)).rejects.toThrow(
+      /not prepared/,
+    );
+    expect(camera.sourceKind).toBeNull();
+  });
 });

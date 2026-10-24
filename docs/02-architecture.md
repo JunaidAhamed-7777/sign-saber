@@ -576,6 +576,12 @@ Menu defaults are initial unmeasured values; tune with held-out menu fixtures an
 | `DATASET_TRIAL_HZ` / `DATASET_TRIAL_HOLD_MS` / `DATASET_TRIAL_CROP_FRACTION` | 30 / 10000 / 0.8 | Simulated delivery of independent still annotations; no recorded motion/fingers/depth |
 | `DATASET_TRIAL_MAX_SAMPLES` / `DATASET_TRIAL_MAX_CATCHUP_FRAMES` | 100 / 300 | Bounded fixture admission and catch-up; oversized clock jumps stop the trial instead of fabricating continuity |
 | `DATASET_TRIAL_URL` / `DATASET_TRIAL_SHA256` | Local fixture path/hash in central exports | Exact attributed fixture integrity pins, not tunable motion evidence |
+| `DATASET_CAMERA_MANIFEST_URL` / `DATASET_CAMERA_MAX_ITEMS` / `DATASET_CAMERA_MAX_FILE_BYTES` | `/dataset-camera/manifest.json` / 200 / 4 × 1024 × 1024 | Local ignored dataset-camera reel admission (prepared by `scripts/prepare-dataset-camera.mjs`; per-photo SHA-256 checked) |
+| `DATASET_CAMERA_HOLD_MS` / `DATASET_CAMERA_HOLD_MIN_MS` / `DATASET_CAMERA_HOLD_MAX_MS` | 5000 / 1000 / 60000 | Photo hold per reel step and `?reelHold=` bounds |
+| `DATASET_CAMERA_SWEEP_FIRST_HOLD_MS` | 20000 | `?reel=sweep` calibration-photo hold before cycling every photo by stream time |
+| `DATASET_CAMERA_TRANSITION_GUARD_MS` / `DATASET_CAMERA_TIMELINE_CAPACITY` | 300 / 1024 | Captures this soon after a drawn-photo change are not attributed; bounded draw history |
+| `DATASET_CAMERA_MATCH_SHOULDER_FRACTION` / `DATASET_CAMERA_PCK_SHOULDER_FRACTION` | 0.5 / 0.5 | Dataset-camera evaluation: wrist-to-hand match radius and PCK threshold, in annotated shoulder widths |
+| `JUDGEMENT_TRACE_CAPACITY` | 8192 | Typed judgement-trace events per session; further events are counted as explicit overflow |
 | `ASSET_MODEL_MAX_BYTES` / `MAX_LIVE_OBSTACLES` | 1048576 / 8 | Model admission and pooled wall capacity |
 | `GRAVITY_MPS2` / `GLYPH_FACE_OFFSET_M` | 9.8 / 0.31 | Cosmetic ballistic gravity and block-front glyph plane |
 | `ARENA_REACTIVE_GAIN` / `SIL_HEAD_RADIUS_M` | 2 / 0.11 | Actual audio-energy emission gain / nose-anchored head marker |
@@ -605,6 +611,28 @@ Used by `performer/*` to plan a performance that satisfies a chart under the gam
 | `PERFORMER_BEAM_CONFIRM_LEAD_MS` | 60 | Point adoption lead beyond `BEAM_CHARGE_MS` so the charge completes at the note |
 | `PERFORMER_LEAN_SHOULDERS` | 0.9 | Torso shift (shoulder widths) used to clear a wall |
 | `PERFORMER_LEAN_EASE_MS` | 250 | Lean ease in/out duration |
+
+### Rigged upper-body avatar (presentation only)
+
+Used by `render/avatar*.ts` to retarget tracked, dataset, synthetic or idle joints onto the Blender-authored rig ([10](10-rendering-silhouette.md#11-rigged-avatar), [18](18-blender-mcp-asset-pipeline.md#11-rigged-avatar)). They never affect hit detection, scoring, calibration or tracking evidence.
+
+| Name | Value | Meaning |
+| --- | --- | --- |
+| `AVATAR_URL` | `/assets/models/avatar.glb` | Same-origin skinned avatar |
+| `AVATAR_TIER_FIGURE` | high/medium `avatar`, low `skeleton` | Figure requested per fixed tier; GLB failure also uses the line skeleton |
+| `AVATAR_DEPTH_GAIN` / `AVATAR_DEPTH_MAX_M` | 0.6 / 1.1 m | World-landmark depth → play-space depth gain and clamp |
+| `AVATAR_STRETCH_MAX` | 1.15 | Maximum arm lengthening so hands reach tracked wrists |
+| `AVATAR_SMOOTH_MS` / `AVATAR_MISSING_SMOOTH_MS` | 55 / 320 | Rotation smoothing for tracked bones / bones easing toward neutral |
+| `AVATAR_ROOT_SMOOTH_MS` / `AVATAR_SCALE_SMOOTH_MS` | 70 / 450 | Root translation and scale smoothing |
+| `AVATAR_HOLD_MS` | 250 | A briefly missing joint holds its last target before easing |
+| `AVATAR_LIMITS_DEG` | torso twist 45, lean 60, head 70, clavicle 16, wrist 85, MCP −25…95, PIP −5…110, DIP −5…85, spread 22, thumb base 50, thumb −15…75 | Joint limits relative to the parent |
+| `AVATAR_RELAXED_CURL` | 0.22 | Finger curl without hand landmarks |
+| `AVATAR_IDLE` | breath 4.6 s / 6 mm, sway 7.4 s / 12 mm, look 11.3 s / 6°, arm swing 12 mm, curl ±0.12 | Illustrative idle (static in Calm) |
+| `AVATAR_PLACEHOLDER_SCALE` / `AVATAR_PLACEHOLDER_HIP_Y` | 2.85 / 0.12 m | Menu placeholder scale and hip height on the play plane |
+| `AVATAR_RIM_COLOR_A` / `AVATAR_RIM_COLOR_B` | `#19F5FF` / `#B36BFF` | Fresnel rim gradient |
+| `AVATAR_FILL_COLOR` / `AVATAR_ACCENT_COLOR` | `#070B16` / `#19F5FF` | Dark glass body and seam glow |
+| `AVATAR_RIM_POWER` / `AVATAR_RIM_GAIN` / `AVATAR_ACCENT_GAIN` / `AVATAR_AUDIO_GAIN` | 2.6 / 1.5 / 2.2 / 0.9 | Fresnel exponent, rim, seam and music-energy gains |
+| `AVATAR_OUTLINE_M` | 0.0045 | Outline hull offset (model metres) |
 
 ### Companion service (YouTube)
 

@@ -1,17 +1,26 @@
 /** Pooled lane renderer; camera imagery never enters this scene. */
 import * as THREE from 'three';
 import type { TrackingFrame, HandCursor, SessionStats, BandEnergies, Vec3 } from '../core/types';
-import type { Note } from '../beatmap/types';
+import type { Note, NoteType } from '../beatmap/types';
 import type { LiveNote, LiveObstacle } from '../game/liveObjects';
 import type { GameEvents } from '../core/events';
 import type { TypedEmitter } from '../utils/emitter';
-import { AssetRegistry, fallbackShards } from './assets';
+import { AssetRegistry, crackedBody, fallbackShards } from './assets';
+import { diamondFaces } from './slicer';
 import type { ShardAsset } from './assets';
 import { ShatterPool } from './shatter';
 import { SlicePool } from './slices';
 import { PoofPool } from './poof';
 import { TerminalNoteVisuals } from './failures';
+import { ArenaAtmosphere } from './environment';
+import { PostFx, supportsHdrTargets } from './postfx';
 import { resolveQuality } from './quality';
+import {
+  createGlyphMaterial,
+  createShardMaterial,
+  createShellMaterial,
+  createTargetUniforms,
+} from './blocks';
 import type { ActiveQuality, QualityFeature, QualityTier } from './quality';
 import { beamAimTarget } from '../game/hit';
 import {
@@ -21,7 +30,6 @@ import {
   CAM_LOOK_AT,
   CAM_POS,
   FOG_DENSITY,
-  GRID_LINE_COLOR,
   MASK_H,
   MASK_W,
   MAX_LIVE_NOTES,
@@ -35,6 +43,7 @@ import {
   HALF_LIFETIME_MS,
   SHATTER_BURST_MIN,
   SHATTER_BURST_MAX,
+  SHATTER_RECEDE_MPS,
   OBSTACLE_ALPHA,
   BEAM_VISUAL_MS,
   GLYPH_FACE_OFFSET_M,
@@ -42,9 +51,7 @@ import {
   PYLON_SPACING_M,
   PYLON_X,
   BEAM_AIM_RADIUS,
-  ARENA_REACTIVE_GAIN,
   SIL_HEAD_RADIUS_M,
-  ARENA_BASE_EMISSION,
   APPROACH_MS,
   BADCUT_TINT,
   DESPAWN_Z,
@@ -58,8 +65,18 @@ import {
   SIL_MASK_LOW,
   SIL_MASK_HIGH,
   SIL_JOINT_RADIUS_M,
+  BLOCK_CORE_SPIN_RAD_S,
+  CAM_FAR_M,
+  SLASH_SLAB_DEPTH,
+  SMASH_CRACK_SCALE,
+  BEAM_ORB_RADIUS,
+  GLYPH_PROUD_M,
+  TARGET_GLYPH_SCALE,
+  SPAWN_DISTANCE,
 } from '../core/constants';
 const colors = { slash: 0x19f5ff, smash: 0xff2bd6, beam: 0xffc32b };
+/** Armour plate debris tint (dark magenta metal), distinct from the glowing shard cross-sections. */
+const ARMOR_PLATE_DEBRIS_COLOR = 0x5a2050;
 const scratch = new THREE.Object3D();
 const tint = new THREE.Color();
 const failureTint = new THREE.Color(BADCUT_TINT);
@@ -76,6 +93,15 @@ const IMPLEMENTED_QUALITY: readonly QualityFeature[] = Object.freeze([
   'smash-geometry',
   'poof-sparks',
   'pylons',
+  'grid',
+  'dust',
+]);
+/** Implemented only through the HDR composer; absent when half-float targets are unavailable. */
+const POST_QUALITY: readonly QualityFeature[] = Object.freeze([
+  ...IMPLEMENTED_QUALITY,
+  'bloom',
+  'smaa',
+  'fxaa',
 ]);
 const connections = [
   [11, 12],
@@ -121,8 +147,39 @@ export class ArenaRenderer {
     metalness: 0.9,
     roughness: 0.35,
   });
-  private readonly ringMaterial = new THREE.MeshBasicMaterial({ color: 0xffc32b });
-  private readonly glyphMaterial = new THREE.MeshBasicMaterial({ color: 0xe8f1ff, depthTest: true });
+  private readonly targetUniforms = createTargetUniforms();
+  /**
+   * Three silhouettes, one per gesture (1 m authored, scaled by BLOCK_SIZE): a bladed Slash slab, a
+   * cracked Smash cube assembled from the very shards it shatters into, and a floating Beam orb.
+   */
+  private smashBodyGeometry = crackedBody(this.assets.assets.shards, SMASH_CRACK_SCALE);
+  private readonly bodies: Record<NoteType, THREE.InstancedMesh> = {
+    slash: new THREE.InstancedMesh(
+      this.assets.assets.slashBody,
+      createShellMaterial(this.targetUniforms),
+      MAX_LIVE_NOTES,
+    ),
+    smash: new THREE.InstancedMesh(
+      this.smashBodyGeometry,
+      createShardMaterial(this.targetUniforms),
+      MAX_LIVE_NOTES,
+    ),
+    beam: new THREE.InstancedMesh(
+      this.assets.assets.beamBody,
+      createShellMaterial(this.targetUniforms, true),
+      MAX_LIVE_NOTES,
+    ),
+  };
+  // Linear HDR gold so the ring trims reach the bloom threshold.
+  private readonly ringMaterial = new THREE.MeshBasicMaterial({
+    color: new THREE.Color(0xffc32b).multiplyScalar(1.6),
+  });
+  private readonly glyphMaterial = createGlyphMaterial(this.targetUniforms);
+  private readonly arrows = new THREE.InstancedMesh(
+    this.assets.assets.glyphArrow,
+    this.glyphMaterial,
+    MAX_LIVE_NOTES,
+  );
   private readonly armor = new THREE.InstancedMesh(
     this.assets.assets.armor,
     this.armorMaterial,
@@ -146,33 +203,45 @@ export class ArenaRenderer {
   private readonly coloredTargets = [
     this.armor,
     this.beamRings,
+    this.bodies.slash,
+    this.bodies.smash,
+    this.bodies.beam,
+    this.arrows,
     this.glyphMeshes.slash,
     this.glyphMeshes.smash,
     this.glyphMeshes.beam,
   ];
+  /** Floor grid, horizon glow, dust and band-reactive authored neon (layer 0, menu background). */
+  private readonly atmosphere = new ArenaAtmosphere(QUALITY_TIER_PRESETS.medium);
   private readonly pylons = new THREE.InstancedMesh(
     this.assets.assets.pylon,
-    new THREE.MeshStandardMaterial({ color: 0x19283e, emissive: 0x081f2a, metalness: 0.5, roughness: 0.6 }),
+    this.atmosphere.pylonMaterial,
     QUALITY_TIER_PRESETS.high.pylons,
   );
+  private lastDrawAt: number | null = null;
+  private hdr = false;
+  private previewSerial = 0;
+  private previewHandsEnabled = false;
+  private post: PostFx | null = null;
   private readonly shatter: ShatterPool;
   private readonly slices: SlicePool;
   private readonly poofs: PoofPool;
   private readonly failures = new TerminalNoteVisuals();
-  private readonly targetCounts = { blocks: 0, armor: 0, rings: 0, reticles: 0, slash: 0, smash: 0, beam: 0 };
+  private readonly targetCounts = {
+    blocks: 0,
+    armor: 0,
+    rings: 0,
+    reticles: 0,
+    arrows: 0,
+    slash: 0,
+    smash: 0,
+    beam: 0,
+  };
   private renderedNotes: readonly LiveNote[] = [];
   private environment: THREE.Group | null = null;
   private readonly beamLines: THREE.Line[] = [];
   private readonly beamBirth = [-Infinity, -Infinity];
-  private readonly camera = new THREE.PerspectiveCamera(CAM_FOV_DEG, 16 / 9, 0.05, 100);
-  private readonly cubeGeometry = new THREE.BoxGeometry(BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-  private readonly cubeMaterial = new THREE.MeshStandardMaterial({
-    color: 0xffffff,
-    roughness: 0.22,
-    metalness: 0.55,
-    emissive: 0x223344,
-  });
-  private readonly blocks = new THREE.InstancedMesh(this.cubeGeometry, this.cubeMaterial, MAX_LIVE_NOTES);
+  private readonly camera = new THREE.PerspectiveCamera(CAM_FOV_DEG, 16 / 9, 0.05, CAM_FAR_M);
   private readonly fragmentGeometry = new THREE.BoxGeometry(1, 1, 1);
   private readonly fragmentMaterial = new THREE.MeshBasicMaterial({
     color: 0xffffff,
@@ -199,8 +268,6 @@ export class ArenaRenderer {
     rotation: 0,
   }));
   private effectIndex = 0;
-  private readonly edges: THREE.LineSegments[] = [];
-  private readonly glyphs: THREE.LineSegments[] = [];
   private readonly walls: THREE.Mesh[] = [];
   private readonly maskData = new Uint8Array(MASK_W * MASK_H);
   private readonly mask = new THREE.DataTexture(this.maskData, MASK_W, MASK_H, THREE.RedFormat);
@@ -230,7 +297,6 @@ export class ArenaRenderer {
   private readonly frozenHead = { x: 0, y: 0, z: 0 };
   private readonly savedHead = { x: 0, y: 0, z: 0 };
   private readonly bands: BandEnergies = { low: 0, mid: 0, high: 0, rms: 0 };
-  private readonly neonMaterials: THREE.MeshStandardMaterial[] = [];
   private readonly frozenMask = new Uint8Array(MASK_W * MASK_H);
   private frozenPose = false;
   private frozenMaskPresent = false;
@@ -265,6 +331,12 @@ export class ArenaRenderer {
     this.renderer.setClearColor(BG_COLOR);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.domElement.setAttribute('aria-hidden', 'true');
+    // Direct (non-composer) draws to the screen still tone map; composer passes render to HDR targets.
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.hdr = supportsHdrTargets(this.renderer);
+    this.activeQuality = this.resolveQuality();
+    if (this.activeQuality.bloomEnabled)
+      this.post = new PostFx(this.renderer, this.scene, this.camera, this.activeQuality);
     container.append(this.renderer.domElement);
     this.camera.position.set(CAM_POS.x, CAM_POS.y, CAM_POS.z);
     this.camera.lookAt(CAM_LOOK_AT.x, CAM_LOOK_AT.y, CAM_LOOK_AT.z);
@@ -273,17 +345,23 @@ export class ArenaRenderer {
     const light = new THREE.DirectionalLight(0xffffff, 3);
     light.position.set(2, 6, 3);
     this.scene.add(light);
-    const grid = new THREE.GridHelper(100, 50, GRID_LINE_COLOR, 0x102234);
-    grid.position.y = -0.35;
-    this.scene.add(grid);
     this.scene.add(
       this.armor,
       this.beamRings,
       this.reticles,
       this.pylons,
+      ...Object.values(this.bodies),
+      this.arrows,
       ...Object.values(this.glyphMeshes),
     );
-    for (const mesh of [this.armor, this.beamRings, this.reticles, ...Object.values(this.glyphMeshes)]) {
+    for (const mesh of [
+      this.armor,
+      this.beamRings,
+      this.reticles,
+      ...Object.values(this.bodies),
+      this.arrows,
+      ...Object.values(this.glyphMeshes),
+    ]) {
       mesh.frustumCulled = false;
       mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
       mesh.count = 0;
@@ -295,16 +373,16 @@ export class ArenaRenderer {
       this.scene,
       this.lowShards ?? this.assets.assets.shards,
       this.activeQuality.fragmentLifetimeMs,
+      createShardMaterial(this.targetUniforms),
     );
     this.slices = new SlicePool(
       this.scene,
       HALF_LIFETIME_MS * this.activeQuality.preset.fragmentLifetimeScale,
+      // Halves are cut from the Slash target's own rhombic prism (half-depth in half-extent units).
+      diamondFaces(SLASH_SLAB_DEPTH),
     );
     this.poofs = new PoofPool(this.scene, this.activeQuality.preset.poofSparks);
-    this.blocks.frustumCulled = false;
-    this.blocks.name = 'lane_targets';
-    this.blocks.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-    this.scene.add(this.blocks);
+    if (this.lowShards) this.rebuildSmashBody(this.lowShards);
     this.fragments.frustumCulled = false;
     this.fragments.name = 'debris_fragments';
     this.fragments.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
@@ -315,23 +393,10 @@ export class ArenaRenderer {
     this.armor.name = 'target_armor';
     this.beamRings.name = 'target_rings';
     this.reticles.name = 'target_reticles';
+    for (const type of ['slash', 'smash', 'beam'] as const) this.bodies[type].name = `target_body_${type}`;
+    this.arrows.name = 'target_glyph_arrow';
     for (const type of ['slash', 'smash', 'beam'] as const)
       this.glyphMeshes[type].name = `target_glyph_${type}`;
-    const edgeGeometry = new THREE.EdgesGeometry(this.cubeGeometry);
-    const glyphGeometry = new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-0.16, -0.16, 0.31),
-      new THREE.Vector3(0.16, 0.16, 0.31),
-    ]);
-    for (let i = 0; i < MAX_LIVE_NOTES; i++) {
-      const edge = new THREE.LineSegments(edgeGeometry, new THREE.LineBasicMaterial({ color: 0x19f5ff }));
-      edge.visible = false;
-      this.edges.push(edge);
-      this.scene.add(edge);
-      const glyph = new THREE.LineSegments(glyphGeometry, new THREE.LineBasicMaterial({ color: 0xffffff }));
-      glyph.visible = false;
-      this.glyphs.push(glyph);
-      this.scene.add(glyph);
-    }
     const wallArrowGeometry = new THREE.BufferGeometry();
     wallArrowGeometry.setAttribute(
       'position',
@@ -449,14 +514,19 @@ export class ArenaRenderer {
     this.scene.traverse((object) => {
       if (object instanceof THREE.AmbientLight || object instanceof THREE.DirectionalLight)
         object.layers.enable(1);
-      else if (object !== this.scene && object !== this.pylons && object !== grid) object.layers.set(1);
+      else if (object !== this.scene && object !== this.pylons) object.layers.set(1);
     });
+    this.atmosphere.applyPreset(this.activeQuality.preset);
+    this.scene.add(this.atmosphere.group);
     void this.assets.load().then(() => {
       if (this.disposed) return;
       this.assetPending = true;
       if (this.mode !== 'play' && this.mode !== 'paused') this.applyAssets();
     });
     this.resize();
+    // Development-only visual QA harness; the branch and its dynamic import are removed from production.
+    if (import.meta.env.DEV && typeof window !== 'undefined')
+      void import('./devFx').then((module) => module.installDevFx(this));
   }
   setStage(stage: HTMLElement | null): void {
     this.menuStage = stage;
@@ -515,9 +585,9 @@ export class ArenaRenderer {
     return resolveQuality(this.requestedTier, {
       viewportHeightCss: innerHeight,
       devicePixelRatio,
-      // No HDR render target is constructed. This describes the active pipeline, not a GPU probe.
-      hdrSupported: false,
-      implemented: IMPLEMENTED_QUALITY,
+      // Describes the constructed pipeline (half-float composer when renderable), not a GPU benchmark.
+      hdrSupported: this.hdr,
+      implemented: this.hdr ? POST_QUALITY : IMPLEMENTED_QUALITY,
     });
   }
   resize(): void {
@@ -526,6 +596,10 @@ export class ArenaRenderer {
     this.renderer.setSize(innerWidth, innerHeight);
     this.camera.aspect = innerWidth / innerHeight;
     this.camera.updateProjectionMatrix();
+    this.atmosphere.applyPreset(this.activeQuality.preset);
+    this.atmosphere.setViewport(innerHeight * this.activeQuality.pixelRatio, CAM_FOV_DEG);
+    this.post?.configure(this.activeQuality);
+    this.post?.setSize(innerWidth, innerHeight);
   }
   tracking(frame: TrackingFrame, visible: boolean): void {
     if (this.mode === 'paused' || this.mode === 'results') return;
@@ -660,13 +734,15 @@ export class ArenaRenderer {
       counts.armor =
       counts.rings =
       counts.reticles =
+      counts.arrows =
       counts.slash =
       counts.smash =
       counts.beam =
         0;
     const play = this.mode === 'play' || this.mode === 'paused';
-    for (const edge of this.edges) edge.visible = false;
-    for (const glyph of this.glyphs) glyph.visible = false;
+    this.targetUniforms.uTime.value = this.currentTime / 1000;
+    this.targetUniforms.uPulse.value = this.calm ? 0 : this.bands.low;
+    this.targetUniforms.uSpin.value = this.calm ? 0 : BLOCK_CORE_SPIN_RAD_S;
     if (play) {
       // Required unresolved cues keep priority over optional terminal follow-through at capacity.
       for (const live of notes) {
@@ -687,9 +763,13 @@ export class ArenaRenderer {
           );
       }
     }
-    this.blocks.count = counts.blocks;
-    this.blocks.instanceMatrix.needsUpdate = true;
-    if (this.blocks.instanceColor) this.blocks.instanceColor.needsUpdate = true;
+    for (const type of ['slash', 'smash', 'beam'] as const) {
+      const body = this.bodies[type];
+      body.count = counts[type];
+      body.instanceMatrix.needsUpdate = true;
+    }
+    this.arrows.count = counts.arrows;
+    this.arrows.instanceMatrix.needsUpdate = true;
     this.armor.count = counts.armor;
     this.beamRings.count = counts.rings;
     this.reticles.count = counts.reticles;
@@ -761,10 +841,16 @@ export class ArenaRenderer {
       bodyVisible && this.hasPose && this.activeQuality.preset.skeleton === 'joints-and-bones';
     this.drawJoints(bodyVisible && this.hasPose);
     this.headMarker.visible = bodyVisible && this.headPresent;
-    for (const material of this.neonMaterials)
-      material.emissiveIntensity = this.calm
-        ? ARENA_BASE_EMISSION
-        : ARENA_BASE_EMISSION + this.bands.low * ARENA_REACTIVE_GAIN;
+    const now = performance.now(),
+      frameMs = this.lastDrawAt === null ? 0 : now - this.lastDrawAt;
+    this.lastDrawAt = now;
+    if (this.mode !== 'paused')
+      this.atmosphere.update(
+        frameMs,
+        this.bands,
+        this.calm,
+        this.mode === 'play' ? (SPAWN_DISTANCE / this.approachMs) * 1000 : 0,
+      );
     const rect = this.mode !== 'play' ? this.menuStage?.getBoundingClientRect() : null;
     this.camera.fov = CAM_FOV_DEG;
     this.camera.aspect = innerWidth / innerHeight;
@@ -772,9 +858,18 @@ export class ArenaRenderer {
     this.renderer.setScissorTest(false);
     this.renderer.setViewport(0, 0, innerWidth, innerHeight);
     this.renderer.clear();
+    if (this.post) {
+      // Composer owns the full-screen pass (all layers in play, environment layer 0 in menus).
+      if (rect) this.camera.layers.set(0);
+      else this.camera.layers.enableAll();
+      this.post.render(frameMs / 1000, this.calm ? 0 : this.atmosphere.response.low);
+      if (!rect) return;
+    }
     if (rect) {
-      this.camera.layers.set(0);
-      this.renderer.render(this.scene, this.camera);
+      if (!this.post) {
+        this.camera.layers.set(0);
+        this.renderer.render(this.scene, this.camera);
+      }
       this.renderer.clearDepth();
       const width = Math.max(1, rect.width),
         height = Math.max(1, rect.height);
@@ -845,20 +940,17 @@ export class ArenaRenderer {
   ): void {
     const counts = this.targetCounts;
     if (counts.blocks >= MAX_LIVE_NOTES) return;
-    const scale = note.type === 'beam' ? 1.6 : 1;
+    const scale = note.type === 'beam' ? 1.6 : 1,
+      body = this.bodies[note.type],
+      index = counts[note.type]++;
+    counts.blocks++;
     scratch.position.set(position.x, position.y, position.z);
     scratch.rotation.set(0, 0, rotation);
-    scratch.scale.setScalar(scale);
+    scratch.scale.setScalar(BLOCK_SIZE * scale);
     scratch.updateMatrix();
-    this.blocks.setMatrixAt(counts.blocks, scratch.matrix);
+    body.setMatrixAt(index, scratch.matrix);
     tint.setHex(colors[note.type]).lerp(failureTint, redMix).multiplyScalar(brightness);
-    this.blocks.setColorAt(counts.blocks, tint);
-    const edge = this.edges[counts.blocks++]!;
-    edge.visible = true;
-    edge.position.copy(scratch.position);
-    edge.rotation.copy(scratch.rotation);
-    edge.scale.copy(scratch.scale);
-    (edge.material as THREE.LineBasicMaterial).color.copy(tint);
+    body.setColorAt(index, tint);
     tint.setHex(0xffffff).lerp(failureTint, redMix).multiplyScalar(brightness);
     if (note.type === 'smash') {
       scratch.scale.setScalar(BLOCK_SIZE);
@@ -880,14 +972,43 @@ export class ArenaRenderer {
         this.reticles.setMatrixAt(counts.reticles++, scratch.matrix);
       }
     }
-    scratch.position.set(position.x, position.y, position.z + GLYPH_FACE_OFFSET_M * scale);
+    const directional = note.type === 'slash' && note.dir !== 'any',
+      // Glyphs sit just proud of each silhouette's front: slab face, cube face or orb surface.
+      face =
+        note.type === 'slash'
+          ? (SLASH_SLAB_DEPTH / 2) * BLOCK_SIZE + GLYPH_PROUD_M
+          : note.type === 'beam'
+            ? BEAM_ORB_RADIUS * BLOCK_SIZE * scale + GLYPH_PROUD_M
+            : GLYPH_FACE_OFFSET_M;
+    scratch.position.set(position.x, position.y, position.z + face);
     scratch.rotation.set(0, 0, 0);
-    scratch.scale.setScalar(BLOCK_SIZE * 0.72 * scale);
+    scratch.scale.setScalar(BLOCK_SIZE * TARGET_GLYPH_SCALE[note.type] * (directional ? 0.8 : 1) * scale);
     scratch.updateMatrix();
-    const glyph = this.glyphMeshes[note.type],
-      index = counts[note.type]++;
+    const glyph = this.glyphMeshes[note.type];
     glyph.setMatrixAt(index, scratch.matrix);
     glyph.setColorAt(index, tint);
+    if (directional) {
+      // The chevron sits between the palm and the trim on the side the cut must travel toward.
+      const angle =
+          note.dir === 'up'
+            ? 0
+            : note.dir === 'down'
+              ? Math.PI
+              : note.dir === 'left'
+                ? Math.PI / 2
+                : -Math.PI / 2,
+        reach = BLOCK_SIZE * 0.34 * scale;
+      scratch.position.set(
+        position.x - Math.sin(angle) * reach,
+        position.y + Math.cos(angle) * reach,
+        position.z + face,
+      );
+      scratch.rotation.set(0, 0, angle);
+      scratch.scale.setScalar(BLOCK_SIZE * 0.3 * scale);
+      scratch.updateMatrix();
+      this.arrows.setMatrixAt(counts.arrows, scratch.matrix);
+      this.arrows.setColorAt(counts.arrows++, tint);
+    }
   }
   private impact(e: GameEvents['note:hit']): void {
     if (e.note.type === 'beam') {
@@ -925,13 +1046,48 @@ export class ArenaRenderer {
         z: e.impactPos.z,
         vx: Math.cos(angle) * speed,
         vy: this.calm ? 0 : Math.sin(angle) * speed,
-        vz: 1,
-        size: BLOCK_SIZE * 0.3,
-        color: colors[e.note.type],
+        // The four armour plates peel off sideways and away from the camera as dark metal.
+        vz: -SHATTER_RECEDE_MPS,
+        size: BLOCK_SIZE * 0.22,
+        color: ARMOR_PLATE_DEBRIS_COLOR,
         rotation: this.calm ? 0 : angle,
       });
     }
     this.balanceEffects();
+  }
+  /**
+   * Visual QA preview: renders the decorative destruction of a synthetic hit in a lane. It does not
+   * emit, judge or score anything and is never gameplay evidence. Effects draw only during play/pause.
+   */
+  previewImpact(type: NoteType, col: 0 | 1 | 2 | 3, row: 0 | 1 | 2, angle = Math.PI / 4): void {
+    const x = LANE_X[col],
+      y = LANE_Y[row],
+      speed = 6;
+    this.previewSerial++;
+    this.impact({
+      note: {
+        id: 1_000_000 + this.previewSerial,
+        t: this.currentTime,
+        type,
+        col,
+        row,
+        dir: 'any',
+        strength: 1,
+      },
+      judgement: 'perfect',
+      timingErrorMs: 0,
+      hand: 'right',
+      cutPlane: { point: { x, y, z: 0 }, normal: { x: Math.cos(angle), y: Math.sin(angle), z: 0 } },
+      impactPos: { x, y, z: 0 },
+      impactVel: { x: -Math.sin(angle) * speed, y: Math.cos(angle) * speed, z: 0 },
+      scoreDelta: 0,
+      combo: 0,
+      multiplier: 1,
+    });
+  }
+  /** Visual QA preview of synthetic hand trails (development harness only). */
+  previewHands(enabled: boolean): void {
+    this.previewHandsEnabled = enabled;
   }
   get effectOccupancy(): number {
     let count = this.shatter.occupancy + this.slices.occupancy + this.poofs.occupancy;
@@ -963,30 +1119,31 @@ export class ArenaRenderer {
     positions.needsUpdate = true;
     this.beamBirth[index] = this.currentTime;
   }
+  /** The intact Smash silhouette always matches the shard set this tier will shatter into. */
+  private rebuildSmashBody(shards: readonly ShardAsset[]): void {
+    const previous = this.smashBodyGeometry;
+    this.smashBodyGeometry = crackedBody(shards, SMASH_CRACK_SCALE);
+    this.bodies.smash.geometry = this.smashBodyGeometry;
+    previous.dispose();
+  }
   private applyAssets(): void {
     if (!this.assetPending) return;
     this.assetPending = false;
     const assets = this.assets.assets;
     this.armor.geometry = assets.armor;
     this.beamRings.geometry = assets.beamRing;
+    this.bodies.slash.geometry = assets.slashBody;
+    this.bodies.beam.geometry = assets.beamBody;
+    this.rebuildSmashBody(this.lowShards ?? assets.shards);
+    this.arrows.geometry = assets.glyphArrow;
     this.pylons.geometry = assets.pylon;
     for (const type of ['slash', 'smash', 'beam'] as const)
       this.glyphMeshes[type].geometry = assets.glyphs[type];
     this.shatter.configure(this.lowShards ?? assets.shards);
     if (assets.environment && this.environment !== assets.environment) {
       this.environment = assets.environment;
-      this.environment.traverse((object) => {
-        object.layers.set(0);
-        if (object instanceof THREE.Mesh)
-          for (const material of Array.isArray(object.material) ? object.material : [object.material])
-            if (material instanceof THREE.MeshStandardMaterial) {
-              if (/rail|ring|strip|grid/.test(object.name)) {
-                material.emissive.copy(material.color);
-                material.emissiveIntensity = ARENA_BASE_EMISSION;
-                if (!this.neonMaterials.includes(material)) this.neonMaterials.push(material);
-              }
-            }
-      });
+      this.environment.traverse((object) => object.layers.set(0));
+      this.atmosphere.bind(this.environment);
       this.scene.add(this.environment);
     }
     this.configurePylons();
@@ -1047,6 +1204,7 @@ export class ArenaRenderer {
     for (const g of geometries) g.dispose();
     for (const m of materials) m.dispose();
     this.mask.dispose();
+    this.post?.dispose();
     this.renderer.dispose();
     this.renderer.domElement.remove();
   }

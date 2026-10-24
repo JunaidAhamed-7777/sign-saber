@@ -18,6 +18,8 @@ Bounded instrumentation, explicit recorder/replay seams and diagnostics export n
 
 Export the lane in each manifest. Show `REPLAY` or `STRESS` throughout non-live runs and recordings. Never put replay numbers under a live-camera heading.
 
+**Dataset camera (`dataset-camera`, implemented):** attributed still photos (or, later, a rendered performer) are streamed as a real `MediaStream` through the unchanged live path: video element, frame callbacks, worker, MediaPipe, calibration, gestures and judgement ([05 §1.3](05-tracking-pipeline.md#13-dataset-camera-trackingcamerasourcets-datasetcamerats-datasetcamerareelts)). It measures pipeline behaviour on known inputs (per-photo detection, joint error against annotations, handedness agreement, lifecycle) but not webcam optics, a person's motion, swings or latency. Chrome's fake capture device fed the same reel is the harness lane `chrome-fake-webcam-dataset`; the page itself reports `live-camera-unverified` there because it cannot know. Neither lane is live evidence.
+
 ## 3. Lock the experiment
 
 Every manifest contains:
@@ -104,6 +106,8 @@ Useful labelled ablations: mask uploads on/off; hand-only versus hand+pose; CPU/
 ## 9. Evidence bundle
 
 Once measurements exist, store a compact summary at `docs/evidence/<run-id>/report.md`. Raw traces/private fixtures may live in a gitignored local folder or access-controlled artifact; link checksums and retention location. Do not create empty reports that imply measurement.
+
+The judgement trace is implemented by `core/judgementTrace.ts`: preallocated typed columns (`JUDGEMENT_TRACE_CAPACITY`) record `note:hit`, `note:miss`, `note:badcut`, `beam:fire`, `obstacle:hit`, `obstacle:dodged` and `session:end` in emission (semantic) order. Events beyond capacity are counted as `overflow`; a second terminal outcome for the same note/wall id is recorded and counted as a `repeat`. Subscription and disposal are idempotent. `export()` returns the events, delivery timestamps in a separate array, and a SHA-256 over a canonical one-line-per-event serialization of the semantic fields plus count/overflow/repeats only, so identical judgements from different render schedules hash identically. Diagnostics export (schema 2) includes it.
 
 Include manifest, raw frame/job CSV or JSON, per-run summaries, failures, judgement-trace checksum, stage times, tier transitions, selected profiler trace and permitted labelled recordings. State test date, scope, pass/fail, unsupported metrics, regressions, licences and exact reproduction steps.
 

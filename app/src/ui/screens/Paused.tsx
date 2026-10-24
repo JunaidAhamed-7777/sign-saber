@@ -2,13 +2,14 @@ import type { GameRuntime } from '../../core/runtime';
 import { useStore } from '../../state/store';
 import { Button, MenuShell, RailHeading } from '../components/MenuShell';
 import type { MenuPage } from '../components/MenuShell';
-import { strings as t } from '../strings';
+import { duration, strings as t } from '../strings';
 export function Paused({ runtime }: { runtime: GameRuntime }) {
   const reason = useStore((s) => s.pauseReason),
     ready = useStore((s) => runtime.datasetTrialActive || (s.trackingReady && s.camera.calibrationValid)),
     countdown = useStore((s) => s.countdown),
     error = useStore((s) => s.error),
-    title = useStore((s) => s.map?.song.title ?? null);
+    title = useStore((s) => s.map?.song.title ?? null),
+    hud = useStore((s) => s.hud);
   useStore((s) => s.status);
   const message =
     reason === 'tracking'
@@ -23,12 +24,19 @@ export function Paused({ runtime }: { runtime: GameRuntime }) {
   const warning = reason === 'tracking' || reason === 'audio' || reason === 'fatal';
   const blocked = !ready && reason !== 'fatal' && !runtime.datasetTrialActive;
   const resume = (
-    <Button runtime={runtime} id="resume" disabled={!ready || reason === 'fatal'} primary className="hero">
+    <Button
+      runtime={runtime}
+      id="resume"
+      disabled={!ready || reason === 'fatal'}
+      primary
+      className="hero"
+      autoFocus={ready && reason !== 'fatal'}
+    >
       {t.resume}
     </Button>
   );
   const songs = (
-    <Button runtime={runtime} id="songs">
+    <Button runtime={runtime} id="songs" autoFocus={!ready || reason === 'fatal'}>
       {t.quit}
     </Button>
   );
@@ -58,6 +66,28 @@ export function Paused({ runtime }: { runtime: GameRuntime }) {
         <>
           <RailHeading level={1} eyebrow={title ?? t.paused} title={t.paused} />
           {reasonNotice}
+          <dl className="run-so-far" aria-label={t.thisRun}>
+            <div>
+              <dt>{t.songProgress}</dt>
+              <dd>
+                {duration(hud.songTimeMs)} / {duration(hud.durationMs)}
+              </dd>
+            </div>
+            <div>
+              <dt>{t.score}</dt>
+              <dd>{hud.score.toLocaleString()}</dd>
+            </div>
+            <div>
+              <dt>{t.combo}</dt>
+              <dd>
+                {hud.combo} · ×{hud.multiplier}
+              </dd>
+            </div>
+            <div>
+              <dt>{t.accuracy}</dt>
+              <dd>{hud.accuracy === null ? '—' : `${(hud.accuracy * 100).toFixed(1)}%`}</dd>
+            </div>
+          </dl>
           <p className="note">{t.safeSpace}</p>
           {errorNotice}
         </>

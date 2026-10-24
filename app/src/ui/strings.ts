@@ -1,5 +1,11 @@
 /** Player-facing copy. Technical acquisition/setup commands belong in the README. */
+import { DATASET_CAMERA_LABEL } from '../tracking/datasetCamera';
 export const strings = Object.freeze({
+  datasetCamera: DATASET_CAMERA_LABEL,
+  datasetCameraUse: 'Use dataset camera',
+  datasetCameraAbout:
+    'Testing aid: attributed still photos stream through the real camera pipeline. Not a webcam; photos contain no swings or gestures.',
+  datasetCameraBanner: 'DATASET CAMERA · still photos through the live camera path · not a webcam',
   calmSystem: 'Calm visuals follow your system reduced-motion preference.',
   datasetComplete: 'Dataset trial complete. These still poses contain no hand-gesture labels.',
   datasetSource: 'Dataset annotations · no webcam',
@@ -19,6 +25,7 @@ export const strings = Object.freeze({
     'A planned synthetic performer plays this chart through the real scoring path. No camera, no person and no recognition are involved.',
   performerReplay: 'SYNTHETIC PERFORMER · planned motion · no camera',
   performerComplete: 'Synthetic performer run complete. It shows the game logic, not webcam recognition.',
+  performerControls: 'Synthetic performer · mouse/keyboard to pause or quit',
   performerFigure: 'Synthetic performer · planned skeleton · no camera',
   performerResults: 'Synthetic performer results',
   performerMotion: 'Synthetic motion proxy',
@@ -184,7 +191,6 @@ export const strings = Object.freeze({
   // Interface shell, cards and settings pages.
   musicLibrary: 'Music library',
   selectedTrack: 'Selected track',
-  yourAudio: 'Your audio',
   trackLoadingTag: 'Loading',
   trackFailedTag: 'Could not load',
   retryTrack: 'Retry track',
@@ -193,6 +199,7 @@ export const strings = Object.freeze({
   bpm: 'BPM',
   datasetTrialCaption: 'Annotated poses · no webcam',
   nativeShort: 'Mouse or keyboard',
+  startLive: 'Start live play',
   arrangementPreparing: 'Preparing 80-second cut',
   playPage: 'Play',
   soundVisualsPage: 'Sound & visuals',
@@ -207,7 +214,6 @@ export const strings = Object.freeze({
   legendMove: 'Open palm · move',
   legendClick: 'Point · click',
   legendRearm: 'Open again before the next click',
-  keyboardHint: 'Mouse and keyboard always work',
   bootTagline: 'Upper-body rhythm combat',
   bootLoading: 'Opening the music library',
   bootErrorTitle: 'The arena could not start',

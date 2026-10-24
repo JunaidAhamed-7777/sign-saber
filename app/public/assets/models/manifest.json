@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-24T19:59:51.577727+00:00",
+  "generatedAt": "2026-10-24T22:42:55.068096+00:00",
   "sourceBlend": "assets-src/blender/signsaber_assets.blend",
   "sourceGenerator": "assets-src/blender/generate_assets.py",
-  "authoringRoute": "official Blender MCP add-on JSON TCP execute_code; local 127.0.0.1:9876",
+  "authoringRoute": "official Blender MCP add-on JSON TCP execute_code; local 127.0.0.1 dedicated instance",
   "blenderVersion": "5.2.2 LTS",
   "blenderBuildHash": "d13f752e3b9c",
   "gltfExporter": "Blender bundled io_scene_gltf2",
@@ -18,10 +18,31 @@
   "units": "metres",
   "upAxis": "Y",
   "materials": "Principled base color, no textures or emission",
-  "fractureMode": "complete-eight-octant fallback; Cell Fracture operator unavailable",
-  "armorSimplification": "Three-segment bevel at 0.02999m (10 micrometres below half thickness avoids coincident corner seams), 0.015m grooves; budget simplification from 1024 to 896 triangles.",
-  "shardCount": 8,
-  "shardVolumeM3": 0.9999999999999999,
+  "fractureMode": "seeded 14-cell Voronoi (bmesh bisect_plane + holes_fill); Cell Fracture operator unavailable",
+  "fracture": {
+    "cells": 14,
+    "siteExtentM": 0.4,
+    "siteMinSpacingM": 0.27,
+    "siteAttempts": 51,
+    "shardTriangles": [
+      12,
+      20,
+      20,
+      36,
+      24,
+      20,
+      24,
+      36,
+      20,
+      28,
+      20,
+      28,
+      28,
+      20
+    ]
+  },
+  "shardCount": 14,
+  "shardVolumeM3": 0.9999999979469777,
   "clearStage": {
     "x": [
       -3,
@@ -35,7 +56,7 @@
       0,
       3
     ],
-    "note": "No upright opaque geometry intersects the central human play stage; floor is below y=0."
+    "note": "No upright opaque geometry intersects the central human play stage; floor and dais tops are below y=0."
   },
   "assets": [
     {
@@ -49,11 +70,17 @@
         "shard_04",
         "shard_05",
         "shard_06",
-        "shard_07"
+        "shard_07",
+        "shard_08",
+        "shard_09",
+        "shard_10",
+        "shard_11",
+        "shard_12",
+        "shard_13"
       ],
-      "triangles": 96,
-      "bytes": 13232,
-      "sha256": "451d4f4e58d2a7410269e20ee7d93ec45f3035afbeecb8040a269c47b74d629f",
+      "triangles": 336,
+      "bytes": 35196,
+      "sha256": "594a08e661ee1399450a73d17e7b90e80f6f7a7681f8055e190846dface97e39",
       "license": "MIT"
     },
     {
@@ -63,8 +90,8 @@
         "armor_plates"
       ],
       "triangles": 896,
-      "bytes": 57332,
-      "sha256": "b4773b272d113383e793d6a29f8bd1ee229faf29721b1021652b82bb86f1c600",
+      "bytes": 57340,
+      "sha256": "87aa00a6e913f43e3ed02c6a2442addbc53667011dd23305308377fb75896e71",
       "license": "MIT"
     },
     {
@@ -73,9 +100,9 @@
       "nodes": [
         "beam_ring"
       ],
-      "triangles": 816,
-      "bytes": 45232,
-      "sha256": "b1e0765d523d6877ddea8e1b70ed9c083007f35b657a413c901c0105504c5c1f",
+      "triangles": 704,
+      "bytes": 38796,
+      "sha256": "4fb0a16eceae8757803ccae2089a68ab91e4937c4295e0f32cbf1f1382d43837",
       "license": "MIT"
     },
     {
@@ -84,11 +111,12 @@
       "nodes": [
         "glyph_palm",
         "glyph_fist",
-        "glyph_point"
+        "glyph_point",
+        "glyph_arrow"
       ],
-      "triangles": 172,
-      "bytes": 10056,
-      "sha256": "3a22813916981033a71371aa455a2063a30b36e74b8bc88b7bfb49f7207a1d0c",
+      "triangles": 1176,
+      "bytes": 58212,
+      "sha256": "cca85e0b4c030a8c136f23c2f4f9597fc41dca8878e6bace91bb86ecdbd56e93",
       "license": "MIT"
     },
     {
@@ -97,9 +125,9 @@
       "nodes": [
         "pylon"
       ],
-      "triangles": 36,
-      "bytes": 4256,
-      "sha256": "4afdb16a007e8651c7feae6f7f67b5fd3806c7c15d7bbd9dc525d512cf63c08d",
+      "triangles": 76,
+      "bytes": 6840,
+      "sha256": "f95806d5098359a623e4055705bd644bfd66a0e67d2be6f257a66a0806fb4893",
       "license": "MIT"
     },
     {
@@ -107,9 +135,11 @@
       "path": "/assets/models/arena_environment.glb",
       "nodes": [
         "arena_floor",
-        "arena_grid",
+        "arena_stage",
         "arena_rail_cyan",
         "arena_rail_magenta",
+        "arena_channel_housing",
+        "arena_floor_channels",
         "arena_pylon_left_00",
         "arena_pylon_left_01",
         "arena_pylon_left_02",
@@ -118,25 +148,47 @@
         "arena_pylon_right_01",
         "arena_pylon_right_02",
         "arena_pylon_right_03",
-        "arena_arch_00",
-        "arena_arch_01",
+        "arena_speaker_stack_left",
+        "arena_speaker_stack_right",
+        "arena_tower_left_00",
+        "arena_tower_right_00",
+        "arena_truss_00",
+        "arena_tower_left_01",
+        "arena_tower_right_01",
+        "arena_truss_01",
+        "arena_skyline",
         "arena_horizon_ring"
       ],
-      "triangles": 1304,
-      "bytes": 64380,
-      "sha256": "2ebfd7cb9645da95bd41b504317a8092b60512539b77539191a7e1979d748045",
+      "triangles": 2528,
+      "bytes": 133928,
+      "sha256": "dbecbf743a031e5aaf657c82a538a3ff75538feee7d1b1669eb4a3736f7228b3",
+      "license": "MIT"
+    },
+    {
+      "id": "block_targets",
+      "path": "/assets/models/block_targets.glb",
+      "nodes": [
+        "block_slash",
+        "block_orb"
+      ],
+      "triangles": 280,
+      "bytes": 21744,
+      "sha256": "e18d9bcc477e20c9f0eb8f6fdd4a858158b64d1e62071f0b0881d06689f9a7ca",
       "license": "MIT"
     }
   ],
-  "totalTriangles": 3320,
-  "totalGlbBytes": 194488,
+  "totalTriangles": 5996,
+  "totalGlbBytes": 352056,
   "provenance": "Original script-authored geometry. No Poly Haven, Sketchfab, generative asset service or third-party meshes/textures used. MIT repository license.",
-  "sourceBlendSha256": "31eba5645de061fd1339928690b5d416ae14c78afb8d2d34767b5cc01401da48",
-  "sourceGeneratorSha256": "d009e0db23f35ca4a62c59fd540727674ca78f12004f575bdf92f72577c405ed",
+  "sourceBlendSha256": "90862ae87371e8c79a479924900ac6fcd89f643e480b1716c50160988fc5193b",
+  "sourceGeneratorSha256": "9d0e406b429a433516134ea84d65444dce9755023664f5f144637ed5d365fd01",
   "sharedConstants": {
     "source": "app/src/core/constants.ts",
     "PYLON_SPACING_M": 8.0,
-    "PYLON_X": 5.5
+    "PYLON_X": 5.5,
+    "SILHOUETTE_Z": -1.4,
+    "SLASH_SLAB_DEPTH": 0.3,
+    "BEAM_ORB_RADIUS": 0.27
   },
   "armorConstruction": {
     "bevelOffsetM": 0.02999,
@@ -145,5 +197,34 @@
     "grooveDepthM": 0.015,
     "preSimplifyTriangles": 1024,
     "exportTriangles": 896
+  },
+  "armorSimplification": "Three-segment bevel at 0.02999m (10 micrometres below half thickness avoids coincident corner seams), 0.015m grooves; budget simplification from 1024 to 896 triangles.",
+  "blockTargets": {
+    "slash": {
+      "node": "block_slash",
+      "shape": "rhombic slab with chamfered faces and cut seam",
+      "depthM": 0.3,
+      "chamferM": 0.05,
+      "seamM": 0.032
+    },
+    "beam": {
+      "node": "block_orb",
+      "shape": "faceted 12-segment orb with equator band",
+      "radiusM": 0.27,
+      "bandDeg": 7
+    },
+    "smash": "runtime assembly of the authored block_fractured shards with crack gaps (no duplicate geometry)",
+    "trimMask": "Col white on emissive trims/seam/band, black on glass"
+  },
+  "glyphConstruction": {
+    "depthM": 0.04,
+    "chamferM": 0.009,
+    "reliefStepM": 0.008,
+    "nodes": {
+      "glyph_palm": 362,
+      "glyph_fist": 382,
+      "glyph_point": 328,
+      "glyph_arrow": 104
+    }
   }
 }

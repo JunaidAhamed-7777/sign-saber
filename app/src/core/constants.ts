@@ -414,6 +414,22 @@ export const ARENA_REACTIVE_GAIN = 2,
 export const DATASET_TRIAL_MAX_SAMPLES = 100,
   DATASET_TRIAL_MAX_CATCHUP_FRAMES = 300;
 
+// ── Begin dataset-camera / judgement-trace block (docs02 registry; docs05 §1.3; docs24 §9) ──
+// A labelled canvas MediaStream fed through the unchanged live path. Never webcam evidence.
+export const DATASET_CAMERA_MANIFEST_URL = '/dataset-camera/manifest.json',
+  DATASET_CAMERA_MAX_ITEMS = 200,
+  DATASET_CAMERA_MAX_FILE_BYTES = 4 * 1024 * 1024,
+  DATASET_CAMERA_HOLD_MS = 5000,
+  DATASET_CAMERA_HOLD_MIN_MS = 1000,
+  DATASET_CAMERA_HOLD_MAX_MS = 60000,
+  DATASET_CAMERA_SWEEP_FIRST_HOLD_MS = 20000,
+  DATASET_CAMERA_TRANSITION_GUARD_MS = 300,
+  DATASET_CAMERA_TIMELINE_CAPACITY = 1024,
+  DATASET_CAMERA_MATCH_SHOULDER_FRACTION = 0.5,
+  DATASET_CAMERA_PCK_SHOULDER_FRACTION = 0.5;
+export const JUDGEMENT_TRACE_CAPACITY = 8192;
+// ── End dataset-camera / judgement-trace block ──
+
 export const POOF_POOL = 6,
   POOF_SPARKS = 24,
   POOF_POWERDOWN_MS = 150,
@@ -529,6 +545,49 @@ export const QUALITY_TIER_PRESETS = Object.freeze({
     pylons: 8,
   } as const),
 });
+
+// ---- Render polish registry (docs11–13, docs18): targets, post FX, arena response, hands. ----
+// Registered in docs/11, 12 and 13 "Constants required" tables; keep both sides synchronized.
+export const BLOCK_NEAR_GLOW_M = 8,
+  BLOCK_FILL_ALPHA = 0.38,
+  BLOCK_RIM_GAIN = 0.9,
+  BLOCK_TRIM_GAIN = 1.05,
+  BLOCK_TRIM_NEAR_GAIN = 0.75,
+  BLOCK_CORE_SPIN_RAD_S = 0.9;
+export const GLYPH_FRONT_GAIN = 1.15,
+  GLYPH_EDGE_GAIN = 0.3,
+  SHARD_INNER_GAIN = 1.4,
+  SHARD_FLASH_MS = 80,
+  SLICE_CAP_HEAT_MS = 300,
+  SLICE_CAP_HEAT_GAIN = 2.5;
+export const BLOOM_SMOOTHING = 0.3,
+  BLOOM_RADIUS = 0.7,
+  BLOOM_ACCENT_MAX = 0.3,
+  VIGNETTE_DARKNESS = 0.45,
+  VIGNETTE_OFFSET = 0.35;
+export const ARENA_NEON_BASE = 1.4,
+  ARENA_BAND_GAIN = 1.5,
+  ARENA_BAND_BASE = 0.35,
+  ARENA_TRANSIENT_GAIN = 2.5,
+  ARENA_TRANSIENT_WINDOW_S = 1.2,
+  ARENA_EMISSION_SLEW_PER_S = 3;
+export const GRID_Y = -0.385,
+  GRID_MINOR_M = 1,
+  GRID_MAJOR_M = 4,
+  GRID_FADE_START_M = 30,
+  GRID_FADE_END_M = 75;
+export const HORIZON_GLOW_W_M = 60,
+  HORIZON_GLOW_H_M = 14,
+  HORIZON_GLOW_Y = 4,
+  HORIZON_GLOW_Z = -140,
+  CAM_FAR_M = 400;
+export const DUST_BOX_W_M = 12,
+  DUST_BOX_H_M = 8,
+  DUST_BOX_D_M = 60,
+  DUST_SPEED_FRACTION = 0.3,
+  DUST_SIZE_MIN_M = 0.02,
+  DUST_SIZE_MAX_M = 0.05,
+  DUST_ALPHA = 0.25;
 // --- Synthetic performer: labelled trial input only, never live-camera evidence (docs/17) ---
 export const PERFORMER_SHOULDER_WIDTH_NORM = 0.24,
   PERFORMER_SHOULDER_V = 0.36,
@@ -556,3 +615,73 @@ export const HUD_TWEEN_TAU_MS = 90;
 /** Combo counts that trigger the HUD milestone callout. */
 export const HUD_COMBO_MILESTONES = [10, 25, 50, 100] as const;
 // --- end interface layout and HUD presentation ---
+// --- Rigged upper-body avatar (docs/10 §Avatar; docs/18 §Avatar). Retargeting/presentation only; never scoring. ---
+export const AVATAR_URL = '/assets/models/avatar.glb';
+/** Requested figure per fixed tier: the skinned avatar or the line-skeleton fallback. */
+export const AVATAR_TIER_FIGURE = Object.freeze({
+  high: 'avatar',
+  medium: 'avatar',
+  low: 'skeleton',
+} as const);
+/** World-landmark depth → play-space depth gain, and its clamp (play metres). */
+export const AVATAR_DEPTH_GAIN = 0.6,
+  AVATAR_DEPTH_MAX_M = 1.1;
+/** Arm segments may lengthen this much so hands reach tracked wrists. */
+export const AVATAR_STRETCH_MAX = 1.15;
+/** Exponential smoothing time constants (ms): tracked bones, joints easing to neutral, root and scale. */
+export const AVATAR_SMOOTH_MS = 55,
+  AVATAR_MISSING_SMOOTH_MS = 320,
+  AVATAR_ROOT_SMOOTH_MS = 70,
+  AVATAR_SCALE_SMOOTH_MS = 450;
+/** A briefly missing joint holds its last target this long before easing to the neutral pose. */
+export const AVATAR_HOLD_MS = 250;
+/** Joint limits (degrees) relative to the parent bone. */
+export const AVATAR_LIMITS_DEG = Object.freeze({
+  torsoTwist: 45,
+  torsoLean: 60,
+  head: 70,
+  clavicle: 16,
+  wrist: 85,
+  mcpFlex: [-25, 95] as const,
+  pipFlex: [-5, 110] as const,
+  dipFlex: [-5, 85] as const,
+  spread: 22,
+  thumbBase: 50,
+  thumbFlex: [-15, 75] as const,
+});
+/** Finger curl (0 straight … 1 fist) used when no hand landmarks exist. */
+export const AVATAR_RELAXED_CURL = 0.22;
+/** Illustrative idle: periods (s) and amplitudes (model metres / degrees). Static in Calm. */
+export const AVATAR_IDLE = Object.freeze({
+  breathPeriodS: 4.6,
+  swayPeriodS: 7.4,
+  lookPeriodS: 11.3,
+  breathM: 0.006,
+  swayM: 0.012,
+  lookDeg: 6,
+  armSwingM: 0.012,
+  curlRange: 0.12,
+});
+/** Menu placeholder placement on the play plane: avatar scale and hip height (play metres). */
+export const AVATAR_PLACEHOLDER_SCALE = 2.85,
+  AVATAR_PLACEHOLDER_HIP_Y = 0.12;
+/** Holographic material: rim colours (DESIGN cyan→violet), fill, fresnel power and gains. */
+export const AVATAR_RIM_COLOR_A = 0x19f5ff,
+  AVATAR_RIM_COLOR_B = 0xb36bff,
+  AVATAR_FILL_COLOR = 0x070b16,
+  AVATAR_ACCENT_COLOR = 0x19f5ff,
+  AVATAR_RIM_POWER = 2.6,
+  AVATAR_RIM_GAIN = 1.5,
+  AVATAR_ACCENT_GAIN = 2.2,
+  AVATAR_AUDIO_GAIN = 0.9,
+  AVATAR_OUTLINE_M = 0.0045;
+// --- end rigged upper-body avatar ---
+// Target families: Slash rhombic slab, Smash cracked fracture cube, Beam orb (docs11 §2, docs18).
+export const SLASH_SLAB_DEPTH = 0.3,
+  SMASH_CRACK_SCALE = 0.93,
+  TARGET_FADE_IN_M = 10;
+export const TARGET_GLYPH_SCALE = Object.freeze({ slash: 0.42, smash: 0.56, beam: 0.62 } as const);
+export const BEAM_ORB_RADIUS = 0.27,
+  GLYPH_PROUD_M = 0.012;
+export const SHATTER_DEPTH_FRACTION = 0.35,
+  SHATTER_RECEDE_MPS = 2.4;

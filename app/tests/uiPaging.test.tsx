@@ -71,7 +71,7 @@ describe('figure-centred paged menu structure', () => {
     expect(ids).not.toContain('camera');
     expect(ids).toContain('audio');
     expect(ids).toContain('dataset-trial');
-    expect(ids).toContain('arrange');
+    expect(ids).toContain('performer-trial');
     expect(ids).toContain('ui:left:next');
     expect(ids).toContain('ui:right:next');
     expect(new Set(ids).size).toBe(ids.length);
@@ -99,7 +99,6 @@ describe('figure-centred paged menu structure', () => {
       'audio',
       'dataset-trial',
       'performer-trial',
-      'arrange',
       'ui:compact:next',
     ]);
     expect(new Set(ids).size).toBe(ids.length);
@@ -136,6 +135,34 @@ describe('figure-centred paged menu structure', () => {
     const html = renderToStaticMarkup(<Select runtime={runtime} />);
     expect(html).toMatch(/class="btn selected song-card failed"/);
     expect(html).toContain('Could not load');
+  });
+  it('shows the camera setup checklist from real presence flags with Confirm and Cancel beside the stage', () => {
+    useStore.setState({
+      state: 'SELECT',
+      library: manifest.tracks as BundledTrackEntry[],
+      libraryLoading: false,
+      camera: { state: 'setting-up', mode: 'camera-setup', calibrationValid: false, error: null },
+      cameraStage: 'Loading hand model',
+      figureAvailable: true,
+      calibrationReady: false,
+      hud: { ...initial.hud, leftPresent: true, rightPresent: false },
+    });
+    for (const mode of [false, true]) {
+      compact = mode;
+      const html = renderToStaticMarkup(<Select runtime={runtime} />),
+        ids = targets(html);
+      expect(ids).toEqual(expect.arrayContaining(['camera-confirm', 'camera-cancel']));
+      expect(html).toMatch(/data-target="camera-confirm"[^>]*disabled/);
+      expect(html.match(/<li class="ok">/g)).toHaveLength(2);
+      expect(html).toContain('Right hand<span class="visually-hidden"> · not yet');
+      expect(html).toContain('Hold still with shoulders and both hands visible.');
+      expect(html).not.toContain('<video');
+    }
+    compact = false;
+    const html = renderToStaticMarkup(<Select runtime={runtime} />);
+    expect(html).toContain('Loading hand model');
+    // Library cards make way for positioning guidance while the setup preview is shown.
+    expect(targets(html).some((id) => id.startsWith('song:'))).toBe(false);
   });
   it('marks the loading card busy and keeps the generated cover art per track', () => {
     useStore.setState({

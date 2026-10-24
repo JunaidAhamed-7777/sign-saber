@@ -23,6 +23,7 @@ export function Button({
   onAction,
   label,
   describedBy,
+  autoFocus = false,
 }: {
   runtime: GameRuntime;
   id: string;
@@ -36,6 +37,8 @@ export function Button({
   onAction?: (source: ActionSource) => void;
   label?: string;
   describedBy?: string;
+  /** Initial keyboard focus for a screen's primary action (docs14 §Focus management). */
+  autoFocus?: boolean;
 }) {
   const ref = useRef<HTMLButtonElement>(null);
   const action = useRef(onAction);
@@ -75,6 +78,7 @@ export function Button({
       aria-pressed={selected || undefined}
       aria-label={label}
       aria-describedby={describedBy}
+      autoFocus={autoFocus}
       className={classes('btn', primary && 'primary', selected && 'selected', busy && 'busy', className)}
       style={hand ? ({ '--arm': progress } as React.CSSProperties) : undefined}
       onClick={() => runtime.targets.activate(id, 'native')}
@@ -178,7 +182,7 @@ export function RailPager({
         {position}
         <div className="inline-row">
           {previousButton}
-          <div className="rail-page" key={page.id} aria-label={page.label}>
+          <div className="rail-page" key={page.id} role="group" aria-label={page.label}>
             {page.content}
           </div>
           {nextButton}
@@ -188,7 +192,7 @@ export function RailPager({
     );
   return (
     <div className="rail-pager">
-      <div className="rail-page" key={page.id} aria-label={page.label}>
+      <div className="rail-page" key={page.id} role="group" aria-label={page.label}>
         {page.content}
         {showStatus && <StatusMessage errors={statusErrors} />}
       </div>
@@ -257,6 +261,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
   const mask = useStore((s) => s.maskAvailable);
   const replay = useStore((s) => s.replay);
   const trialSource = useStore((s) => s.trialSource);
+  const datasetCamera = useStore((s) => s.cameraSource === 'dataset');
   const live = available && (replay || camera.calibrationValid || camera.mode === 'camera-setup');
   const saved = state === 'RESULTS' && highlight !== null;
   const frozen = state === 'PAUSED' && !!runtime.renderer?.hasFrozenFigure;
@@ -322,6 +327,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
       {state !== 'PLAYING' && (
         <p className="figure-caption">
           {label}
+          {datasetCamera && !placeholder ? ` · ${strings.datasetCamera}` : ''}
           {saved ? ` · ${Math.max(0, highlight! / 1000).toFixed(1)} s` : ''}
         </p>
       )}
@@ -406,12 +412,26 @@ function useSettingsPages(runtime: GameRuntime, enabled: boolean): MenuPage[] {
           </Button>
           {!camera.calibrationValid && <p className="note native-note">{strings.nativeCamera}</p>}
           <Button runtime={runtime} id="start" disabled={!canStartLive}>
-            {strings.start}
+            {strings.startLive}
           </Button>
           {!canStartLive && <p className="note">{strings.startRequirements}</p>}
           <Button runtime={runtime} id="camera-off" disabled={!camera.calibrationValid}>
             {strings.cameraOff}
           </Button>
+        </>
+      ),
+    });
+  if (state === 'SELECT')
+    pages.push({
+      id: 'settings-dataset-camera',
+      label: strings.datasetCameraUse,
+      content: (
+        <>
+          <RailHeading eyebrow={strings.settings} title={strings.datasetCameraUse} />
+          <Button runtime={runtime} id="camera-dataset" nativeOnly disabled={camera.state === 'setting-up'}>
+            {strings.datasetCameraUse}
+          </Button>
+          <p className="note">{strings.datasetCameraAbout}</p>
         </>
       ),
     });

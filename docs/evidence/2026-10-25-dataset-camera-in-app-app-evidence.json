@@ -1,0 +1,694 @@
+{
+ "schema": 2,
+ "lane": "live-camera-unverified",
+ "createdAt": "2026-10-24T22:33:25.988Z",
+ "releaseEvidence": false,
+ "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+ "viewport": {
+  "width": 1426,
+  "height": 866,
+  "dpr": 1.5
+ },
+ "state": "SELECT",
+ "pauseReason": null,
+ "cameraSource": null,
+ "camera": {},
+ "tracking": {
+  "hz": 2.552,
+  "initMs": 17741,
+  "inferenceMs": 428.8,
+  "mainToMainMs": 442.9,
+  "dropped": 0,
+  "delegate": "GPU",
+  "timestampSource": "callback-receipt",
+  "opportunities": 1152,
+  "skippedBusy": 981,
+  "submitted": 171,
+  "returned": 171,
+  "initializationError": null,
+  "phase": "stopped",
+  "cameraCallbacks": 1152,
+  "bitmapsCreated": 171,
+  "lastCaptureAt": 101132.3,
+  "lastBitmapAt": 101137.1,
+  "lastSubmitAt": 101137.1,
+  "lastResultAt": 101575.2,
+  "phaseAtFailure": null
+ },
+ "calibration": null,
+ "flags": {
+  "replay": null,
+  "speed": 1,
+  "stats": true,
+  "tier": "medium",
+  "contrast": false,
+  "difficulty": "normal",
+  "camera": "dataset",
+  "reel": "song",
+  "reelHoldMs": 5000,
+  "reelSeed": 0
+ },
+ "datasetTrial": null,
+ "performerTrial": null,
+ "datasetCamera": {
+  "active": false,
+  "label": "Dataset camera — not a webcam",
+  "lane": "dataset-camera",
+  "webcam": false,
+  "reel": {
+   "kind": "coco-photo-reel",
+   "mode": "song",
+   "holdMs": 5000,
+   "firstHoldMs": null,
+   "seed": 0,
+   "transitionGuardMs": 300,
+   "failure": null,
+   "counters": {
+    "loads": 2,
+    "closed": 0,
+    "discarded": 0,
+    "latePaints": 0
+   },
+   "manifest": {
+    "createdAt": "2026-10-24T22:18:31.618Z",
+    "generatorScriptSha256": "bbe91c0b5ea6add4188686200a13b1ccb2aab9a15a51888ff4a7b2c48a38615b",
+    "generatorSeed": 20261025,
+    "frame": {
+     "width": 1280,
+     "height": 720
+    },
+    "count": 24
+   },
+   "order": [
+    "coco-444854",
+    "coco-208859",
+    "coco-435636",
+    "coco-481633",
+    "coco-430384",
+    "coco-432301",
+    "coco-449488",
+    "coco-505870",
+    "coco-543535",
+    "coco-442897",
+    "coco-451487",
+    "coco-1744006",
+    "coco-424051",
+    "coco-424944",
+    "coco-431375",
+    "coco-457551",
+    "coco-488141",
+    "coco-436560",
+    "coco-501780",
+    "coco-466877",
+    "coco-466406",
+    "coco-483054",
+    "coco-210679",
+    "coco-494209"
+   ],
+   "attribution": [
+    {
+     "id": "coco-444854",
+     "file": "000-coco-444854.jpg",
+     "sha256": "fa6e7750e33f51f1b991937de9484d281c06644f1f415a8095776dbd82d8b478",
+     "cocoImageId": 346090,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm8.staticflickr.com/7092/7307890340_8b2783f26e_z.jpg"
+    },
+    {
+     "id": "coco-208859",
+     "file": "001-coco-208859.jpg",
+     "sha256": "1d73d586ebd556992c33f3f303d08aa869df21793172b70c9945b023bbc44f69",
+     "cocoImageId": 165883,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm1.staticflickr.com/64/202095295_81847d5ae6_z.jpg"
+    },
+    {
+     "id": "coco-435636",
+     "file": "002-coco-435636.jpg",
+     "sha256": "bda5292b4baed2fcae4da3d733e7131cb66227156e6b2f6f48b592f9c87c908f",
+     "cocoImageId": 350413,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm9.staticflickr.com/8353/8401634289_2be81de104_z.jpg"
+    },
+    {
+     "id": "coco-481633",
+     "file": "003-coco-481633.jpg",
+     "sha256": "0529a6509f34d644b92116b0bd46dda30f71953a1a0fb409e75de68500db5181",
+     "cocoImageId": 446909,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm9.staticflickr.com/8181/7895053490_2c7b0dcfe9_z.jpg"
+    },
+    {
+     "id": "coco-430384",
+     "file": "004-coco-430384.jpg",
+     "sha256": "b5fecb303e3863045210c00568955a33acba93172caaebf34b5a5184ea302155",
+     "cocoImageId": 103970,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm9.staticflickr.com/8150/7497761254_a1b89c0f20_z.jpg"
+    },
+    {
+     "id": "coco-432301",
+     "file": "005-coco-432301.jpg",
+     "sha256": "6309ae97397f71ad6dc759ff47e575072e1cf71ff5df7373119ab8f443891a1a",
+     "cocoImageId": 311436,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm7.staticflickr.com/6014/6020188220_897b7ca7ff_z.jpg"
+    },
+    {
+     "id": "coco-449488",
+     "file": "006-coco-449488.jpg",
+     "sha256": "3353188b8372c306726cc07b77fa063667dafdcc0958d56df185b67151691e74",
+     "cocoImageId": 85491,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm4.staticflickr.com/3033/2359254792_e9bfa3f745_z.jpg"
+    },
+    {
+     "id": "coco-505870",
+     "file": "007-coco-505870.jpg",
+     "sha256": "2742da3b7b313cbf36c44950157170c106e76482fef9471d2d2006c0a564f66a",
+     "cocoImageId": 278238,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm9.staticflickr.com/8480/8228152859_ac5c0f8bf6_z.jpg"
+    },
+    {
+     "id": "coco-543535",
+     "file": "008-coco-543535.jpg",
+     "sha256": "f5e7717337ed54186dd5e3615335773d6ae7e047265796449ab302d027a92bc2",
+     "cocoImageId": 270738,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm9.staticflickr.com/8527/8647874627_bf444d5762_z.jpg"
+    },
+    {
+     "id": "coco-442897",
+     "file": "009-coco-442897.jpg",
+     "sha256": "e89b5c05d7fe3b50171353462d4dc398e59a1540506cbfd5e3fc53df65297f94",
+     "cocoImageId": 406315,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm1.staticflickr.com/114/312372524_afafef5a9a_z.jpg"
+    },
+    {
+     "id": "coco-451487",
+     "file": "010-coco-451487.jpg",
+     "sha256": "93eb338e73815cf99c637ba0766675ce8b97e6d4b276a406f92456c02910a768",
+     "cocoImageId": 388955,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm3.staticflickr.com/2830/8878355192_721d0bebac_z.jpg"
+    },
+    {
+     "id": "coco-1744006",
+     "file": "011-coco-1744006.jpg",
+     "sha256": "1b0e863219edf34a9383cc49b4c34411c64d38d49490dbb3dc16b775e158697e",
+     "cocoImageId": 92627,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm7.staticflickr.com/6172/6188832411_66ed34f06b_z.jpg"
+    },
+    {
+     "id": "coco-424051",
+     "file": "012-coco-424051.jpg",
+     "sha256": "092e0a404999e3a398211ba916b6fa117633e97dcc6c0a3fca36432eff30830a",
+     "cocoImageId": 314154,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm2.staticflickr.com/1156/5147250589_50f51750b7_z.jpg"
+    },
+    {
+     "id": "coco-424944",
+     "file": "013-coco-424944.jpg",
+     "sha256": "6c9eebd94c238ed7a482fcd4c1502fc3c674d89cd303fe5c202c29c60dc5b9a5",
+     "cocoImageId": 541343,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm6.staticflickr.com/5017/5504608358_7ea0f39c89_z.jpg"
+    },
+    {
+     "id": "coco-431375",
+     "file": "014-coco-431375.jpg",
+     "sha256": "d5e243b203dd1c05f21057b26dda807fe3d6ba484b4542ab7170ea2a14898f4d",
+     "cocoImageId": 155194,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm9.staticflickr.com/8379/8668590371_8e8f16a0c3_z.jpg"
+    },
+    {
+     "id": "coco-457551",
+     "file": "015-coco-457551.jpg",
+     "sha256": "7473e215975947a7d5bb6cc9b527e652a98f04f16fc78a5945c5dbd218d6f757",
+     "cocoImageId": 72255,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm7.staticflickr.com/6047/6258820194_d40bb20d67_z.jpg"
+    },
+    {
+     "id": "coco-488141",
+     "file": "016-coco-488141.jpg",
+     "sha256": "a097a0027394f2879ad592c303270306d3d0e9fdb96a3b22eeb0b31ef42a3753",
+     "cocoImageId": 98927,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm2.staticflickr.com/1092/1258719060_e95f84ef17_z.jpg"
+    },
+    {
+     "id": "coco-436560",
+     "file": "017-coco-436560.jpg",
+     "sha256": "5503a1281dbb261dee2c0031b4c12453e420386f69f882689af1d4a7287db499",
+     "cocoImageId": 157237,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm6.staticflickr.com/5317/5896310274_f023ac3542_z.jpg"
+    },
+    {
+     "id": "coco-501780",
+     "file": "018-coco-501780.jpg",
+     "sha256": "00bbfa7ec1467384134756a2ad5947f2b2be7d386443b22f9ba333201f2683f2",
+     "cocoImageId": 426079,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm1.staticflickr.com/32/88263954_6d5ad0cd85_z.jpg"
+    },
+    {
+     "id": "coco-466877",
+     "file": "019-coco-466877.jpg",
+     "sha256": "97cd4df66ec16ac10f923d960b7f0c801bba76a6d572ec334947f64e74826cdb",
+     "cocoImageId": 419019,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm4.staticflickr.com/3643/3437092743_7222579f56_z.jpg"
+    },
+    {
+     "id": "coco-466406",
+     "file": "020-coco-466406.jpg",
+     "sha256": "dbc57615fd4540baafa3925b60e0ed8c08d80a718ccaa90dc012a6e708a0bf27",
+     "cocoImageId": 205931,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm4.staticflickr.com/3127/5847876466_ca92091af2_z.jpg"
+    },
+    {
+     "id": "coco-483054",
+     "file": "021-coco-483054.jpg",
+     "sha256": "29cf2ae1823eb277cc38f064688de9a7ac3102b3d3382c296deec40506454c04",
+     "cocoImageId": 557926,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm3.staticflickr.com/2391/2449825837_51e13e9b66_z.jpg"
+    },
+    {
+     "id": "coco-210679",
+     "file": "022-coco-210679.jpg",
+     "sha256": "48fa8df4d564f4e5a08577ec0e39239b9548b09e5b60cb24b1a5fc2452b74032",
+     "cocoImageId": 116074,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm1.staticflickr.com/89/229377589_da70e9d262_z.jpg"
+    },
+    {
+     "id": "coco-494209",
+     "file": "023-coco-494209.jpg",
+     "sha256": "cfd17ba402c3ec43abbe2ee92e753ff2fc825e0cf1415d50fa8591edb45e3382",
+     "cocoImageId": 384617,
+     "license": "http://creativecommons.org/licenses/by/2.0/",
+     "flickrUrl": "http://farm8.staticflickr.com/7077/7401559884_d5b18a7da9_z.jpg"
+    }
+   ]
+  },
+  "canvas": {
+   "width": 1280,
+   "height": 720,
+   "captureFps": 30
+  },
+  "framesPainted": 2115,
+  "streamMs": 86080,
+  "timelineTransitions": 1,
+  "timelineOverwritten": 0,
+  "transitionGuardMs": 300,
+  "paintError": null,
+  "evaluation": {
+   "definitions": {
+    "unit": "Per-photo means; frames of one still photo are not independent samples.",
+    "error": "Isotropic distance between unmirrored MediaPipe pose landmark and annotation, divided by annotated shoulder width.",
+    "pck": "Fraction of photos whose mean joint error is <= 0.5 shoulder widths.",
+    "wristMatch": "A detected hand's wrist landmark within 0.5 shoulder widths of an annotated wrist; handedness agreement compares the adapter's player hand with that anatomical wrist.",
+    "detected": "poseRate >= 0.5 of attributed frames."
+   },
+   "attributedFrames": 171,
+   "unattributedFrames": 0,
+   "unattributedProcessed": 0,
+   "overflowFrames": 0,
+   "truthsObserved": 1,
+   "poseDetectedTruths": 1,
+   "anyHandTruths": 1,
+   "twoHandTruths": 1,
+   "medianLabelledJointError": 0.105,
+   "perJoint": {
+    "nose": {
+     "items": 1,
+     "median": 0.057,
+     "pck": 1
+    },
+    "left_eye": {
+     "items": 1,
+     "median": 0.078,
+     "pck": 1
+    },
+    "right_eye": {
+     "items": 1,
+     "median": 0.112,
+     "pck": 1
+    },
+    "left_ear": {
+     "items": 1,
+     "median": 0.065,
+     "pck": 1
+    },
+    "right_ear": {
+     "items": 0,
+     "median": null,
+     "pck": null
+    },
+    "left_shoulder": {
+     "items": 1,
+     "median": 0.152,
+     "pck": 1
+    },
+    "right_shoulder": {
+     "items": 1,
+     "median": 0.056,
+     "pck": 1
+    },
+    "left_elbow": {
+     "items": 1,
+     "median": 0.172,
+     "pck": 1
+    },
+    "right_elbow": {
+     "items": 1,
+     "median": 0.088,
+     "pck": 1
+    },
+    "left_wrist": {
+     "items": 1,
+     "median": 0.068,
+     "pck": 1
+    },
+    "right_wrist": {
+     "items": 1,
+     "median": 0.085,
+     "pck": 1
+    },
+    "left_hip": {
+     "items": 1,
+     "median": 0.153,
+     "pck": 1
+    },
+    "right_hip": {
+     "items": 1,
+     "median": 0.18,
+     "pck": 1
+    }
+   },
+   "wristHands": {
+    "matched": 342,
+    "handednessAgree": 342,
+    "handednessDisagree": 0,
+    "unmatched": 0
+   },
+   "gestures": {
+    "left": {
+     "open": 0,
+     "fist": 0,
+     "point": 0,
+     "none": 67,
+     "absent": 0
+    },
+    "right": {
+     "open": 0,
+     "fist": 0,
+     "point": 0,
+     "none": 67,
+     "absent": 0
+    }
+   },
+   "items": [
+    {
+     "id": "coco-444854",
+     "role": "calibration",
+     "frames": 171,
+     "poseRate": 1,
+     "oneOrMoreHandsRate": 1,
+     "twoHandsRate": 1,
+     "meanJointErrorShoulderWidths": {
+      "nose": 0.057,
+      "left_eye": 0.078,
+      "right_eye": 0.112,
+      "left_ear": 0.065,
+      "right_ear": null,
+      "left_shoulder": 0.152,
+      "right_shoulder": 0.056,
+      "left_elbow": 0.172,
+      "right_elbow": 0.088,
+      "left_wrist": 0.068,
+      "right_wrist": 0.085,
+      "left_hip": 0.153,
+      "right_hip": 0.18
+     },
+     "meanLabelledJointError": 0.105,
+     "meanPoseVisibility": {
+      "nose": 0.999,
+      "left_eye": 0.999,
+      "right_eye": 0.999,
+      "left_ear": 1,
+      "right_ear": 1,
+      "left_shoulder": 1,
+      "right_shoulder": 1,
+      "left_elbow": 0.996,
+      "right_elbow": 0.972,
+      "left_wrist": 0.984,
+      "right_wrist": 0.946,
+      "left_hip": 0.996,
+      "right_hip": 0.996
+     },
+     "wristHands": {
+      "matched": 342,
+      "handednessAgree": 342,
+      "handednessDisagree": 0,
+      "unmatched": 0
+     },
+     "processedFrames": 67,
+     "gestures": {
+      "left": {
+       "open": 0,
+       "fist": 0,
+       "point": 0,
+       "none": 67,
+       "absent": 0
+      },
+      "right": {
+       "open": 0,
+       "fist": 0,
+       "point": 0,
+       "none": 67,
+       "absent": 0
+      }
+     }
+    }
+   ]
+  }
+ },
+ "arrangement": {
+  "sourceStartMs": 72000,
+  "sourceEndMs": 152000,
+  "outputDurationMs": 80000,
+  "fadeIn": {
+   "startMs": 0,
+   "endMs": 10000
+  },
+  "highlight": {
+   "startMs": 10000,
+   "endMs": 70000
+  },
+  "fadeOut": {
+   "startMs": 70000,
+   "endMs": 80000
+  },
+  "selectionReason": "energy-onset-window-low-tempo-confidence",
+  "tempoConfidence": 0,
+  "beatAligned": false,
+  "shortTrack": false,
+  "score": {
+   "meanEnergy": 0.736,
+   "onsetEvidencePerSecond": 3.189,
+   "activeFraction": 1,
+   "combined": 0.994
+  },
+  "warnings": [
+   "arrangementNotBeatLocked"
+  ],
+  "version": 1,
+  "sourceTitle": "Pamgaea",
+  "sourceArtist": "Kevin MacLeod",
+  "sourceKind": "bundled",
+  "sourceAudioSha256": "9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586",
+  "sourceDurationMs": 168510.635,
+  "sourceStartSample": 3175200,
+  "sourceEndSample": 6703200,
+  "sampleRate": 44100,
+  "channels": 2,
+  "outputTitle": "Pamgaea — 80.0s arrangement",
+  "outputAudioSha256": "8d437bfcd862e9cc02462e5655bdcf8de656a68b2a12f0edd1f20f79b90019c1",
+  "outputCanonicalPcmSha256": "1c772f3bdf379510c46d6cd14843bc66d44994da674867a446a649d8ffd861b8",
+  "fadeCurve": "raised-cosine-amplitude",
+  "continuity": "one-continuous-source-window",
+  "oldChartReused": false,
+  "changes": "Selected one continuous source excerpt, applied raised-cosine amplitude fades to silence, and encoded unchanged-channel float32 WAV. A new map must be generated from these exact derivative file bytes."
+ },
+ "limitations": [
+  "No consented human/hardware acceptance recorded",
+  "GPU and motion-to-photon timing unavailable"
+ ],
+ "results": null,
+ "judgementTrace": {
+  "schema": 1,
+  "label": "",
+  "capacity": 8192,
+  "count": 0,
+  "overflow": 0,
+  "repeats": 0,
+  "sha256": "56fc7f1e91b057f6a4c7b7de194b317be1c6074c4ae6525c1b1c0dec137e8b74",
+  "hashCovers": "Semantic fields in emission order plus count/overflow/repeats; delivery timestamps excluded.",
+  "events": [],
+  "deliveredAtMs": []
+ },
+ "samples": {
+  "frameIntervalMs": [],
+  "frameWorkMs": [],
+  "inferenceMs": [
+   239,
+   218.1,
+   218.1,
+   228.5,
+   203.6,
+   238.1,
+   193.3,
+   225,
+   210.8,
+   180.4,
+   207.9,
+   236.7,
+   210.9,
+   222,
+   188.3,
+   236.3,
+   233.8,
+   160.3,
+   223.4,
+   175.8,
+   239.2,
+   233.4,
+   209.5,
+   169,
+   236.6,
+   144.9,
+   219.8,
+   243,
+   182.8,
+   218.1,
+   169.2,
+   195.3,
+   202.9,
+   201.6,
+   217.2,
+   218.4,
+   192.3,
+   182.5,
+   169.7,
+   215.1,
+   191.1,
+   222.3,
+   243.7,
+   224,
+   230,
+   213.3,
+   175,
+   218.7,
+   226.5,
+   219.9,
+   229.4,
+   222.5,
+   162.5,
+   152.1,
+   142.3,
+   157.1,
+   189.6,
+   158,
+   195.3,
+   209.7,
+   221.8,
+   176.9,
+   221.5,
+   154.1,
+   166.8,
+   181.7,
+   237.5
+  ],
+  "inputAgeMs": [
+   245.9,
+   222.6,
+   232.9,
+   237.7,
+   209.4,
+   243.8,
+   208.9,
+   227,
+   216.2,
+   196.4,
+   217,
+   247.4,
+   220.6,
+   223.5,
+   194.3,
+   247.3,
+   247.9,
+   188.8,
+   246,
+   179.2,
+   247.9,
+   239.7,
+   212,
+   174.1,
+   243.3,
+   154.6,
+   223.2,
+   247.3,
+   194.8,
+   238.8,
+   179.7,
+   231,
+   220.1,
+   210.3,
+   235.8,
+   221.3,
+   199.5,
+   205.3,
+   191.3,
+   222.8,
+   195.8,
+   228.6,
+   246.5,
+   229.4,
+   240.5,
+   221.5,
+   184.6,
+   234.8,
+   242.4,
+   230.6,
+   236.4,
+   227.3,
+   186.5,
+   154.2,
+   161.1,
+   173.5,
+   218.9,
+   166.8,
+   212.3,
+   220.6,
+   241,
+   230.1,
+   249.5,
+   198.9,
+   205.4,
+   188.7,
+   243.2
+  ],
+  "gpuDurationMs": null,
+  "gpuStatus": "unavailable"
+ }
+}

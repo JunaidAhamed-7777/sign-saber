@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-24T22:08:47.744325+00:00",
+  "id": "avatar",
+  "path": "/assets/models/avatar.glb",
+  "sourceBlend": "assets-src/blender/signsaber_avatar.blend",
+  "sourceGenerator": "assets-src/blender/generate_avatar.py",
+  "authoringRoute": "official Blender MCP add-on JSON TCP execute_code; dedicated local instance",
+  "blenderVersion": "5.2.2 LTS",
+  "blenderBuildHash": "d13f752e3b9c",
+  "gltfExporter": "Blender bundled io_scene_gltf2",
+  "mcp": {
+    "upstream": "https://github.com/ahujasid/blender-mcp",
+    "commit": "febcd90ece59c3416d7c55fd3723cea46bcaa59d",
+    "addonSha256": "8e193a249e2ed1262f3e794ee2254efd8e3d1f0224385245f2b989154c837083",
+    "addonVersion": "1.8",
+    "protocolVersion": 15
+  },
+  "units": "metres",
+  "upAxis": "Y",
+  "facing": "+Z",
+  "restPose": "A-pose, arms 48 degrees from vertical; straight fingers; head level",
+  "scope": "Upper body only: head, neck, torso to a closed hip finish, arms and five-digit hands. No legs.",
+  "construction": "Signed-distance primitives (smooth unions/subtractions) polygonised by surface nets, projected onto the field, collapse-decimated, relaxed and re-projected; accent seams are tubes on projected curves.",
+  "weights": "Bone-heat for suit and hands (unweighted fallback to nearest bone), procedural head/neck blend, rigid hair/eyes, accents copy nearest suit weights; max 4 influences, normalised.",
+  "unweightedFallbackVertices": {
+    "suit": 0,
+    "hand_L": 0,
+    "hand_R": 0
+  },
+  "mesh": "avatar_body",
+  "armature": "avatar_rig",
+  "bones": [
+    "hips",
+    "spine",
+    "chest",
+    "neck",
+    "head",
+    "shoulder.L",
+    "upper_arm.L",
+    "forearm.L",
+    "hand.L",
+    "thumb_01.L",
+    "thumb_02.L",
+    "thumb_03.L",
+    "index_01.L",
+    "index_02.L",
+    "index_03.L",
+    "middle_01.L",
+    "middle_02.L",
+    "middle_03.L",
+    "ring_01.L",
+    "ring_02.L",
+    "ring_03.L",
+    "pinky_01.L",
+    "pinky_02.L",
+    "pinky_03.L",
+    "shoulder.R",
+    "upper_arm.R",
+    "forearm.R",
+    "hand.R",
+    "thumb_01.R",
+    "thumb_02.R",
+    "thumb_03.R",
+    "index_01.R",
+    "index_02.R",
+    "index_03.R",
+    "middle_01.R",
+    "middle_02.R",
+    "middle_03.R",
+    "ring_01.R",
+    "ring_02.R",
+    "ring_03.R",
+    "pinky_01.R",
+    "pinky_02.R",
+    "pinky_03.R"
+  ],
+  "materials": {
+    "suit": "avatar_suit",
+    "skin": "avatar_skin",
+    "accent": "avatar_accent",
+    "eye": "avatar_eye",
+    "hair": "avatar_hair"
+  },
+  "materialTriangles": {
+    "avatar_suit": 4296,
+    "avatar_skin": 7500,
+    "avatar_hair": 650,
+    "avatar_eye": 336,
+    "avatar_accent": 2352
+  },
+  "parts": {
+    "avatar_suit_part": 4298,
+    "avatar_head_part": 3500,
+    "avatar_hair_part": 650,
+    "avatar_hand_part_L": 2000,
+    "avatar_hand_part_R": 2000,
+    "eye_L": 168,
+    "eye_R": 168,
+    "accent_arm_L": 264,
+    "accent_chest_L": 112,
+    "accent_side_L": 128,
+    "accent_arm_R": 264,
+    "accent_chest_R": 112,
+    "accent_side_R": 128,
+    "accent_collar": 256,
+    "accent_belt": 384,
+    "accent_hip_rim": 384,
+    "accent_cuff_L": 160,
+    "accent_cuff_R": 160,
+    "total": 15136
+  },
+  "triangles": 15134,
+  "vertices": 7590,
+  "triangleBudget": 16000,
+  "bytes": 507252,
+  "sha256": "c7113801d1f30bf5a8bb9055687df8012c76d5bb8043681bc33963130e03d2d7",
+  "anchors": {
+    "nose": [
+      0.0,
+      0.71449,
+      0.12766
+    ],
+    "mouth.L": [
+      0.0214,
+      0.67811,
+      0.0977
+    ],
+    "mouth.R": [
+      -0.0214,
+      0.67811,
+      0.0977
+    ],
+    "eye.L": [
+      0.03531,
+      0.75301,
+      0.09021
+    ],
+    "ear.L": [
+      0.07918,
+      0.74659,
+      0.00568
+    ],
+    "shoulder.L": [
+      0.185,
+      0.505,
+      -0.008
+    ],
+    "elbow.L": [
+      0.396796,
+      0.314298,
+      -0.008
+    ],
+    "wrist.L": [
+      0.586298,
+      0.143669,
+      -0.008
+    ],
+    "hip.L": [
+      0.095,
+      0.0,
+      0.0
+    ],
+    "index.L": [
+      0.655337,
+      0.082853,
+      0.019
+    ],
+    "pinky.L": [
+      0.648648,
+      0.088875,
+      -0.038
+    ],
+    "thumb.L": [
+      0.615613,
+      0.083885,
+      0.030254
+    ],
+    "eye.R": [
+      -0.03531,
+      0.75301,
+      0.09021
+    ],
+    "ear.R": [
+      -0.07918,
+      0.74659,
+      0.00568
+    ],
+    "shoulder.R": [
+      -0.185,
+      0.505,
+      -0.008
+    ],
+    "elbow.R": [
+      -0.396796,
+      0.314298,
+      -0.008
+    ],
+    "wrist.R": [
+      -0.586298,
+      0.143669,
+      -0.008
+    ],
+    "hip.R": [
+      -0.095,
+      0.0,
+      0.0
+    ],
+    "index.R": [
+      -0.655337,
+      0.082853,
+      0.019
+    ],
+    "pinky.R": [
+      -0.648648,
+      0.088875,
+      -0.038
+    ],
+    "thumb.R": [
+      -0.615613,
+      0.083885,
+      0.030254
+    ]
+  },
+  "rigVersion": 1,
+  "license": "MIT",
+  "provenance": "Original script-authored geometry. No scans, marketplace, generative or third-party meshes/textures.",
+  "sourceBlendSha256": "0168b9b1399e72c2eed92090410c1096c960f27d3e9d5120b2068bf9d8f95cb6",
+  "sourceGeneratorSha256": "690b59fcc041695aaeae4b3ab063fc6a95464d7c72a0e0b8a4991eeb60c4a24c"
+}

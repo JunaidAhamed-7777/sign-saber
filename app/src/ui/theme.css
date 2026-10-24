@@ -266,10 +266,12 @@ button:disabled,
   letter-spacing: 0.04em;
   opacity: 0.78;
 }
-.btn.native {
+.btn.native,
+.btn.with-caption {
   flex-direction: column;
   gap: 2px;
 }
+.btn.with-caption small,
 .btn.native small {
   font-size: 13px;
   font-weight: 600;
@@ -451,10 +453,6 @@ button:disabled,
 .legend li.legend-rearm {
   color: var(--muted);
 }
-.legend-keys {
-  color: var(--muted);
-  text-align: right;
-}
 .legend-dataset {
   color: var(--muted-strong);
 }
@@ -612,6 +610,14 @@ button:disabled,
   font-size: 15px;
   line-height: 1.15;
 }
+.page-navigation .page-label {
+  /* Rail pages carry their own headings; the label stays available to assistive technology. */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
 .page-label {
   max-width: 100%;
   color: var(--text);
@@ -648,10 +654,6 @@ button:disabled,
 .note {
   font-size: 16px;
   line-height: 1.3;
-  color: var(--muted);
-}
-.native-note::before {
-  content: '⌨ ';
   color: var(--muted);
 }
 .meta {
@@ -889,7 +891,8 @@ button:disabled,
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
-.song-tag.selected {
+.song-check {
+  align-self: start;
   display: grid;
   place-items: center;
   width: 24px;
@@ -898,20 +901,20 @@ button:disabled,
   background: var(--cyan);
   color: var(--void);
   font-size: 14px;
+  font-weight: 700;
 }
-.song-tag {
-  align-self: start;
+.song-copy .song-tag {
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--cyan);
   white-space: nowrap;
 }
-.song-tag.loading {
-  color: var(--muted-strong);
+.song-copy .song-tag.loading,
+.song-copy .song-tag.cut {
+  color: var(--cyan);
 }
-.song-tag.failed {
+.song-copy .song-tag.failed {
   color: var(--danger-text);
 }
 .track-header {
@@ -995,10 +998,6 @@ button:disabled,
   display: flex;
   flex-direction: column;
   gap: 10px;
-}
-.upload-label {
-  font-size: 20px;
-  font-weight: 700;
 }
 .upload-control input {
   display: block;
@@ -1133,6 +1132,27 @@ button:disabled,
 }
 .notice.reason.danger {
   font-size: 20px;
+}
+
+.run-so-far {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+  padding: 12px 0;
+  border-block: 1px solid var(--line);
+}
+.run-so-far dt {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.run-so-far dd {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ---------- RESULTS ---------- */
@@ -1627,7 +1647,17 @@ button:disabled,
   box-shadow: 0 0 10px var(--cyan);
 }
 
-/* ---------- BOOT ---------- */
+/* ---------- BOOT: opaque void until the renderer and catalog are ready ---------- */
+.application.state-boot {
+  background: radial-gradient(
+    ellipse at 50% 45%,
+    color-mix(in srgb, var(--cyan) 7%, var(--void)) 0,
+    var(--void) 62%
+  );
+}
+.state-boot .app-header {
+  visibility: hidden;
+}
 .boot {
   margin: auto;
   display: flex;
@@ -1636,7 +1666,7 @@ button:disabled,
   gap: 18px;
   text-align: center;
   padding: 24px;
-  width: min(520px, 100%);
+  width: min(760px, 100%);
 }
 .boot-mark svg {
   width: 112px;
@@ -1665,6 +1695,7 @@ button:disabled,
   }
 }
 .boot-title {
+  white-space: nowrap;
   font-family: var(--display);
   font-size: clamp(40px, 5vw, 72px);
   font-weight: 800;
@@ -1891,9 +1922,6 @@ button:disabled,
   .page-navigation {
     grid-template-columns: var(--target) minmax(0, 1fr) var(--target);
   }
-  .page-navigation .page-label {
-    display: none;
-  }
   .track-copy .eyebrow,
   .song-meta-tempo {
     display: none;
@@ -1911,6 +1939,13 @@ button:disabled,
   .btn.song-card {
     gap: 12px;
     padding-inline: 12px;
+  }
+  .action-pair .btn {
+    padding: 6px;
+    font-size: 15px;
+  }
+  .action-pair .btn small {
+    font-size: 11px;
   }
   .rail-heading h1,
   .rail-heading h2 {
@@ -2072,13 +2107,10 @@ button:disabled,
   .inline-row .song-copy small {
     font-size: 14px;
   }
-  .inline-row .song-tag {
+  .inline-row .song-check {
     position: absolute;
-    top: 4px;
+    top: 6px;
     right: 6px;
-    font-size: 11px;
-  }
-  .inline-row .song-tag.selected {
     width: 20px;
     height: 20px;
     font-size: 12px;
@@ -2264,6 +2296,35 @@ button:disabled,
   }
   .credits .rail-heading h1 {
     font-size: 22px;
+  }
+}
+/* Narrow compact windows: give song titles the card width. */
+@media (max-width: 760px) {
+  .inline-row .song-card .cover-art {
+    display: none;
+  }
+}
+/* Very short windows (for example 200% zoom on a 900 px tall laptop): drop secondary captions, keep targets. */
+@media (max-height: 520px) {
+  .inline-pager > .page-position,
+  .compact-status .chips,
+  .compact-shell .btn small,
+  .replay-label .replay-mark {
+    display: none;
+  }
+  .compact-shell .btn {
+    font-size: 16px;
+    padding: 6px 8px;
+  }
+  .menu-shell.compact-shell {
+    gap: 6px;
+    padding-block: 6px;
+  }
+  .compact-shell .rail {
+    padding-block: 6px;
+  }
+  .compact-status {
+    margin-bottom: 4px;
   }
 }
 :root[data-motion='calm'] *,

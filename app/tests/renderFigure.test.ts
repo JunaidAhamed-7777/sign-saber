@@ -10,7 +10,8 @@ import type { GameEvents } from '../src/core/events';
 import { syntheticFrame } from './tracking-fixtures';
 import { createLiveNote, notePosition } from '../src/game/liveObjects';
 import {
-  ARENA_REACTIVE_GAIN,
+  ARENA_NEON_BASE,
+  ARENA_BAND_GAIN,
   PLAY_CENTER_Y,
   PLAY_H,
   PLAY_W,
@@ -44,6 +45,13 @@ vi.mock('three', async () => {
   };
 });
 const renderers: ArenaRenderer[] = [];
+function targetCount(renderer: ArenaRenderer): number {
+  return (['slash', 'smash', 'beam'] as const).reduce(
+    (total, type) =>
+      total + (renderer.scene.getObjectByName(`target_body_${type}`) as THREE.InstancedMesh).count,
+    0,
+  );
+}
 beforeEach(() => {
   vi.stubGlobal('innerWidth', 1280);
   vi.stubGlobal('innerHeight', 720);
@@ -209,9 +217,9 @@ describe('upper-body figure and restrained music response', () => {
       });
     renderer.setMode('play');
     renderer.draw(1000, notes);
-    expect((renderer.scene.getObjectByName('lane_targets') as THREE.InstancedMesh).count).toBe(
-      MAX_LIVE_NOTES,
-    );
+    expect(targetCount(renderer)).toBe(MAX_LIVE_NOTES);
+    // Each gesture has its own silhouette: one cracked Smash body, the rest Beam orbs.
+    expect((renderer.scene.getObjectByName('target_body_smash') as THREE.InstancedMesh).count).toBe(1);
     expect((renderer.scene.getObjectByName('target_glyph_smash') as THREE.InstancedMesh).count).toBe(1);
     expect((renderer.scene.getObjectByName('target_glyph_beam') as THREE.InstancedMesh).count).toBe(
       MAX_LIVE_NOTES - 1,
@@ -237,7 +245,7 @@ describe('upper-body figure and restrained music response', () => {
     Object.freeze(live);
     events.emit('note:badcut', { note: live.note, hand: 'right', gesture: 'open' });
     renderer.draw(1110, notes);
-    const targets = renderer.scene.getObjectByName('lane_targets') as THREE.InstancedMesh,
+    const targets = renderer.scene.getObjectByName('target_body_smash') as THREE.InstancedMesh,
       glyphs = renderer.scene.getObjectByName('target_glyph_smash') as THREE.InstancedMesh,
       armor = renderer.scene.getObjectByName('target_armor') as THREE.InstancedMesh,
       matrix = new THREE.Matrix4();
@@ -374,28 +382,35 @@ describe('upper-body figure and restrained music response', () => {
     expect(positions.getY(positions.count - 1)).toBe(-100);
     expect(positions.getY(positions.count - 2)).toBe(-100);
   });
-  it('reacts through emission only, holds Calm steady and rejects paused music updates', async () => {
+  it('re-materials authored neon, holds Calm at steady base and freezes music response while paused', async () => {
     const { renderer } = create(),
       environment = new THREE.Group(),
       material = new THREE.MeshStandardMaterial({ color: 0x19f5ff }),
       mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), material);
+    material.name = 'arena_neon_cyan';
     mesh.name = 'arena_rail_cyan';
     environment.add(mesh);
     renderer.assets.assets.environment = environment;
     for (let i = 0; i < 12; i++) await Promise.resolve();
     renderer.setMusicBands({ low: 1, mid: 0.5, high: 0.5, rms: 0.5 });
     renderer.draw(1000);
-    expect(material.emissiveIntensity).toBeCloseTo(0.4 + ARENA_REACTIVE_GAIN);
+    const neon = mesh.material as unknown as THREE.MeshBasicMaterial;
+    expect(neon).toBeInstanceOf(THREE.MeshBasicMaterial);
+    expect(neon.name).toBe('arena_neon_cyan');
+    const base = new THREE.Color(0x19f5ff);
     renderer.setCalm(true);
-    renderer.setMusicBands({ low: 0.5, mid: 0, high: 0, rms: 0 });
-    renderer.draw(1100);
-    expect(material.emissiveIntensity).toBe(0.4);
+    for (let i = 0; i < 40; i++) {
+      renderer.draw(1100 + i);
+    }
+    // Calm decays toward the steady base and never exceeds the music-driven maximum.
+    expect(neon.color.g).toBeLessThanOrEqual(base.g * (ARENA_NEON_BASE + ARENA_BAND_GAIN) + 1e-6);
+    expect(neon.color.g).toBeGreaterThanOrEqual(base.g * ARENA_NEON_BASE - 1e-6);
     renderer.setCalm(false);
     renderer.draw(1200);
-    const frozen = material.emissiveIntensity;
+    const frozen = neon.color.g;
     renderer.setMode('paused');
     renderer.setMusicBands({ low: 0, mid: 0, high: 0, rms: 0 });
     renderer.draw(5000);
-    expect(material.emissiveIntensity).toBe(frozen);
+    expect(neon.color.g).toBe(frozen);
   });
 });

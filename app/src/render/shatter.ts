@@ -22,8 +22,14 @@ import {
   SHATTER_BURST_MAX,
   SHATTER_INHERIT,
   SHATTER_POOL,
+  SHARD_FLASH_MS,
+  SHATTER_DEPTH_FRACTION,
+  SHATTER_RECEDE_MPS,
 } from '../core/constants';
+import { createShardMaterial, createTargetUniforms } from './blocks';
 
+const SMASH = new THREE.Color(0xff2bd6),
+  WHITE = new THREE.Color(0xffffff);
 interface ShatterSlot {
   active: boolean;
   birth: number;
@@ -38,16 +44,13 @@ export class ShatterPool {
   private shards: readonly ShardAsset[] = [];
   private index = 0;
   private readonly transform = new THREE.Object3D();
-  readonly material = new THREE.MeshStandardMaterial({
-    color: 0xff2bd6,
-    emissive: 0x501040,
-    roughness: 0.35,
-    metalness: 0.5,
-  });
+  private readonly tint = new THREE.Color();
   constructor(
     private readonly scene: THREE.Scene,
     shards: readonly ShardAsset[],
     private readonly lifetimeMs: number = FRAGMENT_LIFETIME_MS,
+    /** Shard surface material; fracture faces are distinguished by the geometry's `aInner` flag. */
+    readonly material: THREE.Material = createShardMaterial(createTargetUniforms()),
   ) {
     if (!Number.isFinite(lifetimeMs) || lifetimeMs <= 0) throw new RangeError('Invalid shatter lifetime.');
     this.configure(shards);
@@ -74,6 +77,8 @@ export class ShatterPool {
       mesh.frustumCulled = false;
       mesh.layers.set(1);
       mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      mesh.setColorAt(0, SMASH);
+      mesh.instanceColor!.setUsage(THREE.DynamicDrawUsage);
       this.scene.add(mesh);
       this.meshes.push(mesh);
     }
@@ -93,13 +98,17 @@ export class ShatterPool {
       const rx = offset.x + Math.sin(phase) * 0.15,
         ry = offset.y + Math.cos(phase) * 0.15,
         rz = offset.z + Math.sin(phase * 2) * 0.15;
+      // Pieces farther from the struck front face leave slower, so the burst reads as starting at the fist.
       const length = Math.hypot(rx, ry, rz) || 1,
+        fromImpact = Math.hypot(offset.x, offset.y, offset.z - 0.5),
         speed =
-          SHATTER_BURST_MIN +
-          ((SHATTER_BURST_MAX - SHATTER_BURST_MIN) * ((event.note.id * 17 + i * 13) % 31)) / 31;
+          (SHATTER_BURST_MIN +
+            ((SHATTER_BURST_MAX - SHATTER_BURST_MIN) * ((event.note.id * 17 + i * 13) % 31)) / 31) *
+          (1 - 0.3 * Math.min(1, fromImpact));
       slot.velocities[at] = event.impactVel.x * SHATTER_INHERIT + (rx / length) * speed;
       slot.velocities[at + 1] = event.impactVel.y * SHATTER_INHERIT + (ry / length) * speed;
-      slot.velocities[at + 2] = (rz / length) * speed;
+      // Burst sideways and away from the camera; pieces never fly into the player's view.
+      slot.velocities[at + 2] = (rz / length) * speed * SHATTER_DEPTH_FRACTION - SHATTER_RECEDE_MPS;
       slot.rotations[i] = phase;
     }
   }
@@ -113,8 +122,16 @@ export class ShatterPool {
         continue;
       }
       const seconds = age / 1000,
-        fade = 1 - Math.max(0, (age / this.lifetimeMs - 0.7) / 0.3);
+        // Pieces shrink steadily from the burst so the near field clears quickly.
+        fade = 1 - 0.85 * Math.min(1, age / this.lifetimeMs) ** 0.8,
+        // White-hot for SHARD_FLASH_MS (never in Calm), then the fracture faces cool over the lifetime.
+        flash = calm ? 0 : Math.max(0, 1 - age / SHARD_FLASH_MS);
+      this.tint
+        .copy(SMASH)
+        .lerp(WHITE, flash * 0.6)
+        .multiplyScalar((1 + flash * 0.5) * (1 - 0.45 * (age / this.lifetimeMs)));
       for (let i = 0; i < this.meshes.length; i++) {
+        this.meshes[i]!.setColorAt(count, this.tint);
         const at = i * 3;
         this.transform.position.set(
           slot.positions[at]! + slot.velocities[at]! * seconds,
@@ -135,6 +152,7 @@ export class ShatterPool {
       mesh.count = count;
       mesh.visible = visible;
       mesh.instanceMatrix.needsUpdate = true;
+      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
     }
   }
   get occupancy(): number {

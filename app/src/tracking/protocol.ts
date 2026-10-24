@@ -38,9 +38,15 @@ export type FromTrackingWorker =
   | { type: 'dropped'; seq: number }
   | { type: 'disposed' }
   | { type: 'error'; where: 'init' | 'frame'; message: string; fatal: boolean };
-/** Default for raw, unmirrored camera input. Must be checked with a labelled live hand. */
+/**
+ * Mapping `raw-model-label-v2` for raw, unmirrored input: the pinned HandLandmarker's label already names
+ * the anatomical hand. Measured through the live pipeline on attributed COCO photos of camera-facing people
+ * (dataset camera, docs/evidence/2026-10-25-dataset-camera-trial.md): the previous swap disagreed with the
+ * annotated wrist side for ~92% of matched hands. A consenting live labelled hand check is still pending.
+ */
+export const HAND_LABEL_MAPPING = 'raw-model-label-v2';
 export function playerHandFromModel(label: string): 'left' | 'right' {
-  return label.toLowerCase() === 'left' ? 'right' : 'left';
+  return label.toLowerCase() === 'left' ? 'left' : 'right';
 }
 export function mirrorLandmarks(
   source: readonly { x: number; y: number; z: number; visibility?: number }[],

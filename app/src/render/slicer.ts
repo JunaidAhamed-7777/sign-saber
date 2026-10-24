@@ -15,15 +15,41 @@ const CAPACITY = 128;
 const PLANE_EPSILON = 1e-6,
   WELD_EPSILON_SQ = 1e-10,
   VOLUME_EPSILON = 1e-9;
-// Four outward-CCW corners per face, followed by its outward normal.
-const FACES = [
+/** Four outward-CCW corners per face (in half-extent units), followed by its outward normal. */
+export type SlicerFaces = readonly (readonly number[])[];
+const FACES: SlicerFaces = [
   [1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1, 0, 0],
   [-1, -1, 1, -1, 1, 1, -1, 1, -1, -1, -1, -1, -1, 0, 0],
   [-1, 1, -1, -1, 1, 1, 1, 1, 1, 1, 1, -1, 0, 1, 0],
   [-1, -1, 1, -1, -1, -1, 1, -1, -1, 1, -1, 1, 0, -1, 0],
   [-1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1, 0, 0, 1],
   [1, -1, -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, 0, 0, -1],
-] as const;
+];
+/**
+ * The Slash target's convex rhombic prism: tips at ±1 on X and Y, half-depth `halfDepth` (both in
+ * half-extent units). Same quad topology as the cube, so the bounded clipper and capacity still apply.
+ */
+export function diamondFaces(halfDepth: number): SlicerFaces {
+  const t = halfDepth,
+    s = Math.SQRT1_2,
+    ring = [
+      [1, 0],
+      [0, 1],
+      [-1, 0],
+      [0, -1],
+    ] as const,
+    sides: number[][] = [];
+  for (let i = 0; i < 4; i++) {
+    const [ax, ay] = ring[i]!,
+      [bx, by] = ring[(i + 1) % 4]!;
+    sides.push([ax, ay, -t, bx, by, -t, bx, by, t, ax, ay, t, (ax + bx) * s, (ay + by) * s, 0]);
+  }
+  return [
+    [1, 0, t, 0, 1, t, -1, 0, t, 0, -1, t, 0, 0, 1],
+    [0, -1, -t, -1, 0, -t, 0, 1, -t, 1, 0, -t, 0, 0, -1],
+    ...sides,
+  ];
+}
 export interface CutHalf {
   positions: Float32Array;
   normals: Float32Array;
@@ -66,7 +92,10 @@ export class CubeSlicer {
   private readonly order = new Uint8Array(24);
   private readonly angles = new Float64Array(24);
   private capCount = 0;
-  constructor(readonly size = BLOCK_SIZE) {
+  constructor(
+    readonly size = BLOCK_SIZE,
+    private readonly faces: SlicerFaces = FACES,
+  ) {
     if (!Number.isFinite(size) || size <= 0) throw new Error('Cube size must be positive.');
   }
   cut(plane: Plane): CubeCut {
@@ -154,7 +183,7 @@ export class CubeSlicer {
     this.result.positive.count = this.result.negative.count = 0;
     this.capCount = 0;
     const extent = this.size / 2;
-    for (const face of FACES)
+    for (const face of this.faces)
       for (let side = 0; side < 2; side++) {
         const out = side === 0 ? this.result.positive : this.result.negative;
         let count = 0;

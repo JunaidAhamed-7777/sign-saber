@@ -36,6 +36,8 @@ npm run preview
 
 Open [127.0.0.1:4173](http://127.0.0.1:4173). The loopback-only server applies response CSP to documents and workers and serves local audio ranges/WASM. Dataset play needs no model download, account, upload, companion service or external network. A prepared offline venue exercise and all P5 failure drills have not been completed.
 
+Recovery checks now cover two non-camera failures: unavailable/full chart storage leaves generated music playable with a visible not-saved warning; a lost WebGL context stops the run/capture and shows a Retry/reload error instead of continuing invisible scoring.
+
 ## Optional camera path
 
 Prepare pinned MediaPipe assets before building a camera-capable offline bundle:

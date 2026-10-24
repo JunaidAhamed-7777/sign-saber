@@ -11,6 +11,7 @@ import type * as StoreModule from '../src/state/store';
 import type { GameRuntime } from '../src/core/runtime';
 import type { BundledTrackEntry, BeatmapV1 } from '../src/beatmap/types';
 import manifest from '../public/assets/tracks/manifest.json';
+import { strings } from '../src/ui/strings';
 // Render current client state through a snapshot adapter; subscriptions are tested by browser/runtime paths.
 vi.mock('../src/state/store', async () => {
   const actual = await vi.importActual<typeof StoreModule>('../src/state/store');
@@ -59,6 +60,27 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 describe('figure-centred paged menu structure', () => {
+  it('shows an honest cache fallback without disabling ready music in either layout', () => {
+    const map = { song: { title: 'Local upload', durationMs: 12000 }, notes: [] } as unknown as BeatmapV1;
+    useStore.setState({ state: 'SELECT', map, audioReady: true, warnings: ['cacheUnavailable'] });
+    for (const mode of [false, true]) {
+      compact = mode;
+      const html = renderToStaticMarkup(<Select runtime={runtime} />);
+      expect(html).toContain(strings.cacheUnavailable);
+      expect(html).toMatch(/role="status"[^>]*>Local cache unavailable/);
+      expect(html).not.toMatch(/data-target="performer-trial"[^>]*disabled/);
+    }
+  });
+  it('reuses the fatal error screen with a native reload instead of leaving game controls active', () => {
+    for (const state of ['SELECT', 'PAUSED'] as const) {
+      useStore.setState({ state, fatal: strings.graphicsLost });
+      const html = renderToStaticMarkup(<App runtime={runtime} />);
+      expect(html).toContain(strings.graphicsLost);
+      expect(html).toContain('href="/"');
+      expect(html).not.toContain('data-target="resume"');
+      expect(html).not.toContain('data-target="performer-trial"');
+    }
+  });
   it('shows three real starter songs, guarded actions and unique targets without camera input', () => {
     useStore.setState({
       state: 'SELECT',

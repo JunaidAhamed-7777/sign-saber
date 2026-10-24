@@ -34,3 +34,6 @@ server/cache/*
 # Blender backups
 *.blend1
 *.blend2
+
+# Temporary isolated npm cache
+.npm-task-cache/

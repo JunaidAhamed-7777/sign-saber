@@ -2,7 +2,7 @@
 
 This document defines the system boundaries, the data that crosses them, the coordinate frames, the frame loop, and every tunable constant. Subsystem documents ([05](05-tracking-pipeline.md)–[16](16-performance-budget.md)) go deep on *how*; this one is the *what talks to what*.
 
-**Implementation status:** these are planned contracts, not working runtime APIs. The source tree still contains documented stubs. [P0 in the roadmap](../ROADMAP.md) implements the shared types, constants and test fixtures before subsystems depend on them. Paths below describe the current scaffold and may change when a clearer boundary is justified; the data contracts and acceptance gates remain the authority.
+**Implementation status:** the shared types, constants, typed events, lifecycle and clock-normalization helpers are now executable. Subsystem implementation and browser verification are in progress; a shared-contract check is not a completed phase gate. [P0 in the roadmap](../ROADMAP.md) implements the shared types, constants and test fixtures before subsystems depend on them. Paths below describe the current scaffold and may change when a clearer boundary is justified; the data contracts and acceptance gates remain the authority.
 
 ## System overview
 
@@ -278,7 +278,7 @@ These are unverified planning estimates, not a benchmark result. Judgements use 
 
 ## Constants
 
-This is the shared constants registry. `core/constants.ts` is currently a stub; P0 MUST export these names and record any measured tuning change here in the same commit. Values below are initial defaults to validate, not proven optima. Subsystem prose references these names rather than creating a second authority.
+This is the shared constants registry. `core/constants.ts` now exports these names. Record any tuning change here in the same commit; defaults remain unmeasured unless evidence is linked. Values below are initial defaults to validate, not proven optima. Subsystem prose references these names rather than creating a second authority.
 
 **Rendering-only tunables** carry a subsystem prefix (`SIL_*`, `SLICE_*`, `SHATTER_*`, `BADCUT_*`, `BLADE_CORE_W` / `BLADE_GLOW_W` / `BLADE_SPINE_SAMPLES` / `BLADE_MIX_*`, `ORBIT_*`, `INDICATOR_R`, `HAND_TINT_*`, `TRAUMA_*`, `SHAKE_*`, `DROP_FOV_PUNCH_DEG` / `DROP_DOLLY_M` / `DROP_DECAY_MS`, `KICK_DECAY_MS`, `LEAN_PARALLAX_M`, `BLOOM_*`, `CHROMA_*`, `GLITCH_MS`, `FOG_DENSITY`, `BG_COLOR`, `GRID_LINE_COLOR`, `PYLON_*`, `OBSTACLE_ALPHA`, `SPAWN_FADE_MS`, `BEAM_VISUAL_MS`, `HIGHLIGHT_RT_SIZE`). Their values are specified in the "Constants required" table of the owning rendering doc ([10](10-rendering-silhouette.md), [11](11-rendering-blocks-and-destruction.md), [12](12-rendering-hands-trails.md), [13](13-rendering-environment-camera-postfx.md)), which is their authority; they MUST still be exported from `core/constants.ts` under a `// render` section so there is one file to tune. Everything below is cross-subsystem and is authoritative here.
 
@@ -541,6 +541,22 @@ These are **initial, unmeasured design defaults** used by [08](08-beatmap-genera
 | `MENU_HANDOVER_COOLDOWN_MS` | 500 — hand quiet period after native input or explicit controlling-hand change |
 
 Menu defaults are initial unmeasured values; tune with held-out menu fixtures and live standing-distance trials, recording changes with their test results. `DWELL_SELECT_MS` is retired: point-click navigation is CORE rather than an optional dwell mode. Runtime central exports remain a P0 implementation task.
+
+### Implementation admission and procedural fallback defaults
+
+| Name | Value | Purpose |
+| --- | --- | --- |
+| `VALIDATION_MAX_ERRORS` | 32 | Bounded validation diagnostics |
+| `ASSET_TEXT_MAX_CHARS` | 512 | Catalog/credit text admission bound |
+| `MAX_ASSET_JSON_BYTES` | 8 × 1024 × 1024 | Local JSON admission bound |
+| `TELEMETRY_CAPACITY` | 36000 | Retained samples per instrumentation ring; older values wrap |
+| `ONSET_SPECTRAL_NOVELTY_MIN` | 0.02 | Positive log-spectrum growth / preceding total magnitude before normalization |
+| `ONSET_RMS_RISE_RATIO` | 1.08 | Local raw RMS rise required by onset refinement |
+| `GEOMETRY_EPSILON` | 1e-10 | Numerical degeneracy tolerance |
+| `SFX_SYNTH_DURATION_S` / `SFX_SYNTH_GAIN` | 0.18 / 0.12 | Original procedural SFX fallback buffer duration/gain |
+| `SFX_SYNTH_FREQUENCIES` | `{ slash: 880, smash: 110, beam: 1320, miss: 90, badcut: 180, dodge: 440, count: 660 }` | Procedural fallback frequencies in Hz; does not claim authored OGG assets |
+
+These are implementation defaults and development-fixture tuning, not held-out quality results. `BodyCalibration` additionally carries a current `identity` string covering camera/crop/player/mapping and `capturedAt` on the main performance timeline; its presence alone never establishes readiness.
 
 ### Companion service (YouTube)
 

@@ -4,6 +4,11 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Implementation foundation
+
+- Codex inspected the clean repository and read the roadmap/contracts before implementation. The integrator established shared data/constants/menu/event/lifecycle/clock contracts and seven foundation assertions; three agents own temporary tracking/gesture, audio/game and music/DSP boundaries. The integrator owns integration, documentation, commits and pushes.
+- Real installation/cache failure and limited automated evidence are recorded in CHANGELOG.md. No webcam/human/performance result is inferred from unit tests. Subsystem/UI work is being integrated in subsequent checkpoints.
+
 ## 2026-10-25 — Core menu, starter library and camera setup specification
 
 - Codex integrated the user's mouse/hand menu and central-person requirements, including a placeholder and **Set up camera** before valid calibration. Three agents reviewed the UI specification, camera lifecycle and music content independently; no Devin contribution was involved in this pass.

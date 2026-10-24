@@ -11,15 +11,17 @@ Vite + TypeScript + Three.js + React. The specification lives in [`../docs/`](..
 | `npm run dev` | Dev server on <http://localhost:5173> (camera works on `localhost` without HTTPS) |
 | `npm run typecheck` | Strict TypeScript check |
 | `npm run lint` | ESLint |
-| `npm run test` | Vitest unit tests |
+| `npm run test` | Vitest; currently ten placeholder files and zero assertions, not gameplay coverage |
 | `npm run build` | Production build into `dist/` |
 | `npm run check` | typecheck + lint + test + build (what CI runs) |
-| `npm run beatmaps` | Regenerate bundled beatmaps (script lands at H3, see build plan) |
+| `npm run beatmaps` | Placeholder; exits with an error until the real P2 generator exists |
 
 ## Folder map
 
-See [02 — Architecture §Source layout](../docs/02-architecture.md#source-layout). Every file under `src/` currently holds only a header comment stating its responsibility, its spec section, and its inputs/outputs. Implementation starts at the hackathon kick-off per the event rules.
+See [02 — Architecture §Source layout](../docs/02-architecture.md#source-layout). Every file under `src/` currently holds only a documented contract; the browser page is an empty shell. Start implementation with P0/P1 in [ROADMAP.md](../ROADMAP.md). The inherited event timing/folder restrictions no longer apply; keep contracts and links accurate if paths change.
 
 ## Runtime assets
 
-`public/models/` is git-ignored except for its README; run `npm run models` before the event so the app works offline. `public/assets/tracks/` will hold the bundled CC0 demo tracks and their pre-generated beatmaps.
+`public/models/` is git-ignored except for its README. The downloader copies WASM and fetches models; P0 still needs pinned model checksums. `public/assets/tracks/` has no bundled music yet. A fully prepared production build must pass the offline exercise in P5; downloading models does not make the stub game playable.
+
+Use Node 22.12+ on CI's Node 22 line. `npm ci` reproduces the lockfile. From the root, `node scripts/check-docs.mjs` validates local documentation paths/fragments; see the [root README](../README.md) for current command/status details.

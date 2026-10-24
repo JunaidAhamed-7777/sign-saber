@@ -1,71 +1,52 @@
 # Agent guide — Sign Saber
 
-This guide is for everyone who commits to this repository, human or AI coding assistant (Claude Code, Codex, or similar). The workflow conventions are adapted from a hackathon repository template; the project-specific rules are ours.
+This is the working agreement for humans and coding agents in this repository. The inherited event timetable, pre-kick-off implementation restriction, team-size limit and exclusive folder tracks have been retired. The current repository is a starting point, not a required layout for another event.
 
-## Hackathon ground rules
+## Start with the product and roadmap
 
-- Implementation is built at the hackathon. Before kick-off the repository holds the specification in `docs/` and documented module stubs only.
-- Libraries, APIs, and public datasets are welcome. Document their sources and licenses in `README.md`.
-- Record every meaningful AI-assistant contribution in [AI_USAGE.md](AI_USAGE.md) once the build starts. It stays empty until then.
-- Keep `README.md` submission-ready at all times: short description, run steps, demo steps, known limitations, and the final commit SHA. Follow whatever submission method and deadline the organisers announce.
+- Read [docs/README.md](docs/README.md), [ROADMAP.md](ROADMAP.md), then the numbered specifications relevant to the task.
+- Use the evidence gates in the roadmap. `[CORE]` is the release requirement; `[POLISH]` follows the P2 complete-core gate; `[STRETCH]` follows P4 with all core gates still passing. No hour offset or deadline is assumed.
+- Keep useful existing work. Inspect `git status` before editing; coordinate files when people or agents work in parallel. There is no permanent folder ownership. Agree temporary edit boundaries for each task.
+- Source layout may change when it makes implementation clearer. Update links, source headers and architecture in the same change; avoid moving files merely to make the tree look different.
 
-## The docs are the contract
+## Treat contracts as build inputs
 
-- **Read before you build.** Start at [docs/README.md](docs/README.md). The module you are implementing has a numbered spec; its stub file under `app/src/` names it in the header comment.
-- **Identifiers are normative.** Types, events and constants named in [docs/02-architecture.md](docs/02-architecture.md) MUST be used verbatim (`TrackingFrame`, `HandCursor`, `note:hit`, `WINDOW_PERFECT_MS`, …) so that a search for a doc term finds the code.
-- **Constants live in one place.** Every tunable goes in `app/src/core/constants.ts` with the name from the constants table. Never inline a magic number in a subsystem; if you need a new constant, add it to the table in 02 and to `constants.ts` in the same commit.
-- **If code and docs disagree, fix one in the same commit.** A doc change that alters behaviour gets a line in `CHANGELOG.md`.
-- **Scope tags are real.** `[CORE]` ships; `[POLISH]` only after the H7 checkpoint; `[STRETCH]` only when everything is green. Feature freeze is H12 (twelve hours after kick-off). See [docs/19-build-plan.md](docs/19-build-plan.md).
+- Identifiers in [02 — Architecture](docs/02-architecture.md) are normative: use `TrackingFrame`, `HandCursor`, `note:hit`, `WINDOW_PERFECT_MS` and other named contracts verbatim.
+- Shared tunables are registered in [02 §Constants](docs/02-architecture.md#constants); renderer/UI-only tables in the linked subsystem docs are explicit sub-registries. During P0, export the specified values centrally from `app/src/core/constants.ts`. That file is currently a stub: do not claim code and tables are already synchronized.
+- No hidden tunables or subsystem magic numbers. Add a new value to its registry and central exports together once implementation exists. Structural counts and unit conversions should still be named where that improves clarity.
+- If behavior or a contract changes, update its producers, consumers, docs and meaningful tests together. Record the behavior change in `CHANGELOG.md`.
+- Document planned behavior as planned. A passing stub build is not a working game; a replay result is not evidence that a webcam works.
 
-## Folder ownership during the build
+## Keep implementation direct
 
-| Track | Folders | Rule |
-| --- | --- | --- |
-| Tracking & Input | `app/src/tracking/`, `app/src/gestures/` | Only this track edits these |
-| Rendering | `app/src/render/`, `assets-src/`, `app/public/assets/models/` | Only this track edits these |
-| Audio & Beatmap | `app/src/audio/`, `app/src/beatmap/`, `server/`, `app/public/assets/tracks/` | Only this track edits these |
-| Game & UI | `app/src/core/`, `app/src/game/`, `app/src/ui/`, `app/src/state/` | Integrates the others; owns `constants.ts` edits (others propose values in chat) |
+- Prefer small idiomatic TypeScript modules, plain data, clear names and explicit error handling. Add abstractions only for actual repeated needs.
+- Keep dependencies purposeful; explain additions in the commit message and document sources/licenses in `README.md`.
+- `game/` stays independent of Three.js. Renderers and UI consume game events; actions go through the state machine instead of mutating game state from presentation code.
+- Pool application-owned hot-path buffers, vectors and effects. Browser/MediaPipe APIs may allocate: measure those boundaries and release `ImageBitmap`, masks, model results and GPU resources explicitly. Do not promise impossible zero-allocation browser calls.
+- Keep the camera pipeline bounded. Score capture-time samples exactly once; visual prediction cannot change scoring. See [05](docs/05-tracking-pipeline.md), [07](docs/07-hit-detection-and-scoring.md) and [15](docs/15-audio-playback-sync.md).
+- Keep raw camera pixels private. Recording fixtures is explicit, local and opt-in. No credentials, tokens, private participant data or unconsented recordings in commits or logs.
+- Show useful failure messages. Do not conceal broken inputs behind fabricated success, demo data or benchmark numbers.
 
-Cross-track changes go through a quick message, not a surprise diff. This is how we avoid merge conflicts at 4 AM.
+## Validate and record meaningful work
 
-## Use basic coding patterns
+- For application milestones, run `npm run check` in `app/` (typecheck, lint, test, production build). Add behavior tests as implementation arrives; the current ten test files contain no assertions.
+- For documentation changes, run `node --test scripts/check-docs.test.mjs` and `node scripts/check-docs.mjs` from the root. The checker verifies local Markdown paths and headings; it does not verify remote URLs or runtime claims.
+- Run targeted additional checks when a change introduces new risks. Follow [17 — Testing & QA](docs/17-testing-and-qa.md) and [24 — Benchmark & Evidence](docs/24-benchmark-and-evidence.md) for release evidence.
+- Update `CHANGELOG.md` in each meaningful commit: actual timestamp with timezone, changed files/behavior, reason, checks actually run and limitations. Preserve the historical record; correct old claims in a new entry.
+- Update `AI_USAGE.md` for meaningful AI contributions, including specification and review work. Brief summaries only. Update `README.md` when status, setup, commands, behavior or demo instructions change.
+- Only document commands that exist as current commands. Clearly mark future tools in the roadmap; never describe a placeholder script as a working feature.
 
-- Prefer straightforward, idiomatic TypeScript: small functions, clear names, plain data, modules with one responsibility (the stubs already define them).
-- Add an abstraction only when an actual repeated need makes the code easier to understand.
-- Keep dependencies few and purposeful. The dependency list in `app/package.json` is intentional; adding one needs a reason in the commit message.
-- **No per-frame allocation in hot paths** (`render/`, `game/`, `gestures/`, `tracking/`). Reuse scratch vectors, use pools and typed arrays. ESLint warns on `new Vector3()` in those folders for this reason. See [docs/16-performance-budget.md](docs/16-performance-budget.md).
-- `game/` never imports `three`. `render/` and `ui/` never mutate game state; they subscribe to events.
-- Validate inputs, handle errors explicitly, and show useful failure messages (the BOOT error cards in [docs/04](docs/04-state-machine.md#boot)). Do not hide failures behind fabricated success or demo data.
+## Commit frequently and preserve history
 
-## Document every meaningful change
+1. Finish a coherent, reviewable step; validate it; stage only completed work.
+2. Commit at each roadmap gate and after small milestones, about every 20–30 minutes during sustained work. Commit before a handoff or break; use an honest `wip:` message for incomplete work.
+3. Use short descriptive messages such as `feat(judge): finalize misses after capture watermark` or `docs: define reproducible benchmark gates`.
+4. Do not create empty commits, backdate, force-push, rewrite shared history or add `Co-Authored-By:` trailers. AI contributions belong in `AI_USAGE.md`.
+5. Push checkpoints when requested or already authorized. For the current documentation pass, the user explicitly requested a final push to `origin/main`; preserve any new remote work with a normal integration, never a force push.
 
-- Update [CHANGELOG.md](CHANGELOG.md) in the same commit as each meaningful change: timestamp with timezone, what changed, why, files/feature, validation performed, known limitations.
-- Update [README.md](README.md) whenever setup, commands, behaviour, or demo instructions change.
-- Update [AI_USAGE.md](AI_USAGE.md) whenever an AI assistant makes a meaningful contribution during the build. Brief summaries; no transcripts.
-- Keep claims accurate. Distinguish implemented-and-verified from planned. Never invent test results, performance numbers, or timestamps. "Verified live with the webcam" means someone actually did.
+## Release and judging
 
-## Make regular, timely commits
-
-1. Inspect `git status` before editing. Preserve teammates' work; stage only your track's files.
-2. Finish a small, coherent change, run `npm run typecheck && npm run lint && npm run test` in `app/`, update its documentation.
-3. **Commit after each completed milestone; while actively building, about every 30 minutes.** Checkpoints in the build plan are mandatory commit points.
-4. Commit before a handoff, a break, or sleep. Incomplete work gets an honest `wip:` message.
-5. Short, descriptive messages: `feat(tracking): worker posts TrackingFrame at 30 Hz`, `fix(judge): bad cut no longer scores`, `docs: record ADR-007 fallback decision`.
-6. Do not create empty commits, backdate, squash away the event record, force-push, or rewrite shared history.
-7. **Do not add co-author trailers.** No `Co-Authored-By:` lines for AI assistants (or anyone) in commit messages or PR descriptions. AI contributions are recorded in [AI_USAGE.md](AI_USAGE.md), not in git metadata.
-8. Push to `origin/main` after every checkpoint when the network allows. Resolve conflicts with care; folder ownership should make them rare.
-
-## Check work and protect credentials
-
-- Real commands only: `npm run dev`, `npm run typecheck`, `npm run lint`, `npm run test`, `npm run build`, `npm run models`, `npm run beatmaps`, `npm run server`. Add new ones to `README.md` as soon as they exist.
-- For documentation-only changes, check links (CI does) and consistency with the constants table.
-- Report what ran and what passed, failed, or could not be checked.
-- No credentials, API keys, approved QR codes, or private participant data in commits or logs. This project needs no secrets; if one appears, something is wrong.
-
-## Before submission
-
-- Fill the README's "Current status" and "Submission" sections; no placeholders may remain.
-- Confirm the README's run steps work on a clean clone (`npm install`, `npm run models`, `npm run dev`).
-- Run the manual QA checklist in [docs/17-testing-and-qa.md](docs/17-testing-and-qa.md) and record the results.
-- Update the changelog and AI usage record, commit the final coherent change, push, and record the SHA in `README.md` §Submission.
-- Follow the organisers' actual submission method and timing.
+- The actual event's rules, judging rubric, deadline and submission channel are not supplied. Record them when known; do not import another hackathon's assumptions.
+- Before release, run the clean-clone setup, manual QA, offline exercise and evidence protocol. Record failures as well as passes.
+- Keep the release SHA, evidence links, music attributions, actual team and demo recording in the [README submission section](README.md#submission). Avoid a self-referential SHA claim: tag or record a tested release commit, and identify subsequent documentation-only commits separately.
+- Rehearse [20 — Demo & Judging](docs/20-demo-and-judging.md). Show the strongest verified interaction first and use measured numbers only.

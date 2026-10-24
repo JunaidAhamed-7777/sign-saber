@@ -2,6 +2,8 @@
 
 This document defines the system boundaries, the data that crosses them, the coordinate frames, the frame loop, and every tunable constant. Subsystem documents ([05](05-tracking-pipeline.md)–[16](16-performance-budget.md)) go deep on *how*; this one is the *what talks to what*.
 
+**Implementation status:** these are planned contracts, not working runtime APIs. The source tree still contains documented stubs. [P0 in the roadmap](../ROADMAP.md) implements the shared types, constants and test fixtures before subsystems depend on them. Paths below describe the current scaffold and may change when a clearer boundary is justified; the data contracts and acceptance gates remain the authority.
+
 ## System overview
 
 ```
@@ -42,7 +44,7 @@ Threads:
 | --- | --- | --- |
 | Main | Camera capture, input pipeline, game core, renderer, UI | ≤ 16.6 ms total, see [16](16-performance-budget.md) |
 | Tracking Worker | MediaPipe inference (hands + pose + mask) | Async, target ≥ 24 Hz, ≤ 40 ms per frame |
-| Beatmap Worker | Offline audio analysis | Not frame-bound; < 4 s per 3-minute song |
+| Beatmap Worker | Offline audio analysis | Not frame-bound; target < 4 s per 3-minute reference song, measured separately from decode |
 | Audio thread | `AudioContext` playback (browser-managed) | — |
 
 ## Module responsibilities
@@ -60,7 +62,7 @@ Threads:
 | `state/` | Zustand store: mirrors machine state + display stats for React | core |
 | `utils/` | Math (vec/quat helpers, One Euro, lerp/damp), object pools, typed event emitter, hashing | — |
 
-**Dependency rule:** arrows point downward in this table; `render/` and `ui/` never mutate game state. The game core publishes events; the renderer and UI subscribe. `game/` never imports `three`.
+**Dependency rule:** shared types, constants and math have no runtime dependency on higher layers. Workers communicate through typed messages. The game core publishes events; the renderer and UI subscribe. UI controls send commands to the state machine rather than changing session data. `render/` and `ui/` never mutate game state; `game/` never imports `three`. The table is a responsibility map, not a topological ordering of imports.
 
 ## Contracts
 
@@ -71,8 +73,8 @@ The identifiers below are normative. Implementation files MUST use these names s
 ```ts
 export interface TrackingFrame {
   seq: number;              // monotonically increasing frame id
-  tCapture: number;         // performance.now() ms when the video frame was captured (main-thread clock)
-  tInferDone: number;       // performance.now() ms when the worker finished (for latency stats)
+  tCapture: number;         // main performance timeline; sensor capture if available, otherwise frame callback receipt
+  tInferDone: number;       // worker completion converted to the MAIN performance timeline (see [05])
   inferenceMs: number;      // worker-side wall time for hands + pose
   hands: HandRaw[];         // 0..2 entries
   pose: PoseRaw | null;
@@ -100,6 +102,14 @@ export interface MaskFrame {
 
 All typed arrays are transferred (zero-copy). The worker pre-allocates and recycles buffers from a two-slot ring so the main thread can hold the latest frame while the next is being written.
 
+Ownership is exclusive: a transferred buffer is detached at its sender. `take()` lends a frame only until the input pipeline and renderer have copied the data they retain; recycling happens after that point. Retained masks, histories and highlight captures MUST own copies. A stalled consumer drops capture work rather than allocating an unbounded replacement ring. Browser/MediaPipe result objects can allocate internally; the zero-allocation requirement applies to application-owned hot-path buffers after warm-up, not to an unmeasured claim about third-party internals.
+
+### Shared math and input source
+
+`Vec2 = { x: number; y: number }`, `Vec3 = { x: number; y: number; z: number }`, and `Plane = { normal: Vec3; point: Vec3 }` are plain data types defined once in the shared type module. Vectors in persistent game state are reused objects. Event consumers copy values they retain beyond the dispatch; they MUST NOT retain a pooled object that the producer will mutate.
+
+Live camera and replay fixtures feed the same `TrackingFrame` consumer. The source reports `live` or `replay` in diagnostics and benchmark metadata; replay MUST display a visible badge and MUST NOT be described as a live-camera measurement. Fixtures carry their original relative capture times, stable sequence numbers and a schema version ([17](17-testing-and-qa.md)). Reject non-finite timestamps, invalid array lengths, non-increasing sequences and live samples whose arrival age exceeds `INPUT_MAX_AGE_MS` before they reach scoring. Replay rebases relative times and uses a deterministic simulated delivery policy; JSON load time is never interpreted as tracking delay. Replaying identical inputs and a fixed beatmap produces identical judgement events and scores, independent of render cadence.
+
 ### Input Pipeline → Game: `HandCursor`, `BodyState`
 
 ```ts
@@ -112,7 +122,7 @@ export interface HandCursor {
   gesture: Gesture;
   gestureConfidence: number;     // 0..1 from the classifier margin
   gestureHeldMs: number;         // how long the current gesture has been stable
-  pos: Vec3;                     // palm centre on the PLAY PLANE (world metres, z = 0)
+  pos: Vec3;                     // measured palm centre on the PLAY PLANE (world metres, z = 0); never render-extrapolated
   vel: Vec3;                     // play-plane velocity, m/s, smoothed over VEL_WINDOW_FRAMES
   speed: number;                 // |vel|
   tip: Vec3;                     // index fingertip on the play plane (world metres)
@@ -146,9 +156,9 @@ The event bus (`core/events.ts`) is a typed emitter. The following events are th
 | `state:change` | `{ prev, next }` | State machine transition |
 | `note:spawn` | `{ note: Note }` | Note becomes live |
 | `note:hit` | `{ note, judgement: 'perfect'\|'great'\|'good', timingErrorMs, hand, cutPlane?: Plane, impactPos: Vec3, impactVel: Vec3, scoreDelta, combo, multiplier }` | Successful destruction |
-| `note:miss` | `{ note }` | Note passed `MISS_Z` without a hit |
+| `note:miss` | `{ note }` | Capture-time hit window closed without a hit; see [07] for late-arrival grace |
 | `note:badcut` | `{ note, hand, gesture }` | Wrong gesture made contact |
-| `beam:fire` | `{ hand, from: Vec3, to: Vec3, note }` | Charged beam resolves on a target |
+| `beam:fire` | `{ hand, from: Vec3, to: Vec3, note: Note \| null }` | Charged beam fires; `null` is a visible whiff, never a hit |
 | `obstacle:spawn` | `{ obstacle }` | Obstacle becomes live |
 | `obstacle:hit` | `{ obstacle }` | Player inside an obstacle at the hit plane |
 | `obstacle:dodged` | `{ obstacle, scoreDelta }` | Obstacle passed without contact |
@@ -160,11 +170,11 @@ The event bus (`core/events.ts`) is a typed emitter. The following events are th
 
 ```ts
 export interface SessionStats {
-  score: number; maxScore: number; accuracy: number;   // accuracy = score / maxScore
+  score: number; maxScore: number; accuracy: number;   // maxScore is a score ceiling; accuracy is unmultiplied base points / possible base points ([07])
   rank: 'SS' | 'S' | 'A' | 'B' | 'C' | 'D';
   maxCombo: number;
   counts: { perfect: number; great: number; good: number; miss: number; badcut: number; obstaclesHit: number; obstaclesDodged: number };
-  kineticJoules: number; kcal: number;
+  kineticJoules: number; kcal: number;               // playful motion estimate; never measured exercise calories
   peakComboSongTimeMs: number;
 }
 ```
@@ -195,7 +205,7 @@ Five frames, named exactly as follows everywhere in code and docs.
 
 ### Mirroring
 
-The player must see a mirror. The worker converts to mirrored image space once (`u′ = 1 − u`, mask flipped horizontally, handedness labels swapped so `'right'` means the player's right hand). Nothing downstream mirrors again.
+The player must see a mirror. The worker converts to mirrored image space once (`u′ = 1 − u`, mask flipped horizontally). A single input adapter converts the pinned model's handedness convention into the player's anatomical left/right identity; verify that mapping using a labelled right-hand fixture before shipping. A coordinate reflection alone does not change anatomical identity. Nothing downstream mirrors again. Pose landmark indices retain MediaPipe's anatomical meaning after the coordinate reflection.
 
 ### Image → play plane
 
@@ -229,34 +239,36 @@ Beam notes do not travel. They fade in at `t − BEAM_LEAD_MS` at `(LANE_X[col],
 
 `core/loop.ts` runs on `requestAnimationFrame`. Order per frame is fixed:
 
-1. **Clock** — `songTime = songClock.now()` (from `AudioContext.currentTime`; frozen while paused). `dt = clamp(frameDelta, 0, 50 ms)`.
-2. **Drain tracking** — take the newest `TrackingFrame` if one arrived (older ones are dropped). Run the input pipeline → updated `HandCursor[2]`, `BodyState`. If no new frame, cursors extrapolate `pos += vel · dt` for at most `EXTRAPOLATE_MAX_MS` then hold.
+1. **Clock** — `songTime = songClock.now()` (output-aligned from the audio clock; frozen while paused). `dt = clamp(frameDelta, 0, 50 ms)`.
+2. **Borrow tracking** — collect pending valid `TrackingFrame`s in capture-time/sequence order, including all due records in replay mode. Keep their bounded buffer ownership until consumed; do not collapse several samples into one newest cursor before judgement.
 3. **Spawner** — make live every note/obstacle with `t − approachMs ≤ songTime` (or `t − BEAM_LEAD_MS` for beams). Emit `music:event`s whose `t ≤ songTime`.
 4. **Simulate** — update every live note/obstacle position from `songTime` (positions are pure functions of time; no integration, so pausing and resuming is exact).
-5. **Hit detection** — for each hand cursor and each live note in the hit zone, test contact; judge; emit. Then obstacles vs `BodyState`. Then beam resolution. Details in [07](07-hit-detection-and-scoring.md).
-6. **Score / stats** — apply judgements, update combo, kinetic energy accumulator.
+5. **Input and judgement** — for each borrowed sample, run filtering/gesture state, test measured sweeps against capture-time note/obstacle windows, resolve notes and apply score/combo/kinetic updates **before advancing to the next sample**. Retain the last measured `HandCursor[2]` and `BodyState` for display. No new sample means no rejudging or beam charging. Stable ordering is sample time, note `t`, note `id`, then left/right as the hand tie-breaker; valid-hit priority is defined in [07](07-hit-detection-and-scoring.md).
+6. **Finalise** — close missed-note/obstacle windows only after the bounded late-arrival policy, then publish the latest session stats. Visual prediction is a separate render input and never changes scoring, charge, measured history or kinetic estimates.
 7. **Audio reactive** — read `BandEnergies`.
 8. **Render** — renderer consumes cursors, body state, live objects, band energies, pending events (destruction effects are started in the same frame as the `note:hit` event). Camera rig update. Post FX.
 9. **UI** — Zustand store updated with display values (throttled to ≤ 20 Hz for text fields).
 
 Fixed-step physics is not required: destruction fragments use closed-form ballistic motion; the trail ribbon uses the cursor history. Nothing in the game needs integration that would be sensitive to `dt`.
 
+The `dt` clamp affects cosmetic animation only; authoritative time always comes from `SongClock`. A large hitch must advance note positions to the correct song time without inventing intermediate tracking samples. Pause/reset discards pending contacts and resets velocity/charge histories so a return to frame cannot sweep across stale positions.
+
 ## Latency model
 
-| Stage | Typical | Notes |
+| Stage | Planning estimate | Notes |
 | --- | --- | --- |
-| Camera exposure + delivery | 30–60 ms | Reduced by requesting 30 fps and the lowest exposure the camera allows automatically |
+| Camera exposure + delivery | 30–60 ms | Device/exposure dependent; not guaranteed by requested fps |
 | `createImageBitmap` + transfer | 1–3 ms | Main thread |
 | Inference (hands + pose + mask) | 15–35 ms | Worker, GPU delegate |
 | Transfer back + pipeline | 1–2 ms | Main |
 | Render to display | 16–33 ms | Depends on frame rate and compositor |
 | **Total motion-to-photon** | **70–130 ms** | — |
 
-Consequences, applied throughout: judgements use `tCapture` (not arrival time); hit zones are expressed as timing windows (so being ~100 ms late reads as “Great”, not a miss); cursors extrapolate to hide the gap; the player-adjustable `inputOffsetMs` shifts all judgements.
+These are unverified planning estimates, not a benchmark result. Judgements use `tCapture` (not inference arrival time); when capture metadata is unavailable that timestamp is a receipt estimate and camera delivery delay remains uncompensated. Visual cursors may extrapolate to hide the gap; the player-adjustable `inputOffsetMs` shifts judgements with a documented sign. Measure latency percentiles and missed deadlines, rather than adding the estimates and presenting their sum as observed motion-to-photon latency.
 
 ## Constants
 
-Single source of truth. `core/constants.ts` MUST export these names with these values. Docs reference the names only.
+This is the shared constants registry. `core/constants.ts` is currently a stub; P0 MUST export these names and record any measured tuning change here in the same commit. Values below are initial defaults to validate, not proven optima. Subsystem prose references these names rather than creating a second authority.
 
 **Rendering-only tunables** carry a subsystem prefix (`SIL_*`, `SLICE_*`, `SHATTER_*`, `BADCUT_*`, `BLADE_CORE_W` / `BLADE_GLOW_W` / `BLADE_SPINE_SAMPLES` / `BLADE_MIX_*`, `ORBIT_*`, `INDICATOR_R`, `HAND_TINT_*`, `TRAUMA_*`, `SHAKE_*`, `DROP_FOV_PUNCH_DEG` / `DROP_DOLLY_M` / `DROP_DECAY_MS`, `KICK_DECAY_MS`, `LEAN_PARALLAX_M`, `BLOOM_*`, `CHROMA_*`, `GLITCH_MS`, `FOG_DENSITY`, `BG_COLOR`, `GRID_LINE_COLOR`, `PYLON_*`, `OBSTACLE_ALPHA`, `SPAWN_FADE_MS`, `BEAM_VISUAL_MS`, `HIGHLIGHT_RT_SIZE`). Their values are specified in the "Constants required" table of the owning rendering doc ([10](10-rendering-silhouette.md), [11](11-rendering-blocks-and-destruction.md), [12](12-rendering-hands-trails.md), [13](13-rendering-environment-camera-postfx.md)), which is their authority; they MUST still be exported from `core/constants.ts` under a `// render` section so there is one file to tune. Everything below is cross-subsystem and is authoritative here.
 
@@ -287,12 +299,12 @@ Single source of truth. `core/constants.ts` MUST export these names with these v
 | `WINDOW_PERFECT_MS` | 60 | \|timing error\| ≤ → Perfect |
 | `WINDOW_GREAT_MS` | 120 | → Great |
 | `WINDOW_GOOD_MS` | 200 | → Good; beyond this no contact is possible |
-| `MISS_Z` | +1.2 m | Note z past which it is a miss (≈ 50 ms late at normal) — the hit zone is `[−WINDOW_GOOD_MS, +WINDOW_GOOD_MS]` in time, this is only the visual despawn trigger |
-| `DESPAWN_Z` | +3.5 m | Remove from scene |
+| `MISS_Z` | +1.2 m | Obstacle trailing-face clearance only; NEVER the note judgement deadline |
+| `DESPAWN_Z` | +3.5 m | Visual culling threshold; retain unresolved gameplay records until the capture-time deadline closes |
 | `BEAM_LEAD_MS` | 1600 | Beam target appears this early |
 | `BEAM_ESCAPE_MS` | 600 | Beam target leaves this long after `t` |
 | `BEAM_CHARGE_MS` | 500 | Hold-to-charge duration |
-| `BEAM_AIM_RADIUS` | 0.45 m | Play-plane distance from fingertip ray to target centre |
+| `BEAM_AIM_RADIUS` | 0.45 m | Play-plane distance from measured fingertip to the baseline-camera projection of the target centre |
 | `BEAM_ISOLATION_MS` | 700 | No other notes within this of a beam note |
 | `INPUT_OFFSET_DEFAULT_MS` | 0 | User-adjustable in settings |
 | `INPUT_OFFSET_RANGE_MS` | ±150 | Slider range for `inputOffsetMs` |
@@ -300,6 +312,7 @@ Single source of truth. `core/constants.ts` MUST export these names with these v
 | `OBSTACLE_GRACE_MS` | 120 | Frames after a wall reaches the hit plane that are not evaluated (hides tracking latency) |
 | `BEAM_REFIRE_LOCK_MS` | 150 | Lockout after a beam fire |
 | `EXTRAPOLATE_MAX_MS` | 80 | Cursor extrapolation cap |
+| `INPUT_MAX_AGE_MS` | 250 | Maximum receipt/capture age accepted for scoring; also bounds late-result grace before a miss |
 
 ### Scoring
 
@@ -308,7 +321,7 @@ Single source of truth. `core/constants.ts` MUST export these names with these v
 | `SCORE_PERFECT` / `SCORE_GREAT` / `SCORE_GOOD` | 100 / 70 / 40 |
 | `SCORE_DODGE` | 50 |
 | `MULTIPLIER_LADDER` | `[[0,1],[5,2],[15,4],[30,8]]` (combo ≥ threshold → multiplier) |
-| `RANK_THRESHOLDS` | SS ≥ 0.95, S ≥ 0.90, A ≥ 0.80, B ≥ 0.65, C ≥ 0.50, else D (accuracy = score / maxScore where maxScore assumes all Perfect at full combo) |
+| `RANK_THRESHOLDS` | SS ≥ 0.95, S ≥ 0.90, A ≥ 0.80, B ≥ 0.65, C ≥ 0.50, else D (accuracy uses unmultiplied base points; see [07]) |
 | `HAND_MASS_KG` | 2.5 (hand + forearm effective mass for kinetic energy) |
 | `TORSO_MASS_KG` | 30 |
 | `METABOLIC_EFFICIENCY` | 0.25 (kcal = J / 4184 / efficiency) |
@@ -341,6 +354,25 @@ Single source of truth. `core/constants.ts` MUST export these names with these v
 | `LEAN_ON` / `LEAN_OFF` | 0.55 / 0.35 | \|leanX\| thresholds (in shoulder widths) with hysteresis |
 | `DUCK_DROP` | 0.12 | Nose drop (fraction of frame height) for duck [STRETCH] |
 
+### Classifier feature defaults
+
+These were previously inline thresholds in [06](06-gesture-recognition.md). They are tunables, so P0 exports them from the same constants module as the shared gesture thresholds.
+
+| Name | Value | Meaning |
+| --- | --- | --- |
+| `GESTURE_PALM_SIZE_MIN` | 0.015 | Minimum wrist-to-middle-MCP span in normalized width units |
+| `GESTURE_EDGE_ON_WIDTH` | 0.35 | Palm width/span below this is ambiguous |
+| `GESTURE_TIP_REACH_MARGIN` | 0.15 | Tip reach beyond PIP in palm-size units |
+| `GESTURE_CURL_REACH_MAX` | 1.15 | Tip reach below this supports curl |
+| `GESTURE_THUMB_OUT_MIN` | 1.3 | Thumb-to-pinky reach for weak open evidence |
+| `GESTURE_THUMB_IN_INDEX_MAX` / `GESTURE_THUMB_IN_MIDDLE_MAX` | 0.6 / 0.5 | Weak fist evidence |
+| `GESTURE_CONFIDENCE_MIN` | 0.25 | Below this, advance ambiguity instead of confirmation |
+| `GESTURE_FAST_OPEN_CONFIDENCE` | 0.7 | One-sample `none → open` fast-path confidence |
+| `GESTURE_POINT_RELAX_DEG` | 35 | Index/middle angle gap for relaxed point rule |
+| `GESTURE_CURL_MARGIN_ORIGIN` / `GESTURE_CURL_MARGIN_SPAN` | 0.7 / 0.6 | Normalize curl confidence from reach |
+| `POINT_DIR_MIN_M` | 0.05 | Below this projected finger length, retain cosmetic direction |
+| `BEAM_CHARGE_DECAY` | 3 | Charge decay relative to charge-up rate |
+
 ### Tracking & calibration
 
 | Name | Value | Meaning |
@@ -362,6 +394,29 @@ Single source of truth. `core/constants.ts` MUST export these names with these v
 | `START_COUNTDOWN_MS` | 3 beats of the song (min 1500, max 3000) | Pre-start count |
 | `RESUME_COUNTDOWN_MS` | 1500 | Resume count |
 | `SONG_TAIL_MS` | 1500 | Wait after song end before RESULTS |
+
+### Tracking identity, recovery and motion defaults
+
+| Name | Value | Meaning |
+| --- | --- | --- |
+| `TRACK_CONFIDENCE_MIN` | 0.5 | Initial detection/presence/tracking and shoulder-presence confidence floor |
+| `CALIB_VISIBILITY_MIN` | 0.6 | Calibration shoulder visibility floor |
+| `HAND_RESET_FRAMES` | 2 | Missing samples before resetting a logical slot/filter |
+| `HAND_IDENTITY_GRACE_MS` | 300 | Recent-slot label matching interval |
+| `HAND_IDENTITY_MATCH_DIST` / `HAND_IDENTITY_OVERRIDE_DIST` | 0.15 / 0.08 | Normalized-image identity matching distances |
+| `TRACK_STALL_MS` / `TRACK_RECOVERY_MS` | 1000 / 5000 | No-result pause and one worker-recreation deadline |
+| `TRACK_REGAIN_MS` | 500 | Continuous valid presence before tracking-loss resume |
+| `TRACK_RATE_TOLERANCE_MS` | 2 | Capture-rate scheduling tolerance |
+| `TRACK_STATS_WINDOW` | 30 | Diagnostic EMA/window sample count; benchmarks retain raw values |
+| `DEBUG_TEXT_HZ` | 4 | Diagnostic text refresh cap |
+| `WAVE_DEAD_BAND` | 0.002 | Normalized horizontal motion ignored by wave detector |
+| `BODY_FILTER_BETA` | 0.02 | Calm shoulder-midpoint filter coefficient |
+| `BODY_SPEED_EMA` | 0.5 | Torso-speed sample EMA |
+| `LEAN_TILT_ASSIST_DEG` | 15 | Optional shoulder-tilt assist, with translation evidence |
+| `DUCK_HYSTERESIS` | 0.03 | Normalized nose-height hysteresis [STRETCH] |
+| `CALIB_SAMPLE_MS` / `CALIB_HAND_SEEN_MS` | 500 / 2000 | Rest-pose averaging and recent-hand visibility windows |
+| `CALIB_ASSUMED_SHOULDER_M` | 0.40 | Assumed shoulder span for the playful physical-speed proxy; not a measurement |
+| `SWING_REFRACTORY_MS` / `SWING_TROUGH_RATIO` | 150 / 0.5 | Motion-proxy peak separation and trough rule |
 
 ### Beatmap generation
 
@@ -391,7 +446,9 @@ Single source of truth. `core/constants.ts` MUST export these names with these v
 | `CENTROID_ROW_HZ` | `[400, 2500]` | Spectral centroid boundaries for row 0 / 1 / 2 |
 | `WALL_NOTE_MARGIN_MS` | 600 | No note in a wall's covered columns within this margin of the wall |
 | `MIN_TRACK_MS` | 5000 | Shorter files are rejected (`tooShort`) |
+| `MAX_TRACK_MS` | 300000 (5 min) | Maximum accepted playable duration; companion downloads still pass this app-level limit |
 | `MAX_UPLOAD_BYTES` | 60 × 1024 × 1024 | Larger uploads are rejected before decoding |
+| `MAX_DECODED_PCM_BYTES` | 128 × 1024 × 1024 | Decoded float PCM accepted before analysis/resampling; not a cap on native decoder peak memory |
 | `ANALYSIS_CACHE_MAX` | 30 | IndexedDB entries kept (most recent) |
 | `GENERATOR_VERSION` | 1 | Cache key component |
 
@@ -402,9 +459,13 @@ Single source of truth. `core/constants.ts` MUST export these names with these v
 | `SONG_START_LEAD_S` | 0.15 — scheduled start offset after `AudioContext.currentTime` |
 | `ANALYSER_FFT` | 1024 |
 | `BAND_LOW_HZ` / `BAND_MID_HZ` / `BAND_HIGH_HZ` | 20–150 / 150–2000 / 2000–10000 |
-| `ANALYSER_SMOOTH` | 0.6 (attack 0.3 for `low`), expressed as 60 Hz-equivalent time constants |
+| `ANALYSER_SMOOTH` / `ANALYSER_LOW_ATTACK` | 0.6 / 0.3 — retained previous value per 60 Hz frame; actual blend uses `1 − retention^(dt · 60)` |
+| `ANALYSER_PEAK_DECAY_S` / `ANALYSER_PEAK_FLOOR` / `ANALYSER_RMS_GAIN` | 4 / 0.15 / 3 — adaptive band peak release, normalization floor and RMS scale |
 | `SFX_POLYPHONY` | 6 simultaneous one-shots per sound |
 | `SFX_PITCH_JITTER_CENTS` | 69 (≈ ±4 %) |
+| `SFX_JUDGEMENT_RATE` | `{ perfect: 1.03, great: 1, good: 0.97 }` — deterministic playback-rate modifier |
+| `SFX_STOP_RAMP_S` | 0.01 — fade an evicted one-shot before stopping |
+| `MASTER_GAIN_DEFAULT` / `SFX_GAIN_DEFAULT` | 0.8 / 1.0 — persisted volume defaults |
 | `DUCK_DB` / `DUCK_ATTACK_S` / `DUCK_RELEASE_S` | −1.5 / 0.03 / 0.4 — music ducking on the drop sting |
 
 ### UI
@@ -439,6 +500,8 @@ Single source of truth. `core/constants.ts` MUST export these names with these v
 | `POOF_LIFETIME_MS` | 700 |
 
 ## Source layout
+
+This is the existing scaffold map, not a required repository structure or a set of exclusive team ownership boundaries. Move files when needed and update paths/spec links in the same change. Build dependencies and acceptance gates are in [the roadmap](../ROADMAP.md).
 
 ```
 app/
@@ -478,7 +541,7 @@ All flags are read once at boot by `core/flags.ts` (URL query parameters) and ex
 
 | Flag / key | Effect | Spec |
 | --- | --- | --- |
-| `?replay=<fixture>.json` | Feed a recorded `TrackingFrame` fixture instead of the camera | [17 §Replay mode](17-testing-and-qa.md) |
+| `?replay=<fixture>.json` | Planned dev/benchmark mode: feed an allowlisted same-origin recorded `TrackingFrame` fixture; visible REPLAY badge | [17 §Replay mode](17-testing-and-qa.md) |
 | `?tier=low\|medium\|high` | Force a quality tier (skips the probe) | [16 §Quality tiers](16-performance-budget.md#quality-tiers) |
 | `?probe=1` | Re-run the boot quality probe even if `localStorage` has `ss:tier` | [16](16-performance-budget.md) |
 | `?contrast=1` | High-contrast mode: mask threshold `CONTRAST_MASK_THRESHOLD`, edge gain `CONTRAST_EDGE_GAIN` | [10](10-rendering-silhouette.md), [21 R02](21-risks-and-fallbacks.md) |

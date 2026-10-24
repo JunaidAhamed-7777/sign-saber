@@ -16,4 +16,4 @@ public/models/
 └── selfie_segmenter.tflite        optional fallback (ADR-003), downloaded with --with-segmenter
 ```
 
-Loaded by `src/tracking/tracking.worker.ts` via `FilesetResolver.forVisionTasks('/models/wasm')`. Run the script before the event so BOOT succeeds with the network disconnected (ADR-013).
+The planned worker will load these via `FilesetResolver.forVisionTasks('/models/wasm')`; the worker is currently a stub. The downloader uses upstream `latest` URLs and checks existing files by size. During P0, pin model versions/checksums and record their terms plus the WASM package version in an asset manifest. During P5, verify a locally served production build with external network disabled; prepared files alone do not establish offline gameplay. See [ROADMAP.md](../../../ROADMAP.md) and [05](../../../docs/05-tracking-pipeline.md).

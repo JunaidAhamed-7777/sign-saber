@@ -1,96 +1,87 @@
 # Sign Saber
 
-**A controller-free, full-body 3D rhythm combat game that runs in your browser.** A standard webcam tracks your hands and body; you appear as a glowing neon silhouette inside a reactive void, and you slice, smash, laser and dodge your way through a beatmap generated automatically from any song.
+**Your body is the controller. The music builds the arena.**
 
-A hackathon project. Working conventions for contributors and AI agents: [AGENTS.md](AGENTS.md).
+Sign Saber is a planned browser rhythm game: a webcam turns your movement into a neon silhouette; open hands cut, fists shatter, pointing charges a beam, and leaning dodges incoming walls. Local audio becomes a playable level through on-device beat analysis. No headset or handheld controller.
 
-> **Status: documentation and scaffolding phase.** Implementation starts at kick-off. Every subsystem is fully specified in [`docs/`](docs/README.md); every source file under `app/src/` holds its contract and a pointer to its spec.
+**Current status: specification and scaffold, not a playable game.** The source and ten unit-test files are documented stubs. The toolchain builds, but there is no tracking, gameplay, DSP, companion server or benchmark harness yet. This documentation pass makes those systems precise enough to build and verify; it does not claim they are implemented.
 
-## Project overview
+Start with the **[build roadmap](ROADMAP.md)** for exact implementation order, dependencies, commit-sized tasks and acceptance gates. The **[docs index](docs/README.md)** links every subsystem contract. Contributors: [AGENTS.md](AGENTS.md).
 
-- **Project name:** Sign Saber
-- **Short description:** Beat Saber-style rhythm combat with no controllers and no headset. Open palm to slash, fist to smash armoured blocks, point-and-hold to fire a laser at distant targets, lean to dodge walls. Any MP3 becomes a level in under four seconds through on-device beat analysis. Players are rendered as a music-reactive Tron-style silhouette, never as raw webcam footage.
-- **Team:** TODO — participant names and GitHub handles; maximum 4 members.
-- **Working demo:** TODO — local demo instructions below once implemented.
-- **Technology stack:** TypeScript · Vite · Three.js · pmndrs `postprocessing` · React 19 + Zustand (DOM overlay) · MediaPipe Tasks Vision (`HandLandmarker`, `PoseLandmarker` with segmentation) in a Web Worker · Web Audio API · own DSP beatmap generator (spectral flux, autocorrelation tempo, dynamic-programming beat tracking) · optional Node + `yt-dlp` companion for YouTube links · Blender MCP for 3D assets.
+## What should make it memorable
 
-## The pitch in one screen
+- A live neon reflection appears before play; the player immediately understands that the webcam sees their movement.
+- A slash splits a block along the swing plane; a punch releases shards; a held point fires a charged beam. Each gesture has its own readable payoff.
+- Beats, drops and quiet passages shape the map and the arena. The generator must pass onset, silence and playability checks before an uploaded song is called ready.
+- The demo ends with real results and a **2.5D** silhouette highlight. The movement-energy number is a playful estimate, never measured exertion or calories burned.
+- The technical story is backed by repeatable evidence: fixed-seed replay, live-camera checks, frame-time percentiles, tracking freshness and musical-quality evaluation. Targets are not results. See [24 — Benchmark & Evidence](docs/24-benchmark-and-evidence.md).
 
-| You do | The game does |
-| --- | --- |
-| Stand in front of the laptop and wave | Confirms tracking, calibrates your body, counts you in on the beat |
-| Swing an open hand | Particles snap into a glowing katana; the block splits along the exact plane of your swing |
-| Punch with a fist | Armoured block shatters into physics-driven shards |
-| Point and hold for half a second | A laser charges and pops a distant target with a power-down *poof* |
-| Lean left or right | You dodge walls rushing down the lane |
-| Drop any song | Notes land on real beats and drums; silence produces nothing |
-| Finish | Accuracy, rank, kinetic energy in kJ/kcal, and a 3D highlight of your best moment |
+## Run the scaffold
 
-Full product definition: [docs/01 — Vision & Pillars](docs/01-vision.md).
+Use Node **22.12+** on the Node 22 line used by CI; `app/package.json` declares a broader `>=20.19` range. A desktop Chrome/Edge build, WebGL2 and a webcam will be needed for gameplay. Compatibility is established by the P0 capability checks, not by an untested minimum browser version.
 
-## Documentation
+From the repository root:
 
-The specification is the deliverable of this phase and the contract for the build. Start at the **[docs index](docs/README.md)**. Highlights:
-
-| Doc | Content |
-| --- | --- |
-| [02 — Architecture & Contracts](docs/02-architecture.md) | Module map, threading, `TrackingFrame` / `HandCursor` / `BodyState` / event contracts, coordinate frames, frame loop, **every constant** |
-| [03 — Decisions](docs/03-decisions.md) | 14 ADRs: why MediaPipe hand+pose in a worker, why our own DSP, why plane-cut slicing, why no physics engine, … |
-| [04 — State Machine](docs/04-state-machine.md) | BOOT → SELECT → CALIBRATION → PLAYING ⇄ PAUSED → RESULTS |
-| [05](docs/05-tracking-pipeline.md) [06](docs/06-gesture-recognition.md) [07](docs/07-hit-detection-and-scoring.md) | Tracking, gestures, hit detection and scoring |
-| [08](docs/08-beatmap-generation.md) [09](docs/09-beatmap-format.md) | Beatmap generation algorithms and the `BeatmapV1` format |
-| [10](docs/10-rendering-silhouette.md) [11](docs/11-rendering-blocks-and-destruction.md) [12](docs/12-rendering-hands-trails.md) [13](docs/13-rendering-environment-camera-postfx.md) | Rendering: silhouette shader, blocks and destruction, hand trails, environment/camera/post FX |
-| [14](docs/14-ui-ux.md) [15](docs/15-audio-playback-sync.md) [16](docs/16-performance-budget.md) [17](docs/17-testing-and-qa.md) | UI/UX, audio sync, performance budget, testing |
-| [18](docs/18-blender-mcp-asset-pipeline.md) [19](docs/19-build-plan.md) [20](docs/20-demo-and-judging.md) [21](docs/21-risks-and-fallbacks.md) | Blender MCP assets, hour-by-hour build plan, demo script, risk register |
-
-## Run the project
-
-Prerequisites: **Node 22** (20.19+ works), **Chrome or Edge 120+**, a webcam. The optional YouTube companion also needs `yt-dlp` and `ffmpeg` on `PATH`.
-
-```bash
-cd app && npm install
+```powershell
+cd app
+npm ci
+npm run dev
 ```
 
-```bash
-cd app && npm run models
+Open [localhost:5173](http://localhost:5173). **The current page is an empty scaffold**, not the proposed BOOT or Song Select screen.
+
+Checks, from `app/`:
+
+```powershell
+npm run check
 ```
 
-```bash
-cd app && npm run dev
+This runs typecheck, lint, Vitest and the production build. Vitest currently discovers ten placeholder files and executes **zero tests**. A successful command verifies the scaffold toolchain only.
+
+From the repository root, check documentation paths and heading fragments:
+
+```powershell
+node --test scripts/check-docs.test.mjs
+node scripts/check-docs.mjs
 ```
 
-Open <http://localhost:5173>. Checks:
+## Asset preparation and future commands
 
-```bash
-cd app && npm run check
+The existing model downloader can prepare the runtime files after dependencies are installed:
+
+```powershell
+cd app
+npm run models
 ```
 
-Optional companion service (separate terminal):
+It copies the installed MediaPipe WASM and downloads model files once; network access is required for the download. The script currently uses upstream `latest` model URLs and size-based reuse. P0 must add pinned model checksums and an asset manifest before calling an offline build reproducible. Do not claim that running this script makes the stub game work.
 
-```bash
-cd server && npm run server
-```
+- `npm run build` / `npm run preview` in `app/`: create/serve the scaffold production bundle; preview uses [localhost:4173](http://localhost:4173).
+- `npm run beatmaps` in `app/`: **placeholder; deliberately exits with an error**. The real generation command is a P2 task.
+- `npm run server` in `server/`: invokes the current empty companion entry point and exits. The optional service is a future `[POLISH]` feature, specified in [23](docs/23-youtube-companion-service.md).
+- No environment variables or API keys are needed. Browser upload and the eventual bundled tracks are the primary audio paths.
 
-No environment variables are required. There is no `.env`.
+## Build and verification
 
-## Repository layout
+The [roadmap](ROADMAP.md) has six capability gates: foundations → first playable → complete core → signature spectacle → measured optimization → release proof. There is no inherited event timetable, fixed team size or permanent folder ownership.
 
-```
-docs/        the specification (start at docs/README.md)
-app/         web client — Vite + TypeScript + Three.js + React; src/ holds documented module stubs
-server/      optional local YouTube → audio companion (Node, zero dependencies, wraps yt-dlp)
-scripts/     model download, beatmap generation
-assets-src/  Blender sources and raw assets
-```
+The proposed stack is TypeScript, Vite, imperative Three.js, `postprocessing`, React/Zustand for the DOM overlay, MediaPipe Hands/Pose in a worker, Web Audio and a deterministic DSP worker. [02 — Architecture](docs/02-architecture.md) defines identifiers and contracts; [03 — Decisions](docs/03-decisions.md) explains tradeoffs. The present `app/`, `server/`, `scripts/` and `assets-src/` paths are implementation starting points and may evolve with the docs.
 
-## Current status
+Targets such as 60 FPS, fresh ≥24 Hz tracking and sub-four-second analysis of a defined three-minute input are **unmeasured goals**. Only the controlled protocol in [24](docs/24-benchmark-and-evidence.md) can support performance claims. Webcam, human usability, music-quality and offline validation remain pending.
 
-- **Working features:** none yet — implementation begins at kick-off.
-- **Known limitations:** see [docs/21 — Risks & Fallbacks](docs/21-risks-and-fallbacks.md).
-- **Libraries, APIs, and public datasets used:** [Three.js](https://threejs.org) (MIT), [postprocessing](https://github.com/pmndrs/postprocessing) (Zlib), [MediaPipe Tasks Vision](https://ai.google.dev/edge/mediapipe/solutions/vision) (Apache-2.0; models under Google's model terms), [React](https://react.dev) (MIT), [Zustand](https://github.com/pmndrs/zustand) (MIT), [Vite](https://vite.dev) (MIT), [yt-dlp](https://github.com/yt-dlp/yt-dlp) (Unlicense, optional). Demo music: CC0/CC-BY tracks listed with attribution in `app/public/assets/tracks/README.md`.
+## Sources and licenses
 
-See [AI_USAGE.md](AI_USAGE.md) for AI assistance and [CHANGELOG.md](CHANGELOG.md) for the development record. Submission details: [SUBMISSION.md](SUBMISSION.md).
+- [Three.js](https://github.com/mrdoob/three.js/blob/dev/LICENSE) — MIT; [postprocessing](https://github.com/pmndrs/postprocessing/blob/main/LICENSE.md) — Zlib.
+- [React](https://github.com/facebook/react/blob/main/LICENSE), [Zustand](https://github.com/pmndrs/zustand/blob/main/LICENSE), [Vite](https://github.com/vitejs/vite/blob/main/LICENSE) — MIT.
+- [MediaPipe](https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE) — Apache-2.0 for the project; record the separate model terms, model versions and hashes in the P0 asset manifest. [Hand Landmarker](https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker/web_js) documents the synchronous inference API used by the proposed worker.
+- [Web Audio](https://www.w3.org/TR/webaudio/) supplies the master clock; [getOutputTimestamp](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/getOutputTimestamp) maps audio output to performance time. See [15](docs/15-audio-playback-sync.md) for the project's clock contract.
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp#license) is an optional future companion dependency; its source is Unlicense, with distribution-specific third-party notices. It is not required for core gameplay.
+- No demo songs, reference corpus, generated GLBs or fonts have been committed. Add exact source URLs, licenses and credits before bundling them; [track attribution](app/public/assets/tracks/README.md) is the registry. Do not assume a public download implies permission to redistribute it.
 
-## License
+Project code is MIT: [LICENSE](LICENSE). Development history: [CHANGELOG.md](CHANGELOG.md). AI contributions: [AI_USAGE.md](AI_USAGE.md).
 
-MIT — see [LICENSE](LICENSE).
+## Submission
+
+There is no playable release or submitted demo yet. Actual event rules, deadline, submission channel and participant roster have not been supplied. Add them when confirmed.
+
+P5 produces a tested release commit/tag, clean-clone run record, actual demo URL/recording, benchmark evidence, manual QA record, music credits and known limitations. Record the tested release SHA here then; do not substitute a scaffold SHA or a planned feature list for release evidence. The [demo script](docs/20-demo-and-judging.md) and [release checklist](docs/19-build-plan.md#release-checklist) define that handoff.

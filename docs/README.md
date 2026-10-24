@@ -1,59 +1,59 @@
 # Sign Saber — Documentation Index
 
-Sign Saber is a controller-free, full-body 3D rhythm combat game that runs in a browser. A standard webcam tracks the player's hands and body; the player is rendered as a glowing neon silhouette inside a reactive void, and slices, smashes, lasers, and dodges their way through a beatmap generated automatically from any song.
+Sign Saber is a planned webcam-controlled rhythm game with a neon body silhouette, gesture-specific destruction and local music analysis. **The repository currently contains specification and scaffold only.** A MUST describes a build requirement; it does not assert that the requirement has shipped.
 
-These documents are the **single source of truth** for what gets built, how, and to what standard. They were written before implementation so that every subsystem has an agreed contract, every constant has one home, and every hour of the hackathon has a job. If the code and the docs disagree, fix one of them in the same commit.
+Begin with **[ROADMAP.md](../ROADMAP.md)**. It is the canonical implementation order and explains what to build, where to start, how to test it and what evidence unlocks the next phase. [19 — Build Plan](19-build-plan.md) is the working checklist; [24 — Benchmark & Evidence](24-benchmark-and-evidence.md) is the measurement protocol. No deadline, team size, folder ownership or judging rubric from an earlier event is binding.
 
-## How to read these docs
+## Product and contracts
 
-| If you want to… | Read |
-| --- | --- |
-| Understand what we are building and why it will win | [01 — Vision & Pillars](01-vision.md) |
-| See how the pieces fit, every module contract, every constant | [02 — Architecture & Contracts](02-architecture.md) |
-| Know why a technology or approach was chosen over alternatives | [03 — Decisions (ADRs)](03-decisions.md) |
-| Implement the game flow (BOOT → SELECT → CALIBRATION → PLAYING → RESULTS) | [04 — State Machine](04-state-machine.md) |
-| Build webcam capture + MediaPipe worker + smoothing | [05 — Tracking Pipeline](05-tracking-pipeline.md) |
-| Build the Open Palm / Fist / Point classifier and the blade/charge logic | [06 — Gesture Recognition](06-gesture-recognition.md) |
-| Map hands to the world, detect hits, judge timing, score | [07 — Hit Detection & Scoring](07-hit-detection-and-scoring.md) |
-| Turn an audio file into a beatmap (onsets, tempo, beats, note assignment) | [08 — Beatmap Generation](08-beatmap-generation.md) |
-| Read/write the beatmap JSON | [09 — Beatmap Format](09-beatmap-format.md) |
-| Write the silhouette shader | [10 — Rendering: Silhouette](10-rendering-silhouette.md) |
-| Build blocks, slicing, shattering, laser poof | [11 — Rendering: Blocks & Destruction](11-rendering-blocks-and-destruction.md) |
-| Build hand particles and the katana blade ribbon | [12 — Rendering: Hands & Trails](12-rendering-hands-trails.md) |
-| Build the grid void, camera kinetics, bloom | [13 — Rendering: Environment, Camera & Post FX](13-rendering-environment-camera-postfx.md) |
-| Build every screen and the HUD | [14 — UI / UX](14-ui-ux.md) |
-| Keep audio, game clock and tracking in sync; design SFX | [15 — Audio Playback & Sync](15-audio-playback-sync.md) |
-| Hit 60 FPS (40 floor) on a laptop | [16 — Performance Budget](16-performance-budget.md) |
-| Know what to test and how | [17 — Testing & QA](17-testing-and-qa.md) |
-| Produce 3D assets with Blender MCP | [18 — Blender MCP Asset Pipeline](18-blender-mcp-asset-pipeline.md) |
-| Know what to do in which hour of the hackathon | [19 — Build Plan & Milestones](19-build-plan.md) |
-| Rehearse the demo and the pitch | [20 — Demo Script & Judging](20-demo-and-judging.md) |
-| Know what can go wrong and the pre-decided fallback | [21 — Risks & Fallbacks](21-risks-and-fallbacks.md) |
-| Look up a term | [22 — Glossary](22-glossary.md) |
-| Run the optional YouTube audio companion service | [23 — YouTube Companion Service](23-youtube-companion-service.md) |
+- [01 — Vision & Pillars](01-vision.md): the player promise, core release and deliberate limits.
+- [02 — Architecture & Contracts](02-architecture.md): module boundaries, named types/events, coordinates, frame loop and shared constant registry.
+- [03 — Decisions](03-decisions.md): why these technologies and tradeoffs; revisit on evidence.
+- [04 — State Machine](04-state-machine.md): BOOT → SELECT → CALIBRATION → PLAYING ⇄ PAUSED → RESULTS, with recovery and cleanup.
 
-## Conventions used in every document
+## Input, gameplay and music
 
-- **MUST / SHOULD / MAY** are used in the RFC 2119 sense. MUST items are the definition of done.
-- **Constants** are named in `UPPER_SNAKE_CASE` and defined once, in the constants table of [02 — Architecture](02-architecture.md#constants). Other docs reference them by name and never redefine them.
-- **Units**: world space is in metres, time is in milliseconds unless stated, angles in degrees in prose and radians in code, speeds in metres per second.
-- **Coordinate frames** are named exactly as in [02 — Architecture §Coordinate frames](02-architecture.md#coordinate-frames): *image space*, *mirrored image space*, *play plane*, *world*, *screen*.
-- **Scope tags**: `[CORE]` must ship for the demo; `[POLISH]` ships if the core is done by the feature freeze; `[STRETCH]` is only attempted when everything else is green. See [19 — Build Plan](19-build-plan.md) for the freeze time.
-- Code identifiers in docs are the identifiers the code MUST use (`TrackingFrame`, `HandCursor`, `BeatmapV1`…), so searching the repo for a doc term finds the implementation.
+- [05 — Tracking Pipeline](05-tracking-pipeline.md): camera permission, inference worker, timestamps, buffering, filtering and failure paths.
+- [06 — Gesture Recognition](06-gesture-recognition.md): Open/Fist/Point, blade activation, charge and identity handling.
+- [07 — Hit Detection & Scoring](07-hit-detection-and-scoring.md): capture-time contact, deterministic judgement, misses, combo and accuracy.
+- [08 — Beatmap Generation](08-beatmap-generation.md): DSP pipeline, confidence, silence and playable assignment.
+- [09 — Beatmap Format](09-beatmap-format.md): `BeatmapV1`, validation, cache provenance and bundled tracks.
+- [15 — Audio Playback & Sync](15-audio-playback-sync.md): audio output clock, pause/resume, latency calibration and SFX.
+- [23 — YouTube Companion](23-youtube-companion-service.md): optional local service, explicitly outside the core path.
 
-## Repository map
+## The visible experience
 
-```
-sign-saber/
-├── README.md                 project overview, run instructions
-├── AGENTS.md                 working conventions for humans and AI agents
-├── CHANGELOG.md              dated record of meaningful changes
-├── AI_USAGE.md               AI usage record (intentionally blank until the build starts)
-├── docs/                     this folder — the specification
-├── app/                      the web client (Vite + TypeScript + Three.js + React)
-├── server/                   optional local YouTube→audio companion service
-├── assets-src/               Blender sources, texture sources, raw audio
-└── scripts/                  model/font download and asset build scripts
-```
+- [10 — Silhouette](10-rendering-silhouette.md): mask shader, projection, edge treatment and fallback.
+- [11 — Blocks & Destruction](11-rendering-blocks-and-destruction.md): readable blocks, plane-cut halves, shards and beam poof.
+- [12 — Hands & Trails](12-rendering-hands-trails.md): orbit particles, blade ribbon and charge feedback.
+- [13 — Environment, Camera & Post FX](13-rendering-environment-camera-postfx.md): reactive void, bounded effects, quality tiers and 2.5D highlight.
+- [14 — UI / UX](14-ui-ux.md): screen flow, HUD, copy, accessibility and resilient controls.
+- [18 — Asset Pipeline](18-blender-mcp-asset-pipeline.md): optional Blender-assisted production, procedural fallback and asset budgets.
 
-The per-folder layout of `app/` is documented in [02 — Architecture §Source layout](02-architecture.md#source-layout).
+## Proof and execution
+
+- [16 — Performance Budget](16-performance-budget.md): resource budgets, instrumentation and quality adaptation.
+- [17 — Testing & QA](17-testing-and-qa.md): unit/integration coverage, fixture replay, manual QA and release checks.
+- [19 — Build Plan & Milestones](19-build-plan.md): phase checklists, commit cadence and release handoff.
+- [20 — Demo & Judging](20-demo-and-judging.md): a rehearsable three-minute reveal with truthful evidence and failure drills.
+- [21 — Risks & Fallbacks](21-risks-and-fallbacks.md): when to simplify and how to retain a working game.
+- [22 — Glossary](22-glossary.md): shared vocabulary.
+- [24 — Benchmark & Evidence](24-benchmark-and-evidence.md): fixed scenarios, targets, raw artifacts, ablations and claim rules.
+
+## Reading rules
+
+- **MUST / SHOULD / MAY** mean required / recommended / optional behavior. Each release requirement needs actual evidence before it is called done.
+- **Scope:** `[CORE]` is the complete release requirement, delivered incrementally; P1 is deliberately smaller. `[POLISH]` begins after the P2 core gate. `[STRETCH]` waits until P4 targets and core checks are green. A feature in a numbered doc is not automatically `[CORE]`; use [01](01-vision.md) and the roadmap for scope.
+- **Units:** world space in metres; time in milliseconds except Web Audio values and explicit `*Sec` fields; prose angles in degrees and code angles in radians; speeds in metres per second.
+- **Coordinates:** image space, mirrored image space, play plane, world and screen have the meanings in [02](02-architecture.md#coordinate-frames). Mirroring occurs once. Capture-time inputs and predicted visual cursors serve different purposes.
+- **Constants:** [02 §Constants](02-architecture.md#constants) is the shared registry; linked render/UI tables are explicit sub-registries. Export centrally during P0. Do not infer working exports from the current `export {}` stub.
+- **Identifiers:** use documented names verbatim; update both sides of a changed contract together.
+- **Evidence:** budgets and targets are not measurements. Replays prove reproducibility, live camera checks prove the camera path, and external measurements establish motion-to-photon latency.
+
+## Current paths and maintenance
+
+`docs/` contains the specification; `app/` the web scaffold; `server/` the optional service stub; `scripts/` the downloader and documentation checker; `assets-src/` the proposed source-asset area. This layout can evolve. Keep links and source headers accurate when it changes.
+
+From the root run `node --test scripts/check-docs.test.mjs` and `node scripts/check-docs.mjs`. These check the checker itself and local Markdown paths/fragments, including this index. They do not prove runtime behavior, remote link availability or benchmark results.
+
+Record meaningful changes in [CHANGELOG.md](../CHANGELOG.md) and AI contributions in [AI_USAGE.md](../AI_USAGE.md); keep the [project README](../README.md) honest about what exists.

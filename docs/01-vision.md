@@ -2,79 +2,86 @@
 
 ## One-sentence pitch
 
-**Sign Saber turns any webcam into a lightsaber dojo: stand up, pick any song, and fight the music with your bare hands while a neon reflection of your own body fights alongside you.**
+**Sign Saber turns a webcam into a rhythm arena: fight the music with your bare hands while a neon reflection of your body moves with you.**
+
+This is the product specification, not an implemented-feature list. Build status lives in the [README](../README.md); implementation order and evidence gates live in [ROADMAP.md](../ROADMAP.md).
 
 ## The player fantasy
 
-The player is not holding a controller. They *are* the controller. When they step in front of the laptop, the raw webcam feed never appears; instead a glowing, pulsing silhouette of them materialises inside a dark infinite grid, edges shimmering with the colour of the music. When they raise an open hand, particles gather around their palm. When they swing, the particles snap into a katana-length blade of light and the block in front of them splits clean in two along the exact plane of their swing. When they punch with a fist, an armoured block explodes into a dozen tumbling shards. When they point and hold, a laser charges and pops a distant target with a satisfying *poof*. When a wall rushes in, they lean their whole body out of its way. The camera breathes with the beat, kicking and zooming on every drop.
+A glowing outline follows the player inside a dark, receding grid. An open-hand swing draws a blade of light and splits a block along the swing plane. A fist releases a burst of armoured shards. A held point builds charge, then fires a beam. A wall invites a clear lean to safety. The next drop changes the arena's intensity while the notes remain easy to read.
 
-After the song, they see their accuracy, how many joules of kinetic energy they actually spent, and a frozen 3D highlight of their silhouette at their best moment.
+The music should explain the level: a quiet intro leaves breathing room, strong transients produce deliberate actions, and a drop earns its visual release. Results celebrate actual accuracy and a saved **2.5D** silhouette/skeleton moment. No reconstructed volumetric body or measured calorie expenditure is promised.
 
-## Why this wins
+## Why a judge should remember it
 
-Judges reward three things: **does it work**, **does it look incredible**, and **is it ambitious but believable**. Sign Saber is designed to score on all three at once:
+1. **A visible human connection.** The first reveal is the presenter's movement mirrored in light. A spectator understands the input without a diagram.
+2. **One unmistakable interaction.** A real swing produces a matching geometric cut. Establish this before adding more mechanics or effects.
+3. **Three distinct payoffs.** Slice, smash and beam have different anticipation, gesture and destruction. Leaning adds whole-body involvement without a headset.
+4. **A song that was not in the library.** Analyze a supported local file live, show the measured analysis time, then play the generated section. Unsupported or low-confidence material gets an honest explanation.
+5. **Proof behind the spectacle.** Reproducible input replays, frame-time percentiles, live-camera checks and offline rehearsal make the engineering story inspectable. Never substitute targets for measurements.
 
-1. **Instant "wow" in the first five seconds.** The silhouette shader is on screen before any gameplay starts. A person walking past the demo table sees a Tron-style ghost of the player mirroring their every move. That is the hook; everything else is proof.
-2. **Physicality the judges can try themselves.** No pairing, no install, no controllers to hand over. A judge steps into the frame, waves, and is playing in ten seconds. Full-body dodging makes it visibly athletic.
-3. **Real signal processing, not canned content.** Any song → a playable beatmap in under four seconds, with notes landing on real beats and real drums, not random noise. Judges can throw their own track at it.
-4. **Three distinct gestures, three distinct destruction effects.** Slice (clean geometric cut along the swing plane), smash (physics shards), beam (power-down poof). Each is a separate, legible payoff. Variety is what makes it a game, not a tech demo.
-5. **Engineering credibility.** Tracking in a Web Worker, 60 FPS target with a 40 FPS floor on an integrated GPU, a deterministic beatmap generator with tests, offline-capable asset bundle. The docs you are reading are part of the pitch.
+The actual event rubric is unknown. These are product priorities, not invented judge weights or a promise of winning.
 
 ## Design pillars
 
-Every design decision is checked against these, in priority order. When two pillars conflict, the higher one wins.
+In a conflict, the earlier pillar wins.
 
-| # | Pillar | What it means in practice |
-| --- | --- | --- |
-| P1 | **Readable at a glance** | A new player must know what to do with each block without being told. Colour, glyph and silhouette feedback carry the message. Never add visual noise that competes with the required gesture. |
-| P2 | **Every input has a kinetic payoff** | Any hand movement produces visible light. Any hit produces a destruction animation, a sound, a score pop, and a camera reaction. Nothing the player does is silent. |
-| P3 | **Forgiving input, honest scoring** | Webcam tracking is noisy and ~100 ms late. Timing windows and gesture hysteresis are generous; scoring still differentiates Perfect from Good so skill matters. |
-| P4 | **The music is the author** | Beats, drops and breakdowns drive spawning, colour, camera and intensity. The generator only places notes on validated onsets. Silence produces nothing. |
-| P5 | **60 FPS or it did not happen** | Visual richness is capped by the performance budget. A feature that drops the frame rate below the floor on the demo laptop is cut or tiered down, never shipped. |
-| P6 | **Demo-proof** | Works offline, recovers from tracking loss, has bundled tracks with pre-generated beatmaps, degrades gracefully in bad lighting. |
+1. **Readable before spectacular.** Shape, glyph and motion explain each action; colour reinforces them. Notes, timing and safe lanes stay readable through the heaviest drop and in low quality.
+2. **Forgiving input, honest scoring.** Calibration fits the player; hysteresis handles uncertain gestures; capture-time inputs determine judgement. Predicted visual cursors never create hits.
+3. **Every valid action earns a clear response.** Anticipation, contact, sound, destruction and score agree about what happened. Wrong actions and lost tracking are explained rather than hidden.
+4. **The music authors the rhythm.** Keep evidence-backed onsets, meaningful quiet passages and reachable transitions. Fixed seeds make assignment reproducible; playable maps matter more than a superficially correct BPM.
+5. **Performance is experienced and measured.** Averages cannot excuse stutters, stale tracking or thermal collapse. Use [24](24-benchmark-and-evidence.md) for the controlled targets and [16](16-performance-budget.md) for resource budgets.
+6. **A recoverable, comfortable session.** Permission failures, camera loss, unsupported files and absent network have useful paths. Reduced motion affects the scene as well as the DOM. Never ask for a bigger swing or deeper lean merely to satisfy a score.
 
-## What "done" looks like (definition of the shipped product)
+## What done looks like (definition of the shipped product)
 
-The following MUST all be true at submission. This list is the acceptance test for the whole project; [19 — Build Plan](19-build-plan.md) schedules it.
+These are `[CORE]` release requirements. P1 proves a smaller vertical slice; P2 completes the mechanics; P3 realizes the signature presentation; P4/P5 supply performance and release evidence. See the [roadmap](../ROADMAP.md) for the exact gates.
 
-**Flow**
-- The app boots in the browser, loads models with a progress indicator, and lands on Song Select.
-- Song Select offers at least two bundled tracks with pre-generated beatmaps, an audio-file upload (MP3/WAV/OGG/M4A), and a YouTube URL field that works when the companion service is running and clearly says so when it is not.
-- Calibration asks the player to step back until their shoulders and both hands are visible, then to wave; it confirms with a countdown and never lets a player start without tracking.
-- Playing runs the full song; losing tracking for more than 1.5 s auto-pauses with an on-screen prompt; regaining tracking resumes after a 3-2-1 count.
-- Results shows score, rank, accuracy, max combo, per-judgement counts, kinetic energy in kJ and kcal, and a 3D highlight pose of the silhouette captured at the peak-combo moment.
+### Flow
 
-**Gameplay**
-- Three block types, each destroyed only by its gesture: Slash (open palm, fast), Smash (fist), Beam (pointing, 500 ms charge).
-- Wrong gesture on a block is a Bad Cut: block deflects, combo resets, no score.
-- Wall obstacles that require leaning left or right; being inside a wall resets combo and triggers a screen glitch.
-- Timing judgements Perfect / Great / Good / Miss with a Beat Saber-style multiplier ladder.
+- BOOT detects required capabilities, loads local runtime assets with real progress and exposes actionable errors. Camera access follows an explicit user action. Raw webcam pixels are not displayed in the shipped scene.
+- SELECT offers at least two attributed bundled tracks and local upload. MP3/WAV/OGG/M4A are candidate extensions; browser decoding and file limits determine support. A file is ready only after decode, analysis and validation succeed.
+- CALIBRATION confirms visible shoulders and hands, comfortable reach, mirror identity and wave or accessible button/key confirmation before the countdown. It coaches the player without claiming to diagnose low light from landmark confidence alone.
+- PLAYING reaches the real end of the selected track. Losing usable tracking for `TRACKING_LOST_PAUSE_MS` auto-pauses; stable reacquisition may start the tracking-loss resume countdown. Manual/hidden-tab pauses require an explicit resume, and no scoring occurs during any countdown.
+- PAUSED supports resume and quit with complete cleanup; RESULTS supports retry. Returning to SELECT never leaves old workers, sound sources, notes or score events alive.
+- RESULTS uses the completed session: score, unmultiplied accuracy, rank, max combo and judgement counts. A motion-energy estimate is labelled approximate; a saved 2.5D highlight uses owned snapshot data.
 
-**Visuals**
-- Silhouette rendered from the segmentation mask with a glowing edge whose colour follows bass / mid / treble energy; no raw webcam pixels are ever displayed in game.
-- Blocks are translucent glass cubes with a glowing core glyph. Slash: real plane-cut into two halves that fall. Smash: pre-fractured shards with ballistic physics. Beam: emissive power-down and particle poof.
-- Hands: orbiting particles when idle, katana blade ribbon when moving fast.
-- Infinite grid void with fog; camera FOV punch and shake on drops.
-- Bloom post-processing.
+### Gameplay
 
-**Technical**
-- ≥ 60 FPS typical and ≥ 40 FPS minimum on the demo laptop at 1080p with the quality tier auto-selected; tracking at ≥ 24 Hz.
-- Beatmap generation of a 3-minute track completes in < 4 s and places notes only on validated onsets aligned to the tracked beat grid.
-- All models, WASM, fonts and demo tracks load from the local bundle; the app runs with the network disconnected.
+- Slash requires an open hand with the defined motion; Smash requires a fist; Beam requires a stable point and `BEAM_CHARGE_MS` charge. Targets have redundant glyphs and silhouettes.
+- A wrong-gesture contact yields a Bad Cut with no score and combo reset. Every note has exactly one terminal judgement, including late-arriving valid samples and misses.
+- Left/right walls use calibrated torso lean. Each wall has one dodge/hit outcome; maps never require a simultaneous note in an unreachable safe area.
+- Timing windows, multiplier ladder and accuracy follow [07](07-hit-detection-and-scoring.md). A flawless Perfect run reaches 100% accuracy regardless of wall position or multiplier ramp.
+- The same input fixture, map, seed and version produce identical ordered score events under different render cadences. Actual camera usability is checked separately.
 
-## Explicitly out of scope
+### Signature presentation
 
-- Multiplayer, accounts, leaderboards, cloud anything.
-- Mobile browsers (tracking + rendering budget does not fit); the target is a laptop running Chrome/Edge.
-- Hand-authored beatmaps and a map editor. The generator is the author (P4). The JSON format is editable by hand but no tooling is built for it.
-- Directional (arrow) slashes. Blocks accept any slash direction in v1; the format reserves a field for it.
+- A neon silhouette follows the pose segmentation mask with music-reactive edge colour. A labelled skeleton fallback is available if segmentation is unsupported; do not claim the fallback is the mask.
+- Slash uses real convex plane clipping; Smash uses bounded ballistic shards; Beam uses charge, impact and power-down poof. Procedural geometry keeps gameplay available before optional Blender assets exist.
+- Idle hand particles become a readable blade trail at speed. Effects never hide the target glyph or the safe side of a wall.
+- The reactive grid, fog, restrained bloom and drop response form one coherent arena. Quality tiers and reduced motion preserve gameplay information.
+- Results preserve a genuinely captured silhouette/skeleton moment. A flat mask is not a 3D scan; camera motion stays within the documented 2.5D presentation limits.
 
-## Target hardware and environment
+### Technical and evidence
 
-| Item | Target | Minimum |
-| --- | --- | --- |
-| Browser | Chrome 130+ / Edge 130+ | Chrome 120 |
-| GPU | Apple M-series or discrete laptop GPU | Intel Iris Xe class |
-| Webcam | 1080p30 | 720p30 |
-| Lighting | Even, front-lit, player 1.5–2.5 m from camera | Indoor room light, no strong backlight |
-| Space | Player can extend both arms fully without leaving the frame | Shoulders and hands in frame |
+- The controlled 60 Hz reference scenario targets smooth 60 FPS presentation with a sustained 40 FPS degradation floor, fresh ≥24 Hz tracking and bounded capture-to-consumption age. Exact percentile gates, runs and hardware metadata are defined once in [24](24-benchmark-and-evidence.md). None is measured yet.
+- Three-minute supported-track analysis targets less than four seconds on the reference laptop. Report decode, hash, DSP, assignment and total readiness separately; a warm cache hit cannot stand in for cold generation.
+- The map passes schema, silence, reachability, gesture-switch and timing checks. Beat quality is evaluated on disclosed holdout clips, including difficult material and silence.
+- A locally served production build boots, calibrates, plays bundled tracks and reaches results with external network disabled after asset preparation. Static hosting still requires HTTPS for camera access; no service-worker installability claim is implied.
+- The release has actual assertions, clean-clone instructions, a consented live-camera QA record, benchmark artifacts and a recorded demo. Passing the current stubs meets none of these requirements.
+
+## Scope boundaries
+
+`[POLISH]`, after P2: optional YouTube companion, richer skeleton treatment, combo celebrations, results turntable and restrained chromatic accents. These may ship only if they preserve the core evidence gates.
+
+`[STRETCH]`, after P4: directional slashes, duck obstacles, alternate capture APIs and a richer shareable replay. Adopt a third-party DSP fallback only after evaluating its package/model licenses, worker compatibility and the same holdout corpus.
+
+Outside this release: multiplayer, accounts, leaderboards, cloud inference, mobile support, a beatmap editor, true body reconstruction and fitness/medical claims. There is no promise that every arbitrary song produces a good map; low-confidence input may use a disclosed onset-only mode or be rejected.
+
+## Target environment and human check
+
+Target a desktop laptop with WebGL2, a current supported Chrome/Edge build and a 30 Hz webcam. The reference integrated-GPU machine, OS, browser version, capture resolution, effective render resolution, DPR and quality tier are selected and recorded during P0, then held fixed for comparisons. A named GPU class alone is not a benchmark configuration.
+
+Use even front lighting and enough uncluttered space for comfortable arm movement. The suggested 1.5–2.5 m camera distance is setup guidance, not a universal body/reach assumption. Calibration adjusts for the player; if the full-body path cannot be used comfortably, explain the limit rather than presenting an untested accessibility mode as implemented.
+
+At least three consenting first-time players should complete calibration and an Easy excerpt without a developer explaining every target. Record time to first successful hit, confusion, false Bad Cuts, tracking loss and comfort. This small usability check is evidence about the tested people and room, not a population-wide accuracy claim.

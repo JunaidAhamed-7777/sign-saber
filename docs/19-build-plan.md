@@ -1,104 +1,104 @@
 # 19 — Build Plan & Milestones
 
-This plan assumes a **15.5-hour overnight window, kick-off 18:30 → wrap-up 10:00**. The wall-clock times below are illustrative; the **H offsets** (hours since kick-off) are what matter, so shift them to the actual event schedule and compress or stretch proportionally if the window differs. It assumes a team of 2–4 with one person owning each track below. Solo builders follow the same order and drop every `[POLISH]` item that is not on the critical path.
+**[ROADMAP.md](../ROADMAP.md) is the canonical build order.** This document is the operating checklist for executing it. The previous overnight timetable and permanent folder tracks are retired. Set an actual release date only after the current event's rules are known; scale scope by evidence, not an assumed hour count.
 
-Commit cadence (from `AGENTS.md`): a meaningful commit at every checkpoint and at least every 30 minutes while building. `CHANGELOG.md` and `AI_USAGE.md` are updated in the same commit.
+## Working rhythm
 
-## Tracks (parallel owners)
+1. Choose the next unmet roadmap gate and one small deliverable that advances it.
+2. Read its contracts and state the input, output, acceptance check and temporary edit owner. With parallel contributors, agree file boundaries and integration points in chat; directories are not permanently reserved.
+3. Build against deterministic fixtures while producers are being implemented. Label fixtures as synthetic or consented recordings. They must never masquerade as live tracking.
+4. Complete the smallest end-to-end behavior, run relevant checks and inspect actual output. Update docs when behavior changes.
+5. Update `CHANGELOG.md` and `AI_USAGE.md`, stage only completed work, and commit. Aim for a coherent commit every 20–30 minutes and at every gate. Push according to the current authorization; never force-push shared `main`.
 
-| Track | Owner | Folders | Depends on |
-| --- | --- | --- | --- |
-| **T** Tracking & Input | — | `tracking/`, `gestures/` | nothing |
-| **R** Rendering | — | `render/`, shaders, Blender assets | contracts from [02](02-architecture.md) |
-| **A** Audio & Beatmap | — | `audio/`, `beatmap/`, `server/` | nothing |
-| **G** Game & UI | — | `core/`, `game/`, `ui/`, `state/` | contracts; integrates T/R/A |
+## P0 — Foundations
 
-Every track starts from the contracts in [02](02-architecture.md). Until a real producer exists, consumers run on **fixtures**: recorded `TrackingFrame` sequences (`tests/fixtures/`), a hand-written `BeatmapV1`, and a synthetic `BandEnergies` sine.
+- [ ] Confirm actual event rules, if applicable; record unknowns rather than inventing them.
+- [ ] Establish clean-clone setup, dependency lockfile, capability checks and truthful BOOT errors.
+- [ ] Implement shared contracts, central constant exports, typed events, state machine and audio/performance clock mapping.
+- [ ] Pin model/asset versions and checksums; record licenses and asset sizes.
+- [ ] Add deterministic fixture input and named instrumentation boundaries before expensive visual work.
+- [ ] Replace assertion-free test stubs with initial contract/state/clock tests; then remove the no-tests success escape hatch.
+- **Gate:** assertions execute; invalid transitions fail usefully; capture and audio time conversions pass synthetic offset/pause cases; bounded camera-worker feasibility is demonstrated on the reference machine.
 
-## Timeline
+## P1 — First playable
 
-Wall-clock times assume an 18:30 kick-off. "H" = hours since kick-off.
+- [ ] Play one licensed bundled excerpt against a tiny validated fixed map.
+- [ ] Implement camera → tracking worker → captured landmarks → open-hand cursor → slash contact → score → HUD.
+- [ ] Connect a minimal Three.js lane and readable slash targets; procedural visuals are sufficient.
+- [ ] Calibrate mirror/reach and preserve exact capture-time scoring. Test late arrivals, duplicate samples and misses.
+- [ ] Complete one session and restart it without duplicate events, lingering sound or stale state.
+- **Gate:** a replay produces identical event logs under varied render cadence; a consenting player can actually hit slash notes with the live webcam and reach results. Record the two checks separately.
 
-### H0 — 18:30 · Kick-off (30 min)
+## P2 — Complete core
 
-- [ ] Re-read [01](01-vision.md) and [02](02-architecture.md) as a team; assign tracks.
-- [ ] `npm install` in `app/`; `npm run models` to fetch MediaPipe assets; confirm `npm run dev` serves the stub page.
-- [ ] Record two 20-second landmark fixture sequences (one slashing, one pointing/fist) with a throwaway script as soon as T has the worker running — these unblock G.
-- **Checkpoint H0.5:** `docs:` and `chore:` commits; everyone can run the dev server.
+- [ ] Add Fist/Smash, Point/Beam, lean/walls, one terminal outcome per object, combo, rank and unmultiplied accuracy.
+- [ ] Complete BOOT/SELECT/CALIBRATION/PLAYING/PAUSED/RESULTS error and recovery paths.
+- [ ] Implement decode, DSP stages, deterministic assignment, schema validation, versioned cache and cancel/retry.
+- [ ] Replace the `beatmaps` placeholder with a working generator; add two attributed tracks and validated difficulty maps.
+- [ ] Enforce comfortable reach, density, gesture transition and wall/note constraints; evaluate silence and low-confidence music.
+- [ ] Prove a new local song can be analyzed, played and completed; include unsupported/corrupt input checks.
+- **Gate:** every core mechanic works with a real player; full-session replay, generator quality checks and targeted integration assertions pass. Only then admit `[POLISH]` work.
 
-### H1 — 19:00 · Foundations (2 h → 21:00)
+## P3 — Signature spectacle
 
-| Track | Deliverable |
-| --- | --- |
-| T | Camera capture at `CAM_REQ_*`; worker loads both models with GPU delegate; `TrackingFrame` posted at ≥ 24 Hz; debug canvas draws landmarks + mask. One Euro filter applied. |
-| R | Three.js scene with `CAM_POS`/`CAM_FOV_DEG`, infinite grid shader, fog, bloom composer at `BLOOM_RESOLUTION_SCALE`. Attract scene renders at 60 FPS. |
-| A | `decode.ts` + `SongClock` + `player.ts` play a bundled MP3 with sample-accurate start; `analyser.ts` publishes `BandEnergies`. Beatmap worker skeleton with STFT + spectral flux producing onsets on a test clip. |
-| G | State machine with all states and legal transitions; event bus; constants file; Zustand store; React router over states with placeholder screens; BOOT progress aggregation. |
+- [ ] Finish silhouette projection, shader, reusable mask ownership and a labelled skeleton fallback.
+- [ ] Deliver the matched swing-plane cut, bounded smash shards and readable beam sequence.
+- [ ] Add hand trails, coherent music-reactive arena, restrained bloom and drop response.
+- [ ] Finish responsive HUD, useful progress/errors, keyboard/focus behavior, scene-wide reduced motion and redundant gesture cues.
+- [ ] Save an owned 2.5D highlight and honest results copy; qualify the energy estimate.
+- [ ] Prepare the rights-cleared 45-second demo excerpt/map before P4 representative benchmarks.
+- [ ] Perform the first-time-player exercise in [01](01-vision.md#target-environment-and-human-check).
+- **Gate:** the full showcase is readable during its heaviest section, comfortable in reduced motion and leak-free across repeated sessions. The signature visual can be shown live rather than described.
 
-- **Checkpoint H3 (21:30):** `feat:` commits per track. Integration smoke test: silhouette plane shows the live mask on the attract scene (T→R), audio plays (A), state machine drives screens (G).
+## P4 — Measured optimization
 
-### H3 — 21:30 · Core loop (2 h → 23:30)
+- [ ] Implement the harness and artifact export described in [24](24-benchmark-and-evidence.md); proposed tools become real only when documented and executable.
+- [ ] Freeze the reference environment, input hashes, seeds, capture conditions and fixed-quality scenarios.
+- [ ] Establish baseline raw data before changing performance-sensitive code.
+- [ ] Profile → change one cause → rerun paired scenarios → keep only supported improvements. Preserve correctness/event hashes.
+- [ ] Exercise cold/warm readiness, dense effects, live tracking, generation contention, thermal soak and recovery.
+- [ ] Confirm quality selection on the integrated workload; benchmark fixed tiers separately from automatic tier changes.
+- **Gate:** required percentile, freshness, quality and stability targets in [24](24-benchmark-and-evidence.md) pass with reproducible artifacts. Failures trigger a documented fallback, not a hidden easier benchmark. `[STRETCH]` may begin only while these gates remain green.
 
-| Track | Deliverable |
-| --- | --- |
-| T | Gesture classifier with hysteresis; `HandCursor` with play-plane mapping, velocity, blade/charge flags; `BodyState` with lean hysteresis. Unit tests on fixtures pass. |
-| R | Block instancing with glass material + glyph atlas; notes travel along the lane from spawn to despawn; hand cursor particles (idle orbit). Silhouette shader v1 (threshold + edge glow, static colour). |
-| A | Tempo estimation + DP beat tracking + snapping; `assign.ts` produces a validated `BeatmapV1` for the two demo tracks; `npm run beatmaps` writes them to `public/assets/tracks/`. |
-| G | Spawner + live object sim; hit detection (sphere + blade segment vs OBB); judgement; scoring + combo ladder; HUD with score/combo/multiplier. |
+## P5 — Release proof
 
-- **Checkpoint H5 (23:30): FIRST PLAYABLE.** A bundled track plays, blocks arrive on the beat, open-hand swipes destroy slash blocks with a score pop. ADR-007 fallback decision on tempo quality is made now.
+- [ ] Stop feature additions; accept release-blocking fixes and measured tuning only.
+- [ ] Run [17 — QA](17-testing-and-qa.md), a clean clone, disconnected-network production exercise and first-player checks on the release candidate.
+- [ ] Rehearse [20 — Demo](20-demo-and-judging.md) three times with a timer and run every failure drill.
+- [ ] Record actual results, limitations and fallback paths; create a labelled recording of the real game.
+- [ ] Assemble the release checklist below, commit and push the tested candidate, then identify it by SHA/tag in the handoff.
+- **Gate:** another person can reproduce setup, see the live demo, inspect the evidence and distinguish implemented behavior from remaining plans.
 
-### H5 — 23:30 · Full mechanics (2 h → 01:30)
+## Critical path and scope cuts
 
-| Track | Deliverable |
-| --- | --- |
-| T | Wave detector; `BodyCalibration` capture; tracking-lost detection; latency stats in debug overlay. |
-| R | Slice (plane-cut halves + fall), shatter (fractured GLB from Blender MCP or procedural fallback), poof. Blade ribbon from cursor history. Camera rig: kick shake, drop FOV punch. |
-| A | Music events (`kick`, `drop`, `build`, `calm`); SFX bus with the 9 sounds; upload flow with IndexedDB cache and progress. |
-| G | Smash + beam mechanics, bad cut, obstacles + lean dodge, kinetic energy accumulator; Calibration screen; Paused (auto on tracking loss); Results v1. |
-
-- **Checkpoint H7 (01:30): FEATURE COMPLETE [CORE].** Every MUST in [01 §What done looks like](01-vision.md#what-done-looks-like-definition-of-the-shipped-product) is implemented, possibly ugly.
-
-### H7 — 01:30 · Wow pass (3 h → 04:30)
-
-- R: silhouette edge colour from `BandEnergies`, scanline fill, 2.5D skeleton; environment pulses on beats; drop palette shift; chromatic aberration + vignette on drops; results highlight capture with turntable.
-- G: HUD polish, judgement text pops, combo milestones, Results animations, calibration coaching text.
-- T: tuning session with three different people in front of the camera (thresholds in the constants file only).
-- A: generator tuning against 5 test tracks of different genres; obstacle placement rules; difficulty curves.
-- **Checkpoint H10 (04:30):** record a 30-second capture of gameplay for the pitch deck / fallback video.
-
-### H10 — 04:30 · Reach & robustness (2 h → 06:30)
-
-- `[POLISH]` YouTube companion service + UI integration (only if network at venue permits testing).
-- Quality tiers + boot probe; performance pass against [16](16-performance-budget.md) on the demo laptop; fix the top three hot spots.
-- Error cards for camera denied / no WebGL2 / models missing.
-- **FEATURE FREEZE at H12 (06:30).** After this, only bug fixes, tuning, and docs.
-
-### H12 — 06:30 · QA & demo (3 h → 09:30)
-
-- Run the full manual QA checklist in [17](17-testing-and-qa.md) twice, with two different players.
-- Rehearse the demo script in [20](20-demo-and-judging.md) three times, including the failure drills.
-- Complete `README.md` run instructions, `SUBMISSION.md`, final `CHANGELOG.md` entry, `AI_USAGE.md`.
-- **Checkpoint H15 (09:30):** final commit pushed; SHA recorded in `SUBMISSION.md`. 30-minute buffer to wrap-up.
-
-## Critical path
-
-```
-camera → worker → TrackingFrame → cursors/gestures → hit detection → score → HUD
-                                      ▲
-beatmap (bundled JSON) → spawner → live notes ─┘
+```text
+contracts + clocks + deterministic fixtures
+                 ↓
+camera → worker → capture-time cursor → contact → judgement → score → HUD
+                                       ↑
+audio clock → validated map → spawner → live notes
+                 ↓
+complete gestures + generated songs + recovery
+                 ↓
+signature effects → measured optimization → release evidence
 ```
 
-Everything else (silhouette beauty, destruction effects, obstacles, beam, results, upload, YouTube) hangs off this spine. If the spine is not green by H5, all four owners swarm it.
+If the playable spine is failing, stop optional asset, companion and presentation-feature work and repair that spine. Parallel work is useful only when its contracts and temporary edit boundaries are clear. A solo builder follows the same sequence with fewer optional effects.
 
-## Scope tags recap
+Cut order when evidence or time requires it: YouTube companion → optional turntable/chromatic accents → decorative props and particle density → `[STRETCH]` mechanics. Do not quietly remove accurate scoring, calibration, input cleanup, a useful pause path, privacy, silence rejection or measurement provenance. A reduced release must update [01](01-vision.md), the README and the demo script to match.
 
-| Tag | Items |
-| --- | --- |
-| `[CORE]` | Everything in [01 §What done looks like](01-vision.md#what-done-looks-like-definition-of-the-shipped-product) |
-| `[POLISH]` | YouTube companion, 2.5D skeleton, chromatic aberration, results turntable, combo milestone effects, calibration coaching |
-| `[STRETCH]` | Duck obstacles (`bar`), directional slashes, mines, Essentia.js tempo fallback, `MediaStreamTrackProcessor` capture path |
+## Definition of checkpoint reached
 
-## Definition of "checkpoint reached"
+A checkpoint is reached when its deliverable is implemented, relevant assertions and `npm run check` pass, docs match, evidence is recorded and the work is committed. Run live-camera checks for changes to live input; fixture-only changes do not require invented human evidence. A checkpoint can be recorded as blocked/failed with its remaining issue; do not tick its gate.
 
-A checkpoint is reached only when: the code is committed and pushed; `npm run typecheck && npm run lint && npm run test` pass; the feature was exercised live with the webcam (not only with fixtures); and the `CHANGELOG.md` entry describes what was verified.
+## Release checklist
+
+- [ ] Actual event/submission rules and team details recorded when applicable.
+- [ ] `npm ci`, asset preparation and production run repeated on a clean clone; commands and runtime asset provenance accurate.
+- [ ] Executed tests contain assertions; local documentation checker passes; CI result tied to the candidate SHA.
+- [ ] Core manual QA, consented live input, comfort checks, offline exercise and recovery drills recorded with actual outcomes.
+- [ ] Benchmark manifest, raw samples, summaries, generator-quality results and any known failures saved as in [24](24-benchmark-and-evidence.md).
+- [ ] Music, models, fonts and asset licenses/attributions complete.
+- [ ] Demo recording, script timing and fallback recording verified; recordings labelled as recordings.
+- [ ] README status/limitations and submission details accurate; changelog and AI usage current.
+- [ ] Tested release commit/tag pushed without rewriting history; README names that release SHA rather than claiming to contain its own final hash.

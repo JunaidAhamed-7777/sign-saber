@@ -4,6 +4,8 @@ Scope: `game/` — the spawner, the live-object simulation, contact tests betwee
 
 Design basis: [ADR-006](03-decisions.md#adr-006--contact-based-hits-with-timing-judgement-derived-from-note-depth) — a hit is a geometric contact on the play plane while the note is inside a *timing* window; the judgement comes from how early or late the contact is.
 
+These are planned rules, not tested gameplay. Build the replayable slash-only slice first (P1), then complete smash/beam/obstacles (P2), then tune from held-out input and real playtests (P4) as described in [the roadmap](../ROADMAP.md).
+
 ## 1. Spawner (`game/spawner.ts`)
 
 The beatmap arrays are sorted by `t`; the spawner keeps a cursor index into each.
@@ -16,7 +18,7 @@ Per frame with `songTime`:
 4. After a pause/resume no catch-up logic is needed: `songTime` is frozen while paused ([15](15-audio-playback-sync.md)), so nothing was skipped.
 5. On `results:retry` the cursors reset to 0 and all live objects are released to their pools.
 
-Pool sizes: `MAX_LIVE_NOTES`; if the pool is exhausted (pathological map) the spawner logs once and skips the note, which is also counted as a miss so `maxScore` stays consistent.
+Pool sizes: `MAX_LIVE_NOTES`; the validator checks simultaneous unresolved objects, including late-input grace, before play. If a runtime invariant still exhausts the pool, pause with a useful map-capacity error and diagnostics. Do not turn an implementation resource failure into a player's miss or silently skip content.
 
 ```ts
 interface LiveNote {
@@ -66,25 +68,29 @@ Fade-in alpha over the first 300 ms is the renderer's concern. If `songTime > es
 
 | Condition | Result |
 | --- | --- |
-| travelling note `live` and `songTime − t > WINDOW_GOOD_MS` | `note:miss`; `state = 'missed'`; combo breaks |
-| `pos.z > DESPAWN_Z` (any state) | release to pool |
-| beam `live` and `songTime > escapeAt` | `note:miss`; `state = 'escaped'` |
-| obstacle `zBack > MISS_Z` and not `hit` | `obstacle:dodged` |
+| unresolved travelling note whose capture-time window and bounded delivery grace have closed | `note:miss`; `state = 'missed'`; combo breaks |
+| `pos.z > DESPAWN_Z` | renderer may cull the mesh; retain unresolved gameplay state until judgement is terminal |
+| beam `live` and its latest valid hit window plus grace has closed | `note:miss`; visual escape begins no later than `escapeAt` |
+| obstacle trailing capture-time evaluation closes without contact | `obstacle:dodged`, provided its span had valid body observations |
 
-The miss is declared by *time* (`WINDOW_GOOD_MS` after `t`), which is the moment the note leaves the hit zone, not when it reaches `MISS_Z` — the two coincide within ~50 ms and the time rule is exact.
+The miss is declared by **capture time plus bounded delivery grace**, never by `MISS_Z`. At Normal travel speed `MISS_Z` is reached about 50 ms after `t`, while the default late Good window remains open to 200 ms; those are materially different deadlines. A visual despawn at `DESPAWN_Z` likewise cannot release an unresolved judgement record.
 
 ## 3. Hit zone and timing error
 
-A note is **in the hit zone** when `|songTimeAtCapture − t| ≤ WINDOW_GOOD_MS` (plus `inputOffsetMs`, below). Contact outside the zone is ignored entirely (not a bad cut).
+A note is in the hit zone when `|timingErrorMs| ≤ WINDOW_GOOD_MS · WINDOW_SCALE`. Contact outside that zone is ignored entirely (not a bad cut). `WINDOW_SCALE` is frozen in the session configuration and included in results/replay metadata; changing difficulty/assistance cannot silently alter a ranked run halfway through.
 
 ```
 songTimeAtCapture = songClock.fromPerformanceTime(cursor.tCapture)     // [15 §SongClock]
 timingErrorMs     = songTimeAtCapture − note.t + inputOffsetMs          // negative = early
 ```
 
-The cursor's `tCapture` is used because the hand was *there* when the frame was captured, ~70–130 ms before the game sees it ([02 §Latency model](02-architecture.md#latency-model)). Using arrival time would systematically grade every hit as late.
+Use the cursor's measured `tCapture`, not inference arrival or render-predicted position. When sensor metadata is unavailable, `tCapture` is callback receipt and residual camera delay must be measured rather than claimed to be removed ([05](05-tracking-pipeline.md)).
 
-Equivalently, `timingErrorMs ≈ −pos.z / (speed · 0.9945) · 1000` for a travelling note at the moment of contact; the time form is used because it is exact and works for beams.
+For a travelling note, `songTime − t = pos.z / (speed · cos(LANE_PITCH_DEG)) · 1000`: positive depth beyond the plane means late, not early. The timestamp form remains authoritative and works for beams.
+
+### Late-result policy
+
+Tracking inference is asynchronous, so a sample captured inside a window can arrive after the render clock passes its end. Process pending samples and swept contacts before expiring notes. Let `lastEligibleCapture = note.t + WINDOW_GOOD_MS · WINDOW_SCALE − inputOffsetMs`. A miss becomes final when either the processed capture watermark has passed that time (after testing the interval that crosses it), or current song time passes `lastEligibleCapture + INPUT_MAX_AGE_MS`. Reject input whose actual arrival age exceeds `INPUT_MAX_AGE_MS`; later packets cannot reopen a terminal note. Pause/reset clears watermarks and old-session packets. Record rejected late samples in diagnostics so a struggling pipeline is visible rather than hidden by wider windows.
 
 ## 4. Contact tests (`game/hit.ts`)
 
@@ -107,7 +113,7 @@ At 10 m/s the palm moves 0.33 m per 33 ms tracking frame — more than half a bl
 contact = segmentToAABBDistance2D(prevPos.xy, pos.xy, box) ≤ HAND_HIT_RADIUS
 ```
 
-`segmentToAABBDistance2D` = 0 if the segment intersects the box (Liang–Barsky clip), else the minimum of point-to-box distance at the endpoints and segment-to-edge distances (4 edges). `prevPos` is the cursor position from the previous `TrackingFrame` (not the previous render frame) so the sweep covers the real motion.
+`segmentToAABBDistance2D` = 0 if the segment intersects the box (Liang–Barsky clip), else the minimum of point-to-box distance at the endpoints and segment-to-edge distances (4 edges). `prevPos` is the cursor position from the previous valid `TrackingFrame` of the same hand identity, never the previous render frame or a prediction. Return the earliest contact fraction `α` along the sweep into reusable scratch output. Judge at `contactPerf = prevCapture + α · (capture − prevCapture)`; clip the sweep to the eligible time interval before testing. Do not connect samples across loss, pause, identity reassignment or an over-age gap.
 
 ### 4.3 Blade swept segment
 
@@ -119,11 +125,11 @@ contact = segIntersectsAABB(bladePrev) || segIntersectsAABB(bladeNow)
        || segIntersectsAABB(bladePrev.base → bladeNow.base)         // = the palm sweep
 ```
 
-Four segment tests approximate the swept quad well enough at 30 Hz. The blade has no thickness in the test; the palm sphere provides the tolerance.
+The four edge tests alone miss the case where the entire block footprint lies inside the swept quad. Also test box-corner containment in the quad's two triangles, or use a tested convex polygon–AABB intersection. Keep a documented interpolation rule for the earliest contact fraction. The blade has no thickness in the test; the palm sphere provides tolerance. Cover rotation and containment cases in replay/unit fixtures instead of assuming 30 Hz makes the approximation safe.
 
 ### 4.4 Which notes are tested
 
-Per hand cursor with `present`, per live note with `state === 'live'` and in the hit zone (§3). Typically ≤ 6 notes qualify; no spatial index is needed.
+Per newly accepted sample with a present cursor, test unresolved notes whose eligible interval overlaps the measured sweep. Usually only a few qualify; measure before adding a spatial index. A cached hand sample is never re-evaluated on every render frame.
 
 ## 5. Gesture requirements and bad cuts
 
@@ -138,15 +144,15 @@ Rules:
 1. A slow hand drifting through a block does nothing (P3: no accidental bad cuts while resting).
 2. A bad cut emits `note:badcut { note, hand, gesture }`, sets `state = 'badcut'`, resets combo (`combo:change { broke: true }`), scores 0 and counts in `counts.badcut`. The block is not destroyed; the renderer deflects it ([11](11-rendering-blocks-and-destruction.md)). It will not later count as a miss (its state is terminal).
 3. A valid hit emits `note:hit` and sets `state = 'hit'` in the same frame; a note can be hit exactly once.
-4. Both hands are tested each frame in a fixed order (left then right). If both contact the same note in the same frame, the first valid hit wins; the second contact is ignored (not a bad cut).
+4. Collect both hands' candidates for the same sample before resolving the note. Prefer a valid hit over a conflicting bad cut, then earliest contact time, then left/right for an exact tie. Apply notes in `(capture time, note.t, note.id)` order. A wrong left-hand gesture must not beat a simultaneous valid right-hand strike merely because the loop visits left first.
 5. Hand lost mid-swing: no contact is evaluated for an absent cursor; the note is judged normally when its zone closes.
 
 ## 6. Judgement
 
 ```
-|e| ≤ WINDOW_PERFECT_MS → 'perfect' (SCORE_PERFECT)
-|e| ≤ WINDOW_GREAT_MS   → 'great'   (SCORE_GREAT)
-|e| ≤ WINDOW_GOOD_MS    → 'good'    (SCORE_GOOD)
+|e| ≤ WINDOW_PERFECT_MS · WINDOW_SCALE → 'perfect' (SCORE_PERFECT)
+|e| ≤ WINDOW_GREAT_MS   · WINDOW_SCALE → 'great'   (SCORE_GREAT)
+|e| ≤ WINDOW_GOOD_MS    · WINDOW_SCALE → 'good'    (SCORE_GOOD)
 ```
 
 `note:hit` payload fields:
@@ -172,14 +178,14 @@ The plane contains the swing direction and the lane direction, so a horizontal s
 
 ## 8. Beam resolution
 
-Runs after note contacts, per hand with `present` and `charge ≥ 1` and `songTime ≥ chargeLockUntil`.
+Runs on a newly accepted sample after note contacts, per hand with `present`, confident stable pointing, `charge ≥ 1` and capture-song time beyond `chargeLockUntil`.
 
-1. **Aim ray.** From `tip` along `−z` (into the screen). In play-plane terms the ray's footprint is the point `tip.xy`. `pointDir` is *not* used for aiming — a player cannot reliably aim a 2D finger direction at depth; what reads intuitively is "the target under my fingertip".
-2. **Candidates.** Live beam notes with `state === 'live'`, `songTime ≥ appearAt`, and `dist(tip.xy, (LANE_X[col], LANE_Y[row] + BEAM_HOVER_Y_OFFSET)) ≤ BEAM_AIM_RADIUS`. The comparison uses the fixed hover point, not the bobbing `pos`, so the bob is purely cosmetic.
+1. **Aim projection.** Aim at the target's **screen-aligned footprint on the play plane**, not its raw distant world x/y. For baseline camera `C = CAM_POS` and fixed beam hover centre `B`, compute `aimTarget = C + (B − C) · ((0 − C.z) / (B.z − C.z))`. Compare measured `tip.xy` to `aimTarget.xy`. This is the camera ray through the fingertip, not a parallel `−z` ray. `pointDir` remains cosmetic.
+2. **Candidates.** Unresolved beam notes that have appeared and whose fixed projected footprint is within `BEAM_AIM_RADIUS` of the fingertip. Use the unbobbing centre and baseline camera, so cosmetic bob/shake does not change aiming. Renderer reticles use this same projection.
 3. **Priority.** If several qualify (only possible across isolated beams, rare), pick the one with the smallest `|songTimeAtCapture − t|`.
-4. **Fire.** If a candidate exists: `timingErrorMs` per §3; the beam is judged with the same windows; if `|e| > WINDOW_GOOD_MS` (fired far too early) the shot is a **whiff**: `beam:fire` is emitted with `note: null` (renderer draws the beam, nothing pops), charge resets, no penalty. Otherwise emit `beam:fire { hand, from: tip, to: note.pos, note }` then `note:hit` with judgement.
+4. **Fire.** If a candidate exists: `timingErrorMs` per §3; apply the same scaled windows. Outside `WINDOW_GOOD_MS · WINDOW_SCALE`, the shot is a whiff: `beam:fire` has `note: null` (line/flash, nothing pops), charge resets, no penalty. Otherwise emit `beam:fire { hand, from: tip, to: note.pos, note }` then `note:hit` with judgement. Apply the late-result policy before any render-time escape finalizes the target.
 5. If no candidate exists, nothing fires; charge stays at 1 (held). The HUD shows "aim" state. The player can hold a charged point and sweep to the target; it fires on the first frame the target is under the fingertip.
-6. After any fire: `charge = 0`, `chargeLockUntil = songTime + 150`.
+6. After any fire: reset the owning cursor's charge and set `chargeLockUntil = songTimeAtCapture + BEAM_REFIRE_LOCK_MS`. `beam:fire` starts the line/flash; `note:hit` alone starts the target destruction, exactly once. A whiff's `to` is the projected candidate's world centre and its `note` is explicitly `null`.
 
 Early fire protection (step 4) exists because `BEAM_LEAD_MS` (1600) > `WINDOW_GOOD_MS` (200): the target is visible well before it is "hittable", teaching the player to time the shot.
 
@@ -195,11 +201,11 @@ An obstacle **spans the hit plane** while `zFront > 0 ≥ zBack`: the hit plane 
 
 Rules:
 
-1. Evaluate once per frame per live obstacle spanning the hit plane. The first frame in which the player is unsafe → `obstacle:hit`, `state = 'hit'`, combo reset, `counts.obstaclesHit++`. Exactly once per obstacle (terminal state).
-2. If `BodyState.present === false` during the span, the player is **not** penalised (tracking loss is not the player's fault; the auto-pause will trigger if it persists).
+1. Evaluate new body samples at capture-song time during the obstacle span, after grace. The first observed unsafe state produces `obstacle:hit`, `state = 'hit'`, combo reset, `counts.obstaclesHit++`. Exactly once per obstacle. Render fps does not create additional body observations.
+2. If `BodyState.present === false`, do not fabricate a collision or award a free dodge. Pause with a tracking reason when a required obstacle judgement has no usable body evidence; resume only after tracking is stable. A lost camera cannot farm dodge points.
 3. `lean` already carries hysteresis (`LEAN_ON` / `LEAN_OFF`, [05 §5](05-tracking-pipeline.md#5-body-metrics-trackingbodyts--bodystate)); no extra debounce here.
 4. Grace: the first `OBSTACLE_GRACE_MS` after `zFront` crosses 0 are not evaluated, so a player who is *in the act* of leaning when the wall arrives is not punished for tracking latency. Default 120 ms.
-5. When `zBack > MISS_Z` and `state === 'live'` → `obstacle:dodged { scoreDelta: SCORE_DODGE · multiplier }`, `counts.obstaclesDodged++`. Dodging does not increase combo (combo is for notes) but is multiplied.
+5. After the obstacle's trailing capture interval and bounded delivery grace close, if all evaluated body samples were safe and valid evidence exists, emit `obstacle:dodged { scoreDelta: SCORE_DODGE · multiplier }` and increment `counts.obstaclesDodged`. Dodging does not increase combo but is multiplied. `MISS_Z` may delay visual clearance; it does not decide whether a body sample was safe.
 
 ## 10. Scoring (`game/score.ts`)
 
@@ -220,7 +226,18 @@ score    += scoreDelta
 maxScore  = Σ over all notes of SCORE_PERFECT · ladder(index + 1) + Σ over obstacles of SCORE_DODGE · 8
 ```
 
-`maxScore` is computed once when the beatmap loads: it assumes every note is Perfect in order with the multiplier ramping along the ladder (so the first 4 notes ×1, next 10 ×2, next 15 ×4, rest ×8) and every obstacle dodged at ×8. `accuracy = score / maxScore` and is shown live on the HUD.
+`maxScore` is computed once when the beatmap loads: note scores use the perfect-combo ramp (first 4 notes ×1, next 10 ×2, next 15 ×4, rest ×8), plus each obstacle at the maximum ladder multiplier. It is a **score upper bound**, not an accuracy denominator; an early wall may occur before ×8 is reachable.
+
+Accuracy instead measures unmultiplied base points:
+
+```
+possibleBase = notes.length · SCORE_PERFECT + obstacles.length · SCORE_DODGE
+earnedBase   = perfectCount · SCORE_PERFECT + greatCount · SCORE_GREAT
+             + goodCount · SCORE_GOOD + obstaclesDodged · SCORE_DODGE
+accuracy     = possibleBase > 0 ? earnedBase / possibleBase : 0
+```
+
+A flawless all-Perfect run reaches 100% even on a short map with an early wall. A missed note contributes zero; combo affects score, not the same hit's timing quality. Live HUD accuracy uses resolved objects as its denominator (judged notes plus completed obstacles); final accuracy uses the whole map. Before any judgement show an em dash rather than a misleading 0%. The validator rejects a map with no playable objects. Rank is computed from final accuracy. Record `WINDOW_SCALE`, difficulty, generator version and assistance settings with results so unlike configurations are not compared as equivalent.
 
 ### 10.3 Rank
 
@@ -228,21 +245,21 @@ From `RANK_THRESHOLDS` on final accuracy: SS ≥ 0.95, S ≥ 0.90, A ≥ 0.80, B
 
 ## 11. Kinetic energy (`game/kinetic.ts`)
 
-A playful but physically grounded estimate, labelled as such in the UI.
+A playful motion proxy. A monocular camera and an assumed shoulder span do not measure body mass, true 3D velocity or metabolic expenditure; no fitness/health accuracy is claimed. Keep its label visible wherever the number is shown.
 
 Per hand, detect **swings** as speed peaks:
 
 1. Convert play-plane speed to physical speed. `speed` is in play-plane m/s, where the whole frame width is `PLAY_W` metres; the physical frame width is `physicalScale · 1.0` metres (`physicalScale` is metres per normalized image unit, from `BodyCalibration`). Therefore `vPhys = speed · physicalScale / PLAY_W`.
-2. Track `vPhys` per frame; a swing is a local maximum `vPeak` with `vPeak ≥ SWING_MIN_SPEED` separated from the previous accepted peak by ≥ 150 ms and a trough below `0.5 · vPeak`.
+2. Track `vPhys` per frame; a swing is a local maximum `vPeak` with `vPeak ≥ SWING_MIN_SPEED` separated from the previous accepted peak by `SWING_REFRACTORY_MS` and a trough below `SWING_TROUGH_RATIO · vPeak`.
 3. `KE_swing = 0.5 · HAND_MASS_KG · vPeak²`; `kineticJoules += KE_swing`.
 4. Torso: same peak detection on `BodyState.torsoSpeed` (already physical m/s) with `TORSO_MASS_KG` and a `TORSO_SWING_MIN_SPEED` floor.
 5. `kcal = kineticJoules / 4184 / METABOLIC_EFFICIENCY`.
 
-Example: a brisk slash peaks at ~4 m/s → 20 J; 300 slashes → 6 kJ → ≈ 5.7 kcal. Numbers in that range are believable and fun ("you burned a quarter of a cookie").
+Arithmetic example under the assumed masses and efficiency: a 4 m/s proxy peak yields 20 J; 300 such peaks yield 6 kJ and an illustrative 5.7 kcal conversion. This validates the formula only, not a real player's calorie burn. Do not translate it into food/fitness claims in the pitch.
 
 ## 12. SessionStats and highlight capture (`game/session.ts`)
 
-`SessionStats` ([02](02-architecture.md#game--renderer--ui-events)) is accumulated live and finalised on `song:ended`. `peakComboSongTimeMs` is updated whenever `combo` exceeds the previous `maxCombo` **and** `combo ≥ 5`; at that moment emit `highlight:capture { songTimeMs }` — debounced so at most one capture per 2000 ms (the renderer snapshots the silhouette and skeleton, [13](13-rendering-environment-camera-postfx.md)). The last capture before the song ends is the one shown on RESULTS; if no combo ever reached 5, the renderer captures at the final `note:hit` as a fallback, or at song end if there were none.
+`SessionStats` ([02](02-architecture.md#game--renderer--ui-events)) is accumulated live and finalised on `song:ended`. `peakComboSongTimeMs` is updated whenever `combo` exceeds the previous `maxCombo` **and** `combo ≥ HIGHLIGHT_MIN_COMBO`; at that moment emit `highlight:capture { songTimeMs }` — debounced so at most one capture per `HIGHLIGHT_DEBOUNCE_MS` (the renderer snapshots the silhouette and skeleton, [13](13-rendering-environment-camera-postfx.md)). The last capture before the song ends is the one shown on RESULTS; if no combo ever reached `HIGHLIGHT_MIN_COMBO`, the renderer captures at the final `note:hit` as a fallback, or at song end if there were none.
 
 `session:end` fires after `SONG_TAIL_MS` once no note is `live` ([04](04-state-machine.md#transitions)). Notes still `live` at `durationMs` (map ends on a note) are judged normally; the tail covers their window.
 
@@ -250,7 +267,7 @@ Example: a brisk slash peaks at ~4 m/s → 20 J; 300 slashes → 6 kJ → ≈ 5.
 
 | Case | Behaviour |
 | --- | --- |
-| Two hands contact one block in one frame | First valid in evaluation order wins; the other is ignored |
+| Two hands contact one block in one sample | Valid-hit priority, then earliest contact and deterministic hand tie-break; exactly one terminal event |
 | Hand present with `gesture === 'none'` sweeping fast through a block | Ignored (no bad cut without a committed gesture) |
 | Hand lost mid-swing, reappears after the zone | Note missed normally |
 | Chord (two notes with `|Δt| < 20 ms`) | Both testable; one blade sweep can hit both in one frame (both score) |
@@ -258,7 +275,7 @@ Example: a brisk slash peaks at ~4 m/s → 20 J; 300 slashes → 6 kJ → ≈ 5.
 | `inputOffsetMs` moves a contact outside the zone | Ignored contact; no bad cut |
 | Pause during a live note | `songTime` frozen; nothing is judged; resume continues exactly |
 | Beam charged with no target for a long time | Held at 1; the HUD pulses; no timeout |
-| Note spawned when pool exhausted | Counted as miss immediately; logged once |
+| Note pool exhausted | Pause with map-capacity fault; no fabricated player miss |
 
 ## 14. Unit tests (`tests/unit/judge.test.ts`, `hit.test.ts`, `score.test.ts`)
 
@@ -274,17 +291,21 @@ Example: a brisk slash peaks at ~4 m/s → 20 J; 300 slashes → 6 kJ → ≈ 5.
 | Obstacles | `wallLeft` with `lean='right'` → dodged; `lean='center'` for one frame after grace → hit once; absent body → no hit |
 | Combo ladder | combos 4,5,14,15,29,30 → multipliers 1,2,2,4,4,8 |
 | maxScore | hand-computed for a 40-note, 2-obstacle map |
+| Accuracy | All-Perfect short map with an early wall reaches 1; combo resets do not change base points already earned; empty map rejected |
+| Late sample | In-window capture delivered after visual window still hits within age cap; over-age/out-of-order sample rejected; terminal note never reopens |
+| Render independence | Same fixture at 30/60/120 Hz and with a render hitch yields identical ordered judgement events and final stats |
+| Sweep time | Contact fraction determines timing bucket; clip a crossing sweep to the eligibility interval; no sweep across reacquisition |
 | Kinetic | synthetic 4 m/s peak → 20 J; two peaks 100 ms apart count once |
 | Cut plane | horizontal swing → normal ≈ (0, ±1, 0) within 6°; vertical swing → normal ≈ (±1, 0, 0); in all cases assert `|normal · swingDir| < 1e-6` and `|normal · laneDir| < 1e-6` |
 
 ## 15. Acceptance criteria
 
-- [ ] On the bundled normal map, a competent player gets ≥ 85 % accuracy; a first-time player gets ≥ 60 % — if not, windows are too tight (P3).
+- [ ] P4 playtests record first-time and practiced players' accuracy separately, with sample size and configuration. Initial usability goals are ≥ 60% and ≥ 85% respectively; a miss can indicate chart reachability, unclear feedback, tracking or sync, so investigate those causes before widening timing windows.
 - [ ] Judgement distribution on a deliberately on-beat test (metronome track, hits synced to a click) is centred on Perfect with `inputOffsetMs = 0` ± 30; otherwise record the bias and set `INPUT_OFFSET_DEFAULT_MS`.
-- [ ] No hit is ever registered on a block more than `WINDOW_GOOD_MS` away; no block is ever destroyed twice; no bad cut without a committed gesture.
+- [ ] No hit is registered outside `WINDOW_GOOD_MS · WINDOW_SCALE`; no block is destroyed twice; no bad cut without a committed gesture.
 - [ ] Fast slashes (> 8 m/s play-plane) never tunnel through blocks (verified with the debug overlay drawing swept segments).
 - [ ] Walls are dodgeable by leaning with hysteresis: no flicker between hit/dodged; grace period hides tracking latency.
-- [ ] `maxScore`, `accuracy` and rank agree with hand calculations on a fixture map.
+- [ ] `maxScore` ceiling, unmultiplied accuracy and rank agree with hand calculations on short/long maps, early walls, ties, misses and bad cuts.
 - [ ] All unit tests in §14 pass; `game/` has no DOM or `three` imports.
 
 ## Constants required

@@ -1,6 +1,6 @@
 # 03 — Architecture Decision Records
 
-Each record states the decision, the alternatives that were seriously considered, and the consequence we accept. Decisions are final for the hackathon unless the risk register ([21](21-risks-and-fallbacks.md)) triggers the named fallback. Re-litigating a decision at 3 AM is how hackathons are lost.
+Each record states a planned decision, its alternatives and the consequence we accept. These choices are not performance results. Revisit a decision when a capability spike, held-out evaluation or reproducible profile contradicts its premise; record the evidence and update affected contracts together. The [roadmap](../ROADMAP.md) replaces the inherited event timetable. [21](21-risks-and-fallbacks.md) defines fallbacks.
 
 ---
 
@@ -22,7 +22,7 @@ Each record states the decision, the alternatives that were seriously considered
 
 **Alternatives.** react-three-fiber for everything; Babylon.js; PlayCanvas; raw WebGL.
 
-**Why.** An imperative loop makes the per-frame order ([02 §Frame loop](02-architecture.md#frame-loop)) explicit and profilable. R3F's reconciliation adds per-frame overhead and hides allocation. Three.js has the largest body of shader/post-processing examples to borrow from under time pressure. DOM text is sharper and cheaper than in-scene text for the HUD.
+**Why.** An imperative loop makes the per-frame order ([02 §Frame loop](02-architecture.md#frame-loop)) explicit and easy to instrument. This project chooses direct control of pooling and updates; it does not claim that react-three-fiber is inherently slow. DOM text supports accessible, crisp menu/HUD content without building a second text-input system in WebGL.
 
 **Consequences.** Two render trees (DOM + WebGL) need a shared store (Zustand) for display values; we throttle text updates to ≤ 20 Hz.
 
@@ -30,17 +30,17 @@ Each record states the decision, the alternatives that were seriously considered
 
 ## ADR-003 — MediaPipe Tasks Vision: `HandLandmarker` + `PoseLandmarker` (with segmentation masks)
 
-**Decision.** Two models per frame: `HandLandmarker` (2 hands, GPU delegate) on a 640×360 frame, and `PoseLandmarker` *lite* with `outputSegmentationMasks: true` on a 320×180 downscale. The pose model supplies both body landmarks (lean) and the person mask (silhouette).
+**Decision.** Use `HandLandmarker` for two hands and `PoseLandmarker` lite with `outputSegmentationMasks: true` for body/lean and the silhouette mask. Start with the capture/inference dimensions in [05](05-tracking-pipeline.md); quality tiers may decimate pose/mask work, with actual cadences recorded. The worker GPU delegate must pass the P0 capability spike; it is not assumed to work on every device.
 
 **Alternatives.**
 - `HolisticLandmarker` (one model, pose + hands + face): heavier, face landmarks wasted, hand quality lower than the dedicated model, no mask.
-- Separate `ImageSegmenter` (selfie model) for the mask: better mask quality, but a third inference call (~5–8 ms) and a third model to load.
-- `GestureRecognizer` instead of `HandLandmarker`: gives canned `Open_Palm` / `Closed_Fist` / `Pointing_Up`, but `Pointing_Up` only fires for upward pointing and the classifier is a black box we cannot tune; it also costs more than `HandLandmarker`.
+- Separate `ImageSegmenter` (selfie model): another model, inference call and mask pipeline. Any quality/cost improvement must be measured on our inputs.
+- `GestureRecognizer`: canned `Open_Palm` / `Closed_Fist` / `Pointing_Up` do not directly define our screen-targeting interaction. A custom recognizer is possible, but introduces another training/evaluation choice; no speed ranking is asserted without measurement.
 - TensorFlow.js hand-pose + BodyPix: older, slower, two runtimes.
 
-**Why.** Minimum inference for maximum signal: 21-point hands for a fully controllable gesture classifier, 33-point pose for lean and a 2.5D skeleton, and a mask for free. Verified against `@mediapipe/tasks-vision@1.1.1` typings: `PoseLandmarkerOptions.outputSegmentationMasks`, `PoseLandmarkerResult.segmentationMasks: MPMask[]`, `MPMask.getAsUint8Array()`.
+**Why.** Dedicated hand landmarks support an inspectable geometric classifier; pose supplies lean, 2.5D depth cues and optional segmentation in one task. Segmentation still has compute/copy cost and explicit `MPMask` lifetime requirements. Check the installed locked typings and [Pose Landmarker guide](https://developers.google.com/edge/mediapipe/solutions/vision/pose_landmarker/web_js) during P0; API shape alone is not evidence that our worker integration runs.
 
-**Consequences.** Mask edge quality is good-not-great at 320×180; the silhouette shader compensates with a blur + threshold + edge glow ([10](10-rendering-silhouette.md)). Fallback if the mask looks poor on the demo laptop: enable `ImageSegmenter` (selfie, landscape model) behind a flag.
+**Consequences.** Low-resolution edges need the measured threshold/edge treatment in [10](10-rendering-silhouette.md). A labelled skeleton keeps input usable when masks fail. Evaluate a separate segmenter only after proving its quality and budget; never silently add inference cost to the release workload.
 
 ---
 
@@ -50,9 +50,9 @@ Each record states the decision, the alternatives that were seriously considered
 
 **Alternatives.** Inference on the main thread (simplest); `MediaStreamTrackProcessor` to read `VideoFrame`s directly in the worker (Chrome-only, zero main-thread copy); rendering Three.js in the worker instead.
 
-**Why.** A 15–35 ms synchronous `detectForVideo` on the main thread cannot coexist with a 16.6 ms frame budget; the worker makes tracking rate and render rate independent. `ImageBitmap` transfer is supported in every target browser; `MediaStreamTrackProcessor` is kept as an optimisation if profiling shows the `createImageBitmap` cost matters.
+**Why.** [`detectForVideo` is synchronous](https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker/web_js); inference on the render thread can consume its budget. A worker makes the two workloads independently schedulable, but does not eliminate GPU contention or transfer cost. Measure capability, frame creation, task duration and result freshness separately. Consider `MediaStreamTrackProcessor` only if profiling justifies the additional compatibility path.
 
-**Consequences.** One frame of additional latency is accepted and modelled ([02 §Latency model](02-architecture.md#latency-model)). The worker must drop frames when busy (keep-latest policy).
+**Consequences.** Permit one frame in flight and skip capture opportunities while busy; no growing frame queue. Normalize worker time origins into the main performance domain, release transferred resources and measure end-to-end tracking age. No fixed extra-frame latency is promised. See [02 §Latency model](02-architecture.md#latency-model).
 
 ---
 
@@ -62,7 +62,7 @@ Each record states the decision, the alternatives that were seriously considered
 
 **Alternatives.** MediaPipe `GestureRecognizer`; a small trained MLP on landmarks; template matching.
 
-**Why.** Three gestures with large geometric differences do not need learning. A rule-based classifier is deterministic, unit-testable from recorded fixtures, tunable live in the debug overlay, and handles pointing in any direction (toward the camera included, via `worldLandmarks`).
+**Why.** Three deliberately distinct classes are a practical starting point for deterministic, inspectable rules and fixture tests. Pointing toward the camera and occluded/edge-on hands remain difficult; `worldLandmarks` do not remove that ambiguity. Held-out and live per-class error rates determine whether the rules are good enough.
 
 **Consequences.** Edge cases (hand edge-on to camera) are handled by holding the last confident gesture up to `GESTURE_DROP_FRAMES`, not by a smarter model.
 
@@ -70,11 +70,11 @@ Each record states the decision, the alternatives that were seriously considered
 
 ## ADR-006 — Contact-based hits with timing judgement derived from note depth
 
-**Decision.** A hit is a geometric contact (hand sphere or blade segment vs block OBB in the play plane) while the note is within the timing window; the judgement is `timingError = −z / speed` (equivalently `tCapture − note.t + inputOffset`) bucketed into Perfect/Great/Good ([07](07-hit-detection-and-scoring.md)).
+**Decision.** Score a unique captured contact using `heardSong(tCapture) + inputOffsetMs - note.t`, bucketed into Perfect/Great/Good. Contact is tested against the note's capture-time geometry with bounded swept input, then one terminal outcome is emitted. Late samples/miss finalization, deterministic arbitration and beam-specific timing are defined in [07](07-hit-detection-and-scoring.md). Render-predicted positions never create score.
 
 **Alternatives.** Pure timing (press-like: any hand movement in the cell at the right time); pure geometry (block must physically overlap the hand at z = 0, which is a 25 ms window at 24 m/s).
 
-**Why.** Contact keeps the "I physically hit it" feeling; the depth-derived timing window makes it achievable with ~100 ms tracking latency (P3). This is exactly how Beat Saber behaves: the saber contacts a block that is still in front of the player.
+**Why.** Contact gives a clear spatial action while capture-time judgement avoids penalizing worker delivery delay twice. The geometric hit zone and timing window must agree; a forgiving window cannot rescue a contact test that already removed the note. No claim about another game's exact implementation is needed.
 
 ---
 
@@ -84,9 +84,9 @@ Each record states the decision, the alternatives that were seriously considered
 
 **Alternatives.** Essentia.js (WASM port of Essentia: `RhythmExtractor2013`, `OnsetDetection`) — robust and battle-tested, but a multi-megabyte WASM, an awkward vector API, and no control over the "only valid beats" filtering. Meyda — features only, no beat tracking. Server-side Python (librosa/madmom) — needs a backend and Python at the venue.
 
-**Why.** The algorithms are small (< 600 lines total), fully specified in [08](08-beatmap-generation.md), deterministic, testable against clips with known BPM, and tunable. "No random noise" is a product requirement that needs our own thresholds, not a library default.
+**Why.** Explicit stages in [08](08-beatmap-generation.md) expose onset, beat confidence, silence and ergonomic decisions for tests and profiling. A custom implementation is a control/learning tradeoff, not a guarantee of speed or musical quality. Evaluate independently annotated holdout clips rather than asserting a line count or checking only our own grid.
 
-**Consequences.** Tempo estimation may fail on tempo-free material (ambient, rubato); the generator then falls back to onset-only mapping with a warning badge in Song Select. Essentia.js is the named fallback if our tempo estimate is unreliable on ≥ 2 of the test clips by the H5 checkpoint.
+**Consequences.** Tempo-free/rubato material may use a disclosed onset-only mode or be rejected as unsuitable. At the P2 generated-song gate, failure of the [24](24-benchmark-and-evidence.md) quality criteria triggers a recorded fallback decision. Evaluate alternative DSP on the same holdout corpus, including package/algorithm licenses and browser/worker costs, before adding it; an unintegrated library is not a ready fallback.
 
 ---
 
@@ -112,11 +112,11 @@ Each record states the decision, the alternatives that were seriously considered
 
 ## ADR-010 — Audio clock is the master clock
 
-**Decision.** Song time derives from `AudioContext.currentTime` minus the scheduled start; the render loop never accumulates its own song time. Pausing suspends the context.
+**Decision.** The audio output clock is authoritative. Map main performance time to heard song time through `getOutputTimestamp()` when available; use one explicitly labelled latency estimate as the fallback. Keep transport position, output time, capture time and resume/countdown epochs distinct as specified in [15](15-audio-playback-sync.md). The render loop never integrates song time from frame deltas.
 
 **Alternatives.** `performance.now()` with drift correction.
 
-**Why.** Web Audio's clock is sample-accurate and monotonic; notes must land on the audio, not on the frame counter.
+**Why.** Notes must follow the audio, including pauses and output delay. [`getOutputTimestamp()`](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/getOutputTimestamp) supplies paired context/performance times; adding output latency again would double compensate. Software clock agreement is not a physical latency measurement.
 
 ---
 
@@ -132,9 +132,9 @@ Each record states the decision, the alternatives that were seriously considered
 
 ## ADR-012 — YouTube via a local companion service; MP3 upload is the primary path
 
-**Decision.** A tiny Node service (`server/`) wraps `yt-dlp` to resolve a YouTube URL to an audio file served to the client ([23](23-youtube-companion-service.md)). The UI treats it as optional and detects its absence. Audio-file upload is the primary, always-working path; two bundled CC0 tracks with pre-generated maps are the demo path.
+**Decision.** An optional local Node service may wrap `yt-dlp` for rights-cleared content ([23](23-youtube-companion-service.md)). It is `[POLISH]`, currently an empty entry point, and must not block boot or play. Supported local-file upload is the primary new-song path; two attributed bundled tracks with validated maps are the demo path.
 
-**Alternatives.** Client-side YouTube audio extraction (impossible: CORS + DRM-free but obfuscated streams); third-party "yt to mp3" APIs (unreliable, ToS-risky, needs network).
+**Alternatives.** Direct browser extraction depends on unsupported/CORS-restricted service internals; third-party conversion services introduce availability, rights and data-handling dependencies. Neither belongs on the core path.
 
 **Why.** Honest about what the browser can do; keeps the demo independent of network and of YouTube's whims.
 
@@ -144,7 +144,7 @@ Each record states the decision, the alternatives that were seriously considered
 
 ## ADR-013 — Everything the demo needs is bundled and works offline
 
-**Decision.** MediaPipe WASM + `.task` models, fonts, GLBs, SFX and demo tracks live in `app/public/` (models fetched once by `scripts/download-models`). No CDN at runtime.
+**Decision.** Ship model/WASM, fonts, geometry, SFX and demo tracks through local asset paths with no runtime CDN dependency. P0 adds fixed versions, checksums and a license manifest; the current downloader's `latest` URLs are not a reproducible model lock. P5 proves the prepared locally served production build with external network disabled.
 
 **Why.** Venue Wi-Fi is the most common hackathon demo killer. BOOT must succeed with the network cable unplugged.
 
@@ -152,6 +152,30 @@ Each record states the decision, the alternatives that were seriously considered
 
 ## ADR-014 — Quality tiers chosen at boot, not a settings menu
 
-**Decision.** BOOT measures median frame time of the attract scene and picks `high` / `medium` / `low` ([16 §Quality tiers](16-performance-budget.md#quality-tiers)); a debug key cycles tiers. No user-facing graphics menu.
+**Decision.** Choose `high` / `medium` / `low` using capability checks and a representative tracking/render workload, then downgrade with hysteresis as in [16 §Quality tiers](16-performance-budget.md#quality-tiers). Record all changes. Comparative benchmarks fix the tier; automatic selection is evaluated separately. Comfortable scene intensity/reduced motion remains an accessible user choice in [14](14-ui-ux.md).
 
-**Why.** Judges never open settings. The frame rate pillar (P5) must hold by default.
+**Why.** The default should work without technical tuning. Refresh-limited rAF intervals from an empty scene cannot distinguish GPU headroom; quality selection must reflect the integrated workload. The user must still be able to reduce uncomfortable motion/effects.
+
+---
+
+## ADR-015 — Reproducible evidence is part of the product
+
+**Decision.** Build bounded telemetry and replay seams early; keep logic replay, render stress and live-camera evidence separate. Use fixed inputs/seeds, full provenance, percentiles, repetitions and raw artifacts from [24](24-benchmark-and-evidence.md). Publish failures and label every unmeasured target.
+
+**Alternatives.** A single FPS counter, a best-case recording, ad hoc manual performance impressions.
+
+**Why.** Responsiveness includes input freshness and musical/playability quality, not only drawing speed. Repeatable experiments make regressions actionable and judge-facing claims defensible.
+
+**Consequences.** Instrumentation has a measured budget; private inputs/recordings stay private. No benchmark harness or result is claimed before it exists. GPU screenshot hashes are not cross-driver determinism tests.
+
+---
+
+## ADR-016 — Gate the build by capability instead of an inherited timetable
+
+**Decision.** Follow P0–P5 in [ROADMAP.md](../ROADMAP.md): executable foundations, first playable, complete core, signature spectacle, measured optimization and release proof. Keep the current paths as useful starting points without permanent folder ownership.
+
+**Alternatives.** The previous fixed overnight schedule, parallel feature work before a playable spine, cosmetic repo restructuring.
+
+**Why.** The actual event constraints are unknown. A live slash and correct clocks reduce more risk than optional assets or a network companion. Each gate produces reviewable behavior and evidence.
+
+**Consequences.** Commit small coherent milestones frequently. `[POLISH]` follows P2; `[STRETCH]` follows P4. If the actual release scope changes, update the vision, roadmap, README and demo together.

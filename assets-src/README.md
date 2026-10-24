@@ -8,4 +8,4 @@ Source files for assets that are exported into `app/public/assets/`. Nothing her
 | `textures/` | Glyph atlas source (SVG), hazard stripe source | docs/11 |
 | `audio/` | Raw SFX takes and the CC0 track originals before encoding | docs/15 §SFX bus, docs/09 §Bundled tracks |
 
-All assets created here are our own work and are released under the repository's MIT license. Third-party audio is listed with its license in `app/public/assets/tracks/README.md`.
+No production assets are committed yet. Record provenance, author, source URL, permitted transformations, license and exported-file hash as assets are added. Original project assets may use MIT; imported models, textures, fonts and audio retain their own licenses. Third-party audio is recorded in the [track registry](../app/public/assets/tracks/README.md). Blender/MCP is optional; [18](../docs/18-blender-mcp-asset-pipeline.md) specifies both manual and procedural fallbacks.

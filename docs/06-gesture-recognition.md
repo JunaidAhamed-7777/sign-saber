@@ -30,7 +30,7 @@ All features are computed from one `HandRaw` (already mirrored and One Euro-filt
 palmSize = hypot(u′₉ − u′₀, (v₉ − v₀) · 9/16)      // wrist → middle MCP, isotropic in width units
 ```
 
-Every 2D distance below is divided by `palmSize` so the rules are independent of how far the player stands. If `palmSize < 0.015` (hand tiny / far away) the classifier returns `'none'` with confidence 0.
+Every 2D distance below is divided by `palmSize` so the rules are independent of how far the player stands. If `palmSize < GESTURE_PALM_SIZE_MIN` (hand tiny / far away) the classifier returns `'none'` with confidence 0.
 
 ### 2.2 Finger extension angle (3D, world space)
 
@@ -41,21 +41,21 @@ a = P(mcp) − P(pip);  b = P(tip) − P(pip)
 pipAngle_f = degrees(acos(clamp(dot(a, b) / (|a|·|b|), −1, 1)))     // 180° = straight finger
 ```
 
-Using the 3D world landmarks here is deliberate: when the hand points at the camera, the 2D projection of a straight finger collapses to a short segment, but its 3D angle stays near 180°.
+Using the 3D world landmarks supplies evidence when perspective shortens a finger. It does not guarantee camera-facing classification: the reach and visibility checks below can still be ambiguous under foreshortening. Such input must decay to `none` rather than charge an unobserved point indefinitely.
 
 ### 2.3 Tip reach (2D, image space)
 
 ```
 reach_f = dist2D(TIP_f, WRIST) / palmSize            // ≈ 1.6–2.1 extended, ≈ 0.7–1.1 curled
 pipReach_f = dist2D(PIP_f, WRIST) / palmSize
-tipBeyondPip_f = reach_f > pipReach_f + 0.15
+tipBeyondPip_f = reach_f > pipReach_f + GESTURE_TIP_REACH_MARGIN
 ```
 
 ### 2.4 Per-finger state
 
 ```
 extended_f = pipAngle_f ≥ FINGER_EXT_ANGLE_DEG  &&  tipBeyondPip_f
-curled_f   = pipAngle_f ≤ FINGER_CURL_ANGLE_DEG  ||  reach_f < 1.15
+curled_f   = pipAngle_f ≤ FINGER_CURL_ANGLE_DEG  ||  reach_f < GESTURE_CURL_REACH_MAX
 // otherwise the finger is 'ambiguous'
 ```
 
@@ -64,8 +64,8 @@ curled_f   = pipAngle_f ≤ FINGER_CURL_ANGLE_DEG  ||  reach_f < 1.15
 The thumb is deliberately weak evidence (it is the least reliably tracked and people hold it inconsistently):
 
 ```
-thumbOut = dist2D(THUMB_TIP, PINKY_MCP) / palmSize > 1.3     // thumb away from the palm
-thumbIn  = dist2D(THUMB_TIP, INDEX_MCP) / palmSize < 0.6 || dist2D(THUMB_TIP, MIDDLE_PIP) / palmSize < 0.5
+thumbOut = dist2D(THUMB_TIP, PINKY_MCP) / palmSize > GESTURE_THUMB_OUT_MIN     // thumb away from the palm
+thumbIn  = dist2D(THUMB_TIP, INDEX_MCP) / palmSize < GESTURE_THUMB_IN_INDEX_MAX || dist2D(THUMB_TIP, MIDDLE_PIP) / palmSize < GESTURE_THUMB_IN_MIDDLE_MAX
 ```
 
 ### 2.6 Edge-on detection
@@ -74,10 +74,10 @@ When the palm faces sideways, PIP angles and reaches are unreliable. Define the 
 
 ```
 palmWidth = dist2D(INDEX_MCP, PINKY_MCP) / palmSize          // ≈ 0.8–1.1 facing camera, < 0.35 edge-on
-edgeOn = palmWidth < 0.35
+edgeOn = palmWidth < GESTURE_EDGE_ON_WIDTH
 ```
 
-When `edgeOn`, the classifier returns the **previous stable gesture** with `confidence = 0.3` (so hysteresis holds it, see §4) rather than guessing.
+When `edgeOn`, the classifier returns the previous stable gesture with low confidence for display continuity. That low-confidence evidence still increments the ambiguity counter in §4; it cannot hold a scoring gesture forever or advance beam charge.
 
 ## 3. Rules
 
@@ -86,8 +86,8 @@ Let `E = count(extended_f)`, `C = count(curled_f)` over the four fingers.
 | Gesture | Rule | Confidence |
 | --- | --- | --- |
 | `open` | `E === 4`, or (`E === 3` and the fourth is ambiguous and `thumbOut`) | `min over f of (pipAngle_f − FINGER_CURL_ANGLE_DEG) / (FINGER_EXT_ANGLE_DEG − FINGER_CURL_ANGLE_DEG)` clamped 0..1 (how far the *least* extended finger is from curl) |
-| `fist` | `C === 4`, or (`C === 3` and the fourth is ambiguous and `thumbIn`) | `1 − max over f of (reach_f − 0.7) / 0.6` clamped 0..1 (how tucked the *most* open finger is) |
-| `point` | `extended_INDEX` and `curled_MIDDLE && curled_RING && curled_PINKY` (thumb ignored); also accepted: index extended, middle *ambiguous*, ring and pinky curled, if `pipAngle_INDEX − pipAngle_MIDDLE ≥ 35°` | `min(ext margin of index, min curl margin of the three others)` |
+| `fist` | `C === 4`, or (`C === 3` and the fourth is ambiguous and `thumbIn`) | `1 − max over f of (reach_f − GESTURE_CURL_MARGIN_ORIGIN) / GESTURE_CURL_MARGIN_SPAN` clamped 0..1 (how tucked the *most* open finger is) |
+| `point` | `extended_INDEX` and `curled_MIDDLE && curled_RING && curled_PINKY` (thumb ignored); also accepted: index extended, middle *ambiguous*, ring and pinky curled, if `pipAngle_INDEX − pipAngle_MIDDLE ≥ GESTURE_POINT_RELAX_DEG` | `min(ext margin of index, min curl margin of the three others)` |
 | `none` | none of the above | `0` |
 
 Rule precedence when more than one matches (possible only through the "3 + ambiguous" relaxations): `point` > `fist` > `open`. Pointing is rarest and most deliberate; false positives on `point` are costly (a 500 ms charge) so its rule has no relaxation on the index finger itself.
@@ -95,56 +95,31 @@ Rule precedence when more than one matches (possible only through the "3 + ambig
 ### 3.1 `classify` pseudocode
 
 ```ts
-export function classify(hand: HandRaw, prev: Gesture): { gesture: Gesture; confidence: number } {
-  const palmSize = dist2D(hand, LM.MIDDLE_MCP, LM.WRIST);
-  if (palmSize < 0.015) return { gesture: 'none', confidence: 0 };
-  if (dist2D(hand, LM.INDEX_MCP, LM.PINKY_MCP) / palmSize < 0.35) return { gesture: prev, confidence: 0.3 }; // edge-on
-
-  const f = FINGERS.map(([mcp, pip, , tip]) => {
-    const angle = pipAngleDeg(hand.worldLandmarks, mcp, pip, tip);
-    const reach = dist2D(hand, tip, LM.WRIST) / palmSize;
-    const pipReach = dist2D(hand, pip, LM.WRIST) / palmSize;
-    return {
-      angle, reach,
-      extended: angle >= FINGER_EXT_ANGLE_DEG && reach > pipReach + 0.15,
-      curled: angle <= FINGER_CURL_ANGLE_DEG || reach < 1.15,
-    };
-  });
-  const [idx, mid, ring, pinky] = f;
-  const E = f.filter(x => x.extended).length, C = f.filter(x => x.curled).length;
-  const thumbOut = dist2D(hand, LM.THUMB_TIP, LM.PINKY_MCP) / palmSize > 1.3;
-  const thumbIn  = dist2D(hand, LM.THUMB_TIP, LM.INDEX_MCP) / palmSize < 0.6
-                || dist2D(hand, LM.THUMB_TIP, LM.MIDDLE_PIP) / palmSize < 0.5;
-  const extMargin  = (x) => clamp01((x.angle - FINGER_CURL_ANGLE_DEG) / (FINGER_EXT_ANGLE_DEG - FINGER_CURL_ANGLE_DEG));
-  const curlMargin = (x) => clamp01(1 - (x.reach - 0.7) / 0.6);
-
-  const pointOK = idx.extended && ring.curled && pinky.curled
-               && (mid.curled || (!mid.extended && idx.angle - mid.angle >= 35));
-  if (pointOK) return { gesture: 'point', confidence: Math.min(extMargin(idx), curlMargin(mid), curlMargin(ring), curlMargin(pinky)) };
-
-  const fistOK = C === 4 || (C === 3 && f.every(x => x.curled || !x.extended) && thumbIn);
-  if (fistOK) return { gesture: 'fist', confidence: Math.min(...f.map(curlMargin)) };
-
-  const openOK = E === 4 || (E === 3 && f.every(x => x.extended || !x.curled) && thumbOut);
-  if (openOK) return { gesture: 'open', confidence: Math.min(...f.map(extMargin)) };
-
-  return { gesture: 'none', confidence: 0 };
-}
+// Allocate `out` and the four-finger scratch record once per hand at initialization.
+// Feature equations and precedence are defined above; this is the hot-path API.
+export function classify(
+  hand: HandRaw,
+  prev: Gesture,
+  out: GestureResult,
+  scratch: ClassifierScratch,
+): void;
 ```
+
+`GestureResult` contains `gesture`, `confidence` and `ambiguous`; `ClassifierScratch` owns fixed arrays for the four fingers' angles, reaches and flags. Fill them with indexed loops, accumulate `E/C` and minimum margins in scalar variables, then write the first matching rule to `out`. Validate finite coordinates and nonzero vector lengths before dividing; a degenerate/invalid hand writes `none`, confidence 0. Do not use per-sample `map`, `filter`, spread, temporary vectors or returned object literals in the production classifier. Tests can use a convenience allocating wrapper outside the hot path.
 
 ## 4. Hysteresis (`gestures/cursor.ts`)
 
 Per hand: `stable: Gesture`, `candidate: Gesture`, `candidateFrames: number`, `ambiguousFrames: number`, `stableSince: number`.
 
-1. `r = classify(hand, stable)`.
-2. If `r.gesture === stable`: `candidateFrames = 0; ambiguousFrames = 0`.
-3. Else if `r.gesture === 'none'` or `r.confidence < 0.25`: `ambiguousFrames++`. If `ambiguousFrames ≥ GESTURE_DROP_FRAMES` → `stable = 'none'`, `stableSince = tCapture`.
-4. Else (a different confident gesture): if `r.gesture === candidate` then `candidateFrames++` else `candidate = r.gesture; candidateFrames = 1`. If `candidateFrames ≥ GESTURE_CONFIRM_FRAMES` → `stable = candidate`, `stableSince = tCapture`, reset counters.
-5. On hand loss (`present` false ≥ 2 frames): `stable = 'none'`, counters reset.
+1. `classify(hand, stable, result, scratch)`; use the reused `result` as `r` below.
+2. If `r.gesture === 'none'`, input is edge-on/ambiguous, or confidence is below `GESTURE_CONFIDENCE_MIN`: clear `candidateFrames`, increment `ambiguousFrames`; after `GESTURE_DROP_FRAMES`, set `stable = 'none'` and update `stableSince`. Low-confidence output equal to `stable` still takes this branch.
+3. Else if `r.gesture === stable`: clear both counters and the pending candidate.
+4. Else (a different confident gesture): clear `ambiguousFrames`; increment `candidateFrames` only for the same consecutive candidate, otherwise replace it and start at 1. At `GESTURE_CONFIRM_FRAMES`, commit `stable`, update `stableSince`, and reset counters. An intervening ambiguous frame breaks the candidate run.
+5. On hand loss (`present` false for `HAND_RESET_FRAMES` samples): `stable = 'none'`, counters reset.
 
 Output: `HandCursor.gesture = stable`, `gestureConfidence = r.confidence` (of the current frame, informational), `gestureHeldMs = tCapture − stableSince`.
 
-Fast-path exception: switching **into** `'open'` from `'none'` is allowed after 1 frame when `confidence ≥ 0.7`. Players open their hand mid-swing and a 3-frame (≈ 100 ms) delay would turn fast slashes into non-hits. Leaving `'open'` still requires the full confirm count so a blurred fast hand does not drop the blade.
+Fast-path exception: switching **into** `'open'` from `'none'` is allowed after 1 frame when `confidence ≥ GESTURE_FAST_OPEN_CONFIDENCE`. Players open their hand mid-swing and a 3-frame (≈ 100 ms) delay would turn fast slashes into non-hits. Leaving `'open'` still requires the full confirm count so a blurred fast hand does not drop the blade.
 
 ## 5. Position, velocity, `pointDir`
 
@@ -161,11 +136,11 @@ vel = (pos[n] − pos[n − VEL_WINDOW_FRAMES]) / (t[n] − t[n − VEL_WINDOW_F
 speed = |vel|
 ```
 
-With fewer samples (hand just appeared) use whatever span exists; with one sample `vel = 0`. Because positions were One Euro-filtered, no additional smoothing is applied to `vel`; the window averages the remaining jitter. Velocity is in play-plane metres per second — the unit all `*_SPEED` constants use.
+With fewer samples (hand just appeared) use whatever span exists; with one sample `vel = 0`. Because positions were One Euro-filtered, no additional smoothing is applied to `vel`; the window averages the remaining jitter. Velocity is in play-plane metres per second. Gameplay `*_SPEED` thresholds use that unit; `SWING_MIN_SPEED` and `TORSO_SWING_MIN_SPEED` are physical-proxy speeds for the separate motion estimate ([07](07-hit-detection-and-scoring.md)). Reject nonpositive sample `dt`; reset the window across loss, pause or an over-age gap rather than calculating an enormous reacquisition velocity.
 
 ### 5.3 Extrapolation
 
-If the loop runs a frame with no new `TrackingFrame` ([02 §Frame loop](02-architecture.md#frame-loop) step 2) the cursor advances `pos += vel · dt` and `tip` likewise, up to `EXTRAPOLATE_MAX_MS` since `tCapture`, then holds. `tCapture` is not advanced by extrapolation (judgements use the real capture time).
+Extrapolation is **render-only**. Derive a display position from the immutable latest measured sample: `displayPos = measuredPos + measuredVel · min(now − tCapture, EXTRAPOLATE_MAX_MS) / 1000`. Do the same for the displayed fingertip, then hold at the cap. Never integrate repeatedly into `HandCursor.pos`, append predicted history, advance gesture hold/charge, detect a hit or estimate energy from predicted samples. This makes scoring independent of render cadence and prevents a frozen camera from continuing to hit notes.
 
 ### 5.4 `pointDir`
 
@@ -173,11 +148,11 @@ If the loop runs a frame with no new `TrackingFrame` ([02 §Frame loop](02-archi
 pointDir = normalize(mapToPlayPlane(INDEX_TIP) − mapToPlayPlane(INDEX_MCP)).xy
 ```
 
-Used by the HUD charge indicator and [07 §Beam resolution](07-hit-detection-and-scoring.md#beam-resolution). When the finger points at the camera the 2D vector is short and noisy; if its pre-normalised length < 0.05 m, keep the previous `pointDir`.
+Used for the HUD charge indicator and cosmetic beam direction; aiming uses fingertip position ([07 §Beam resolution](07-hit-detection-and-scoring.md#8-beam-resolution)). When the finger points at the camera the 2D vector is short and noisy; if its pre-normalised length is below `POINT_DIR_MIN_M`, keep the previous valid `pointDir`. With no previous direction, use a stable display default and treat classification confidence independently.
 
 ### 5.5 History
 
-`history` is the last `TRAIL_HISTORY` values of `pos` (newest last). When the hand is absent the history is cleared so the trail does not stretch across the screen on reacquisition.
+`history` is a preallocated ring containing the last `TRAIL_HISTORY` measured positions (logically newest last). Write into existing entries; do not `shift`, clone vectors or append predicted samples. When the hand is absent, or the session pauses/resets, clear the logical length so the trail does not bridge an unobserved gap.
 
 ## 6. Blade state (`gestures/blade.ts`)
 
@@ -194,19 +169,20 @@ The renderer smooths `bladeLength` visually ([12](12-rendering-hands-trails.md))
 ## 7. Beam charge
 
 ```
-if (gesture === 'point') charge = min(1, charge + dt / BEAM_CHARGE_MS)
-else                     charge = max(0, charge − 3 · dt / BEAM_CHARGE_MS)
+// Update once per NEW accepted tracking sample; dt is capture-time delta in ms.
+if (gesture === 'point' && confident) charge = min(1, charge + dt / BEAM_CHARGE_MS)
+else                                 charge = max(0, charge − BEAM_CHARGE_DECAY · dt / BEAM_CHARGE_MS)
 ```
 
-- `charge` reaching 1 is the fire condition ([07 §Beam resolution](07-hit-detection-and-scoring.md#beam-resolution)). After a fire, `charge = 0` and charging is locked out for 150 ms (`chargeLockUntil`) so one held point does not re-fire every frame.
-- The 3× decay means a 100 ms blink of `'none'` (e.g. motion blur) costs ~0.6 of charge rather than resetting — forgiving, but a clearly dropped point empties in ~170 ms.
+- `charge` reaching 1 is the fire condition ([07 §Beam resolution](07-hit-detection-and-scoring.md#8-beam-resolution)). After a fire, `charge = 0` and charging is locked out for `BEAM_REFIRE_LOCK_MS`, using capture-song time, so one held point does not re-fire every render frame. The owning cursor state processes a fire/reset command; renderer/UI subscribers never modify charge.
+- The configured decay permits a short ambiguous sample without an instant reset. Hand loss, pause, stale input or identity reassignment resets charge and velocity immediately; missing samples do not accrue charging time.
 - The HUD shows `charge` as a ring around the hand indicator; the renderer draws the charging beam from `tip` ([12](12-rendering-hands-trails.md)).
 
 ## 8. Debug and tuning workflow
 
 - The debug overlay (dev only) prints per hand: `E/C`, each `pipAngle` and `reach`, `palmWidth`, raw and stable gesture, confidence, `speed`, `bladeLength`, `charge`.
 - `FINGER_EXT_ANGLE_DEG`, `FINGER_CURL_ANGLE_DEG`, `BLADE_ON_SPEED`, `BLADE_OFF_SPEED` are exposed on a dev-only `window.__tune` object (hot-editable in the console) with a "copy as constants" button so the agreed values go back into `core/constants.ts` in one paste. No tuning value lives anywhere else.
-- Tuning session protocol (H7 in [19](19-build-plan.md)): three people × three gestures × near/mid/far distance × palm-facing/45°. Record fixtures for any case that fails and add them to the unit tests before changing thresholds.
+- Tuning session protocol (P2/P4 in [the roadmap](../ROADMAP.md)): at least three consenting people × three gestures × near/mid/far distance × palm-facing/45°. Separate tuning fixtures from held-out evaluation fixtures, report per-gesture precision/recall and transition latency, and keep failures in the corpus. Record any failing case before changing thresholds; rerun all held-out cases after a change.
 
 ## 9. Unit tests (`tests/unit/classifier.test.ts`)
 
@@ -216,9 +192,9 @@ Fixtures are recorded `HandRaw` sequences in `tests/fixtures/hands/*.json` (`{ l
 | --- | --- |
 | `open_static_*.json` | ≥ 95 % of frames classify `open` with confidence ≥ 0.5 |
 | `fist_static_*.json` | ≥ 95 % `fist` |
-| `point_up / point_camera / point_side.json` | ≥ 90 % `point` (camera-facing relies on 3D angles) |
+| `point_up / point_side.json` | ≥ 90 % `point`; report camera-facing/foreshortened cases separately and coach a clearer pose if they fail |
 | `slash_sequence.json` | hysteresis: stable gesture becomes `open` within 2 frames of the hand opening and never flickers to `none` during the 12 fast frames |
-| `edge_on_flip.json` | no gesture change during the edge-on segment |
+| `edge_on_flip.json` | short edge-on interval preserves display continuity; sustained ambiguity reaches `none` after the documented drop count and does not charge |
 | `charge_hold.json` (0.6 s point) | `charge` reaches 1 at the frame nearest 500 ms ± 1 frame; releasing drops to 0 in ≤ 6 frames |
 | synthetic velocity (positions on a straight line at 6 m/s) | `speed` within 5 % of 6; blade turns on; length matches the formula |
 | far hand (`palmSize` 0.01) | `none`, confidence 0, no throw |
@@ -227,11 +203,11 @@ Fixtures are recorded `HandRaw` sequences in `tests/fixtures/hands/*.json` (`{ l
 
 - [ ] All three gestures are recognised within 100 ms of being formed, at 1.5–2.5 m from a 720p webcam, in room light, for three different people.
 - [ ] A full-speed open-hand slash does not lose the `open` gesture mid-swing (verified on the debug overlay: no `none` frames during a swing).
-- [ ] Pointing straight at the camera charges the beam as reliably as pointing up.
+- [ ] Pointing with the index clearly visible charges reliably. Camera-aligned, occluded and edge-on poses either pass held-out fixtures or show helpful coaching; the docs/demo do not promise unsupported viewpoints.
 - [ ] Relaxed hand (half-open) classifies `none`, not `open` or `fist`; the player must deliberately open or close.
 - [ ] Crossing hands in front of the body does not swap gesture state between hands (identity tracking from [05 §3.2](05-tracking-pipeline.md#32-hand-identity)).
 - [ ] All unit tests in §9 pass; the classifier is a pure function with no `three` or DOM imports.
 
 ## Constants required
 
-All referenced constants exist in [02](02-architecture.md#constants). Local thresholds (palm-size floor 0.015, edge-on 0.35, tipBeyondPip 0.15, thumb 1.3 / 0.6 / 0.5, confidence floor 0.25, fast-path 0.7, point relaxation 35°, charge lockout 150 ms) are module-level constants in `gestures/`. If tuning shows they must be shared with the renderer or tests, promote them to `core/constants.ts` as `GESTURE_*`.
+All executable thresholds belong in `core/constants.ts` and the [02 constants registry](02-architecture.md#constants), including classifier-only tuning values. Values shown in the feature equations are initial defaults, not permission to inline magic numbers. P0 exports the registry; subsequent tuning updates the registry, fixtures and implementation together. `BEAM_CHARGE_DECAY`, `GESTURE_*` feature thresholds and the direction floor are listed there.

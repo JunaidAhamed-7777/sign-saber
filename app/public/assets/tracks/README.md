@@ -12,6 +12,6 @@ One folder per track, named by slug. Each folder MUST contain:
 
 ## Attribution
 
-| Slug | Title | Artist | License | Source |
-| --- | --- | --- | --- | --- |
-| — | — | — | — | Add two tracks at H1 (docs/19-build-plan.md) |
+No tracks are committed or claimed as licensed yet. Add two rights-cleared tracks during P2 in the [roadmap](../../../../ROADMAP.md), plus a rights-cleared short demo excerpt during P3 for P4 benchmarks and the P5 showcase. For each, record slug, real title, artist, exact source URL, license/version, attribution text, allowed edits and audio hash. Do not invent placeholder titles or treat “royalty-free” as permission to redistribute.
+
+The `beatmaps` command is currently a deliberate failing placeholder. These files/manifest are the target format, not existing content; add them only when generation and validation work. See [09 — Beatmap Format](../../../../docs/09-beatmap-format.md).

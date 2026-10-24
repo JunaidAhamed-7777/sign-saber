@@ -6,6 +6,8 @@ Sign Saber is an experimental browser rhythm game with a camera-free music menu,
 
 The current checkpoint and remaining work are in [HANDOFF.md](HANDOFF.md). Start with [ROADMAP.md](ROADMAP.md), [the subsystem index](docs/README.md), [DESIGN.md](DESIGN.md) and [AGENTS.md](AGENTS.md). The user's current scope excludes legs everywhere: placeholder, tracked input, live/setup view, pause and saved results.
 
+New here? Read the [Player guide](docs/player-guide.md) for setup, moves and no-camera trials, [Troubleshooting](docs/troubleshooting.md) for exact error messages and recovery, or the [Contributor guide](docs/contributor-guide.md) for code flow, checks and evidence rules.
+
 ## Run
 
 Use a current Node 22 release (CI baseline) or the locally exercised Node 26.8.1/npm 12.2.1. From the repository root:

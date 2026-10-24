@@ -65,10 +65,11 @@ From `app/`:
 
 ```powershell
 npm run check
+npm run bundle:check
 npm run beatmaps
 ```
 
-`check` runs typecheck, lint, asserted Vitest suites and production build; it no longer permits empty test suites. The integrated worktree passed 250 assertions. `beatmaps` is a real shared-DSP generation/validation command and requires ffmpeg for canonical PCM. Bundled MP3 iTunSMPB trim is honoured before analysis; browser source-zero/resampling checks caught and corrected real errors.
+`check` runs typecheck, lint, asserted Vitest suites, production build and the enforced [bundle-size budget](docs/16-performance-budget.md#bundle-size-budget); it no longer permits empty test suites. `bundle:check` reruns the budget tests and checks an existing build, rejecting any emitted JS chunk over 500000 bytes. The integrated worktree passed 250 assertions. `beatmaps` is a real shared-DSP generation/validation command and requires ffmpeg for canonical PCM. Bundled MP3 iTunSMPB trim is honoured before analysis; browser source-zero/resampling checks caught and corrected real errors.
 
 From the root:
 

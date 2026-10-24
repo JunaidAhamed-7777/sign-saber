@@ -1,0 +1,382 @@
+{
+  "recordedAt": "2026-10-24T22:18:17.047Z",
+  "label": "after",
+  "sha": "ad41466990b7e62321b835c7261df4559dc53921",
+  "dirty": true,
+  "node": "v26.8.1",
+  "os": "win32",
+  "cacheDisabled": true,
+  "networkThrottling": "none; local loopback",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "chunks": [
+    {
+      "file": "generator.worker-B6OPcKR7.js",
+      "bytes": 22449,
+      "gzipBytes": 9056
+    },
+    {
+      "file": "index-LlutNhgn.js",
+      "bytes": 254379,
+      "gzipBytes": 79339
+    },
+    {
+      "file": "react-CTym4sTV.js",
+      "bytes": 218790,
+      "gzipBytes": 67563
+    },
+    {
+      "file": "rolldown-runtime-WkwZ5CU-.js",
+      "bytes": 599,
+      "gzipBytes": 368
+    },
+    {
+      "file": "three-B_2LwjzK.js",
+      "bytes": 222990,
+      "gzipBytes": 59159
+    },
+    {
+      "file": "three-bq-AKiay.js",
+      "bytes": 352349,
+      "gzipBytes": 84153
+    },
+    {
+      "file": "three-sRmNNit9.js",
+      "bytes": 48975,
+      "gzipBytes": 14216
+    },
+    {
+      "file": "tracking.worker-DeV5KsxN.js",
+      "bytes": 160846,
+      "gzipBytes": 47741
+    }
+  ],
+  "requests": [
+    {
+      "phase": "first-load",
+      "url": "/",
+      "type": "Document",
+      "startMs": 0,
+      "initiator": "other",
+      "status": 200,
+      "mime": "text/html",
+      "endMs": 8.47,
+      "encodedBytes": 2418
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/index-LlutNhgn.js",
+      "type": "Script",
+      "startMs": 17.73,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 65.61,
+      "encodedBytes": 255010
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/rolldown-runtime-WkwZ5CU-.js",
+      "type": "Script",
+      "startMs": 18.23,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 48.65,
+      "encodedBytes": 1227
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/react-CTym4sTV.js",
+      "type": "Script",
+      "startMs": 18.31,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 85.1,
+      "encodedBytes": 219421
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/three-B_2LwjzK.js",
+      "type": "Script",
+      "startMs": 18.5,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 67.75,
+      "encodedBytes": 223621
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/three-bq-AKiay.js",
+      "type": "Script",
+      "startMs": 18.58,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 95.75,
+      "encodedBytes": 352980
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/three-sRmNNit9.js",
+      "type": "Script",
+      "startMs": 18.65,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 104.17,
+      "encodedBytes": 49605
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/index-D613XqhR.css",
+      "type": "Stylesheet",
+      "startMs": 18.71,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/css",
+      "endMs": 67.52,
+      "encodedBytes": 35553
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/fonts/orbitron.ttf",
+      "type": "Font",
+      "startMs": 162.04,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "font/ttf",
+      "endMs": 171.31,
+      "encodedBytes": 39184
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/armor.glb",
+      "type": "Fetch",
+      "startMs": 508.07,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 516.29,
+      "encodedBytes": 57949
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/beam_ring.glb",
+      "type": "Fetch",
+      "startMs": 508.28,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 516.48,
+      "encodedBytes": 45849
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/glyphs.glb",
+      "type": "Fetch",
+      "startMs": 508.43,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 519.95,
+      "encodedBytes": 10673
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/pylon.glb",
+      "type": "Fetch",
+      "startMs": 508.57,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 522.67,
+      "encodedBytes": 4872
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/block_fractured.glb",
+      "type": "Fetch",
+      "startMs": 508.68,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 522.86,
+      "encodedBytes": 13849
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/arena_environment.glb",
+      "type": "Fetch",
+      "startMs": 508.78,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 544.52,
+      "encodedBytes": 64997
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/tracks/manifest.json",
+      "type": "Fetch",
+      "startMs": 580.42,
+      "initiator": "script",
+      "status": 200,
+      "mime": "application/json",
+      "endMs": 588.52,
+      "encodedBytes": 5753
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/fonts/rajdhani.ttf",
+      "type": "Font",
+      "startMs": 836.15,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "font/ttf",
+      "endMs": 849.01,
+      "encodedBytes": 384957
+    },
+    {
+      "phase": "first-load",
+      "url": "/favicon.ico",
+      "type": "Other",
+      "startMs": 1261.04,
+      "initiator": "other",
+      "status": 404,
+      "mime": "text/plain",
+      "endMs": 1263.95,
+      "encodedBytes": 624
+    },
+    {
+      "phase": "select-and-audio",
+      "url": "/assets/tracks/pamgaea/normal.json",
+      "type": "Fetch",
+      "startMs": 2870.78,
+      "initiator": "script",
+      "status": 200,
+      "mime": "application/json",
+      "endMs": 2945.1,
+      "encodedBytes": 231937
+    },
+    {
+      "phase": "select-and-audio",
+      "url": "/assets/tracks/pamgaea/audio.mp3",
+      "type": "Fetch",
+      "startMs": 2874.96,
+      "initiator": "script",
+      "status": 200,
+      "mime": "audio/mpeg",
+      "endMs": 3232.81,
+      "encodedBytes": 6745551
+    },
+    {
+      "phase": "dataset-trial",
+      "url": "/assets/generator.worker-B6OPcKR7.js",
+      "type": "Script",
+      "startMs": 15562.7,
+      "initiator": "other"
+    },
+    {
+      "phase": "dataset-trial",
+      "url": "/assets/fixtures/coco-upper-body-trial.json",
+      "type": "Fetch",
+      "startMs": 19167.14,
+      "initiator": "script",
+      "status": 200,
+      "mime": "application/json",
+      "endMs": 19214.34,
+      "encodedBytes": 20619
+    },
+    {
+      "phase": "dataset-trial",
+      "url": "/favicon.ico",
+      "type": "Other",
+      "startMs": 21223.99,
+      "initiator": "other",
+      "status": 404,
+      "mime": "text/plain",
+      "endMs": 21229.49,
+      "encodedBytes": 624
+    }
+  ],
+  "security": [],
+  "steps": [
+    {
+      "step": "menu",
+      "pass": true
+    },
+    {
+      "step": "dataset-trial plays",
+      "pass": true,
+      "text": "SIGN SABER\nDataset annotations · no webcam\nMouse / keyboard to browse · Esc to pause\n◆\nDATASET TRIAL · static poses, no gesture labels · no webcam\nSCORE\n0\nCOMBO\n×1\n0\nACCURACY\n—\nLeft hand\nUnavailable\nNo hand data\nRight hand\nUnavailable\nNo hand data\n0:00\n1:20"
+    },
+    {
+      "step": "dataset-trial results",
+      "pass": true,
+      "counts": [
+        {
+          "label": "Perfect",
+          "count": 0
+        },
+        {
+          "label": "Great",
+          "count": 0
+        },
+        {
+          "label": "Good",
+          "count": 0
+        },
+        {
+          "label": "Miss",
+          "count": 131
+        },
+        {
+          "label": "Bad cut",
+          "count": 0
+        }
+      ],
+      "hits": 0
+    },
+    {
+      "step": "performer-trial plays",
+      "pass": true,
+      "text": "SIGN SABER\nSYNTHETIC PERFORMER · planned motion · no camera\nMouse / keyboard to browse · Esc to pause\n◆\nSYNTHETIC PERFORMER · planned motion · no camera\nSCORE\n0\nCOMBO\n×1\n0\nACCURACY\n—\nLeft hand\nNo gesture\n0%\nBeam charge\nRight hand\nNo gesture\n0%\nBeam charge\n0:00\n1:20"
+    },
+    {
+      "step": "performer-trial results",
+      "pass": true,
+      "counts": [
+        {
+          "label": "Perfect",
+          "count": 131
+        },
+        {
+          "label": "Great",
+          "count": 0
+        },
+        {
+          "label": "Good",
+          "count": 0
+        },
+        {
+          "label": "Miss",
+          "count": 0
+        },
+        {
+          "label": "Bad cut",
+          "count": 0
+        }
+      ],
+      "hits": 131
+    }
+  ],
+  "browser": "Chrome/155.0.8059.86",
+  "firstLoadText": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your music\nP\nPamgaea\nKevin MacLeod\n2:48 · Tempo unclear\nE\nElectro Cabello\nKevin MacLeod\n3:10 · Tempo unclear\nC\nCipher\nKevin MacLeod\n3:51 · Tempo unclear\n←\nPrevious\nChoose your music\n1 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nSELECTED TRACK\nSelect a track\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nMake 80-second cut\nTry level with dataset\nAnnotated poses · no webcam\nWatch synthetic performer\nPlanned motion · no camera\n\nChoose a track to begin.\n\n←\nPrevious\nReady when you are\n1 of 4\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click\n\nMouse and keyboard always work",
+  "console": [],
+  "passed": true
+}

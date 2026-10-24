@@ -1,6 +1,50 @@
 # 16 — Performance Budget
 
-Pillar P5: smooth delivery with fresh input. `TARGET_FPS = 60`, `FLOOR_FPS = 40`; a target frame on a 60 Hz display is 16.67 ms and the sustained floor corresponds to 25 ms. **All numbers here are engineering targets or estimates, not measured results.** [24 — Benchmark & Evidence Protocol](24-benchmark-and-evidence.md) owns metric definitions, thresholds and run procedures; this document assigns subsystem budgets.
+Pillar P5: smooth delivery with fresh input. `TARGET_FPS = 60`, `FLOOR_FPS = 40`; a target frame on a 60 Hz display is 16.67 ms and the sustained floor corresponds to 25 ms. **Frame, tracking and memory numbers here are engineering targets or estimates, not measured results.** The bundle evidence below is explicitly measured. [24 — Benchmark & Evidence Protocol](24-benchmark-and-evidence.md) owns metric definitions, thresholds and run procedures; this document assigns subsystem budgets.
+
+## Bundle-size budget
+
+This build-only sub-registry applies to emitted production JavaScript, including entries, shared chunks and workers. `MAX_JS_CHUNK_BYTES = 500000` in [check-bundle.mjs](../scripts/check-bundle.mjs) is an enforced **uncompressed byte** limit per `.js`/`.mjs` file, recursively under `app/dist/assets`; source maps, CSS and source assets are excluded. Exactly 500000 bytes passes; 500001 fails. Missing/empty builds and unknown CLI flags fail too. Gzip sizes are reported for comparison, not used to admit an oversized chunk.
+
+`BUILD_CHUNK_TARGET_BYTES = 450000` in [vite.config.ts](../app/vite.config.ts) is Rolldown's pre-minification grouping target for Three.js modules, not an emitted-size guarantee. React has its own group; application code remains separate. No warning limit is raised. Static module preloads allow parallel requests while preserving the arena behind the camera-free menu and the existing asset/renderer error behavior. The runtime and security policy are unchanged.
+
+From `app/`, `npm run bundle:check` runs the parser/boundary/CLI regression tests and reads the actual build. `npm run check` runs it after production build. From the root, `node scripts/check-bundle.mjs` checks an existing build; an optional assets-directory argument supports fixtures.
+
+### Measured bundle and request evidence — 2026-10-25
+
+The controlled [before](evidence/2026-10-25-bundle-before.json) and [after](evidence/2026-10-25-bundle-after.json) runs used application source `ad41466990b7e62321b835c7261df4559dc53921`, Node 26.8.1, Chrome 155.0.8059.86 on Windows, fresh browser profiles, 1440×900 at DPR 1, disabled browser cache, unthrottled loopback HTTP and headless SwiftShader. Both worktrees were dirty (the after build includes this chunk configuration); this is scoped build/browser evidence, not a release SHA or performance benchmark. Gzip bytes below use Node `gzipSync` defaults consistently, rather than Vite's display calculation.
+
+| Build | JavaScript file | Emitted bytes | Gzip bytes |
+| --- | --- | ---: | ---: |
+| Before | `index-tWIDsd3B.js` | 1096061 | 301973 |
+| Before | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| Before | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+| After | `index-LlutNhgn.js` | 254379 | 79339 |
+| After | `react-CTym4sTV.js` | 218790 | 67563 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 599 | 368 |
+| After | `three-B_2LwjzK.js` | 222990 | 59159 |
+| After | `three-bq-AKiay.js` | 352349 | 84153 |
+| After | `three-sRmNNit9.js` | 48975 | 14216 |
+| After | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| After | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+
+CDP's actual first-load script waterfall follows (milliseconds relative to the document request). Full JSON also retains fonts, assets, catalog, selected music and worker requests, HTTP status, initiator and transferred bytes.
+
+| Build | Script | Request start → finish (ms) |
+| --- | --- | ---: |
+| Before | `index-tWIDsd3B.js` | 23.50 → 43.26 |
+| After | `index-LlutNhgn.js` | 17.73 → 65.61 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 18.23 → 48.65 |
+| After | `react-CTym4sTV.js` | 18.31 → 85.10 |
+| After | `three-B_2LwjzK.js` | 18.50 → 67.75 |
+| After | `three-bq-AKiay.js` | 18.58 → 95.75 |
+| After | `three-sRmNNit9.js` | 18.65 → 104.17 |
+
+The unchanged build emitted Vite's >500 kB warning and the budget command failed as expected. The split build emitted no warning and all eight JS files passed. An actual `npm run preview -- --port 4181` run retained the menu arena, then completed Pamgaea's arranged dataset trial (131 Miss, zero invented hits) and synthetic performer (131 Perfect, zero misses), returning to Songs after each. No runtime console errors or CSP security log entries were observed. This establishes request topology and scoped functionality; these single unthrottled runs show **no measured FPS or load-time improvement**.
+
+Two preliminary probe failures are retained: [audio-unlock predicate](evidence/2026-10-25-bundle-probe-failure.json) and [HUD selector](evidence/2026-10-25-bundle-probe-selector-failure.json). They were harness mistakes (waiting for a trial to enable before audio unlock, then looking for `.hud` instead of `.game-hud`), not app failures; the corrected probe completed both real sessions.
+
+After normally integrating main `1fa1827`, `npm run check` passed again (363 application assertions plus three budget tests) with no build warning. Its final entry is `index-D9QxVp5f.js` at 254784 raw/79408 gzip bytes; the other seven JS files retain the sizes above. The controlled browser comparison remains explicitly tied to `ad41466`, rather than being relabelled as a browser run of the newer source.
 
 ## Main-thread frame budget
 

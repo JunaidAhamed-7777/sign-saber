@@ -5,6 +5,10 @@ import glsl from 'vite-plugin-glsl';
 import { developmentCsp, securityHeaders } from '../scripts/security-headers.mjs';
 import { createStaticHandler } from '../scripts/serve.mjs';
 
+// Pre-minification grouping target; the emitted-byte gate lives in scripts/check-bundle.mjs.
+// Build-only registry: docs/16-performance-budget.md §Bundle-size budget.
+const BUILD_CHUNK_TARGET_BYTES = 450_000;
+
 // See docs/02-architecture.md §Build & tooling.
 // - Workers are bundled via `new Worker(new URL('./x.worker.ts', import.meta.url), { type: 'module' })`.
 // - MediaPipe WASM + models are served from /models (app/public/models), populated by `npm run models`.
@@ -42,6 +46,16 @@ export default defineConfig({
   build: {
     target: 'es2022',
     sourcemap: true,
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: 'three', test: /node_modules[\\/]three[\\/]/, maxSize: BUILD_CHUNK_TARGET_BYTES },
+            { name: 'react', test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/ },
+          ],
+        },
+      },
+    },
   },
   worker: {
     format: 'es',

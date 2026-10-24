@@ -6,6 +6,41 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T03:57:05+05:30 — Split production JavaScript and enforce its budget (#1)
+
+- Changed: `app/vite.config.ts` groups React and size-bounded Three.js modules through `build.rolldownOptions.output.codeSplitting`; the runtime remains unchanged. New dependency-free `scripts/check-bundle.mjs` reads emitted JS/worker bytes and gzip sizes, fails above the registered 500000-byte per-file limit, and rejects absent builds. `app/package.json` runs its parser/boundary/CLI tests and budget after build in `npm run check`. README documents the real command; [docs16](docs/16-performance-budget.md#bundle-size-budget) registers build-only limits and retained measurements.
+- Why: Issue #1's original 1096061-byte main chunk exceeded Vite's warning. The menu arena still loads alongside the shell; splitting permits parallel static requests without changing lifecycle, asset fallback or CSP policy.
+- Validation: The unchanged build warned and the budget command failed as expected. The controlled split build had no >500 kB warning, passed typecheck/lint/363 application assertions/build plus 3 budget tests, and completed actual `npm run preview -- --port 4181` runs: menu arena, arranged dataset results (131 Miss/0 hits), synthetic results (131 Perfect/0 misses), Songs after each, no runtime console errors/CSP log entries. After normally integrating latest main `1fa1827`, full `npm run check` passed again (363 application assertions, 3 budget tests, no build warning); the final main chunk is `index-D9QxVp5f.js` (254784 raw/79408 gzip bytes), with the other seven JS sizes unchanged. Root docs tests passed 2/2; 47 Markdown files/529 local links passed. Changed source formatting and `git diff --check` passed.
+- Limits: Both controlled runs used source `ad41466990b7e62321b835c7261df4559dc53921` with dirty worktrees, Node 26.8.1, Windows, Chrome 155.0.8059.86/headless SwiftShader, fresh profiles, disabled browser cache, 1440×900/DPR1 and unthrottled loopback. Gzip is Node `gzipSync` default. Raw [before](docs/evidence/2026-10-25-bundle-before.json)/[after](docs/evidence/2026-10-25-bundle-after.json) requests and two corrected probe mistakes ([audio unlock](docs/evidence/2026-10-25-bundle-probe-failure.json), [HUD selector](docs/evidence/2026-10-25-bundle-probe-selector-failure.json)) are retained. No FPS, load-time, webcam or release-gate improvement is claimed. Initial dependency installation failed from a corrupt shared npm cache; bundled npm 11.19.0 with an isolated cache succeeded without changing the lockfile.
+
+Measured emitted JavaScript table (bytes; source held constant for this comparison):
+
+| Build | File | Raw | Gzip |
+| --- | --- | ---: | ---: |
+| Before | `index-tWIDsd3B.js` | 1096061 | 301973 |
+| Before | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| Before | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+| After | `index-LlutNhgn.js` | 254379 | 79339 |
+| After | `react-CTym4sTV.js` | 218790 | 67563 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 599 | 368 |
+| After | `three-B_2LwjzK.js` | 222990 | 59159 |
+| After | `three-bq-AKiay.js` | 352349 | 84153 |
+| After | `three-sRmNNit9.js` | 48975 | 14216 |
+| After | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| After | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+
+Measured first-load script waterfall (CDP request start → finish, ms from document request):
+
+| Build | Script | Start → finish |
+| --- | --- | ---: |
+| Before | `index-tWIDsd3B.js` | 23.50 → 43.26 |
+| After | `index-LlutNhgn.js` | 17.73 → 65.61 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 18.23 → 48.65 |
+| After | `react-CTym4sTV.js` | 18.31 → 85.10 |
+| After | `three-B_2LwjzK.js` | 18.50 → 67.75 |
+| After | `three-bq-AKiay.js` | 18.58 → 95.75 |
+| After | `three-sRmNNit9.js` | 18.65 → 104.17 |
+
 ## 2026-10-25T03:46:00+05:30 — Watchable synthetic performer trial
 
 - Changed: Added `performer/trial.ts` and a **Watch synthetic performer** action. The runtime drives the selected (arranged) chart with planned performer frames through the same tracking consumer, renderer, scoring and results as other sources, calibrates the performer's lean reference once it stands still, shows hand HUD state and exports evidence lane `synthetic-performer-logic-replay`. A source-aware `ui/trialCopy.ts` labels banner, status, setup, figure and results honestly for annotations versus performer.

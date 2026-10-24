@@ -1,5 +1,7 @@
 # 07 — Hit Detection & Scoring
 
+**Implementation checkpoint:** the pure game/audio spine and synthetic assertions are implemented. Live camera/audio integration and phase acceptance remain unverified.
+
 Scope: `game/` — the spawner, the live-object simulation, contact tests between `HandCursor`s and notes, judgement, bad cuts, beams, obstacles vs `BodyState`, scoring, kinetic energy and `SessionStats`. Inputs are the contracts in [02](02-architecture.md#contracts); outputs are the events in [02 §Game → Renderer / UI](02-architecture.md#game--renderer--ui-events). `game/` never imports `three`; all geometry here is small hand-written vector math in `utils/math.ts`.
 
 Design basis: [ADR-006](03-decisions.md#adr-006--contact-based-hits-with-timing-judgement-derived-from-note-depth) — a hit is a geometric contact on the play plane while the note is inside a *timing* window; the judgement comes from how early or late the contact is.

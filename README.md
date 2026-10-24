@@ -4,7 +4,7 @@
 
 Sign Saber is a planned browser rhythm game: a webcam turns your movement into a neon silhouette; open hands cut, fists shatter, pointing charges a beam, and leaning dodges incoming walls. Local audio becomes a playable level through on-device beat analysis. No headset or handheld controller.
 
-**Current status: specification and scaffold, not a playable game.** The source and ten unit-test files are documented stubs. The toolchain builds, but there is no tracking, gameplay, DSP, companion server or benchmark harness yet. This documentation pass makes those systems precise enough to build and verify; it does not claim they are implemented.
+**Current status: implementation in progress.** Shared contracts and the audio/game logic now have real assertions, including deterministic capture-time replay. The integrated menu, content and camera path are being delivered in separate checkpoints. Live webcam play and P0–P5 acceptance are not complete.
 
 Start with the **[build roadmap](ROADMAP.md)** for exact implementation order, dependencies, commit-sized tasks and acceptance gates. The **[docs index](docs/README.md)** links every subsystem contract. Contributors: [AGENTS.md](AGENTS.md).
 
@@ -40,7 +40,7 @@ Checks, from `app/`:
 npm run check
 ```
 
-This runs typecheck, lint, Vitest and the production build. Vitest currently discovers ten placeholder files and executes **zero tests**. A successful command verifies the scaffold toolchain only.
+This runs typecheck, lint, Vitest and the production build. Vitest now executes asserted game/audio/core tests. Remaining empty scaffold suites are being replaced during integration; a passing logic replay is not webcam evidence.
 
 From the repository root, check documentation paths and heading fragments:
 

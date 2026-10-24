@@ -6,6 +6,9 @@
  * Inputs: ArrayBuffer
  * Outputs: hex string
  *
- * Implementation follows ROADMAP.md phase gates. This file documents the module contract only.
+ * Implemented for the first playable spine. Replay/unit evidence is separate from live-camera acceptance.
  */
-export {};
+export async function sha256(bytes: ArrayBuffer | Uint8Array<ArrayBuffer>): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+}

@@ -1,5 +1,7 @@
 # 15 — Audio Playback & Sync
 
+**Implementation checkpoint:** the pure game/audio spine and synthetic assertions are implemented. Live camera/audio integration and phase acceptance remain unverified.
+
 Scope: `audio/` — decoding, the `SongClock` that every other subsystem reads time from, playback and pause, the mapping between tracking timestamps and song time, the `AnalyserNode` band energies that drive reactive visuals, autoplay policy, and the SFX bus. The beatmap generator's offline analysis is in [08](08-beatmap-generation.md); it only borrows the decoder from here.
 
 Design basis: [ADR-010](03-decisions.md#adr-010--audio-clock-is-the-master-clock) — the Web Audio clock is the master clock. Nothing else accumulates song time.

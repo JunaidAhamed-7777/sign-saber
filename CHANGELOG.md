@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:07:42+05:30 — Pause run summary, performer footer label and short-window tier
+
+- Changed: Pause shows the run so far (song position, score, combo/multiplier, accuracy) beside the frozen figure. The footer uses `trialCopy().controls`, so the synthetic performer is labelled “Synthetic performer · mouse/keyboard to pause or quit” instead of “Dataset replay”; the duplicate footer keyboard hint was removed (the header keeps it). Compact armed trial pre-roll keeps only countdown and Back below the stage so the play-projected figure's hips stay clear. A ≤520 px tall sub-tier (for example 200% zoom) hides secondary captions/chips without shrinking targets. Rail pages are labelled `role="group"` regions. DESIGN.md notes generated covers and on-control hand states.
+- Why: Screenshot review of performer and dataset runs (footer mislabel, empty pause rail, compact pre-roll overlap) and docs14's 200% zoom requirement.
+- Validation: Full suite passed 338/338 in 45 files with `--testTimeout=90000` and the build passed; the default `npm run check` hit audio/DSP 5 s timeouts only, with machine CPU at 100% from parallel jobs. Typecheck, lint, prettier and docs checks passed. New assertions cover the pause summary and that no performer label mentions the dataset; the breakpoint test allows the documented 520 px sub-tier.
+- Limits: The 520 px tier and pre-roll trim were not re-screenshotted in this step.
+
 ## 2026-10-25T03:46:57+05:30 — Initial focus, camera-setup UI test and interface docs
 
 - Changed: Calibration Confirm, Pause Resume (or Songs when resume is blocked) and Results Retry (or Songs) receive initial keyboard focus through a `Button` `autoFocus` option. Added a camera-setup rendering test (checklist from real presence flags, disabled Confirm, Cancel, no `<video>`, desktop and compact). README, docs14 and docs25 now describe the implemented ready page, cut page, HUD details, compact reflow bounds and new UI modules.

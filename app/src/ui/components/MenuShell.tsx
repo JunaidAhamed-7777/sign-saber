@@ -182,7 +182,7 @@ export function RailPager({
         {position}
         <div className="inline-row">
           {previousButton}
-          <div className="rail-page" key={page.id} aria-label={page.label}>
+          <div className="rail-page" key={page.id} role="group" aria-label={page.label}>
             {page.content}
           </div>
           {nextButton}
@@ -192,7 +192,7 @@ export function RailPager({
     );
   return (
     <div className="rail-pager">
-      <div className="rail-page" key={page.id} aria-label={page.label}>
+      <div className="rail-page" key={page.id} role="group" aria-label={page.label}>
         {page.content}
         {showStatus && <StatusMessage errors={statusErrors} />}
       </div>

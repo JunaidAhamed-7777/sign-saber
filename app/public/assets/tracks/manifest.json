@@ -18,7 +18,7 @@
         "normal": "/assets/tracks/pamgaea/normal.json",
         "hard": "/assets/tracks/pamgaea/hard.json"
       },
-      "generatorVersion": 2,
+      "generatorVersion": 3,
       "warnings": [
         "lowTempoConfidence",
         "humanRhythmAndComfortReviewPending"
@@ -27,9 +27,9 @@
         "audioSha256": "9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586",
         "canonicalPcmSha256": "5eb6351ed7f6effe372371b5e25d83d50a1ab91f5c72c871e21a62dd1216d668",
         "maps": {
-          "easy": "b123d613f88fc713c1b15e9f4c7a422de19e8bacd057a12098a28637c5e97c46",
-          "normal": "ad7f51be282b859a1ffbface5f9ee6689aea79fc82fb629be0bc274b4c0d0ded",
-          "hard": "229b62f57e5b5089226d6f77efdb262964fb62e435e0e048ea941b713be05e82"
+          "easy": "feedf20aa518b0e45a8aeb3fd40adf0dfe1ad3a36800bb14219dc2a42cdde20d",
+          "normal": "a53fc3a54185f84f2f3b2d6b5eb1e79a74d469a318c1d19a218d27bf2beaaaa2",
+          "hard": "1179dbf93064796bee64b4fc105b981ee7f47bdf6d629fccc5ffe5219ec323f4"
         }
       },
       "rights": {
@@ -57,7 +57,7 @@
         "normal": "/assets/tracks/electro-cabello/normal.json",
         "hard": "/assets/tracks/electro-cabello/hard.json"
       },
-      "generatorVersion": 2,
+      "generatorVersion": 3,
       "warnings": [
         "lowTempoConfidence",
         "humanRhythmAndComfortReviewPending"
@@ -66,9 +66,9 @@
         "audioSha256": "f304151035c2647de56dbf1995dcc90f3c942c656edfe7516541e7b76e4044ef",
         "canonicalPcmSha256": "38edda4d82a3702920ebd64475b576744929068bee4b9ae651b8be45b87fad1e",
         "maps": {
-          "easy": "69270502d55f0e64bc931bfca3eb2e197cf2eb7db6307ff45b87669fb3acb6b9",
-          "normal": "15c07bc5069ac5f1c16c8ed0785177b858bbd4be1e73a56557c78cde145097a9",
-          "hard": "4680e3129de4b286b63e1f0b0e6f3342f86f2fb429120d45b039230b9859c933"
+          "easy": "d9d44f761ba996b35cfd367def545ebbaf392a5c8d62873d3a562fca7fb39a53",
+          "normal": "f04a87de274422a8f7534c9c49e83a8f8d15d4a6e2bb745027459481fe218ffc",
+          "hard": "94047cfec6aca98505cdd8c5ad4798ac16b69a555a99047cc0fe5e1b31c5fc23"
         }
       },
       "rights": {
@@ -96,7 +96,7 @@
         "normal": "/assets/tracks/cipher/normal.json",
         "hard": "/assets/tracks/cipher/hard.json"
       },
-      "generatorVersion": 2,
+      "generatorVersion": 3,
       "warnings": [
         "lowTempoConfidence",
         "humanRhythmAndComfortReviewPending"
@@ -105,9 +105,9 @@
         "audioSha256": "d3d0614535a61d748e2fd8d5117fc4d781022a7624794802a2462d8af3fdd522",
         "canonicalPcmSha256": "d03027294c2fc4caf995b668f205cf66f605f40abfce762a6be6393790517071",
         "maps": {
-          "easy": "cbe2577397cd7f59e610be356cb5f0a7df650fc720bf459feeea5c6a5feb6530",
-          "normal": "7933dbf24f35f838cce7b810232985c9eaaad2b261fab5c6e074df0ac74e7727",
-          "hard": "31538ec8603d72c1a362c0b1f9daa2cfe796695a180c2b79cabeed7f23323b8b"
+          "easy": "6ccc2a9c18e54e1183f4602984e43c6ddf7a3bfdd045bccdb50f13c20c14c584",
+          "normal": "655fbc4579f3cc56880c65cee64d8f71adf785849f51524f69f662bbd57a11e1",
+          "hard": "6e363f1edd4e259d7568b314593f8c74f269700001914e0ea6beeb4b2c74bf9d"
         }
       },
       "rights": {

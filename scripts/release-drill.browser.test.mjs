@@ -43,7 +43,7 @@ test(
       const cdp = chrome.browser;
       const requests = [];
       const blocked = [];
-      let pageSession;
+      const readyPages = new Map();
       let setupFailure;
       cdp.on((message) => {
         if (message.method === "Target.attachedToTarget") {
@@ -55,7 +55,10 @@ test(
               origin,
             );
             if (message.params.targetInfo.type === "page")
-              pageSession = message.params.sessionId;
+              readyPages.set(
+                message.params.targetInfo.targetId,
+                message.params.sessionId,
+              );
             await cdp.send(
               "Runtime.runIfWaitingForDebugger",
               {},
@@ -84,7 +87,9 @@ test(
         flatten: true,
         filter: [{ type: "page" }, { type: "worker" }, { exclude: true }],
       });
-      await cdp.send("Target.createTarget", { url: "about:blank" });
+      const { targetId } = await cdp.send("Target.createTarget", {
+        url: "about:blank",
+      });
       const poll = async (predicate) => {
         const deadline = Date.now() + 20_000;
         while (Date.now() < deadline) {
@@ -95,8 +100,13 @@ test(
         }
         throw new Error("Worker regression did not complete");
       };
-      await poll(() => pageSession);
+      const pageSession = await poll(() => readyPages.get(targetId));
       await cdp.send("Page.navigate", { url: origin }, pageSession);
+      // A later blank page must not steal the session used to inspect the fixture.
+      const { targetId: unrelated } = await cdp.send("Target.createTarget", {
+        url: "about:blank",
+      });
+      await poll(() => readyPages.get(unrelated));
       const result = await poll(async () => {
         const response = await cdp.send(
           "Runtime.evaluate",

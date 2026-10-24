@@ -113,6 +113,11 @@ export function reportSummary(report) {
   ];
   if (report.failure)
     lines.push(`Failure: ${report.failure.replace(/\s+/g, " ")}`, "");
+  if (report.cleanupError)
+    lines.push(
+      `Temporary-directory cleanup failed: ${report.cleanupError.replace(/\s+/g, " ")}. The check/journey outcomes above remain separate; the overall command fails and leaves the locked directory for inspection.`,
+      "",
+    );
   return lines.join("\n");
 }
 
@@ -665,7 +670,7 @@ export async function runDrill(options, repository = root) {
         await rm(target, {
           recursive: true,
           force: true,
-          maxRetries: 5,
+          maxRetries: 10,
           retryDelay: POLL_MS,
         });
       } catch (error) {

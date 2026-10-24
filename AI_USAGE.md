@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Release-drill acceptance evidence
+
+- Codex ran actual clean-commit positive and deliberately broken catalog drills, retained all prior failures and documented exact SHAs, results, network assertions and exclusions. It corrected the separate worker-test tab-selection race, verified a later blank page cannot steal the fixture session, and kept Windows profile-cleanup failures explicit without touching unrelated Chrome processes.
+
 ## 2026-10-25 — Worker-policy release-drill regression
 
 - Codex traced a committed-snapshot failure to the worker target's unavailable Fetch domain, corrected request blocking with the supported Network policy and verified the fix using a real worker fetching loopback while an external request is blocked by CDP. Browser-internal targets are excluded; failed game-journey evidence remains retained separately from the passing policy regression.

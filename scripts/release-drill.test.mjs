@@ -78,6 +78,10 @@ test("failure summary retains command failures, unrun results and camera exclusi
   assert.match(summary, /Synthetic performer results: not reached/);
   assert.match(summary, /Camera paths are out of scope/);
   assert.match(summary, /Unreached checks are not passes/);
+  assert.match(
+    reportSummary({ ...report, cleanupError: "EBUSY locked profile" }),
+    /Temporary-directory cleanup failed: EBUSY locked profile/,
+  );
 });
 
 test("writing a later attempt preserves the previous failure report and summary", async () => {

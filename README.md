@@ -34,7 +34,7 @@ npm run build
 npm run preview
 ```
 
-Open [127.0.0.1:4173](http://127.0.0.1:4173). The loopback-only server applies response CSP to documents and workers and serves local audio ranges/WASM. Dataset play needs no model download, account, upload, companion service or external network. A prepared offline venue exercise and all P5 failure drills have not been completed.
+Open [127.0.0.1:4173](http://127.0.0.1:4173). The loopback-only server applies response CSP to documents and workers and serves local audio ranges/WASM. Dataset play needs no model download, account, upload, companion service or external network. The [automated camera-free release drill](docs/evidence/2026-10-25-release-drill.md) verifies one synthetic offline journey; the full manual/live-camera P5 venue exercise remains open.
 
 ## Optional camera path
 
@@ -80,9 +80,14 @@ node --test scripts/check-model-assets.test.mjs
 node scripts/check-model-assets.mjs
 node scripts/check-audio-resampling.mjs
 node scripts/check-audio-resampling.mjs --arrangement
+node --test scripts/release-drill.test.mjs
+node --test scripts/release-drill.browser.test.mjs
+node scripts/release-drill.mjs
 ```
 
 The browser numeric harness requires Chrome (or `BROWSER_BINARY`) and ffmpeg; its retained JSON separates numeric audio correctness from audible sync/webcam evidence. The static server's symlink test is skipped on this host because symlink creation is unavailable. No 60 FPS, tracking-rate, generator-speed, musical-F1 or motion-to-photon target is claimed as measured success. [24](docs/24-benchmark-and-evidence.md) defines release proof.
+
+`node scripts/release-drill.mjs` checks out the current committed SHA in a fresh temporary clone, runs `npm ci`, `npm run check` and `npm run build`, then drives the prepared production UI in isolated headless Chrome. Non-loopback requests are blocked while a selected song plays through **Watch synthetic performer**, genuine results, Play again, pause and Songs. Dated JSON/Markdown evidence and command logs go to `docs/evidence/`; failures exit nonzero and are recorded. Installation needs npm registry access; the browser stage runs with local requests only. Use `BROWSER_BINARY` or `--browser <path>` for Chrome, and `--output-dir <path>` for a separate evidence folder. `--inject-missing-asset` removes the catalog only from the temporary build to verify failure reporting. Camera paths and other manual P5 gates are excluded. See [the browser QA protocol](docs/17-testing-and-qa.md#3-browser-integration-smoke-test-core).
 
 `npm run music` / `npm run fonts` verify/reacquire the pinned local source assets when explicitly needed. Generated map JSON must not be reformatted without updating hashes. The optional `server/` companion remains outside the core implementation; no working companion command is advertised.
 

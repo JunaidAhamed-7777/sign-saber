@@ -89,4 +89,4 @@ Page to **Settings → Sound & visuals** and toggle **Standard visuals** to **Ca
 
 For missing sound, unavailable tracks, camera errors or low frame rate, see [Troubleshooting](troubleshooting.md). Stop if movement hurts, and keep the space around you clear.
 
-The screenshots were captured on 2026-10-25 from a production build of [main commit 752acf3](https://github.com/JunaidAhamed-7777/sign-saber/commit/752acf3) in headless Chrome 155.0.8059.86 on Windows, using SwiftShader with muted output. They are actual app captures encoded as WebP; they are not live-camera, audible-sync, accessibility or GPU-performance evidence.
+The screenshots were captured on 2026-10-25 from a production build of [main commit 52e9c81](https://github.com/JunaidAhamed-7777/sign-saber/commit/52e9c81) in headless Chrome 155.0.8059.86 on Windows, using SwiftShader with muted output. They are actual app captures encoded as WebP; they are not live-camera, audible-sync, accessibility or GPU-performance evidence.

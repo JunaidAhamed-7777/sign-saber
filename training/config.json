@@ -28,10 +28,10 @@
     32
   ],
   "cpuThreads": 6,
-  "dataLoaderWorkers": 3,
+  "dataLoaderWorkers": 2,
   "dataLoaderPrefetchFactor": 2,
   "batchSize": 32,
-  "epochs": 9,
+  "epochs": 5,
   "freezeBackboneEpochs": 1,
   "headLearningRate": 0.001,
   "backboneLearningRate": 0.0001,

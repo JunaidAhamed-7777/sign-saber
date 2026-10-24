@@ -112,11 +112,11 @@ function Credits({ runtime }: { runtime: GameRuntime }) {
   );
 }
 function Legend({ replay }: { replay: boolean }) {
+  const trial = useTrialCopy();
   if (replay)
     return (
       <footer className="app-footer">
-        <p className="legend-dataset">{t.datasetControls}</p>
-        <p className="legend-keys">{t.keyboardHint}</p>
+        <p className="legend-dataset">{trial.controls}</p>
       </footer>
     );
   return (
@@ -137,7 +137,6 @@ function Legend({ replay }: { replay: boolean }) {
         </li>
         <li className="legend-rearm">{t.legendRearm}</li>
       </ul>
-      <p className="legend-keys">{t.keyboardHint}</p>
     </footer>
   );
 }

@@ -15,6 +15,13 @@ No gameplay implementation has been recorded yet. Documentation and scaffold mai
 - Limitations: <known issues or "None identified in these checks">
 ```
 
+## 2026-10-24T23:46:26+05:30 — Remove inherited kickoff instructions from source stubs
+
+- Changed: Updated 92 source/shader/test contract headers to refer to the roadmap phase gates, plus the optional server header. Changed the deliberately failing beatmap placeholder's message from H3 to P2; no runtime implementation was added.
+- Why: The retired event restriction should not survive in the files a builder opens next, or contradict the roadmap and contributor guide.
+- Validation: `npm run check` passed after these edits (typecheck, lint, production build; ten placeholder Vitest files, zero tests). Documentation checks and `git diff --check` also passed in the surrounding milestone.
+- Limitations: These are documentation comments and a placeholder message only. The scaffold still provides no gameplay, generation or listening server.
+
 ## 2026-10-24T23:43:30+05:30 — Signature visuals with one quality registry
 
 - Changed: Polished rendering/UI/asset specifications (docs10–14/16/18): fixed mask copies and projection assumptions, shader edge math, degenerate slicing/fallbacks, shatter accounting, trail sampling, deterministic effects, scene-wide Calm mode, focus/error states and owned 2.5D highlights. Consolidated all quality presets in docs16 and asset ceilings in docs18. Made Blender/MCP optional with validated procedural/manual paths, manifests and honest pipeline limits. Updated AI usage, including the owner's report of occasional Devin collaboration without attributing this pass to Devin.

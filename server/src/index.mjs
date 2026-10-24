@@ -9,4 +9,5 @@
 // Zero npm dependencies: node:http, node:child_process, node:fs.
 // Spec: docs/23-youtube-companion-service.md. Decision: docs/03-decisions.md ADR-012.
 //
-// Implementation begins at the hackathon (docs/19-build-plan.md, H10 [POLISH]).
+// Planned optional implementation after the P2 core gate in ROADMAP.md [POLISH].
+// This file is a documented stub; it does not start a listener or print status.

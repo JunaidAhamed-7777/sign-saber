@@ -6,6 +6,6 @@
  * Inputs: Beat grid, BandEnergies, music events
  * Outputs: Environment meshes
  *
- * Implementation begins at the hackathon kick-off (docs/19-build-plan.md). This file documents the module contract only.
+ * Implementation follows ROADMAP.md phase gates. This file documents the module contract only.
  */
 export {};

@@ -18,7 +18,7 @@
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "models": "node ../scripts/download-models.mjs",
-    "beatmaps": "echo \"TODO(H3): node ../scripts/generate-beatmaps.mjs — see docs/09-beatmap-format.md §Bundled tracks\" && exit 1",
+    "beatmaps": "echo \"TODO(P2): implement bundled beatmap generation — see ../ROADMAP.md and docs/09-beatmap-format.md\" && exit 1",
     "check": "npm run typecheck && npm run lint && npm run test && npm run build"
   },
   "dependencies": {

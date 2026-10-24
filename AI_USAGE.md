@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Eight-song licensed library (issue #2)
+
+- Codex verified the official CC-BY 4.0 acquisition templates, packaged five unchanged full songs with source/hash receipts, regenerated all 24 maps using the current main generator, and extended integrity, gapless, loader and paging assertions. Actual local-browser selection/credits outcomes are recorded separately in the issue's evidence; no music-quality or live-camera proof is inferred.
+
 ## 2026-10-25 — Fixed-tier integration and requested handoff
 
 - An agent connected actual cosmetic tier/contrast consumers and eight integration assertions, with explicit unsupported features. Another refreshed the UI/navigation/roadmap status. Codex froze parallel work on the user's handoff request, preserved a concise implementation/evidence inventory and ran the final checks before committing/pushing all repository changes.

@@ -11,6 +11,8 @@ import type * as StoreModule from '../src/state/store';
 import type { GameRuntime } from '../src/core/runtime';
 import type { BundledTrackEntry, BeatmapV1 } from '../src/beatmap/types';
 import manifest from '../public/assets/tracks/manifest.json';
+import { MENU_LIBRARY_PAGE_SIZE } from '../src/core/constants';
+const firstPageTracks = manifest.tracks.slice(0, MENU_LIBRARY_PAGE_SIZE);
 // Render current client state through a snapshot adapter; subscriptions are tested by browser/runtime paths.
 vi.mock('../src/state/store', async () => {
   const actual = await vi.importActual<typeof StoreModule>('../src/state/store');
@@ -59,7 +61,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 describe('figure-centred paged menu structure', () => {
-  it('shows three real starter songs, guarded actions and unique targets without camera input', () => {
+  it('shows the bounded first song page, guarded actions and unique targets without camera input', () => {
     useStore.setState({
       state: 'SELECT',
       library: manifest.tracks as BundledTrackEntry[],
@@ -67,7 +69,9 @@ describe('figure-centred paged menu structure', () => {
     });
     const html = renderToStaticMarkup(<Select runtime={runtime} />),
       ids = targets(html);
-    for (const track of manifest.tracks) expect(ids).toContain(`song:${track.slug}`);
+    for (const track of firstPageTracks) expect(ids).toContain(`song:${track.slug}`);
+    for (const track of manifest.tracks.slice(MENU_LIBRARY_PAGE_SIZE))
+      expect(ids).not.toContain(`song:${track.slug}`);
     expect(ids).not.toContain('camera');
     expect(ids).toContain('audio');
     expect(ids).toContain('dataset-trial');
@@ -89,11 +93,11 @@ describe('figure-centred paged menu structure', () => {
     });
     const html = renderToStaticMarkup(<Select runtime={runtime} />),
       ids = targets(html);
-    // All three starter cards share one top row; actions are grouped below the stage, not one per page.
-    expect(ids.filter((id) => id.startsWith('song:'))).toHaveLength(manifest.tracks.length);
+    // The first bounded group shares a top row; remaining tracks use the native/hand pager.
+    expect(ids.filter((id) => id.startsWith('song:'))).toHaveLength(firstPageTracks.length);
     expect(ids).toEqual([
       'ui:compact-top:previous',
-      ...manifest.tracks.map((track) => `song:${track.slug}`),
+      ...firstPageTracks.map((track) => `song:${track.slug}`),
       'ui:compact-top:next',
       'ui:compact:previous',
       'audio',
@@ -108,7 +112,7 @@ describe('figure-centred paged menu structure', () => {
     expect(top).toBeGreaterThan(-1);
     expect(stage).toBeGreaterThan(top);
     expect(bottom).toBeGreaterThan(stage);
-    expect(html).toContain('1 of 2');
+    expect(html).toContain(`1 of ${Math.ceil(manifest.tracks.length / MENU_LIBRARY_PAGE_SIZE) + 1}`);
     expect(html).toContain('Choose a track to begin.');
   });
   it('surfaces the actual song-load error with a retry instead of a generic prompt', () => {
@@ -174,7 +178,7 @@ describe('figure-centred paged menu structure', () => {
     });
     const html = renderToStaticMarkup(<Select runtime={runtime} />);
     expect(html).toMatch(new RegExp(`data-target="song:${manifest.tracks[0]!.slug}"[^>]*aria-busy="true"`));
-    expect(html.match(/class="cover-art cover-/g)?.length).toBeGreaterThanOrEqual(manifest.tracks.length);
+    expect(html.match(/class="cover-art cover-/g)?.length).toBeGreaterThanOrEqual(firstPageTracks.length);
     expect(html).toContain('Loading selected music');
     expect(html).not.toContain('<img');
   });

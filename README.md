@@ -16,15 +16,15 @@ npm ci
 npm run dev
 ```
 
-Open [localhost:5173](http://localhost:5173). The initial menu requests no camera or models. The three songs, charts, fonts, dataset annotations and Blender assets are local repository files.
+Open [localhost:5173](http://localhost:5173). The initial menu requests no camera or models. The eight songs, charts, fonts, dataset annotations and Blender assets are local repository files.
 
-1. Choose Pamgaea, Electro Cabello or Cipher.
+1. Choose Pamgaea, Electro Cabello, Cipher, Chipper Doodle v2, Funkorama, Cut and Run, Rhinoceros or Marty Gots a Plan. Use Next/Previous in the music rail to browse all eight.
 2. Choose **Enable sound** with mouse/keyboard.
 3. **Try level with dataset** automatically builds the short cut; **Make 80-second cut** (the next right-rail page, Music options) also lets you prepare it separately. The engine renders 10 seconds fading in, a 60-second energy/onset-supported highlight and 10 seconds fading out, then generates a fresh chart from the edited WAV. Short admitted files disclose proportionally shorter sections. This is a musical heuristic, not verified chorus detection.
 4. Choose **Try level with dataset**. A visible banner identifies independent, attributed COCO still annotations. They contain no recorded movement, hand gestures, metric depth or masks; missing gesture input produces real misses. The browser trial reached actual results with 131 Miss and zero invented hits.
 5. Esc/Space pauses. Resume, Retry and Songs use the same guarded lifecycle. Difficulty and preview sit on the first ready page; further side-rail pages expose the cut, volume, appearance, menu hand, credits and optional live-camera controls. Windows at or below 1099 px wide or 699 px tall reflow the rails above and below the figure instead of covering it.
 
-All three full original songs remain available. The arrangement uses one continuous source window with raised-cosine amplitude fades, avoiding hard joins. It retains exact source/sample/fade bounds and original/new hashes; the old chart is never reused under edited audio. User audio upload is local, bounded and cancellable.
+All eight full original songs remain available. The arrangement uses one continuous source window with raised-cosine amplitude fades, avoiding hard joins. It retains exact source/sample/fade bounds and original/new hashes; the old chart is never reused under edited audio. User audio upload is local, bounded and cancellable.
 
 ## Prepared local build
 
@@ -52,7 +52,7 @@ Bounded buffers, capture-time scoring, palm-to-point menu navigation, gesture hy
 
 ## Assets and content
 
-- [Starter music registry](app/public/assets/tracks/README.md): full Pamgaea, Electro Cabello and Cipher by Kevin MacLeod, unchanged CC-BY 4.0 MP3s, exact credits/acquisition receipts, measured metadata, nine maps and hashes. All three currently disclose low-tempo-confidence/onset-only timing.
+- [Starter music registry](app/public/assets/tracks/README.md): eight full Kevin MacLeod songs, unchanged CC-BY 4.0 MP3s, exact credits/acquisition receipts, measured metadata, 24 maps and hashes. The five additions span catalog tempos of 92–140 BPM; catalog tempo is selection metadata, not a confident detector result. Uncertain analysis stays labelled.
 - [Blender pack](app/public/assets/models/README.md): six original MIT GLBs authored through the official Blender MCP local bridge, plus [saved source and build notes](assets-src/blender/README.md). Actual pack: 3,320 triangles / 194,488 GLB bytes, independent geometry checks and zero-error/warning Khronos reports. Cell Fracture is unavailable, so eight complete shards are explicit. The arena leaves the central upper-body stage clear.
 - [Local fonts](app/public/assets/fonts/README.md): pinned Orbitron and Rajdhani with OFL notices.
 - [Dataset attribution](app/public/assets/fixtures/ATTRIBUTION.txt): eight actual independent COCO upper-body annotations; source photo pixels are not bundled.

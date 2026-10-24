@@ -1,0 +1,10 @@
+"Cut and Run" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+https://creativecommons.org/licenses/by/4.0/
+
+Source: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100851
+Download: https://incompetech.com/music/royalty-free/mp3-royaltyfree/Cut%20and%20Run.mp3
+Changes: Packaged original downloaded MP3 bytes unchanged. Analysis and generated maps are separate; previews use playback offsets without editing the file.
+Acquired: 2026-10-24T22:11:01.055Z
+SHA-256: ddfa5637036e97a313a2e7a01d37d00f85226469cf4df896c83da07f7f2c353e
+Music retains its Creative Commons license and is not MIT licensed. No artist endorsement is implied.

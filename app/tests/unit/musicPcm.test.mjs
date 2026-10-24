@@ -8,6 +8,11 @@ describe('canonical source sample zero', () => {
     ['pamgaea', 528, 2009, 7431319],
     ['electro-cabello', 528, 1887, 8412945],
     ['cipher', 528, 2208, 10195920],
+    ['chipper-doodle-v2', 528, 2890, 7592870],
+    ['funkorama', 528, 2567, 8881129],
+    ['cut-and-run', 528, 2323, 9471197],
+    ['rhinoceros', 528, 2832, 8988000],
+    ['marty-gots-a-plan', 528, 2640, 7408800],
   ])(
     'reads exact encoded iTunes gapless counts from %s without changing original bytes',
     (slug, start, end, count) => {

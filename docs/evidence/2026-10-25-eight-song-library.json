@@ -1,0 +1,89 @@
+{
+  "recordedAt": "2026-10-24T22:27:21.859Z",
+  "gitHead": "1fa18275ede204275a1c8dbc4c835da32e85ed30",
+  "dirtyTree": true,
+  "scope": "Eight-song local selection, all 24 difficulty maps, exact attribution and paging; no live-camera or musical-quality claim.",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 900,
+      "selectedSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "difficultyMapsSelected": 24,
+      "originalPreviewStartedAndStopped": true,
+      "creditSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "exactAttributions": true,
+      "cspViolations": [],
+      "consoleErrors": [],
+      "httpFailures": [
+        {
+          "url": "http://127.0.0.1:50068/favicon.ico",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:50068/favicon.ico",
+          "status": 404
+        }
+      ],
+      "musicHttpFailures": [],
+      "requestCount": 78
+    },
+    {
+      "width": 1024,
+      "height": 640,
+      "selectedSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "difficultyMapsSelected": 24,
+      "originalPreviewStartedAndStopped": true,
+      "creditSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "exactAttributions": true,
+      "cspViolations": [],
+      "consoleErrors": [],
+      "httpFailures": [
+        {
+          "url": "http://127.0.0.1:50068/favicon.ico",
+          "status": 404
+        }
+      ],
+      "musicHttpFailures": [],
+      "requestCount": 77
+    }
+  ],
+  "outsideRequests": [],
+  "browser": "Chrome/155.0.8059.86",
+  "passed": true
+}

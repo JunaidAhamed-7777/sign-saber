@@ -227,7 +227,7 @@ export async function checkModelAssets({ khronos = null } = {}) {
     "glyphs",
     "pylon",
     "arena_environment",
-    "block_shell",
+    "block_targets",
   ];
   // This generator's assets come first; entries from separate generators may follow.
   assert.deepEqual(
@@ -241,7 +241,7 @@ export async function checkModelAssets({ khronos = null } = {}) {
     glyphs: 1200,
     pylon: 600,
     arena_environment: 3000,
-    block_shell: 400,
+    block_targets: 400,
   };
   const reports = [];
   let totalTriangles = 0,
@@ -321,21 +321,30 @@ export async function checkModelAssets({ khronos = null } = {}) {
     }
     if (entry.id === "armor" || entry.id === "beam_ring")
       for (const instance of glb.instances) volumeAndCentroid(instance);
-    if (entry.id === "block_shell") {
+    if (entry.id === "block_targets") {
       for (const instance of glb.instances) {
         volumeAndCentroid(instance);
         for (let a = 0; a < 3; a++)
           assert.ok(
             instance.bounds.min[a] >= -0.50001 &&
               instance.bounds.max[a] <= 0.50001,
-            "block shell inside the unit cube",
+            "target body inside the unit cube",
           );
       }
-      const shell = glb.instances.find((i) => i.name === "block_shell");
+      for (const name of ["block_slash", "block_orb"]) {
+        const body = glb.instances.find((i) => i.name === name);
+        assert.ok(body, "missing target body " + name);
+        assert.ok(
+          body.colors.some((c) => c[0] > 0.9) &&
+            body.colors.some((c) => c[0] < 0.1),
+          name + " COLOR_0 trim mask",
+        );
+      }
+      // Distinct silhouettes: the slash slab is thin in depth, the orb is round.
+      const slab = glb.instances.find((i) => i.name === "block_slash").bounds;
       assert.ok(
-        shell.colors.some((c) => c[0] > 0.9) &&
-          shell.colors.some((c) => c[0] < 0.1),
-        "block shell COLOR_0 trim mask",
+        slab.max[2] - slab.min[2] < 0.5 * (slab.max[0] - slab.min[0]),
+        "thin slash slab",
       );
     }
     if (entry.id === "arena_environment") {

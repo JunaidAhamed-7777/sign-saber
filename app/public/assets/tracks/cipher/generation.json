@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatorVersion": 2,
+  "generatorVersion": 4,
   "sourceHash": "d3d0614535a61d748e2fd8d5117fc4d781022a7624794802a2462d8af3fdd522",
   "canonicalPcmSha256": "d03027294c2fc4caf995b668f205cf66f605f40abfce762a6be6393790517071",
   "canonicalDecode": {
@@ -21,39 +21,38 @@
     "explicitTrimApplied": true
   },
   "analysis": {
-    "detectedBpm": 150.8,
+    "detectedBpm": 150,
     "catalogBpm": 150,
-    "tempoConfidence": 0.22986247544204322,
-    "onsets": 1091,
-    "beats": 545
+    "tempoConfidence": 0.5579567779960707,
+    "onsets": 1095,
+    "beats": 547
   },
   "maps": {
     "easy": {
-      "notes": 166,
-      "obstacles": 5,
-      "slash": 95,
-      "smash": 60,
+      "notes": 111,
+      "obstacles": 9,
+      "slash": 59,
+      "smash": 41,
       "beam": 11
     },
     "normal": {
-      "notes": 310,
-      "obstacles": 6,
-      "slash": 112,
-      "smash": 183,
+      "notes": 195,
+      "obstacles": 17,
+      "slash": 98,
+      "smash": 82,
       "beam": 15
     },
     "hard": {
-      "notes": 405,
-      "obstacles": 7,
-      "slash": 179,
-      "smash": 211,
-      "beam": 15
+      "notes": 266,
+      "obstacles": 22,
+      "slash": 108,
+      "smash": 140,
+      "beam": 18
     }
   },
   "warnings": [
-    "lowTempoConfidence",
     "humanRhythmAndComfortReviewPending"
   ],
   "checks": "All difficulty maps passed the shared runtime structural, density, beam, wall and ergonomic validator. This is algorithmic validation, not human musical/playability evidence.",
-  "developmentGenerationMs": 2211.4434
+  "developmentGenerationMs": 5709.0931999999975
 }

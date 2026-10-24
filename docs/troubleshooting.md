@@ -32,7 +32,7 @@ npm run models
 
 For production preview, run `npm run build` again before restarting `npm run preview`; preview serves the prepared `dist/`, not new files in `public/`. Keep the downloaded files local rather than replacing them with arbitrary model versions. The [model preparation instructions](../README.md#optional-camera-path) describe the expected path.
 
-**“Keep your shoulders and both hands in the guide until framing is ready.”** and **“Hold still with shoulders and both hands visible.”** mean calibration is not ready. Keep the head, shoulders, hands and hips visible and use **Confirm camera & position** only after readiness. A permission grant or visible preview is not completed calibration. **“Set up and calibrate the camera before starting.”** requires that same setup route; use a labelled no-camera trial if you only want to inspect the game.
+**“Keep your shoulders and both hands in the guide until framing is ready.”** and **“Hold still with shoulders and both hands visible.”** mean calibration is not ready. Keep the head, shoulders, hands and hips visible and use **Confirm camera & position** only after readiness. A permission grant or visible preview is not completed calibration. **“Set up and calibrate the camera before starting.”** requires that same setup route; use **Watch auto-play** if you only want to inspect the game without a camera.
 
 ## No sound or interrupted audio
 

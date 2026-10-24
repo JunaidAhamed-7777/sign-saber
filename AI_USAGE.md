@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Guide label and avatar capture refresh at main 30572bb
+
+- Codex normally integrated the requested source checkpoint into the existing guide PR, corrected the affected button/source captions while retaining synthetic-input limits, and captured/inspected four new production-app WebPs through native UI actions. It recorded actual current results, hashes, Chrome provenance and the upstream warning/failed initial harness gate, then ran the required application/documentation checks. No application code or live-camera result was authored for this maintenance.
+
 ## 2026-10-25 — Player, troubleshooting and contributor guides (issue #5)
 
 - Codex wrote and independently reviewed guides against current UI/runtime sources, exact recovery messages and the constants/evidence contracts. It captured and inspected four actual production-app WebPs, including a complete labelled synthetic-performer run, and refreshed the wording/captures after concurrent main updates. No gameplay implementation or live-camera evidence is attributed to this documentation work.

@@ -1,0 +1,572 @@
+{
+  "schema": 1,
+  "generator": "app/src/audio/sfxSynth.ts via scripts/render-sfx.mjs",
+  "license": "MIT (original procedural synthesis; no recordings or third-party audio)",
+  "sampleRate": 48000,
+  "voicing": {
+    "rootHz": 523.25
+  },
+  "note": "SHA-256 of little-endian float32 PCM, channels concatenated. Hashes pin the recipes at this rate and voicing; runtime renders at the device rate and the estimated track tonic.",
+  "sounds": {
+    "slash": {
+      "seconds": 0.34,
+      "channels": 1,
+      "targetLufs": -24,
+      "peakDb": -5.79,
+      "bodyRmsDb": -19.03,
+      "momentaryLufs": -24,
+      "centroidHz": 4969,
+      "sha256": "263c82d5b71561acead968dc9ee97d6ba95b5777c1010bb25c14cfd574e47e86"
+    },
+    "smash": {
+      "seconds": 0.5,
+      "channels": 1,
+      "targetLufs": -22.5,
+      "peakDb": -7.37,
+      "bodyRmsDb": -14.53,
+      "momentaryLufs": -22.5,
+      "centroidHz": 307,
+      "sha256": "ad0396d3f79a5242f9c683cf26a0aa1e87b3244d518ea3a9e3f7f487b925d602"
+    },
+    "zap": {
+      "seconds": 0.36,
+      "channels": 1,
+      "targetLufs": -23,
+      "peakDb": -6.8,
+      "bodyRmsDb": -17.3,
+      "momentaryLufs": -23,
+      "centroidHz": 2382,
+      "sha256": "a77cd882fe05d6996b7a937779c590cb1647824129c934145c0a0c19278dd5f3"
+    },
+    "poof": {
+      "seconds": 0.4,
+      "channels": 1,
+      "targetLufs": -26.5,
+      "peakDb": -9.04,
+      "bodyRmsDb": -18.27,
+      "momentaryLufs": -26.5,
+      "centroidHz": 504,
+      "sha256": "16e6e6fdc14599409b53c1c83b01d2580ac1558a61c57d713d0b3c0273bc2937"
+    },
+    "sparkle": {
+      "seconds": 0.6,
+      "channels": 2,
+      "targetLufs": -27,
+      "peakDb": -18.45,
+      "bodyRmsDb": -26.84,
+      "momentaryLufs": -27,
+      "centroidHz": 1738,
+      "sha256": "aef6d032ea61291b70c4527620cb9e0f1edb0c3e272d970d77e38939da23e366"
+    },
+    "glint": {
+      "seconds": 0.25,
+      "channels": 1,
+      "targetLufs": -32,
+      "peakDb": -17.16,
+      "bodyRmsDb": -26.17,
+      "momentaryLufs": -32,
+      "centroidHz": 2269,
+      "sha256": "acb206a545288cb2b63bebcc39cccb95b415a12a72c7ad5b1777e8744fde466a"
+    },
+    "badcut": {
+      "seconds": 0.42,
+      "channels": 1,
+      "targetLufs": -24,
+      "peakDb": -10.8,
+      "bodyRmsDb": -18.01,
+      "momentaryLufs": -24,
+      "centroidHz": 428,
+      "sha256": "554eab07a869aaf57ab82d8a7261baf7808c30ecdb59833042350e92c25c4507"
+    },
+    "miss": {
+      "seconds": 0.2,
+      "channels": 1,
+      "targetLufs": -34,
+      "peakDb": -17.78,
+      "bodyRmsDb": -24.25,
+      "momentaryLufs": -34,
+      "centroidHz": 122,
+      "sha256": "bc39be62654a4c3483b7d41e8696e6a70b139f3600d24f6c8937a646c4b2ab9d"
+    },
+    "wallWarn": {
+      "seconds": 0.64,
+      "channels": 1,
+      "targetLufs": -27,
+      "peakDb": -11.82,
+      "bodyRmsDb": -20.84,
+      "momentaryLufs": -27,
+      "centroidHz": 534,
+      "sha256": "4fd273c93ffd81ed9655c93c8eabe73f9c47df9b2790b39681b5de72383f6a18"
+    },
+    "wallHit": {
+      "seconds": 0.55,
+      "channels": 1,
+      "targetLufs": -21.5,
+      "peakDb": -8.32,
+      "bodyRmsDb": -12.61,
+      "momentaryLufs": -21.5,
+      "centroidHz": 87,
+      "sha256": "3d34b6f82fcf00059d414718f8c92cb4c0adc4d215ae7e4228e49fe1a48afd09"
+    },
+    "dodge": {
+      "seconds": 0.45,
+      "channels": 1,
+      "targetLufs": -25.5,
+      "peakDb": -11.02,
+      "bodyRmsDb": -21.92,
+      "momentaryLufs": -25.5,
+      "centroidHz": 3088,
+      "sha256": "eef5551788b6a2a5900e6d3a7afad57fe6d29f34b1a617414299537e0dd0e44a"
+    },
+    "combo": {
+      "seconds": 0.75,
+      "channels": 2,
+      "targetLufs": -21,
+      "peakDb": -14.47,
+      "bodyRmsDb": -22.23,
+      "momentaryLufs": -21,
+      "centroidHz": 1057,
+      "sha256": "cff03a86afe93481e3f97ef2bf0e891abfaaa0e49549249cb51f3a1676c79c97"
+    },
+    "milestone": {
+      "seconds": 1,
+      "channels": 2,
+      "targetLufs": -19,
+      "peakDb": -11.65,
+      "bodyRmsDb": -20.99,
+      "momentaryLufs": -19,
+      "centroidHz": 1390,
+      "sha256": "4708f046093ea8259a40117ae85440ea68c8a10ee12461ed4da12aabaf7a074c"
+    },
+    "comboBreak": {
+      "seconds": 0.38,
+      "channels": 1,
+      "targetLufs": -34,
+      "peakDb": -20.24,
+      "bodyRmsDb": -26.83,
+      "momentaryLufs": -34,
+      "centroidHz": 385,
+      "sha256": "cdb4a3b9f540650aab45f967dadfa56098a8b6ebdb9270714ddbe2f2bbb1315e"
+    },
+    "drop": {
+      "seconds": 1.1,
+      "channels": 2,
+      "targetLufs": -15,
+      "peakDb": -5.83,
+      "bodyRmsDb": -10.85,
+      "momentaryLufs": -15,
+      "centroidHz": 236,
+      "sha256": "e3f67d8ae0ad2915cf44d28be50a7b3b03e1dfc50e6286070873a6ec43c566d1"
+    },
+    "count": {
+      "seconds": 0.14,
+      "channels": 1,
+      "targetLufs": -27,
+      "peakDb": -8.1,
+      "bodyRmsDb": -18.39,
+      "momentaryLufs": -27,
+      "centroidHz": 1076,
+      "sha256": "983931fd0df9b1c926b6c023c699434acb0bb6da496290a9af6fab369a2e05a2"
+    },
+    "countGo": {
+      "seconds": 0.3,
+      "channels": 1,
+      "targetLufs": -24.5,
+      "peakDb": -12.25,
+      "bodyRmsDb": -19.27,
+      "momentaryLufs": -24.5,
+      "centroidHz": 2145,
+      "sha256": "fd257a076828a5708d9cb05159f4cd7d3316e2fce2bcfa9eb19e579f38cb5150"
+    },
+    "countNeutral": {
+      "seconds": 0.1,
+      "channels": 1,
+      "targetLufs": -31.5,
+      "peakDb": -8.98,
+      "bodyRmsDb": -25.23,
+      "momentaryLufs": -31.5,
+      "centroidHz": 2863,
+      "sha256": "3a9a56e6afd7ed9a2068adfaf52d28ba5d22b85386b0833d55ad46d58865cffe"
+    },
+    "charge": {
+      "seconds": 0.62,
+      "channels": 1,
+      "targetLufs": -31.5,
+      "peakDb": -16.84,
+      "bodyRmsDb": -28.38,
+      "momentaryLufs": -31.5,
+      "centroidHz": 1688,
+      "sha256": "ae9aa42dc7f9f00b2e9f18b49e33a1f4fd9f5f0131b1020aa44b5ed799905ef2"
+    },
+    "resultsHigh": {
+      "seconds": 2.4,
+      "channels": 2,
+      "targetLufs": -16,
+      "peakDb": -9.88,
+      "bodyRmsDb": -19.39,
+      "momentaryLufs": -16,
+      "centroidHz": 1449,
+      "sha256": "e18e9adcb1af290924fb14d55718598f05679dda3af0d277c060964db545c913"
+    },
+    "resultsLow": {
+      "seconds": 2.2,
+      "channels": 2,
+      "targetLufs": -19,
+      "peakDb": -10.76,
+      "bodyRmsDb": -19.22,
+      "momentaryLufs": -19,
+      "centroidHz": 824,
+      "sha256": "433648b3e7fd62bff7f6044d379a263d03633a07763a334f1b93de6d818b8ed1"
+    },
+    "resume": {
+      "seconds": 0.32,
+      "channels": 1,
+      "targetLufs": -30,
+      "peakDb": -14.64,
+      "bodyRmsDb": -24.48,
+      "momentaryLufs": -30,
+      "centroidHz": 1869,
+      "sha256": "05d24fffa5deba45ac95e4b920d72a10d9bc864de8208fcfec62d432f3dbba76"
+    },
+    "uiHover": {
+      "seconds": 0.06,
+      "channels": 1,
+      "targetLufs": -42,
+      "peakDb": -22.76,
+      "bodyRmsDb": -34.93,
+      "momentaryLufs": -42,
+      "centroidHz": 1760,
+      "sha256": "0d18f70307bccdba2dbb0b1751bca5a274b8edb7dc3369cdb0ac02b0bf7239d2"
+    },
+    "uiConfirm": {
+      "seconds": 0.22,
+      "channels": 1,
+      "targetLufs": -30,
+      "peakDb": -14.88,
+      "bodyRmsDb": -23.99,
+      "momentaryLufs": -30,
+      "centroidHz": 1197,
+      "sha256": "2d41b789a57837f7dccf3adfcf8fa6cc1260d2a944bd40e6e246974106402afa"
+    },
+    "uiBack": {
+      "seconds": 0.24,
+      "channels": 1,
+      "targetLufs": -32,
+      "peakDb": -17.01,
+      "bodyRmsDb": -25.95,
+      "momentaryLufs": -32,
+      "centroidHz": 1093,
+      "sha256": "04d8a97a960582d107f71293ae6c25782e53f536abdf9b2d93cc0fc274a44156"
+    },
+    "uiSelect": {
+      "seconds": 0.18,
+      "channels": 1,
+      "targetLufs": -32,
+      "peakDb": -13.01,
+      "bodyRmsDb": -26.07,
+      "momentaryLufs": -32,
+      "centroidHz": 1906,
+      "sha256": "f37e7253c56a7c0bfc2c49b007b756c5d1eef8fd97dd2f041de993fd774dc97d"
+    },
+    "uiArm": {
+      "seconds": 0.16,
+      "channels": 1,
+      "targetLufs": -36,
+      "peakDb": -21.12,
+      "bodyRmsDb": -27.2,
+      "momentaryLufs": -36,
+      "centroidHz": 736,
+      "sha256": "caf95a0c50df8b632214acb3b7df973b5356f961517471a91ca6e1884b409f75"
+    },
+    "uiEnable": {
+      "seconds": 0.7,
+      "channels": 2,
+      "targetLufs": -24,
+      "peakDb": -17.17,
+      "bodyRmsDb": -25.68,
+      "momentaryLufs": -24,
+      "centroidHz": 1137,
+      "sha256": "080863cb2d5d791a371f7346700bc0ef9019d0453d687afc17e4c889ee5e6fd6"
+    },
+    "slash.calm": {
+      "seconds": 0.34,
+      "channels": 1,
+      "targetLufs": -27,
+      "peakDb": -9.87,
+      "bodyRmsDb": -19.73,
+      "momentaryLufs": -27,
+      "centroidHz": 1586,
+      "sha256": "a5d9e763fcbdaca249031b2785ab2f67608948622eb0493533419de1b8b70c0b"
+    },
+    "smash.calm": {
+      "seconds": 0.5,
+      "channels": 1,
+      "targetLufs": -25.5,
+      "peakDb": -12.06,
+      "bodyRmsDb": -16.77,
+      "momentaryLufs": -25.5,
+      "centroidHz": 106,
+      "sha256": "33b52b4d913b9b0326e580575b35c0a1f564157b0258cb75ef81c99bac070381"
+    },
+    "zap.calm": {
+      "seconds": 0.36,
+      "channels": 1,
+      "targetLufs": -26,
+      "peakDb": -7.72,
+      "bodyRmsDb": -18.31,
+      "momentaryLufs": -26,
+      "centroidHz": 723,
+      "sha256": "a3b8483a883841cfcc701552bbc8950ad2cffb02014b06a08d594968d82501ab"
+    },
+    "poof.calm": {
+      "seconds": 0.4,
+      "channels": 1,
+      "targetLufs": -29.5,
+      "peakDb": -11.77,
+      "bodyRmsDb": -21.28,
+      "momentaryLufs": -29.5,
+      "centroidHz": 500,
+      "sha256": "2989aad6be0628366a31a4c8dc08e39fda72fc8caffb50d2497ecd6adf7915e9"
+    },
+    "sparkle.calm": {
+      "seconds": 0.6,
+      "channels": 2,
+      "targetLufs": -30,
+      "peakDb": -22.52,
+      "bodyRmsDb": -28.92,
+      "momentaryLufs": -30,
+      "centroidHz": 1293,
+      "sha256": "518ee22e26ff8959353ae701fc2792f96826b361f471548e30cbcb42b3a3f320"
+    },
+    "glint.calm": {
+      "seconds": 0.25,
+      "channels": 1,
+      "targetLufs": -35,
+      "peakDb": -21.14,
+      "bodyRmsDb": -27.03,
+      "momentaryLufs": -35,
+      "centroidHz": 1047,
+      "sha256": "10aec1b284a889c352a7ef79ad68be1fac0709677a79db3a0801ae98081220be"
+    },
+    "badcut.calm": {
+      "seconds": 0.42,
+      "channels": 1,
+      "targetLufs": -27,
+      "peakDb": -13.72,
+      "bodyRmsDb": -20.99,
+      "momentaryLufs": -27,
+      "centroidHz": 428,
+      "sha256": "084eebdb7509f88abfe1810d13319e4d74bcf532d7b8ed28bf77ff34240233f4"
+    },
+    "miss.calm": {
+      "seconds": 0.2,
+      "channels": 1,
+      "targetLufs": -37,
+      "peakDb": -21.03,
+      "bodyRmsDb": -27.22,
+      "momentaryLufs": -37,
+      "centroidHz": 122,
+      "sha256": "546750ffcea3878f512e5905d9fa218c6753a3ba7926cd455df6e9494a4b8832"
+    },
+    "wallWarn.calm": {
+      "seconds": 0.64,
+      "channels": 1,
+      "targetLufs": -30,
+      "peakDb": -14.08,
+      "bodyRmsDb": -23.34,
+      "momentaryLufs": -30,
+      "centroidHz": 470,
+      "sha256": "d2d607e0293aa505291f182cf29bdc4bf84040923a2a2155c5a0ed4aa32661d4"
+    },
+    "wallHit.calm": {
+      "seconds": 0.55,
+      "channels": 1,
+      "targetLufs": -24.5,
+      "peakDb": -11.44,
+      "bodyRmsDb": -15.35,
+      "momentaryLufs": -24.5,
+      "centroidHz": 75,
+      "sha256": "4c833352d455643ef7ed9e36271f50ee4afcf4de4c6b7dd311325cbc0b41572d"
+    },
+    "dodge.calm": {
+      "seconds": 0.45,
+      "channels": 1,
+      "targetLufs": -28.5,
+      "peakDb": -14.05,
+      "bodyRmsDb": -24.59,
+      "momentaryLufs": -28.5,
+      "centroidHz": 2315,
+      "sha256": "c9881e948af6e44ef279149f8459e070b7ccb9502a9a2c7a72e49b21b87f0ca5"
+    },
+    "combo.calm": {
+      "seconds": 0.75,
+      "channels": 2,
+      "targetLufs": -24,
+      "peakDb": -17.68,
+      "bodyRmsDb": -24.52,
+      "momentaryLufs": -24,
+      "centroidHz": 810,
+      "sha256": "80fbfa30abdfedea26516e1cdb27a140709159782989472a2b6beb7c6a9602f3"
+    },
+    "milestone.calm": {
+      "seconds": 1,
+      "channels": 2,
+      "targetLufs": -22,
+      "peakDb": -13.24,
+      "bodyRmsDb": -23.45,
+      "momentaryLufs": -22,
+      "centroidHz": 1384,
+      "sha256": "607d0fe92bd2a8287778c99353dcd56b18276995159328b9df0b54c14bbfd890"
+    },
+    "comboBreak.calm": {
+      "seconds": 0.38,
+      "channels": 1,
+      "targetLufs": -37,
+      "peakDb": -23.49,
+      "bodyRmsDb": -29.83,
+      "momentaryLufs": -37,
+      "centroidHz": 385,
+      "sha256": "1d43b720e5aba866ad3aeb45ce60ea422c76b8e9c02380be4481d268c32cf0fd"
+    },
+    "drop.calm": {
+      "seconds": 1.1,
+      "channels": 2,
+      "targetLufs": -18,
+      "peakDb": -9.32,
+      "bodyRmsDb": -12.55,
+      "momentaryLufs": -18,
+      "centroidHz": 41,
+      "sha256": "dfafb18f0ae15ef36f33c595cae059b2256562b97cc34a8228c60500f3f122c8"
+    },
+    "count.calm": {
+      "seconds": 0.14,
+      "channels": 1,
+      "targetLufs": -30,
+      "peakDb": -12.98,
+      "bodyRmsDb": -21.36,
+      "momentaryLufs": -30,
+      "centroidHz": 1049,
+      "sha256": "4daf4301825ecdf26ab368df04c8cd81ea4ff1ae493d0b883813997b495ad59e"
+    },
+    "countGo.calm": {
+      "seconds": 0.3,
+      "channels": 1,
+      "targetLufs": -27.5,
+      "peakDb": -16.35,
+      "bodyRmsDb": -22.27,
+      "momentaryLufs": -27.5,
+      "centroidHz": 2101,
+      "sha256": "19ffb64a576ad100cfcfc5f415509c9ea9d7277671465cf82ff785cc024f01e9"
+    },
+    "countNeutral.calm": {
+      "seconds": 0.1,
+      "channels": 1,
+      "targetLufs": -34.5,
+      "peakDb": -12.38,
+      "bodyRmsDb": -28.15,
+      "momentaryLufs": -34.5,
+      "centroidHz": 2588,
+      "sha256": "2a35309cee60b1422ed4319585f0f58b51c69100d61597708a81e4211092d232"
+    },
+    "charge.calm": {
+      "seconds": 0.62,
+      "channels": 1,
+      "targetLufs": -34.5,
+      "peakDb": -20.22,
+      "bodyRmsDb": -30.28,
+      "momentaryLufs": -34.5,
+      "centroidHz": 1434,
+      "sha256": "1c2aa8c671cc75b660806449f8ce9b8ba2befac7d8eea54e1d13f069013d7eb7"
+    },
+    "resultsHigh.calm": {
+      "seconds": 2.4,
+      "channels": 2,
+      "targetLufs": -19,
+      "peakDb": -12.62,
+      "bodyRmsDb": -22.09,
+      "momentaryLufs": -19,
+      "centroidHz": 1313,
+      "sha256": "299035bf9f2a0b61383aa98d8230bfd4691c4674b0317683ccdbc4c7f7b43cd6"
+    },
+    "resultsLow.calm": {
+      "seconds": 2.2,
+      "channels": 2,
+      "targetLufs": -22,
+      "peakDb": -14.1,
+      "bodyRmsDb": -22.78,
+      "momentaryLufs": -22,
+      "centroidHz": 828,
+      "sha256": "a82073dcfa5a432e53a60089f80c249cd8d69d97b6a02c2f74ba9af4f6f9ab3b"
+    },
+    "resume.calm": {
+      "seconds": 0.32,
+      "channels": 1,
+      "targetLufs": -33,
+      "peakDb": -17.1,
+      "bodyRmsDb": -27.32,
+      "momentaryLufs": -33,
+      "centroidHz": 1459,
+      "sha256": "590b29283144bea0e73d744bb6280ce1efb0e6fb97ce3ed169fecdf1ebbbc0d7"
+    },
+    "uiHover.calm": {
+      "seconds": 0.06,
+      "channels": 1,
+      "targetLufs": -45,
+      "peakDb": -25.87,
+      "bodyRmsDb": -36.82,
+      "momentaryLufs": -45,
+      "centroidHz": 1320,
+      "sha256": "441ab4486c7944a750475478b832c1c4ed6e421e0ce03aedc126b4b1262066c8"
+    },
+    "uiConfirm.calm": {
+      "seconds": 0.22,
+      "channels": 1,
+      "targetLufs": -33,
+      "peakDb": -18.38,
+      "bodyRmsDb": -26.96,
+      "momentaryLufs": -33,
+      "centroidHz": 1174,
+      "sha256": "5a4327b0571a6e3a6dc1c3c5d25a55d7b1bc50036964ca8b0c769f428fb4e909"
+    },
+    "uiBack.calm": {
+      "seconds": 0.24,
+      "channels": 1,
+      "targetLufs": -35,
+      "peakDb": -20.16,
+      "bodyRmsDb": -28.94,
+      "momentaryLufs": -35,
+      "centroidHz": 1075,
+      "sha256": "748a462d6220fd707dc7ab4bddc33ffb7e65bedb90e4021c5d9db511cf6900c8"
+    },
+    "uiSelect.calm": {
+      "seconds": 0.18,
+      "channels": 1,
+      "targetLufs": -35,
+      "peakDb": -17.26,
+      "bodyRmsDb": -27.81,
+      "momentaryLufs": -35,
+      "centroidHz": 1335,
+      "sha256": "57d33ca5509a6d4c06097ff6be8c6ac9e041309bde4060315e3988396f49b529"
+    },
+    "uiArm.calm": {
+      "seconds": 0.16,
+      "channels": 1,
+      "targetLufs": -39,
+      "peakDb": -24.11,
+      "bodyRmsDb": -30.2,
+      "momentaryLufs": -39,
+      "centroidHz": 736,
+      "sha256": "4cc73e7eba7c4769e4172ac9cf8bcbe99c0e227d698671acd654c3e9292ddb8f"
+    },
+    "uiEnable.calm": {
+      "seconds": 0.7,
+      "channels": 2,
+      "targetLufs": -27,
+      "peakDb": -19.85,
+      "bodyRmsDb": -28.72,
+      "momentaryLufs": -27,
+      "centroidHz": 1119,
+      "sha256": "e33daf37437cf5d1647975280645a7959232c6cdc266e6b726ebdfed15de8f3f"
+    }
+  }
+}

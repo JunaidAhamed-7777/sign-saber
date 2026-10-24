@@ -1,17 +1,28 @@
-# Dataset acquisition status
+# Training status
 
-Reconciled **2026-10-25 02:13:22 +05:30** (2026-10-24 20:43:22 UTC). Sources, terms and exact acquisition receipts are in [DATASETS.json](DATASETS.json). Large data, image pixels and models remain local ignored artifacts.
+Updated **2026-10-25 04:55 +05:30**. Exact numbers are in [STATUS.json](STATUS.json); data, checkpoints, reports and ONNX files stay local and ignored. Dataset acquisition and rights are in [DATASETS.json](DATASETS.json).
 
-COCO's selected **8,503 CC-BY photo files and 8,503 corresponding receipt paths** match the prepared image index, with zero missing or extra photo paths in this inventory check. The eligible subset contains 20,121 training people in 8,131 images and 919 validation people in 372 images. This is not all COCO2017. This reconciliation checked filenames; the earlier actual-byte fingerprints and receipt audit are retained in [PREFLIGHT_EVIDENCE.json](PREFLIGHT_EVIDENCE.json).
+## Data
 
-MPII image acquisition finished. The official compressed archive is **12,088,943,206 bytes**, with independently recomputed SHA-256:
+COCO2017 eligible CC-BY subset (20,121 train / 919 validation people) and MPII (26,016 train / 2,857 video-group validation people). MPII was extracted and verified: 24,984 files and 12,140,043,353 bytes match the archive audit, and all 17,404 indexed images decode.
 
-```text
-6d26fbf89f49a7aeff4aa5f98123763f334693806b98eb15630f57a0b50998ce
-```
+## Run: partial, stopped at step 1,800 of 7,210
 
-The recomputed hash matches the acquisition receipt. No publisher checksum was available; this establishes consistency with the acquired bytes, not a publisher signature. A full streaming tar/gzip check passed through end of file, including gzip CRC/size checks and every tar member's header/path/type checks. The archive contains **24,984 unique JPEG members**, one directory, zero duplicate filenames and **12,140,043,353 bytes** of JPEG content. It covers every prepared MPII training image (15,727 unique images / 26,016 people) and development-validation image (1,677 unique images / 2,857 people), with zero missing indexed images.
+- MobileNetV3-Small (ImageNet) + 13-joint heatmap head, CPU, batch 32, 6 threads. Epoch 0 trained the head with a frozen backbone (1,442 steps, 1,300 s); steps 1,443–1,800 fine-tuned the whole network.
+- Stopped on request with the machine memory-thrashing (unfrozen steps 1.2–4.5 s instead of about 0.85 s). That is **1 of 5 planned epochs plus 358 batches (25% of steps)**; the cosine schedule never annealed. Epoch 0 used a 9-epoch learning-rate horizon and was resumed with a 5-epoch horizon (scale 0.980 → 0.935).
 
-The MPII archive is **unextracted**. JPEG pixels were not individually decoded, and no MPII optimizer steps were run. `downloaded: false` for MPII in the manifest refers to readiness as individual indexed image files; `archiveDownloaded: true` records the completed archive. The hidden test partition was not used for training. MPII's research/noncommercial restrictions and separate underlying image copyrights still apply.
+## Held-out results (oracle ground-truth crops, 3,776 people)
 
-The only model-training evidence remains bounded COCO CPU pipeline checks: two independent three-step preflights. The latest checkpoint has **three optimizer steps**, zero completed epochs and no production promotion. Its held-out heatmap loss worsened; successful ONNX numerical parity establishes export correctness, not pose quality. Full multi-dataset training, person localization outside annotation-supplied crops, browser model inference and physical-motion evaluation remain pending. No additional training was started during this acquisition reconciliation.
+| Model | Heatmap loss | Pooled PCK@0.2 shoulder | COCO | MPII |
+|---|---|---|---|---|
+| Untrained head | 0.01808 | 0.016 | 0.017 | 0.016 |
+| Earlier 3-step preflight | 0.02128 | 0.014 | 0.018 | 0.012 |
+| Mean pose inside the oracle crop | n/a | 0.093 | 0.142 | 0.074 |
+| All-zero heatmaps | 0.00545 | n/a | n/a | n/a |
+| **Step 1,800 (this run)** | **0.00416** | **0.334** | **0.393** | **0.310** |
+
+Per joint (step 1,800): face 0.44–0.61, shoulders 0.46–0.48, elbows 0.28–0.30, wrists 0.22–0.23, hips 0.25–0.26. ONNX export (opset 17) passed parity on 16 held-out crops (max heatmap difference 1.8e-6, zero decoded difference). That is numerical equivalence, not accuracy.
+
+## Verdict
+
+The model learned, but it is **not good enough to matter for the game**. Wrists and elbows, the joints the game needs most, are right only 22–30% of the time, even with ground-truth crops. There is also no person detector, ROI tracking, browser runtime or live-camera test. The game keeps MediaPipe. To continue, resume from `runs/upper-body-coco-mpii-5ep/step-1800.pt` with `--epochs 5` on an idle machine (about 1.3 h uncontended).

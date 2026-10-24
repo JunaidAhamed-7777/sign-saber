@@ -23,10 +23,10 @@ For a prepared production build, run `npm run build`, then `npm run preview` fro
 1. Choose a song card in **Choose your music**. Wait for its duration and note count to appear in **Selected track**.
 2. Choose **Easy**, **Normal** or **Hard**. Easy gives more approach time and fewer notes; Hard gives less approach time and denser patterns. The timing judgement windows stay the same.
 3. Choose **Enable sound** with your mouse or keyboard. A hand gesture cannot unlock browser audio. **Preview** then lets you listen before starting; **Stop preview** stops it.
-4. Choose **Watch synthetic performer** to watch planned motion hit notes, or **Try level with dataset** to inspect the level with annotated still poses. Both show their input source throughout the run.
+4. Choose **Watch auto-play** to watch the avatar perform planned motion and hit notes, or **Play level** to inspect the level with annotated still poses. These actions use synthetic or dataset input, as explained below.
 5. After the pre-roll, the level plays to real results. **Play again** retries; **Songs** returns to music selection.
 
-![The desktop menu with Pamgaea selected, difficulty controls and the two labelled no-camera trial actions.](images/player-menu.webp)
+![The desktop menu with Pamgaea selected, difficulty controls, Watch auto-play and Play level.](images/player-menu.webp)
 
 Desktop menu after choosing music and enabling sound (1440 × 900).
 
@@ -38,19 +38,19 @@ Compact menu after returning from a trial; the prepared arrangement remains sele
 
 ### What the two trials show
 
-**Watch synthetic performer** plans motion for the selected chart and sends synthetic landmarks through the real input and scoring path. Hits, combo and results come from that path. It shows game logic and rendering; it uses no person, camera pixels or recognition model.
+**Watch auto-play** plans motion for the selected chart and sends synthetic landmarks through the real input and scoring path. The back-facing avatar follows that motion. Hits, combo and results come from that path. This synthetic-performer trial shows game logic and rendering; it uses no person, camera pixels or recognition model.
 
-![A labelled synthetic performer level with smash fragments and hand feedback.](images/player-performer.webp)
+![The back-facing avatar during a synthetic-performer run, with score and hand feedback.](images/player-performer.webp)
 
-A real synthetic-input run, with its source banner retained.
+A real synthetic-input run started with **Watch auto-play**. The current interface omits the source banner; this capture does not show a live player.
 
-**Try level with dataset** displays independent COCO upper-body still annotations. These poses have no recorded motion or hand-gesture labels, so missing gesture input produces genuine misses. It shows audio, level rendering and lifecycle behavior. Its score cannot measure a player's skill or tracking accuracy.
+**Play level** uses independent COCO upper-body still annotations. These poses have no recorded motion or hand-gesture labels, so missing gesture input produces genuine misses. It shows audio, level rendering and lifecycle behavior. Its score cannot measure a player's skill or tracking accuracy.
 
-Neither trial establishes webcam accuracy, real-world latency, human comfort or musical chart quality. The source-labelled motion proxy in results is also not a fitness or calorie measurement. See the [dataset attribution](../app/public/assets/fixtures/ATTRIBUTION.txt) and [evidence rules](24-benchmark-and-evidence.md). A separate developer dataset-camera path feeds prepared images through inference; it is distinct from the menu's still-annotation trial and is not needed for these steps.
+Neither trial establishes webcam accuracy, real-world latency, human comfort or musical chart quality. The motion proxy in results is also not a fitness or calorie measurement. Diagnostic exports retain the input source even though the current run screens use neutral labels. See the [dataset attribution](../app/public/assets/fixtures/ATTRIBUTION.txt) and [evidence rules](24-benchmark-and-evidence.md). A separate developer dataset-camera path feeds prepared images through inference; it is distinct from the menu's still-annotation trial and is not needed for these steps.
 
 ![Synthetic performer results with rank, score, judgement counts, Play again and Songs controls.](images/player-results.webp)
 
-Actual results from the Pamgaea Normal 80-second arrangement, labelled as a synthetic performer run.
+Actual results from the Pamgaea Normal 80-second arrangement using synthetic-performer input.
 
 ## The 80-second cut and your own audio
 
@@ -89,4 +89,4 @@ Page to **Settings → Sound & visuals** and toggle **Standard visuals** to **Ca
 
 For missing sound, unavailable tracks, camera errors or low frame rate, see [Troubleshooting](troubleshooting.md). Stop if movement hurts, and keep the space around you clear.
 
-The screenshots were captured on 2026-10-25 from a production build of [main commit 52e9c81](https://github.com/JunaidAhamed-7777/sign-saber/commit/52e9c81) in headless Chrome 155.0.8059.86 on Windows, using SwiftShader with muted output. They are actual app captures encoded as WebP; they are not live-camera, audible-sync, accessibility or GPU-performance evidence.
+The screenshots were captured on 2026-10-25 from a production build of [main commit 30572bb](https://github.com/JunaidAhamed-7777/sign-saber/commit/30572bb) in headless Chrome 155.0.8059.86 on Windows, using SwiftShader with muted output. The [capture record](evidence/2026-10-25-guide-capture-30572bb.json) identifies the source, image hashes, native actions, actual results and retained warning. They are actual app captures encoded as WebP; they are not live-camera, audible-sync, accessibility or GPU-performance evidence.

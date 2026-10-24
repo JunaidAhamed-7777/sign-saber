@@ -5,17 +5,20 @@ import type { Note, NoteType } from '../beatmap/types';
 import type { LiveNote, LiveObstacle } from '../game/liveObjects';
 import type { GameEvents } from '../core/events';
 import type { TypedEmitter } from '../utils/emitter';
-import { AssetRegistry, fallbackShards } from './assets';
+import { AssetRegistry, crackedBody, fallbackShards } from './assets';
+import { diamondFaces } from './slicer';
 import type { ShardAsset } from './assets';
 import { ShatterPool } from './shatter';
 import { SlicePool } from './slices';
 import { PoofPool } from './poof';
 import { TerminalNoteVisuals } from './failures';
 import { ArenaAtmosphere } from './environment';
+import { HandTrails } from './trails';
+import { SparkPool } from './sparks';
+import { CameraRig } from './cameraRig';
 import { PostFx, supportsHdrTargets } from './postfx';
 import { resolveQuality } from './quality';
 import {
-  createCoreMaterial,
   createGlyphMaterial,
   createShardMaterial,
   createShellMaterial,
@@ -23,6 +26,8 @@ import {
 } from './blocks';
 import type { ActiveQuality, QualityFeature, QualityTier } from './quality';
 import { beamAimTarget } from '../game/hit';
+import { AVATAR_LAYER, AvatarFigure, loadAvatarAsset } from './avatar';
+import type { AvatarSnapshot } from './avatar';
 import {
   BG_COLOR,
   BLOCK_SIZE,
@@ -43,6 +48,7 @@ import {
   HALF_LIFETIME_MS,
   SHATTER_BURST_MIN,
   SHATTER_BURST_MAX,
+  SHATTER_RECEDE_MPS,
   OBSTACLE_ALPHA,
   BEAM_VISUAL_MS,
   GLYPH_FACE_OFFSET_M,
@@ -66,9 +72,25 @@ import {
   SIL_JOINT_RADIUS_M,
   BLOCK_CORE_SPIN_RAD_S,
   CAM_FAR_M,
+  HIT_SPARKS,
+  POOF_SPARKS,
+  TRAUMA_BADCUT,
+  TRAUMA_DROP,
+  TRAUMA_HIT,
+  TRAUMA_KICK,
+  TRAUMA_OBSTACLE,
+  TRAUMA_PERFECT,
+  SLASH_SLAB_DEPTH,
+  SMASH_CRACK_SCALE,
+  BEAM_ORB_RADIUS,
+  GLYPH_PROUD_M,
+  TARGET_GLYPH_SCALE,
   SPAWN_DISTANCE,
+  AVATAR_TIER_FIGURE,
 } from '../core/constants';
 const colors = { slash: 0x19f5ff, smash: 0xff2bd6, beam: 0xffc32b };
+/** Armour plate debris tint (dark magenta metal), distinct from the glowing shard cross-sections. */
+const ARMOR_PLATE_DEBRIS_COLOR = 0x5a2050;
 const scratch = new THREE.Object3D();
 const tint = new THREE.Color();
 const failureTint = new THREE.Color(BADCUT_TINT);
@@ -119,6 +141,7 @@ interface Effect {
   color: number;
   rotation: number;
 }
+export type AvatarStatus = 'loading' | 'ready' | 'failed' | 'disabled';
 export interface ArenaRendererOptions {
   readonly tier?: QualityTier;
   readonly contrast?: boolean;
@@ -140,6 +163,28 @@ export class ArenaRenderer {
     roughness: 0.35,
   });
   private readonly targetUniforms = createTargetUniforms();
+  /**
+   * Three silhouettes, one per gesture (1 m authored, scaled by BLOCK_SIZE): a bladed Slash slab, a
+   * cracked Smash cube assembled from the very shards it shatters into, and a floating Beam orb.
+   */
+  private smashBodyGeometry = crackedBody(this.assets.assets.shards, SMASH_CRACK_SCALE);
+  private readonly bodies: Record<NoteType, THREE.InstancedMesh> = {
+    slash: new THREE.InstancedMesh(
+      this.assets.assets.slashBody,
+      createShellMaterial(this.targetUniforms),
+      MAX_LIVE_NOTES,
+    ),
+    smash: new THREE.InstancedMesh(
+      this.smashBodyGeometry,
+      createShardMaterial(this.targetUniforms),
+      MAX_LIVE_NOTES,
+    ),
+    beam: new THREE.InstancedMesh(
+      this.assets.assets.beamBody,
+      createShellMaterial(this.targetUniforms, true),
+      MAX_LIVE_NOTES,
+    ),
+  };
   // Linear HDR gold so the ring trims reach the bloom threshold.
   private readonly ringMaterial = new THREE.MeshBasicMaterial({
     color: new THREE.Color(0xffc32b).multiplyScalar(1.6),
@@ -148,11 +193,6 @@ export class ArenaRenderer {
   private readonly arrows = new THREE.InstancedMesh(
     this.assets.assets.glyphArrow,
     this.glyphMaterial,
-    MAX_LIVE_NOTES,
-  );
-  private readonly cores = new THREE.InstancedMesh(
-    this.assets.assets.blockCore,
-    createCoreMaterial(this.targetUniforms),
     MAX_LIVE_NOTES,
   );
   private readonly armor = new THREE.InstancedMesh(
@@ -178,7 +218,9 @@ export class ArenaRenderer {
   private readonly coloredTargets = [
     this.armor,
     this.beamRings,
-    this.cores,
+    this.bodies.slash,
+    this.bodies.smash,
+    this.bodies.beam,
     this.arrows,
     this.glyphMeshes.slash,
     this.glyphMeshes.smash,
@@ -194,7 +236,12 @@ export class ArenaRenderer {
   private lastDrawAt: number | null = null;
   private hdr = false;
   private previewSerial = 0;
-  private previewHandsEnabled = false;
+  /** Blade ribbons and hand particles (docs12); fed the latest measured cursors. */
+  private readonly trails = new HandTrails(QUALITY_TIER_PRESETS.medium);
+  private latestHands: readonly HandCursor[] = [];
+  private readonly sparks = new SparkPool();
+  private pointPixels = 1;
+  private readonly rig = new CameraRig();
   private post: PostFx | null = null;
   private readonly shatter: ShatterPool;
   private readonly slices: SlicePool;
@@ -215,12 +262,6 @@ export class ArenaRenderer {
   private readonly beamLines: THREE.Line[] = [];
   private readonly beamBirth = [-Infinity, -Infinity];
   private readonly camera = new THREE.PerspectiveCamera(CAM_FOV_DEG, 16 / 9, 0.05, CAM_FAR_M);
-  // 1 m authored glass shell (bevel trims in aTrim), scaled by BLOCK_SIZE per instance.
-  private readonly blocks = new THREE.InstancedMesh(
-    this.assets.assets.blockShell,
-    createShellMaterial(this.targetUniforms),
-    MAX_LIVE_NOTES,
-  );
   private readonly fragmentGeometry = new THREE.BoxGeometry(1, 1, 1);
   private readonly fragmentMaterial = new THREE.MeshBasicMaterial({
     color: 0xffffff,
@@ -292,6 +333,18 @@ export class ArenaRenderer {
   private menuStage: HTMLElement | null = null;
   private mode: 'menu' | 'play' | 'paused' | 'results' = 'menu';
   private calm = false;
+  // --- Rigged avatar figure (docs/10 §11): presentation only; the line skeleton is its fallback. ---
+  private avatar: AvatarFigure | null = null;
+  private avatarState: AvatarStatus = 'loading';
+  private avatarError: string | null = null;
+  private readonly avatarListeners = new Set<() => void>();
+  private readonly avatarAbort = new AbortController();
+  private avatarFrozen: AvatarSnapshot | null = null;
+  private avatarSaved: AvatarSnapshot | null = null;
+  private avatarPlaceholder = false;
+  private avatarShown = false;
+  private avatarClock = 0;
+  private avatarOrderedChildren = -1;
   constructor(container: HTMLElement, events: TypedEmitter<GameEvents>, options: ArenaRendererOptions = {}) {
     this.requestedTier = options.tier ?? 'medium';
     this.contrast = options.contrast ?? false;
@@ -329,7 +382,7 @@ export class ArenaRenderer {
       this.beamRings,
       this.reticles,
       this.pylons,
-      this.cores,
+      ...Object.values(this.bodies),
       this.arrows,
       ...Object.values(this.glyphMeshes),
     );
@@ -337,7 +390,7 @@ export class ArenaRenderer {
       this.armor,
       this.beamRings,
       this.reticles,
-      this.cores,
+      ...Object.values(this.bodies),
       this.arrows,
       ...Object.values(this.glyphMeshes),
     ]) {
@@ -357,12 +410,12 @@ export class ArenaRenderer {
     this.slices = new SlicePool(
       this.scene,
       HALF_LIFETIME_MS * this.activeQuality.preset.fragmentLifetimeScale,
+      // Halves are cut from the Slash target's own rhombic prism (half-depth in half-extent units).
+      diamondFaces(SLASH_SLAB_DEPTH),
     );
     this.poofs = new PoofPool(this.scene, this.activeQuality.preset.poofSparks);
-    this.blocks.frustumCulled = false;
-    this.blocks.name = 'lane_targets';
-    this.blocks.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-    this.scene.add(this.blocks);
+    this.scene.add(this.sparks.points);
+    if (this.lowShards) this.rebuildSmashBody(this.lowShards);
     this.fragments.frustumCulled = false;
     this.fragments.name = 'debris_fragments';
     this.fragments.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
@@ -373,7 +426,7 @@ export class ArenaRenderer {
     this.armor.name = 'target_armor';
     this.beamRings.name = 'target_rings';
     this.reticles.name = 'target_reticles';
-    this.cores.name = 'target_cores';
+    for (const type of ['slash', 'smash', 'beam'] as const) this.bodies[type].name = `target_body_${type}`;
     this.arrows.name = 'target_glyph_arrow';
     for (const type of ['slash', 'smash', 'beam'] as const)
       this.glyphMeshes[type].name = `target_glyph_${type}`;
@@ -474,6 +527,15 @@ export class ArenaRenderer {
     }
     this.unsubscribe.push(
       events.on('note:hit', (e) => this.impact(e)),
+      events.on('note:hit', (e) =>
+        this.rig.addTrauma(e.judgement === 'perfect' ? TRAUMA_PERFECT : TRAUMA_HIT),
+      ),
+      events.on('note:badcut', () => this.rig.addTrauma(TRAUMA_BADCUT)),
+      events.on('obstacle:hit', () => this.rig.addTrauma(TRAUMA_OBSTACLE)),
+      events.on('music:event', (e) => {
+        if (e.kind === 'kick') this.rig.addTrauma(TRAUMA_KICK * e.intensity);
+        else if (e.kind === 'drop') this.rig.addTrauma(TRAUMA_DROP * e.intensity);
+      }),
       events.on('note:miss', (e) => this.failures.resolve(e.note, 'miss', this.currentTime)),
       events.on('note:badcut', (e) => this.failures.resolve(e.note, 'badcut', this.currentTime)),
       events.on('highlight:capture', () => this.capture()),
@@ -492,12 +554,23 @@ export class ArenaRenderer {
       this.scene.add(line);
     }
     this.scene.traverse((object) => {
-      if (object instanceof THREE.AmbientLight || object instanceof THREE.DirectionalLight)
+      if (object instanceof THREE.AmbientLight || object instanceof THREE.DirectionalLight) {
         object.layers.enable(1);
-      else if (object !== this.scene && object !== this.pylons) object.layers.set(1);
+        object.layers.enable(AVATAR_LAYER);
+      } else if (object !== this.scene && object !== this.pylons) object.layers.set(1);
     });
     this.atmosphere.applyPreset(this.activeQuality.preset);
     this.scene.add(this.atmosphere.group);
+    this.trails.applyPreset(this.activeQuality.preset);
+    // Same layer as the hand cursors so menu-stage and play projections agree.
+    this.trails.group.traverse((object) => object.layers.set(1));
+    this.scene.add(this.trails.group);
+    this.loadAvatar();
+    this.unsubscribe.push(
+      events.on('music:event', (event) => {
+        if (event.kind === 'kick') this.avatar?.kick(performance.now());
+      }),
+    );
     void this.assets.load().then(() => {
       if (this.disposed) return;
       this.assetPending = true;
@@ -511,13 +584,58 @@ export class ArenaRenderer {
   setStage(stage: HTMLElement | null): void {
     this.menuStage = stage;
   }
+  private loadAvatar(): void {
+    if (AVATAR_TIER_FIGURE[this.activeQuality.tier] !== 'avatar') {
+      this.avatarState = 'disabled';
+      return;
+    }
+    loadAvatarAsset(this.avatarAbort.signal).then(
+      (asset) => {
+        if (this.disposed) return;
+        this.avatar = new AvatarFigure(asset);
+        this.scene.add(this.avatar.root);
+        this.setAvatarStatus('ready', null);
+      },
+      (error: unknown) => {
+        if (!this.disposed)
+          this.setAvatarStatus('failed', error instanceof Error ? error.message : String(error));
+      },
+    );
+  }
+  private setAvatarStatus(status: AvatarStatus, error: string | null): void {
+    this.avatarState = status;
+    this.avatarError = error;
+    for (const listener of this.avatarListeners) listener();
+  }
+  /** 'ready' once the skinned avatar is in the scene; 'failed'/'disabled' keep the line skeleton and SVG. */
+  get avatarStatus(): AvatarStatus {
+    return this.avatarState;
+  }
+  get avatarLoadError(): string | null {
+    return this.avatarError;
+  }
+  subscribeAvatar(listener: () => void): () => void {
+    this.avatarListeners.add(listener);
+    return () => this.avatarListeners.delete(listener);
+  }
+  /** The loaded avatar (e.g. for a performer to switch variant or pose from joints), or null. */
+  get avatarFigure(): AvatarFigure | null {
+    return this.avatar;
+  }
+  /** The menu stage is showing the illustrative placeholder (no live/saved/frozen figure). */
+  setFigurePlaceholder(placeholder: boolean): void {
+    this.avatarPlaceholder = placeholder;
+  }
   setMode(mode: 'menu' | 'play' | 'paused' | 'results'): void {
     if (this.mode !== 'play' && this.mode !== 'paused' && this.assetPending) this.applyAssets();
     this.mode = mode;
+    if (mode === 'results') this.trails.hide();
     if (mode === 'results' || mode === 'paused') {
       for (const mesh of this.handMeshes) mesh.visible = false;
       for (const line of this.handLines) line.visible = false;
     }
+    if (mode === 'results' && this.snapshotValid && this.avatarSaved) this.avatar?.restore(this.avatarSaved);
+    if (mode === 'paused' && this.frozenPose && this.avatarFrozen) this.avatar?.restore(this.avatarFrozen);
     if (mode === 'results' && this.snapshotValid) {
       this.hasMask = this.savedHasMask;
       this.hasPose = this.savedHasPose;
@@ -578,6 +696,10 @@ export class ArenaRenderer {
     this.camera.updateProjectionMatrix();
     this.atmosphere.applyPreset(this.activeQuality.preset);
     this.atmosphere.setViewport(innerHeight * this.activeQuality.pixelRatio, CAM_FOV_DEG);
+    this.trails.applyPreset(this.activeQuality.preset);
+    this.trails.setViewport(innerHeight * this.activeQuality.pixelRatio, CAM_FOV_DEG);
+    this.pointPixels =
+      (innerHeight * this.activeQuality.pixelRatio) / (2 * Math.tan((CAM_FOV_DEG * Math.PI) / 360));
     this.post?.configure(this.activeQuality);
     this.post?.setSize(innerWidth, innerHeight);
   }
@@ -645,6 +767,10 @@ export class ArenaRenderer {
       }
       (this.skeleton.geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
     }
+    if (this.avatar) {
+      if (visible && frame.pose) this.avatar.track(frame);
+      else this.avatar.clearTracking();
+    }
     if (visible && this.hasPose) {
       this.frozenJoints.set(this.joints);
       this.frozenJointPositions.set(this.jointPositions);
@@ -656,6 +782,7 @@ export class ArenaRenderer {
     }
   }
   hideTracking(): void {
+    this.avatar?.clearTracking();
     this.visible = false;
     this.hasMask = false;
     this.hasPose = false;
@@ -673,6 +800,7 @@ export class ArenaRenderer {
   }
   hands(hands: readonly HandCursor[]): void {
     if (this.mode === 'paused' || this.mode === 'results') return;
+    this.latestHands = hands;
     for (let i = 0; i < 2; i++) {
       const hand = hands[i];
       const mesh = this.handMeshes[i]!;
@@ -743,11 +871,11 @@ export class ArenaRenderer {
           );
       }
     }
-    this.blocks.count = counts.blocks;
-    this.blocks.instanceMatrix.needsUpdate = true;
-    if (this.blocks.instanceColor) this.blocks.instanceColor.needsUpdate = true;
-    this.cores.count = counts.blocks;
-    this.cores.instanceMatrix.needsUpdate = true;
+    for (const type of ['slash', 'smash', 'beam'] as const) {
+      const body = this.bodies[type];
+      body.count = counts[type];
+      body.instanceMatrix.needsUpdate = true;
+    }
     this.arrows.count = counts.arrows;
     this.arrows.instanceMatrix.needsUpdate = true;
     this.armor.count = counts.armor;
@@ -808,6 +936,13 @@ export class ArenaRenderer {
     this.shatter.update(this.currentTime, play, this.calm);
     this.slices.update(this.currentTime, play, this.calm);
     this.poofs.update(this.currentTime, play, this.calm);
+    // Tier spark count follows the poof preset; Calm halves the spray instead of flashing it.
+    this.sparks.update(
+      this.currentTime,
+      play,
+      Math.round((HIT_SPARKS * this.activeQuality.preset.poofSparks) / POOF_SPARKS / (this.calm ? 2 : 1)),
+      this.pointPixels,
+    );
     for (let hand = 0; hand < 2; hand++) {
       const age = this.currentTime - this.beamBirth[hand]!;
       const line = this.beamLines[hand]!;
@@ -816,11 +951,15 @@ export class ArenaRenderer {
     }
     const bodyVisible =
       this.mode === 'results' ? this.snapshotValid : this.mode === 'paused' ? this.frozenPose : this.visible;
-    this.silhouette.visible = bodyVisible && this.hasMask;
+    const avatarShown = this.drawAvatar(bodyVisible && this.hasPose);
+    this.silhouette.visible = !avatarShown && bodyVisible && this.hasMask;
     this.skeleton.visible =
-      bodyVisible && this.hasPose && this.activeQuality.preset.skeleton === 'joints-and-bones';
-    this.drawJoints(bodyVisible && this.hasPose);
-    this.headMarker.visible = bodyVisible && this.headPresent;
+      !avatarShown &&
+      bodyVisible &&
+      this.hasPose &&
+      this.activeQuality.preset.skeleton === 'joints-and-bones';
+    this.drawJoints(!avatarShown && bodyVisible && this.hasPose);
+    this.headMarker.visible = !avatarShown && bodyVisible && this.headPresent;
     const now = performance.now(),
       frameMs = this.lastDrawAt === null ? 0 : now - this.lastDrawAt;
     this.lastDrawAt = now;
@@ -831,8 +970,22 @@ export class ArenaRenderer {
         this.calm,
         this.mode === 'play' ? (SPAWN_DISTANCE / this.approachMs) * 1000 : 0,
       );
+    if (this.mode !== 'paused')
+      this.trails.update(
+        this.latestHands,
+        this.mode !== 'results' && this.visible,
+        frameMs,
+        this.bands,
+        this.calm,
+        this.camera.position,
+      );
     const rect = this.mode !== 'play' ? this.menuStage?.getBoundingClientRect() : null;
-    this.camera.fov = CAM_FOV_DEG;
+    // Gameplay-only camera response around the fixed base pose (menus, pause, results and Calm stay still).
+    this.rig.update(frameMs, this.mode === 'play', this.calm, this.atmosphere.response.low);
+    this.camera.position.set(CAM_POS.x, CAM_POS.y, CAM_POS.z).add(this.rig.offset);
+    this.camera.lookAt(CAM_LOOK_AT.x, CAM_LOOK_AT.y, CAM_LOOK_AT.z);
+    if (this.rig.roll) this.camera.rotateZ(this.rig.roll);
+    this.camera.fov = CAM_FOV_DEG + (rect ? 0 : this.rig.fovDelta);
     this.camera.aspect = innerWidth / innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setScissorTest(false);
@@ -862,6 +1015,7 @@ export class ArenaRenderer {
         (2 * Math.atan(PLAY_W / (2 * CAM_POS.z * this.camera.aspect)) * 180) / Math.PI,
       );
       this.camera.layers.set(1);
+      this.camera.layers.enable(AVATAR_LAYER);
     } else {
       this.camera.aspect = innerWidth / innerHeight;
       this.camera.layers.enableAll();
@@ -869,6 +1023,41 @@ export class ArenaRenderer {
     this.camera.updateProjectionMatrix();
     this.renderer.render(this.scene, this.camera);
     this.renderer.setScissorTest(false);
+  }
+  /** Pose the avatar for the current state; returns whether it is visible this frame. */
+  private drawAvatar(trackedBody: boolean): boolean {
+    const avatar = this.avatar;
+    if (!avatar) return false;
+    const now = performance.now(),
+      dt = this.avatarClock ? Math.min(100, Math.max(0, now - this.avatarClock)) : 0;
+    this.avatarClock = now;
+    avatar.setAudio(0.6 * this.bands.low + 0.4 * this.bands.rms, now, this.calm);
+    // Backdrop ordering: arena (layer 0 only) → avatar → depth clear → gameplay.
+    if (this.scene.children.length !== this.avatarOrderedChildren) {
+      this.avatarOrderedChildren = this.scene.children.length;
+      this.scene.traverse((object) => {
+        if (object.layers.mask === 1) object.renderOrder = Math.min(object.renderOrder, -200);
+      });
+    }
+    let shown = false;
+    if (this.mode === 'paused') shown = this.frozenPose && !!this.avatarFrozen?.valid;
+    else if (this.mode === 'results') shown = this.snapshotValid && !!this.avatarSaved?.valid;
+    else if (trackedBody && avatar.updateTracked(now, dt)) {
+      shown = true;
+      this.avatarFrozen = avatar.snapshot(this.avatarFrozen ?? undefined);
+    }
+    if (!shown && this.mode !== 'play' && this.avatarPlaceholder) {
+      // Illustrative idle (static in Calm); never a tracked figure.
+      avatar.updateIdle(this.calm ? 0 : now / 1000, now, this.calm ? 0 : dt);
+      shown = true;
+    }
+    avatar.root.visible = shown;
+    this.avatarShown = shown;
+    return shown;
+  }
+  /** Whether the skinned avatar (not the line skeleton) is the visible figure this frame. */
+  get avatarVisible(): boolean {
+    return this.avatarShown;
   }
   private drawJoints(visible: boolean): void {
     this.jointMarkers.visible = visible;
@@ -920,16 +1109,17 @@ export class ArenaRenderer {
   ): void {
     const counts = this.targetCounts;
     if (counts.blocks >= MAX_LIVE_NOTES) return;
-    const scale = note.type === 'beam' ? 1.6 : 1;
+    const scale = note.type === 'beam' ? 1.6 : 1,
+      body = this.bodies[note.type],
+      index = counts[note.type]++;
+    counts.blocks++;
     scratch.position.set(position.x, position.y, position.z);
     scratch.rotation.set(0, 0, rotation);
     scratch.scale.setScalar(BLOCK_SIZE * scale);
     scratch.updateMatrix();
-    this.blocks.setMatrixAt(counts.blocks, scratch.matrix);
-    this.cores.setMatrixAt(counts.blocks, scratch.matrix);
+    body.setMatrixAt(index, scratch.matrix);
     tint.setHex(colors[note.type]).lerp(failureTint, redMix).multiplyScalar(brightness);
-    this.blocks.setColorAt(counts.blocks, tint);
-    this.cores.setColorAt(counts.blocks++, tint);
+    body.setColorAt(index, tint);
     tint.setHex(0xffffff).lerp(failureTint, redMix).multiplyScalar(brightness);
     if (note.type === 'smash') {
       scratch.scale.setScalar(BLOCK_SIZE);
@@ -951,13 +1141,19 @@ export class ArenaRenderer {
         this.reticles.setMatrixAt(counts.reticles++, scratch.matrix);
       }
     }
-    const directional = note.type === 'slash' && note.dir !== 'any';
-    scratch.position.set(position.x, position.y, position.z + GLYPH_FACE_OFFSET_M * scale);
+    const directional = note.type === 'slash' && note.dir !== 'any',
+      // Glyphs sit just proud of each silhouette's front: slab face, cube face or orb surface.
+      face =
+        note.type === 'slash'
+          ? (SLASH_SLAB_DEPTH / 2) * BLOCK_SIZE + GLYPH_PROUD_M
+          : note.type === 'beam'
+            ? BEAM_ORB_RADIUS * BLOCK_SIZE * scale + GLYPH_PROUD_M
+            : GLYPH_FACE_OFFSET_M;
+    scratch.position.set(position.x, position.y, position.z + face);
     scratch.rotation.set(0, 0, 0);
-    scratch.scale.setScalar(BLOCK_SIZE * (directional ? 0.5 : 0.72) * scale);
+    scratch.scale.setScalar(BLOCK_SIZE * TARGET_GLYPH_SCALE[note.type] * (directional ? 0.8 : 1) * scale);
     scratch.updateMatrix();
-    const glyph = this.glyphMeshes[note.type],
-      index = counts[note.type]++;
+    const glyph = this.glyphMeshes[note.type];
     glyph.setMatrixAt(index, scratch.matrix);
     glyph.setColorAt(index, tint);
     if (directional) {
@@ -974,7 +1170,7 @@ export class ArenaRenderer {
       scratch.position.set(
         position.x - Math.sin(angle) * reach,
         position.y + Math.cos(angle) * reach,
-        position.z + GLYPH_FACE_OFFSET_M * scale,
+        position.z + face,
       );
       scratch.rotation.set(0, 0, angle);
       scratch.scale.setScalar(BLOCK_SIZE * 0.3 * scale);
@@ -1000,10 +1196,17 @@ export class ArenaRenderer {
           break;
         }
       this.slices.trigger(e, this.currentTime, live?.pos ?? e.impactPos, live?.rotation ?? 0);
+      this.sparks.trigger(e.impactPos, e.cutPlane?.normal ?? null, colors.slash, this.currentTime);
       this.balanceEffects();
       return;
     }
-    if (e.note.type === 'smash') this.shatter.trigger(e, this.currentTime);
+    if (e.note.type === 'smash') {
+      this.shatter.trigger(e, this.currentTime);
+      beamCenter.x = LANE_X[e.note.col];
+      beamCenter.y = LANE_Y[e.note.row];
+      beamCenter.z = e.impactPos.z + BLOCK_SIZE / 2;
+      this.sparks.trigger(beamCenter, null, colors.smash, this.currentTime);
+    }
     const count = 4;
     for (let i = 0; i < count; i++) {
       const slot = this.effects[this.effectIndex++ % this.effects.length]!;
@@ -1019,9 +1222,10 @@ export class ArenaRenderer {
         z: e.impactPos.z,
         vx: Math.cos(angle) * speed,
         vy: this.calm ? 0 : Math.sin(angle) * speed,
-        vz: 1,
-        size: BLOCK_SIZE * 0.3,
-        color: colors[e.note.type],
+        // The four armour plates peel off sideways and away from the camera as dark metal.
+        vz: -SHATTER_RECEDE_MPS,
+        size: BLOCK_SIZE * 0.22,
+        color: ARMOR_PLATE_DEBRIS_COLOR,
         rotation: this.calm ? 0 : angle,
       });
     }
@@ -1057,10 +1261,6 @@ export class ArenaRenderer {
       multiplier: 1,
     });
   }
-  /** Visual QA preview of synthetic hand trails (development harness only). */
-  previewHands(enabled: boolean): void {
-    this.previewHandsEnabled = enabled;
-  }
   get effectOccupancy(): number {
     let count = this.shatter.occupancy + this.slices.occupancy + this.poofs.occupancy;
     for (const effect of this.effects) if (effect.active) count++;
@@ -1091,14 +1291,22 @@ export class ArenaRenderer {
     positions.needsUpdate = true;
     this.beamBirth[index] = this.currentTime;
   }
+  /** The intact Smash silhouette always matches the shard set this tier will shatter into. */
+  private rebuildSmashBody(shards: readonly ShardAsset[]): void {
+    const previous = this.smashBodyGeometry;
+    this.smashBodyGeometry = crackedBody(shards, SMASH_CRACK_SCALE);
+    this.bodies.smash.geometry = this.smashBodyGeometry;
+    previous.dispose();
+  }
   private applyAssets(): void {
     if (!this.assetPending) return;
     this.assetPending = false;
     const assets = this.assets.assets;
     this.armor.geometry = assets.armor;
     this.beamRings.geometry = assets.beamRing;
-    this.blocks.geometry = assets.blockShell;
-    this.cores.geometry = assets.blockCore;
+    this.bodies.slash.geometry = assets.slashBody;
+    this.bodies.beam.geometry = assets.beamBody;
+    this.rebuildSmashBody(this.lowShards ?? assets.shards);
     this.arrows.geometry = assets.glyphArrow;
     this.pylons.geometry = assets.pylon;
     for (const type of ['slash', 'smash', 'beam'] as const)
@@ -1114,6 +1322,8 @@ export class ArenaRenderer {
   }
   capture(): void {
     if (!this.visible || !this.hasPose) return;
+    if (this.avatar && this.avatarFrozen?.valid)
+      this.avatarSaved = this.avatar.snapshot(this.avatarSaved ?? undefined);
     this.savedJoints.set(this.joints);
     this.savedJointPositions.set(this.jointPositions);
     this.savedMask.set(this.maskData);
@@ -1128,6 +1338,9 @@ export class ArenaRenderer {
     if (!this.snapshotValid) this.capture();
   }
   reset(): void {
+    this.avatar?.resetMotion();
+    if (this.avatarFrozen) this.avatarFrozen.valid = false;
+    if (this.avatarSaved) this.avatarSaved.valid = false;
     for (const e of this.effects) e.active = false;
     this.snapshotValid = false;
     this.snapshotAt = null;
@@ -1142,12 +1355,18 @@ export class ArenaRenderer {
     this.shatter.reset();
     this.slices.reset();
     this.poofs.reset();
+    this.sparks.reset();
+    this.rig.reset();
     this.failures.reset();
     this.renderedNotes = EMPTY_NOTES;
     this.beamBirth[0] = this.beamBirth[1] = -Infinity;
   }
   dispose(): void {
     this.disposed = true;
+    this.avatarAbort.abort();
+    this.avatar?.dispose();
+    this.avatar = null;
+    this.avatarListeners.clear();
     this.assets.stop();
     this.shatter.dispose();
     this.slices.dispose();

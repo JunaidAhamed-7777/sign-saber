@@ -33,6 +33,9 @@ VIEWS = {
     'head_front': ((0, 0.75, 0.6), (0, 0.745, 0), ('PERSP', 85), (800, 900)),
     'hand': ((0.62, 0.32, 0.45), (0.64, 0.09, 0.0), ('PERSP', 85), (900, 800)),
     'hand_palm': ((0.40, -0.05, 0.25), (0.64, 0.09, 0.0), ('PERSP', 85), (900, 800)),
+    'wide_front': ((0, 0.55, 3.0), (0, 0.55, 0), ('ORTHO', 1.9), (1000, 1000)),
+    'wide_three_quarter': ((-1.4, 0.9, 2.4), (0, 0.5, 0), ('PERSP', 40), (1000, 1000)),
+    'wide_close': ((0.9, 0.7, 1.3), (0.15, 0.55, 0.1), ('PERSP', 45), (1000, 1000)),
 }
 selected = globals().get('SIGN_SABER_PREVIEW_VIEWS', list(VIEWS))
 scene = bpy.context.scene

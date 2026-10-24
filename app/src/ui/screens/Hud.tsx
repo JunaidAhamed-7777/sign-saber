@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { HUD_TWEEN_TAU_MS } from '../../core/constants';
+import { HUD_COMBO_BREAK_MIN, HUD_TWEEN_TAU_MS, MAX_POPS } from '../../core/constants';
+import { clearOfTorso, projectToViewport, type ScreenPoint } from '../projection';
 import { useStore } from '../../state/store';
 import { comboMilestone, multiplierProgress } from '../hudModel';
 import { GestureIcon } from '../components/GestureIcon';
@@ -122,6 +123,56 @@ function MultiplierRing({ combo }: { combo: number }) {
     </div>
   );
 }
+const SLOTS = Array.from({ length: MAX_POPS }, (_, index) => index);
+const point: ScreenPoint = { x: 0, y: 0, visible: false };
+/**
+ * Pooled pop slots (slot = id % MAX_POPS). Each live pop is projected from its world position and keyed by id
+ * so a reused slot restarts its rise/fade; the runtime retires pops after POP_LIFETIME_MS, including in Calm.
+ */
+function JudgementPops() {
+  const pops = useStore((s) => s.pops);
+  const width = typeof window === 'undefined' ? 0 : window.innerWidth,
+    height = typeof window === 'undefined' ? 0 : window.innerHeight;
+  return (
+    <div className="judgement-layer" aria-hidden="true">
+      {SLOTS.map((slot) => {
+        const pop = pops.find((entry) => entry.id % MAX_POPS === slot);
+        if (!pop || !projectToViewport(pop, width, height, point).visible)
+          return <span key={`slot-${slot}`} className="pop-slot" />;
+        const side = clearOfTorso(point, width);
+        const timing =
+          pop.timingMs === null
+            ? null
+            : `${pop.timingMs < 0 ? '−' : '+'}${Math.round(Math.abs(pop.timingMs))} ms`;
+        return (
+          <span
+            key={`slot-${slot}`}
+            className={`pop-slot${side ? ` side-${side}` : ''}`}
+            style={{ transform: `translate3d(${Math.round(point.x)}px, ${Math.round(point.y)}px, 0)` }}
+          >
+            <span key={pop.id} className={`judgement ${pop.judgement}`}>
+              {t[pop.judgement]}
+              {timing && <small>{timing}</small>}
+            </span>
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+/** Brief, non-punishing note when a meaningful streak ends; cleared by the next hit. */
+function useComboBreak(combo: number): { lost: number; key: number } | null {
+  const [previous, setPrevious] = useState(combo);
+  const [lost, setLost] = useState<{ lost: number; key: number } | null>(null);
+  if (combo !== previous) {
+    // Adjusting state during render from the previous prop value is React's documented pattern.
+    setPrevious(combo);
+    if (combo < previous && previous >= HUD_COMBO_BREAK_MIN)
+      setLost({ lost: previous, key: (lost?.key ?? 0) + 1 });
+    else if (combo > previous) setLost(null);
+  }
+  return lost;
+}
 const MILESTONE_COPY = {
   10: t.milestone10,
   25: t.milestone25,
@@ -133,6 +184,7 @@ export function Hud() {
   const calm = useStore((s) => s.calm);
   const score = useTweened(hud.score, calm);
   const milestone = comboMilestone(hud.combo);
+  const broken = useComboBreak(hud.combo);
   const progress = hud.durationMs > 0 ? Math.min(1, Math.max(0, hud.songTimeMs / hud.durationMs)) : 0;
   return (
     <main className="game-hud">
@@ -143,12 +195,17 @@ export function Hud() {
         </div>
         <div className="hud-combo">
           <dt>{t.combo}</dt>
-          <dd>
+          <dd className={broken ? 'combo-broke' : undefined} key={broken ? `broke-${broken.key}` : 'combo'}>
             <MultiplierRing combo={hud.combo} />
             <span className="hud-combo-count">{hud.combo}</span>
             {milestone && (
               <span className="hud-milestone" key={milestone}>
                 {MILESTONE_COPY[milestone]}
+              </span>
+            )}
+            {broken && (
+              <span className="hud-combo-lost">
+                {t.comboLost} · {broken.lost}
               </span>
             )}
           </dd>
@@ -162,13 +219,7 @@ export function Hud() {
         <HandIndicator side="left" present={hud.leftPresent} gesture={hud.left} charge={hud.leftCharge} />
         <HandIndicator side="right" present={hud.rightPresent} gesture={hud.right} charge={hud.rightCharge} />
       </aside>
-      <div className="judgement-layer" aria-hidden="true">
-        {hud.judgement && (
-          <span className={`judgement ${hud.judgement}`} key={hud.judgementSeq}>
-            {t[hud.judgement as 'perfect']}
-          </span>
-        )}
-      </div>
+      <JudgementPops />
       <footer className="song-progress">
         <span>{duration(hud.songTimeMs)}</span>
         <div className="song-track">

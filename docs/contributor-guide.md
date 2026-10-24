@@ -9,7 +9,7 @@ Start with [AGENTS.md](../AGENTS.md), [the roadmap](../ROADMAP.md), [the documen
 - `app/src/game/`: framework-free contact tests, judgement, score, spawning and `GameSession`. It must remain independent of Three.js.
 - `app/src/audio/` and `beatmap/`: playback/clock, decode/arrangements, DSP worker, validation, local catalog and optional chart cache.
 - `app/src/render/`: Three.js arena, owned snapshots, pooled geometry/effects and fixed cosmetic tiers. `app/src/ui/`, `App.tsx` and `state/` supply React screens and display state.
-- `app/src/performer/`: planned synthetic motion. `tracking/datasetTrial.ts` supplies the separately labelled still-annotation trial.
+- `app/src/performer/`: planned synthetic motion behind **Watch auto-play**. `tracking/datasetTrial.ts` supplies the still-annotation **Play level** trial; diagnostic exports distinguish their input sources.
 - `app/tests/`: asserted unit, interface and integration suites, plus browser numeric audio entries. `app/public/` contains packaged local music/maps, fonts, fixtures and models/assets.
 - `scripts/`: plain Node preparation, integrity, serving and numeric browser checks. `assets-src/` holds authored asset sources; `training/` is separate research, not a production tracker.
 - `docs/`: contracts, QA and retained evidence. [DESIGN.md](../DESIGN.md), [14](14-ui-ux.md) and [25](25-menu-and-hand-navigation.md) own UI direction/behavior.

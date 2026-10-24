@@ -30,12 +30,9 @@ class PerturbedRoiDataset(UpperBodyDataset):
         super().__init__(records, augment=False)
         self.jitter = jitter
     def __getitem__(self, index):
-        row = self.records[index]
-        original = np.asarray(row["keypoints"], dtype=np.float32)
-        with Image.open((DATA / row["image"]).resolve()) as raw:
-            image = raw.convert("RGB")
-        left, top, side, _ = upper_body_roi(original, row["bbox"], image.width, image.height, row.get("headBox")).tolist()
-        rng = random.Random(int.from_bytes(hashlib.sha256(f"perturbed-roi:{CONFIG['seed']}:{row['sampleId']}".encode()).digest()[:8], "big"))
+        image, original, bbox, head_box = self.sample(index)
+        left, top, side, _ = upper_body_roi(original, bbox, image.width, image.height, head_box).tolist()
+        rng = random.Random(int.from_bytes(hashlib.sha256(f"perturbed-roi:{CONFIG['seed']}:{self.sample_ids[index]}".encode()).digest()[:8], "big"))
         moved = side * (1 + rng.uniform(-self.jitter, self.jitter))
         center_x = left + side / 2 + rng.uniform(-self.jitter, self.jitter) * side
         center_y = top + side / 2 + rng.uniform(-self.jitter, self.jitter) * side
@@ -47,7 +44,7 @@ class PerturbedRoiDataset(UpperBodyDataset):
         heatmap_points = points.copy()
         heatmap_points[:, :2] *= CONFIG["heatmapSize"] / CONFIG["imageSize"]
         targets, weights = make_heatmaps(heatmap_points)
-        return {"image": tensor, "target": torch.from_numpy(targets), "weights": torch.from_numpy(weights), "groundTruth": torch.from_numpy(original.copy()), "roi": torch.from_numpy(roi), "sampleId": row["sampleId"], "dataset": row["dataset"]}
+        return {"image": tensor, "target": torch.from_numpy(targets), "weights": torch.from_numpy(weights), "groundTruth": torch.from_numpy(original.copy()), "roi": torch.from_numpy(roi), "sampleId": self.sample_ids[index], "dataset": self.datasets[index]}
 
 def mean_pose(rows):
     """Mean labelled joint position in normalized oracle-ROI coordinates over the training split."""

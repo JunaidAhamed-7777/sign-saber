@@ -1,0 +1,489 @@
+{
+ "schema": 2,
+ "lane": "dataset-camera-synthetic-performer",
+ "createdAt": "2026-10-24T23:15:41.018Z",
+ "releaseEvidence": false,
+ "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+ "viewport": {
+  "width": 1426,
+  "height": 866,
+  "dpr": 1.5
+ },
+ "state": "SELECT",
+ "pauseReason": null,
+ "cameraSource": null,
+ "camera": {},
+ "tracking": {
+  "hz": 3.46,
+  "initMs": 1910.1,
+  "inferenceMs": 310.9,
+  "mainToMainMs": 316.4,
+  "dropped": 0,
+  "delegate": "GPU",
+  "timestampSource": "callback-receipt",
+  "opportunities": 2936,
+  "skippedBusy": 2590,
+  "submitted": 346,
+  "returned": 345,
+  "initializationError": null,
+  "phase": "stopped",
+  "cameraCallbacks": 2936,
+  "bitmapsCreated": 346,
+  "lastCaptureAt": 149838.8,
+  "lastBitmapAt": 149842.8,
+  "lastSubmitAt": 149842.9,
+  "lastResultAt": 149785.7,
+  "phaseAtFailure": null
+ },
+ "calibration": null,
+ "flags": {
+  "replay": null,
+  "speed": 1,
+  "stats": true,
+  "tier": "low",
+  "contrast": false,
+  "difficulty": "normal",
+  "camera": "dataset",
+  "reel": "performer",
+  "reelHoldMs": 5000,
+  "reelSeed": 0
+ },
+ "datasetTrial": null,
+ "performerTrial": null,
+ "datasetCamera": {
+  "active": false,
+  "label": "Dataset camera — not a webcam",
+  "lane": "dataset-camera-synthetic-performer",
+  "webcam": false,
+  "reel": {
+   "kind": "synthetic-performer",
+   "lane": "dataset-camera-synthetic-performer",
+   "synthetic": true,
+   "material": "avatar natural (skin/fabric PBR)",
+   "background": "plain room: warm grey wall and floor",
+   "render": {
+    "width": 960,
+    "height": 540
+   },
+   "framing": {
+    "shoulderWidthNorm": 0.24,
+    "frameWidthM": 1.542,
+    "cameraDistanceM": 3
+   },
+   "unplayableNotes": 0,
+   "counters": {
+    "rendered": 3613,
+    "poseFailures": 0,
+    "idleFrames": 3613,
+    "songFrames": 0
+   },
+   "truth": "Planned choreography image joints; the rendered rig differs in proportions and solver limits."
+  },
+  "canvas": {
+   "width": 1280,
+   "height": 720,
+   "captureFps": 30
+  },
+  "framesPainted": 3613,
+  "streamMs": 120696,
+  "timelineTransitions": 1024,
+  "timelineOverwritten": 2589,
+  "transitionGuardMs": 0,
+  "paintError": null,
+  "evaluation": {
+   "definitions": {
+    "unit": "Per-photo means; frames of one still photo are not independent samples.",
+    "error": "Isotropic distance between unmirrored MediaPipe pose landmark and annotation, divided by annotated shoulder width.",
+    "pck": "Fraction of photos whose mean joint error is <= 0.5 shoulder widths.",
+    "wristMatch": "A detected hand's wrist landmark within 0.5 shoulder widths of an annotated wrist; handedness agreement compares the adapter's player hand with that anatomical wrist.",
+    "detected": "poseRate >= 0.5 of attributed frames."
+   },
+   "attributedFrames": 345,
+   "unattributedFrames": 0,
+   "unattributedProcessed": 0,
+   "overflowFrames": 0,
+   "truthsObserved": 1,
+   "poseDetectedTruths": 1,
+   "anyHandTruths": 1,
+   "twoHandTruths": 1,
+   "medianLabelledJointError": 0.266,
+   "perJoint": {
+    "nose": {
+     "items": 1,
+     "median": 0.469,
+     "pck": 1
+    },
+    "left_eye": {
+     "items": 1,
+     "median": 0.545,
+     "pck": 0
+    },
+    "right_eye": {
+     "items": 1,
+     "median": 0.512,
+     "pck": 0
+    },
+    "left_ear": {
+     "items": 1,
+     "median": 0.544,
+     "pck": 0
+    },
+    "right_ear": {
+     "items": 1,
+     "median": 0.421,
+     "pck": 1
+    },
+    "left_shoulder": {
+     "items": 1,
+     "median": 0.172,
+     "pck": 1
+    },
+    "right_shoulder": {
+     "items": 1,
+     "median": 0.03,
+     "pck": 1
+    },
+    "left_elbow": {
+     "items": 1,
+     "median": 0.08,
+     "pck": 1
+    },
+    "right_elbow": {
+     "items": 1,
+     "median": 0.033,
+     "pck": 1
+    },
+    "left_wrist": {
+     "items": 1,
+     "median": 0.144,
+     "pck": 1
+    },
+    "right_wrist": {
+     "items": 1,
+     "median": 0.131,
+     "pck": 1
+    },
+    "left_hip": {
+     "items": 1,
+     "median": 0.216,
+     "pck": 1
+    },
+    "right_hip": {
+     "items": 1,
+     "median": 0.154,
+     "pck": 1
+    }
+   },
+   "wristHands": {
+    "matched": 690,
+    "handednessAgree": 690,
+    "handednessDisagree": 0,
+    "unmatched": 0
+   },
+   "gestures": {
+    "left": {
+     "open": 0,
+     "fist": 0,
+     "point": 0,
+     "none": 75,
+     "absent": 0
+    },
+    "right": {
+     "open": 0,
+     "fist": 0,
+     "point": 0,
+     "none": 75,
+     "absent": 0
+    }
+   },
+   "items": [
+    {
+     "id": "performer-idle",
+     "role": "performer",
+     "frames": 345,
+     "poseRate": 1,
+     "oneOrMoreHandsRate": 1,
+     "twoHandsRate": 1,
+     "meanJointErrorShoulderWidths": {
+      "nose": 0.469,
+      "left_eye": 0.545,
+      "right_eye": 0.512,
+      "left_ear": 0.544,
+      "right_ear": 0.421,
+      "left_shoulder": 0.172,
+      "right_shoulder": 0.03,
+      "left_elbow": 0.08,
+      "right_elbow": 0.033,
+      "left_wrist": 0.144,
+      "right_wrist": 0.131,
+      "left_hip": 0.216,
+      "right_hip": 0.154
+     },
+     "meanLabelledJointError": 0.266,
+     "meanPoseVisibility": {
+      "nose": 1,
+      "left_eye": 0.999,
+      "right_eye": 0.999,
+      "left_ear": 0.999,
+      "right_ear": 0.999,
+      "left_shoulder": 1,
+      "right_shoulder": 1,
+      "left_elbow": 0.998,
+      "right_elbow": 0.995,
+      "left_wrist": 0.991,
+      "right_wrist": 0.968,
+      "left_hip": 0.754,
+      "right_hip": 0.715
+     },
+     "wristHands": {
+      "matched": 690,
+      "handednessAgree": 690,
+      "handednessDisagree": 0,
+      "unmatched": 0
+     },
+     "processedFrames": 75,
+     "gestures": {
+      "left": {
+       "open": 0,
+       "fist": 0,
+       "point": 0,
+       "none": 75,
+       "absent": 0
+      },
+      "right": {
+       "open": 0,
+       "fist": 0,
+       "point": 0,
+       "none": 75,
+       "absent": 0
+      }
+     }
+    }
+   ]
+  }
+ },
+ "arrangement": {
+  "sourceStartMs": 72000,
+  "sourceEndMs": 152000,
+  "outputDurationMs": 80000,
+  "fadeIn": {
+   "startMs": 0,
+   "endMs": 10000
+  },
+  "highlight": {
+   "startMs": 10000,
+   "endMs": 70000
+  },
+  "fadeOut": {
+   "startMs": 70000,
+   "endMs": 80000
+  },
+  "selectionReason": "energy-onset-window-low-tempo-confidence",
+  "tempoConfidence": 0,
+  "beatAligned": false,
+  "shortTrack": false,
+  "score": {
+   "meanEnergy": 0.736,
+   "onsetEvidencePerSecond": 3.189,
+   "activeFraction": 1,
+   "combined": 0.994
+  },
+  "warnings": [
+   "arrangementNotBeatLocked"
+  ],
+  "version": 1,
+  "sourceTitle": "Pamgaea",
+  "sourceArtist": "Kevin MacLeod",
+  "sourceKind": "bundled",
+  "sourceAudioSha256": "9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586",
+  "sourceDurationMs": 168510.635,
+  "sourceStartSample": 3175200,
+  "sourceEndSample": 6703200,
+  "sampleRate": 44100,
+  "channels": 2,
+  "outputTitle": "Pamgaea — 80.0s arrangement",
+  "outputAudioSha256": "8d437bfcd862e9cc02462e5655bdcf8de656a68b2a12f0edd1f20f79b90019c1",
+  "outputCanonicalPcmSha256": "1c772f3bdf379510c46d6cd14843bc66d44994da674867a446a649d8ffd861b8",
+  "fadeCurve": "raised-cosine-amplitude",
+  "continuity": "one-continuous-source-window",
+  "oldChartReused": false,
+  "changes": "Selected one continuous source excerpt, applied raised-cosine amplitude fades to silence, and encoded unchanged-channel float32 WAV. A new map must be generated from these exact derivative file bytes."
+ },
+ "limitations": [
+  "No consented human/hardware acceptance recorded",
+  "GPU and motion-to-photon timing unavailable"
+ ],
+ "results": null,
+ "judgementTrace": {
+  "schema": 1,
+  "label": "",
+  "capacity": 8192,
+  "count": 0,
+  "overflow": 0,
+  "repeats": 0,
+  "sha256": "56fc7f1e91b057f6a4c7b7de194b317be1c6074c4ae6525c1b1c0dec137e8b74",
+  "hashCovers": "Semantic fields in emission order plus count/overflow/repeats; delivery timestamps excluded.",
+  "events": [],
+  "deliveredAtMs": []
+ },
+ "samples": {
+  "frameIntervalMs": [],
+  "frameWorkMs": [],
+  "inferenceMs": [
+   244,
+   244.2,
+   237.1,
+   240.1,
+   223.8,
+   229.7,
+   235.1,
+   126.2,
+   141.7,
+   232.9,
+   183.2,
+   105.2,
+   106,
+   100.8,
+   211.7,
+   195.7,
+   178.3,
+   204.1,
+   169.8,
+   204.1,
+   222.5,
+   210.8,
+   179.1,
+   233.2,
+   223.3,
+   204.6,
+   200.5,
+   216.3,
+   187.9,
+   212.2,
+   232.7,
+   199,
+   208.3,
+   212.3,
+   235.1,
+   196.1,
+   184.9,
+   202.4,
+   225.9,
+   239.5,
+   217,
+   184.6,
+   224.1,
+   214.5,
+   195,
+   226.7,
+   206.2,
+   200.5,
+   222.5,
+   217.6,
+   223.3,
+   191.4,
+   210.4,
+   216.6,
+   225.4,
+   211.6,
+   239.9,
+   226.2,
+   239.5,
+   185.5,
+   226.1,
+   217,
+   231.2,
+   221.4,
+   220.4,
+   223.7,
+   225.2,
+   235.6,
+   233.9,
+   228.9,
+   238.3,
+   236.9,
+   236.9,
+   225.6,
+   226.4
+  ],
+  "inputAgeMs": [
+   247.7,
+   247,
+   239.4,
+   244.9,
+   228.4,
+   234.7,
+   238.7,
+   139.1,
+   165.3,
+   237.1,
+   185.4,
+   107.8,
+   112.8,
+   102.7,
+   217.6,
+   200.8,
+   180.9,
+   210.6,
+   180.5,
+   211.1,
+   230.1,
+   245.9,
+   182.6,
+   237,
+   231.4,
+   214.2,
+   208.3,
+   222.4,
+   190.6,
+   216.8,
+   245.7,
+   244.5,
+   222.7,
+   220.2,
+   245.9,
+   201.7,
+   217,
+   211.1,
+   236.1,
+   245.6,
+   224,
+   203.9,
+   242.1,
+   221.9,
+   205.8,
+   230.9,
+   217,
+   209.8,
+   232.5,
+   226.1,
+   227.6,
+   222.3,
+   227.7,
+   223.9,
+   240.7,
+   218.6,
+   244.2,
+   234.3,
+   245.5,
+   196,
+   231.6,
+   225.1,
+   237.9,
+   224.1,
+   224.7,
+   231,
+   239.9,
+   240.7,
+   240.2,
+   245.4,
+   247.4,
+   245.7,
+   246.9,
+   233,
+   234.5
+  ],
+  "gpuDurationMs": null,
+  "gpuStatus": "unavailable"
+ }
+}

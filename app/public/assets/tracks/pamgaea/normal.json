@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatorVersion": 2,
+  "generatorVersion": 4,
   "song": {
     "title": "Pamgaea",
     "artist": "Kevin MacLeod",
@@ -8,2440 +8,1711 @@
     "sourceHash": "9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586",
     "audioUrl": "/assets/tracks/pamgaea/audio.mp3",
     "durationMs": 168510.6575963719,
-    "bpm": 94.1,
-    "beatOffsetMs": 225.87453981917065
+    "bpm": 94,
+    "beatOffsetMs": 46.93774864355339
   },
   "difficulty": "normal",
   "approachMs": 2000,
   "notes": [
     {
-      "id": 0,
-      "t": 345.8503401360544,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 1,
       "t": 677.8231292517006,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 2,
-      "t": 1140.9977324263039,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 0.9340096116065979
+      "strength": 1,
+      "id": 0
     },
     {
-      "id": 3,
-      "t": 1473.1972789115646,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
+      "t": 2094.739229024943,
+      "type": "beam",
+      "col": 0,
+      "row": 2,
       "dir": "any",
-      "strength": 0.8000029921531677
+      "strength": 0.6134046912193298,
+      "id": 1
     },
     {
-      "id": 4,
-      "t": 2913.877551020408,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.772007167339325
-    },
-    {
-      "id": 5,
       "t": 3222.312925170068,
       "type": "smash",
-      "col": 1,
+      "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 2
     },
     {
-      "id": 6,
       "t": 3707.7551020408164,
       "type": "slash",
-      "col": 3,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.7903597354888916
-    },
-    {
-      "id": 7,
-      "t": 4811.609977324263,
-      "type": "slash",
-      "col": 0,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 8,
-      "t": 5780.6349206349205,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 9,
-      "t": 5787.392290249433,
-      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 0.8071958422660828
+      "strength": 0.7903597354888916,
+      "id": 3
     },
     {
-      "id": 10,
-      "t": 6340.544217687075,
+      "t": 4811.609977324263,
+      "type": "slash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 4
+    },
+    {
+      "t": 5780.6349206349205,
+      "type": "smash",
+      "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 5
+    },
+    {
+      "t": 5787.392290249433,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 0.8071958422660828,
+      "id": 6
     },
     {
-      "id": 11,
       "t": 6577.777777777777,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 0.8973658680915833
+      "strength": 0.8973658680915833,
+      "id": 7
     },
     {
-      "id": 12,
-      "t": 8000.272108843537,
+      "t": 8319.36507936508,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 0.8233364224433899
+      "strength": 1,
+      "id": 8
     },
     {
-      "id": 13,
-      "t": 8319.36507936508,
-      "type": "smash",
+      "t": 8809.705215419503,
+      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 0.8971297740936279,
+      "id": 9
     },
     {
-      "id": 14,
-      "t": 8809.705215419503,
+      "t": 9444.85260770975,
       "type": "slash",
-      "col": 3,
+      "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 0.8971297740936279
+      "strength": 1,
+      "id": 10
     },
     {
-      "id": 15,
-      "t": 9773.333333333334,
-      "type": "beam",
-      "col": 0,
-      "row": 2,
-      "dir": "any",
-      "strength": 0.9146268367767334
-    },
-    {
-      "id": 16,
       "t": 10878.004535147393,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 11
     },
     {
-      "id": 17,
-      "t": 11454.013605442176,
-      "type": "smash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 18,
       "t": 11999.455782312925,
       "type": "slash",
-      "col": 2,
+      "col": 3,
       "row": 2,
       "dir": "any",
-      "strength": 0.7914428114891052
+      "strength": 0.7914428114891052,
+      "id": 12
     },
     {
-      "id": 19,
-      "t": 12314.875283446712,
-      "type": "slash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 0.668971061706543
-    },
-    {
-      "id": 20,
       "t": 13436.371882086167,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
+      "type": "beam",
+      "col": 0,
+      "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 0.6914548277854919,
+      "id": 13
     },
     {
-      "id": 21,
       "t": 14546.031746031746,
       "type": "slash",
-      "col": 1,
+      "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 0.8376381993293762
+      "strength": 0.8376381993293762,
+      "id": 14
     },
     {
-      "id": 22,
-      "t": 15771.927437641723,
-      "type": "slash",
-      "col": 3,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.859143853187561
-    },
-    {
-      "id": 23,
       "t": 15986.621315192744,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 15
     },
     {
-      "id": 24,
-      "t": 16787.21088435374,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 25,
       "t": 17104.852607709752,
       "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 26,
-      "t": 17907.210884353743,
-      "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 16
     },
     {
-      "id": 27,
-      "t": 18219.002267573695,
-      "type": "slash",
+      "t": 17907.210884353743,
+      "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 17
     },
     {
-      "id": 28,
       "t": 18535.78231292517,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 18
     },
     {
-      "id": 29,
+      "t": 19015.01133786848,
+      "type": "slash",
+      "col": 1,
+      "row": 2,
+      "dir": "any",
+      "strength": 0.8277051448822021,
+      "id": 19
+    },
+    {
       "t": 19650.385487528343,
       "type": "slash",
+      "col": 3,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 20
+    },
+    {
+      "t": 20470.975056689345,
+      "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 21
     },
     {
-      "id": 30,
-      "t": 20470.975056689345,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 31,
-      "t": 20766.07709750567,
-      "type": "slash",
-      "col": 0,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 32,
-      "t": 21091.83673469388,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 33,
       "t": 22213.514739229027,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 22
     },
     {
-      "id": 34,
-      "t": 22519.909297052156,
+      "t": 23020,
+      "type": "smash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 23
+    },
+    {
+      "t": 23639.50113378685,
+      "type": "smash",
+      "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 24
+    },
+    {
+      "t": 24117.369614512474,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 0.9545853734016418,
+      "id": 25
     },
     {
-      "id": 35,
-      "t": 23020,
-      "type": "smash",
+      "t": 24755.14739229025,
+      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 26
     },
     {
-      "id": 36,
-      "t": 23639.50113378685,
-      "type": "smash",
+      "t": 26201.360544217685,
+      "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 27
     },
     {
-      "id": 37,
-      "t": 24755.14739229025,
-      "type": "smash",
+      "t": 27308.662131519275,
+      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 28
     },
     {
-      "id": 38,
-      "t": 25074.285714285714,
+      "t": 28436.55328798186,
       "type": "slash",
       "col": 3,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 29
     },
     {
-      "id": 39,
-      "t": 26201.360544217685,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 40,
-      "t": 26508.93424036281,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 41,
-      "t": 27308.662131519275,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 42,
-      "t": 28108.798185941043,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 43,
-      "t": 28436.55328798186,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 44,
-      "t": 28752.01814058957,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 45,
       "t": 29063.492063492064,
       "type": "smash",
       "col": 1,
-      "row": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 30
     },
     {
-      "id": 46,
       "t": 30195.32879818594,
       "type": "beam",
       "col": 3,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 31
     },
     {
-      "id": 47,
       "t": 31308.43537414966,
+      "type": "slash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 32
+    },
+    {
+      "t": 33226.89342403629,
       "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 48,
-      "t": 31779.773242630385,
-      "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 0.8769118189811707,
+      "id": 33
     },
     {
-      "id": 49,
-      "t": 32111.56462585034,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 50,
-      "t": 32412.92517006803,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 51,
-      "t": 32737.142857142855,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 52,
       "t": 33232.4716553288,
       "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 53,
-      "t": 33859.45578231293,
-      "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 34
     },
     {
-      "id": 54,
       "t": 34646.89342403628,
       "type": "slash",
       "col": 3,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 35
     },
     {
-      "id": 55,
-      "t": 36092.15419501134,
+      "t": 35300.49886621315,
       "type": "slash",
-      "col": 2,
+      "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 0.9731190800666809,
+      "id": 36
     },
     {
-      "id": 56,
       "t": 36406.621315192744,
       "type": "smash",
-      "col": 1,
+      "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 37
     },
     {
-      "id": 57,
       "t": 37204.21768707483,
       "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 58,
-      "t": 37521.04308390022,
-      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 38
     },
     {
-      "id": 59,
-      "t": 37845.71428571429,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.9248198866844177
-    },
-    {
-      "id": 60,
       "t": 38318.276643990925,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.956662118434906
-    },
-    {
-      "id": 61,
-      "t": 38639.22902494331,
-      "type": "slash",
+      "type": "beam",
       "col": 3,
-      "row": 1,
+      "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 0.956662118434906,
+      "id": 39
     },
     {
-      "id": 62,
-      "t": 38971.20181405896,
-      "type": "smash",
+      "t": 39212.879818594105,
+      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 0.6004298329353333,
+      "id": 40
     },
     {
-      "id": 63,
+      "t": 39756.96145124717,
+      "type": "slash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 0.6486872434616089,
+      "id": 41
+    },
+    {
       "t": 40250.74829931973,
       "type": "smash",
-      "col": 2,
+      "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 42
     },
     {
-      "id": 64,
       "t": 40911.700680272115,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 43
     },
     {
-      "id": 65,
-      "t": 41522.7664399093,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 66,
       "t": 41993.424036281176,
       "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 44
     },
     {
-      "id": 67,
-      "t": 42326.5306122449,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 68,
       "t": 42802.312925170074,
       "type": "smash",
-      "col": 1,
+      "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 45
     },
     {
-      "id": 69,
       "t": 43433.922902494334,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 70,
-      "t": 43749.07029478458,
       "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 46
     },
     {
-      "id": 71,
-      "t": 44860.09070294784,
+      "t": 44228.707482993195,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 0.9895021319389343
+      "strength": 0.9447922110557556,
+      "id": 47
     },
     {
-      "id": 72,
-      "t": 46623.356009070296,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 73,
-      "t": 47094.14965986394,
+      "t": 44860.09070294784,
       "type": "slash",
       "col": 0,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 0.9895021319389343,
+      "id": 48
     },
     {
-      "id": 74,
+      "t": 46623.356009070296,
+      "type": "beam",
+      "col": 3,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 49
+    },
+    {
       "t": 47415.73696145124,
       "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 75,
-      "t": 47749.84126984127,
-      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 50
     },
     {
-      "id": 76,
-      "t": 48221.40589569161,
-      "type": "slash",
-      "col": 3,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 77,
       "t": 48534.19501133787,
       "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 78,
-      "t": 48853.83219954649,
-      "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 51
     },
     {
-      "id": 79,
       "t": 49659.727891156464,
       "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 52
     },
     {
-      "id": 80,
+      "t": 50304.30839002268,
+      "type": "slash",
+      "col": 3,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 53
+    },
+    {
       "t": 50942.99319727891,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 54
     },
     {
-      "id": 81,
-      "t": 51404.26303854876,
-      "type": "slash",
-      "col": 0,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 82,
       "t": 51729.20634920635,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 55
     },
     {
-      "id": 83,
-      "t": 52214.96598639456,
+      "t": 52525.986394557825,
       "type": "slash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 56
+    },
+    {
+      "t": 53646.98412698413,
+      "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 57
     },
     {
-      "id": 84,
-      "t": 52525.986394557825,
+      "t": 55400.272108843536,
       "type": "slash",
       "col": 3,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 0.9368115067481995,
+      "id": 58
     },
     {
-      "id": 85,
-      "t": 52851.51927437641,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 86,
-      "t": 53646.98412698413,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 87,
-      "t": 54756.50793650794,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 88,
       "t": 56194.376417233565,
       "type": "smash",
-      "col": 2,
+      "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 59
     },
     {
-      "id": 89,
-      "t": 56509.56916099774,
-      "type": "slash",
-      "col": 0,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 90,
       "t": 56832.56235827665,
-      "type": "smash",
+      "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 60
     },
     {
-      "id": 91,
-      "t": 57317.73242630385,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 92,
       "t": 57626.712018140584,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 93,
-      "t": 57945.89569160998,
       "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 0.977469265460968
+      "strength": 1,
+      "id": 61
     },
     {
-      "id": 94,
       "t": 58442.72108843538,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 62
     },
     {
-      "id": 95,
       "t": 60024.30839002268,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
+      "type": "beam",
+      "col": 0,
+      "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 0.7348847389221191,
+      "id": 63
     },
     {
-      "id": 96,
-      "t": 60741.5873015873,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.655148983001709
-    },
-    {
-      "id": 97,
       "t": 61302.53968253968,
       "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 98,
-      "t": 61617.68707482993,
-      "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 64
     },
     {
-      "id": 99,
-      "t": 61943.356009070296,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 100,
       "t": 63225.578231292515,
-      "type": "smash",
-      "col": 2,
+      "type": "slash",
+      "col": 0,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 65
     },
     {
-      "id": 101,
       "t": 63238.639455782315,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 102,
-      "t": 63535.96371882086,
-      "type": "smash",
-      "col": 3,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.9864721298217773
-    },
-    {
-      "id": 103,
-      "t": 64336.68934240363,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.6715985536575317
-    },
-    {
-      "id": 104,
-      "t": 65151.60997732427,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 105,
-      "t": 66410.2947845805,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 106,
-      "t": 66728.84353741496,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.8962605595588684
-    },
-    {
-      "id": 107,
-      "t": 67052.60770975056,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 108,
-      "t": 67546.66666666667,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.9034838676452637
-    },
-    {
-      "id": 109,
-      "t": 68321.85941043083,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 110,
-      "t": 68815.0566893424,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.9656308889389038
-    },
-    {
-      "id": 111,
-      "t": 69128.7074829932,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.8223640322685242
-    },
-    {
-      "id": 112,
-      "t": 69600.68027210885,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 113,
-      "t": 70720.40816326531,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 114,
-      "t": 71527.75510204081,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 115,
-      "t": 71860.63492063493,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.7473456859588623
-    },
-    {
-      "id": 116,
-      "t": 72157.00680272108,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 117,
-      "t": 72629.79591836735,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.666010856628418
-    },
-    {
-      "id": 118,
-      "t": 73113.51473922902,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.6030362248420715
-    },
-    {
-      "id": 119,
-      "t": 73440.63492063493,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 120,
-      "t": 75032.51700680272,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.7548015117645264
-    },
-    {
-      "id": 121,
-      "t": 75338.91156462584,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 122,
-      "t": 76666.89342403627,
       "type": "slash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 66
     },
     {
-      "id": 123,
-      "t": 76935.23809523809,
+      "t": 64336.68934240363,
+      "type": "slash",
+      "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 0.6715985536575317,
+      "id": 67
+    },
+    {
+      "t": 65151.60997732427,
+      "type": "slash",
+      "col": 3,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 68
+    },
+    {
+      "t": 66410.2947845805,
+      "type": "slash",
+      "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 69
+    },
+    {
+      "t": 67052.60770975056,
+      "type": "slash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 70
+    },
+    {
+      "t": 68321.85941043083,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 0.6436092853546143
+      "strength": 1,
+      "id": 71
     },
     {
-      "id": 124,
-      "t": 77916.09977324263,
+      "t": 69600.68027210885,
+      "type": "smash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 72
+    },
+    {
+      "t": 70720.40816326531,
+      "type": "smash",
+      "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 73
+    },
+    {
+      "t": 71527.75510204081,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 0.9504417777061462
+      "strength": 1,
+      "id": 74
     },
     {
-      "id": 125,
-      "t": 78212.92517006803,
+      "t": 72323.94557823129,
+      "type": "slash",
+      "col": 3,
+      "row": 1,
+      "dir": "any",
+      "strength": 0.7195548415184021,
+      "id": 75
+    },
+    {
+      "t": 73440.63492063493,
+      "type": "beam",
+      "col": 0,
+      "row": 2,
+      "dir": "any",
+      "strength": 0.9609726667404175,
+      "id": 76
+    },
+    {
+      "t": 75338.91156462584,
+      "type": "smash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 77
+    },
+    {
+      "t": 76633.10657596373,
+      "type": "smash",
+      "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 0.8810571432113647,
+      "id": 78
+    },
+    {
+      "t": 77916.09977324263,
+      "type": "slash",
+      "col": 2,
+      "row": 2,
+      "dir": "any",
+      "strength": 0.9504417777061462,
+      "id": 79
+    },
+    {
+      "t": 79008.39002267574,
       "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 0.516074538230896
+      "strength": 0.7283434271812439,
+      "id": 80
     },
     {
-      "id": 126,
-      "t": 79008.39002267574,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 0.7283434271812439
-    },
-    {
-      "id": 127,
       "t": 79824.62585034015,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 81
     },
     {
-      "id": 128,
       "t": 79838.50340136055,
-      "type": "slash",
-      "col": 3,
+      "type": "smash",
+      "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 82
     },
     {
-      "id": 129,
-      "t": 80469.79591836735,
-      "type": "smash",
+      "t": 80944.12698412698,
+      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 0.44422638416290283,
+      "id": 83
     },
     {
-      "id": 130,
       "t": 81729.88662131519,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 131,
-      "t": 82042.94784580499,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 132,
-      "t": 82364.17233560092,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 133,
-      "t": 82996.78004535146,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 84
     },
     {
-      "id": 134,
-      "t": 83802.13151927438,
-      "type": "beam",
+      "t": 82528.25396825396,
+      "type": "slash",
+      "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 85
+    },
+    {
+      "t": 83482.85714285714,
+      "type": "slash",
+      "col": 0,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 86
+    },
+    {
+      "t": 84123.99092970522,
+      "type": "slash",
       "col": 3,
-      "row": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 87
     },
     {
-      "id": 135,
-      "t": 84912.65306122448,
+      "t": 84596.14512471655,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 88
     },
     {
-      "id": 136,
-      "t": 85704.67120181407,
-      "type": "smash",
+      "t": 85392.01814058957,
+      "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 89
     },
     {
-      "id": 137,
       "t": 86025.21541950114,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 90
     },
     {
-      "id": 138,
-      "t": 86512.01814058957,
-      "type": "smash",
+      "t": 87950.34013605442,
+      "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 91
     },
     {
-      "id": 139,
-      "t": 86840.95238095238,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
+      "t": 88903.08390022676,
+      "type": "beam",
+      "col": 0,
+      "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 92
     },
     {
-      "id": 140,
-      "t": 87152.60770975056,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 141,
-      "t": 87474.10430839003,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 142,
-      "t": 88270.34013605441,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 143,
       "t": 89700.8163265306,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 93
     },
     {
-      "id": 144,
-      "t": 90030.20408163265,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 145,
       "t": 90499.27437641723,
       "type": "slash",
+      "col": 0,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 94
+    },
+    {
+      "t": 91136.73469387756,
+      "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 95
     },
     {
-      "id": 146,
-      "t": 91459.0022675737,
-      "type": "beam",
-      "col": 0,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 147,
       "t": 92392.19954648525,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 96
     },
     {
-      "id": 148,
-      "t": 92584.98866213152,
-      "type": "smash",
+      "t": 93376.55328798186,
+      "type": "slash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 97
+    },
+    {
+      "t": 94009.47845804988,
+      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 98
     },
     {
-      "id": 149,
-      "t": 93212.74376417234,
+      "t": 94499.68253968254,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 99
     },
     {
-      "id": 150,
-      "t": 93690.52154195012,
+      "t": 95288.79818594105,
       "type": "slash",
-      "col": 0,
+      "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 100
     },
     {
-      "id": 151,
-      "t": 94009.47845804988,
+      "t": 95935.60090702948,
       "type": "slash",
       "col": 3,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 101
     },
     {
-      "id": 152,
-      "t": 94499.68253968254,
+      "t": 97690.06802721089,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 102
     },
     {
-      "id": 153,
-      "t": 95134.33106575964,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 154,
-      "t": 95612.42630385488,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 155,
-      "t": 96566.75736961451,
+      "t": 99126.66666666667,
       "type": "beam",
       "col": 3,
       "row": 2,
       "dir": "any",
-      "strength": 0.9407311081886292
+      "strength": 1,
+      "id": 103
     },
     {
-      "id": 156,
-      "t": 97370.06802721089,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 157,
-      "t": 97690.06802721089,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 158,
-      "t": 98316.68934240364,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 159,
-      "t": 98797.55102040817,
-      "type": "slash",
-      "col": 3,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 160,
-      "t": 99126.66666666667,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 161,
       "t": 99922.67573696145,
       "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 162,
-      "t": 100233.74149659864,
-      "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 104
     },
     {
-      "id": 163,
-      "t": 100716.28117913831,
+      "t": 100400.589569161,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 105
     },
     {
-      "id": 164,
-      "t": 101837.95918367348,
-      "type": "smash",
+      "t": 101029.75056689343,
+      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 106
     },
     {
-      "id": 165,
+      "t": 101667.7097505669,
+      "type": "slash",
+      "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 107
+    },
+    {
       "t": 102467.3015873016,
       "type": "slash",
-      "col": 2,
+      "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 108
     },
     {
-      "id": 166,
-      "t": 102791.02040816327,
+      "t": 103582.358276644,
       "type": "slash",
       "col": 0,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 109
     },
     {
-      "id": 167,
-      "t": 103357.50566893423,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 168,
-      "t": 103582.358276644,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 169,
       "t": 104223.31065759638,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 110
     },
     {
-      "id": 170,
       "t": 104711.88208616781,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 111
     },
     {
-      "id": 171,
       "t": 105353.10657596373,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 112
     },
     {
-      "id": 172,
-      "t": 106141.179138322,
-      "type": "slash",
+      "t": 106456.09977324263,
+      "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 113
     },
     {
-      "id": 173,
       "t": 107578.00453514738,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 114
     },
     {
-      "id": 174,
-      "t": 107897.18820861678,
-      "type": "slash",
+      "t": 109329.84126984127,
+      "type": "beam",
       "col": 0,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 175,
-      "t": 108692.83446712018,
-      "type": "slash",
-      "col": 3,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 176,
-      "t": 109018.4126984127,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 177,
-      "t": 109809.79591836734,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 178,
-      "t": 110130.47619047618,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 179,
-      "t": 110452.01814058957,
-      "type": "smash",
-      "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 0.9734595417976379,
+      "id": 115
     },
     {
-      "id": 180,
+      "t": 110130.47619047618,
+      "type": "slash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 116
+    },
+    {
       "t": 110770.52154195012,
       "type": "smash",
       "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 117
+    },
+    {
+      "t": 111253.6507936508,
+      "type": "slash",
+      "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 118
     },
     {
-      "id": 181,
-      "t": 111877.14285714286,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 182,
       "t": 112366.34920634922,
       "type": "smash",
-      "col": 1,
+      "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 119
     },
     {
-      "id": 183,
-      "t": 113007.61904761904,
-      "type": "slash",
-      "col": 3,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 184,
       "t": 113798.59410430839,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 185,
-      "t": 114132.33560090703,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 120
     },
     {
-      "id": 186,
       "t": 114917.23356009071,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 121
     },
     {
-      "id": 187,
-      "t": 115238.0045351474,
-      "type": "slash",
+      "t": 115555.55555555556,
+      "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 122
     },
     {
-      "id": 188,
-      "t": 115555.55555555556,
+      "t": 116359.13832199546,
       "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 123
     },
     {
-      "id": 189,
-      "t": 116359.13832199546,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 190,
       "t": 117320.31746031746,
       "type": "slash",
-      "col": 0,
+      "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 124
     },
     {
-      "id": 191,
       "t": 117796.28117913831,
+      "type": "slash",
+      "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 125
+    },
+    {
+      "t": 118915.96371882086,
       "type": "slash",
       "col": 3,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 126
     },
     {
-      "id": 192,
-      "t": 118110.74829931972,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 193,
-      "t": 118915.96371882086,
+      "t": 119543.40136054422,
       "type": "slash",
-      "col": 2,
+      "col": 0,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 0.9690773487091064,
+      "id": 127
     },
     {
-      "id": 194,
-      "t": 119701.31519274376,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 195,
       "t": 120023.21995464852,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 128
     },
     {
-      "id": 196,
-      "t": 120351.83673469388,
+      "t": 120670.5215419501,
       "type": "smash",
       "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 197,
-      "t": 120670.5215419501,
-      "type": "slash",
-      "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 129
     },
     {
-      "id": 198,
+      "t": 121320.81632653062,
+      "type": "slash",
+      "col": 2,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 130
+    },
+    {
       "t": 122252.87981859411,
       "type": "slash",
-      "col": 3,
+      "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 131
     },
     {
-      "id": 199,
-      "t": 122589.20634920635,
-      "type": "smash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 200,
-      "t": 122900.22675736962,
+      "t": 124648.79818594105,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 0.9491132497787476,
+      "id": 132
     },
     {
-      "id": 201,
-      "t": 123240.22675736962,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 202,
-      "t": 124822.63038548753,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 203,
       "t": 125144.44444444445,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 133
     },
     {
-      "id": 204,
-      "t": 125447.84580498865,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 205,
       "t": 125782.44897959183,
       "type": "smash",
-      "col": 1,
+      "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 134
     },
     {
-      "id": 206,
       "t": 126568.02721088435,
       "type": "slash",
-      "col": 3,
-      "row": 1,
+      "col": 0,
+      "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 135
     },
     {
-      "id": 207,
       "t": 127697.36961451247,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 208,
-      "t": 128334.24036281179,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 136
     },
     {
-      "id": 209,
-      "t": 129135.8276643991,
+      "t": 128334.24036281179,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 137
     },
     {
-      "id": 210,
-      "t": 129438.54875283447,
+      "t": 129135.8276643991,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 138
     },
     {
-      "id": 211,
       "t": 129915.19274376419,
       "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 139
     },
     {
-      "id": 212,
-      "t": 130253.60544217688,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 213,
       "t": 130886.3492063492,
-      "type": "smash",
+      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 140
     },
     {
-      "id": 214,
-      "t": 131513.96825396825,
-      "type": "smash",
+      "t": 130897.95918367346,
+      "type": "slash",
       "col": 2,
-      "row": 1,
+      "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 141
     },
     {
-      "id": 215,
       "t": 131987.21088435376,
       "type": "slash",
       "col": 0,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 142
     },
     {
-      "id": 216,
       "t": 132796.55328798186,
-      "type": "smash",
-      "col": 2,
+      "type": "slash",
+      "col": 3,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 143
     },
     {
-      "id": 217,
-      "t": 133428.39002267574,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 218,
       "t": 133904.08163265305,
       "type": "slash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 144
     },
     {
-      "id": 219,
-      "t": 134220.22675736962,
-      "type": "slash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 220,
-      "t": 134549.6598639456,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 221,
-      "t": 135684.48979591837,
-      "type": "slash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 222,
       "t": 135978.91156462586,
       "type": "smash",
-      "col": 2,
+      "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 145
     },
     {
-      "id": 223,
       "t": 136454.78458049885,
-      "type": "slash",
-      "col": 0,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 224,
-      "t": 137096.0544217687,
       "type": "slash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 146
     },
     {
-      "id": 225,
-      "t": 137918.32199546485,
+      "t": 137096.0544217687,
       "type": "slash",
       "col": 1,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 147
     },
     {
-      "id": 226,
       "t": 138216.09977324263,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 148
     },
     {
-      "id": 227,
-      "t": 138537.36961451248,
-      "type": "smash",
+      "t": 139651.92743764172,
+      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 149
     },
     {
-      "id": 228,
-      "t": 139651.92743764172,
-      "type": "slash",
+      "t": 140451.20181405894,
+      "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 150
     },
     {
-      "id": 229,
-      "t": 140451.20181405894,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 230,
-      "t": 140769.11564625852,
-      "type": "slash",
-      "col": 3,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 231,
       "t": 141100.86167800456,
       "type": "smash",
       "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 151
+    },
+    {
+      "t": 141897.00680272107,
+      "type": "slash",
+      "col": 1,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 0.8826876878738403,
+      "id": 152
     },
     {
-      "id": 232,
-      "t": 142200.04535147393,
+      "t": 141901.67800453515,
       "type": "slash",
       "col": 2,
-      "row": 1,
+      "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 153
     },
     {
-      "id": 233,
-      "t": 142536.2811791383,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 234,
       "t": 143002.13151927438,
       "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 235,
-      "t": 143643.53741496598,
-      "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 154
     },
     {
-      "id": 236,
       "t": 144774.42176870746,
       "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 237,
-      "t": 145080.45351473923,
-      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 155
     },
     {
-      "id": 238,
       "t": 145561.67800453515,
       "type": "smash",
       "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 239,
-      "t": 145879.5918367347,
-      "type": "smash",
-      "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 156
     },
     {
-      "id": 240,
       "t": 146200.6349206349,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 241,
-      "t": 147307.16553287982,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 242,
-      "t": 147631.60997732426,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 243,
-      "t": 148756.09977324263,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 244,
-      "t": 149229.52380952382,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 245,
-      "t": 149556.82539682538,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 246,
-      "t": 149869.84126984127,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 247,
-      "t": 150180.81632653062,
       "type": "slash",
       "col": 0,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 157
     },
     {
-      "id": 248,
-      "t": 150982.22222222222,
+      "t": 147307.16553287982,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 158
     },
     {
-      "id": 249,
-      "t": 151323.12925170068,
+      "t": 147792.15419501133,
+      "type": "slash",
+      "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 159
+    },
+    {
+      "t": 148756.09977324263,
+      "type": "slash",
+      "col": 3,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 160
+    },
+    {
+      "t": 149869.84126984127,
       "type": "smash",
       "col": 1,
-      "row": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 161
     },
     {
-      "id": 250,
+      "t": 150498.86621315192,
+      "type": "slash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 162
+    },
+    {
+      "t": 150982.22222222222,
+      "type": "slash",
+      "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 163
+    },
+    {
+      "t": 151633.2879818594,
+      "type": "slash",
+      "col": 2,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 164
+    },
+    {
       "t": 152733.92290249432,
       "type": "beam",
       "col": 3,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 165
     },
     {
-      "id": 251,
       "t": 153534.01360544216,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 252,
-      "t": 153855.4648526077,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 166
     },
     {
-      "id": 253,
-      "t": 154340.09070294784,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 254,
-      "t": 154651.20181405896,
-      "type": "slash",
-      "col": 3,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 255,
-      "t": 154970.56689342402,
+      "t": 155314.4671201814,
       "type": "slash",
       "col": 0,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 167
     },
     {
-      "id": 256,
       "t": 155774.28571428574,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 168
     },
     {
-      "id": 257,
       "t": 156400.27210884352,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 169
     },
     {
-      "id": 258,
       "t": 157217.95918367346,
       "type": "slash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 170
     },
     {
-      "id": 259,
       "t": 157854.8299319728,
-      "type": "slash",
+      "type": "smash",
       "col": 1,
-      "row": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 171
     },
     {
-      "id": 260,
       "t": 158647.664399093,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 172
     },
     {
-      "id": 261,
-      "t": 158975.4648526077,
+      "t": 159759.68253968252,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 173
     },
     {
-      "id": 262,
-      "t": 159759.68253968252,
-      "type": "slash",
-      "col": 3,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 263,
-      "t": 160077.27891156464,
-      "type": "slash",
-      "col": 0,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 264,
       "t": 160412.19954648527,
-      "type": "slash",
+      "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 174
     },
     {
-      "id": 265,
       "t": 161191.56462585033,
       "type": "slash",
-      "col": 1,
+      "col": 0,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 175
     },
     {
-      "id": 266,
-      "t": 161536.09977324263,
-      "type": "smash",
+      "t": 161997.2335600907,
+      "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 176
     },
     {
-      "id": 267,
-      "t": 161997.2335600907,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 268,
       "t": 163079.68253968254,
       "type": "beam",
-      "col": 3,
+      "col": 0,
       "row": 2,
       "dir": "any",
-      "strength": 0.4194681644439697
+      "strength": 0.4194681644439697,
+      "id": 177
     }
   ],
   "obstacles": [
     {
       "id": 0,
-      "t": 163398.820861678,
-      "durationMs": 1275.239107332625,
+      "t": 10216.780045351474,
+      "durationMs": 1276.595744680851,
       "kind": "wallLeft"
+    },
+    {
+      "id": 1,
+      "t": 20470.975056689345,
+      "durationMs": 1276.595744680851,
+      "kind": "wallRight"
+    },
+    {
+      "id": 2,
+      "t": 30650.340136054423,
+      "durationMs": 1276.595744680851,
+      "kind": "wallLeft"
+    },
+    {
+      "id": 3,
+      "t": 40876.32653061225,
+      "durationMs": 1276.595744680851,
+      "kind": "wallRight"
+    },
+    {
+      "id": 4,
+      "t": 51060.680272108846,
+      "durationMs": 1276.595744680851,
+      "kind": "wallLeft"
+    },
+    {
+      "id": 5,
+      "t": 61302.53968253968,
+      "durationMs": 1276.595744680851,
+      "kind": "wallRight"
+    },
+    {
+      "id": 6,
+      "t": 71527.75510204081,
+      "durationMs": 1276.595744680851,
+      "kind": "wallLeft"
+    },
+    {
+      "id": 7,
+      "t": 81729.88662131519,
+      "durationMs": 1276.595744680851,
+      "kind": "wallRight"
+    },
+    {
+      "id": 8,
+      "t": 91940.8163265306,
+      "durationMs": 1276.595744680851,
+      "kind": "wallLeft"
+    },
+    {
+      "id": 9,
+      "t": 102121.36054421769,
+      "durationMs": 1276.595744680851,
+      "kind": "wallRight"
+    },
+    {
+      "id": 10,
+      "t": 112366.34920634922,
+      "durationMs": 1276.595744680851,
+      "kind": "wallLeft"
+    },
+    {
+      "id": 11,
+      "t": 122589.20634920635,
+      "durationMs": 1276.595744680851,
+      "kind": "wallRight"
+    },
+    {
+      "id": 12,
+      "t": 132796.55328798186,
+      "durationMs": 1276.595744680851,
+      "kind": "wallLeft"
+    },
+    {
+      "id": 13,
+      "t": 143002.13151927438,
+      "durationMs": 1276.595744680851,
+      "kind": "wallRight"
+    },
+    {
+      "id": 14,
+      "t": 153182.04081632654,
+      "durationMs": 1276.595744680851,
+      "kind": "wallLeft"
+    },
+    {
+      "id": 15,
+      "t": 163398.820861678,
+      "durationMs": 1276.595744680851,
+      "kind": "wallRight"
     }
   ],
   "events": [
@@ -2486,11 +1757,6 @@
       "intensity": 0.7121269106864929
     },
     {
-      "t": 6577.777777777777,
-      "kind": "kick",
-      "intensity": 0.8973658680915833
-    },
-    {
       "t": 6904.716553287983,
       "kind": "kick",
       "intensity": 0.6064541339874268
@@ -2499,11 +1765,6 @@
       "t": 8000.272108843537,
       "kind": "kick",
       "intensity": 0.8233364224433899
-    },
-    {
-      "t": 8319.36507936508,
-      "kind": "kick",
-      "intensity": 1
     },
     {
       "t": 8809.705215419503,
@@ -3424,11 +2685,6 @@
       "t": 143643.53741496598,
       "kind": "kick",
       "intensity": 1
-    },
-    {
-      "t": 143962.358276644,
-      "kind": "kick",
-      "intensity": 0.637148380279541
     },
     {
       "t": 144444.67120181405,

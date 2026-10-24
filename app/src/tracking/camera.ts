@@ -31,6 +31,7 @@ export class CameraController {
   private generation = 0;
   private stream: MediaStream | null = null;
   private source: CameraStreamSource | null = null;
+  private stoppedEvidence: Record<string, unknown> | null = null;
   private video: HTMLVideoElement | null = null;
   private watchdog: ReturnType<typeof setInterval> | null = null;
   private lastResult = 0;
@@ -156,8 +157,11 @@ export class CameraController {
   observeProcessed(tCapture: number, hands: readonly HandCursor[]): void {
     this.source?.observeProcessed?.(tCapture, hands);
   }
+  /** Current source evidence, or the last stopped source's evidence so failed runs stay inspectable. */
   sourceEvidence(): unknown {
-    return this.source?.evidence?.() ?? null;
+    const current = this.source?.evidence?.();
+    if (current) return { active: true, ...current };
+    return this.stoppedEvidence ? { active: false, ...this.stoppedEvidence } : null;
   }
   setCaptureVisible(visible: boolean): void {
     this.captureVisible = visible;
@@ -177,6 +181,9 @@ export class CameraController {
     this.client.dispose();
     if (this.source) {
       this.source.onFailure = null;
+      const evidence = this.source.evidence?.();
+      this.stoppedEvidence =
+        evidence && typeof evidence === 'object' ? (evidence as Record<string, unknown>) : null;
       this.source.close();
     }
     this.source = null;

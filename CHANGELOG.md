@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:41:00+05:30 — Dataset camera trial evidence and docs
+
+- Changed: added `docs/evidence/2026-10-25-dataset-camera-trial.md` with the final run's JSON, per-lane app evidence and setup screenshots; docs05 §1.3, docs17 §3, docs24 §2/§9 and README describe the dataset camera, harness and judgement trace (docs05 handedness link now points at the trial report). The camera controller keeps the last stopped source's evidence so failed dataset runs stay inspectable. A refused camera Confirm (readiness lapsed between display and click) now shows the existing framing status instead of being ignored silently. The harness treats a guard flipping between check and click as "not yet clickable", retries guarded clicks like a persistent user, waits for a genuinely new setup preview and handles fatal pauses.
+- Why: record what works and fails through the real camera path.
+- Validation: `npm run check` 367 tests in 48 files and build passed; docs tests 2/2 and docs checker 0 errors. Trial: canvas stream and Chrome fake webcam both reached GPU preview; pose detected on 24/24 photos; median per-photo joint error 0.118 shoulder widths; handedness agreement 369/393 under the new mapping; calibration with the declared-rule photo never framed (one hand); with the measured photo framing became ready but Confirm was not accepted under 2.6–5.5 Hz tracking.
+- Limits: whole-machine CPU was 52–100% busy before and ~100% during lanes from unrelated training/Blender/agent work, so timings are not performance evidence and the play → Results → Retry flow was not reached. Still photos only; not webcam evidence.
+
 ## 2026-10-25T04:02:00+05:30 — wip: a-priori dataset-camera trial and measured calibration photo
 
 - Changed: retained `docs/evidence/2026-10-25-dataset-camera-apriori-trial.json` and its sweep app evidence. The harness now retries camera setup once after an error (as a person would), shares one Chrome profile across lanes (first lane cold GPU program cache), records whole-machine CPU busy fractions and GPU adapters, exports app evidence when calibration framing fails, times the sweep from the accepted setup and saves JPEG screenshots. `prepare-dataset-camera.mjs --calibration-from <sweep evidence>` moves the photo with the best measured two-hand detection to the calibration slot and records the evidence hash plus the declared rule's own choice.

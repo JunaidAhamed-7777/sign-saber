@@ -50,6 +50,16 @@ Camera setup lives in Settings, independently of song choice. It requires a deli
 
 Bounded buffers, capture-time scoring, palm-to-point menu navigation, gesture hysteresis, charge, torso walls and recovery are implemented. Native camera setup reached GPU preview and Cancel retained browsing. **No consenting person has yet completed matching calibration or a verified live scored hit.** Dataset/synthetic evidence cannot establish webcam accuracy, handedness or latency.
 
+### Dataset camera (testing aid, not a webcam)
+
+The dataset camera streams attributed COCO CC-BY photos through the **unchanged live camera path** (video element, worker, MediaPipe, calibration, gestures, judgement) as a real canvas `MediaStream`. It is labelled "Dataset camera — not a webcam" everywhere and exports the `dataset-camera` evidence lane. Photos are prepared locally from the ignored research data and are never committed:
+
+```powershell
+node scripts/prepare-dataset-camera.mjs --coco training/data/coco2017
+```
+
+Then open the app with `?camera=dataset` (Set up camera uses it) or choose **Use dataset camera** in Settings. `?reel=sweep` cycles every photo during setup preview; `?stats=1` adds diagnostics export. Still photos contain no swings or gestures, so play produces misses. `node scripts/dataset-camera-trial.mjs` drives the real UI through Chrome DevTools in three lanes: the in-app dataset camera, a setup-preview sweep, and Chrome's fake capture device fed a Y4M of the same reel (the page's own `getUserMedia` sees it as a webcam). It needs Chrome (or `BROWSER_BINARY`), ffmpeg and prepared models; see [the trial evidence](docs/evidence/2026-10-25-dataset-camera-trial.md) for results and limits.
+
 ## Assets and content
 
 - [Starter music registry](app/public/assets/tracks/README.md): full Pamgaea, Electro Cabello and Cipher by Kevin MacLeod, unchanged CC-BY 4.0 MP3s, exact credits/acquisition receipts, measured metadata, nine maps and hashes. All three currently disclose low-tempo-confidence/onset-only timing.
@@ -77,6 +87,7 @@ node --test scripts/check-docs.test.mjs
 node scripts/check-docs.mjs
 node --test scripts/serve.test.mjs
 node --test scripts/check-model-assets.test.mjs
+node --test scripts/prepare-dataset-camera.test.mjs
 node scripts/check-model-assets.mjs
 node scripts/check-audio-resampling.mjs
 node scripts/check-audio-resampling.mjs --arrangement

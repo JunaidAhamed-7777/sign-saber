@@ -76,6 +76,10 @@ After main's new arena/postprocessing work landed, it was normally integrated at
 
 The current unsplit main entry is 1283738 bytes; every emitted split JS chunk is below 500000 bytes (largest 441271). The new-source `npm run check` passed typecheck, lint, all 367 assertions in 48 suites, production build without the size warning, and all three budget regressions. The actual prepared preview again completed the dataset and synthetic sessions and returned to Songs; detailed counts are in the JSON. Runtime console and CSP security logs were empty. No FPS, loading-speed, camera or release-gate claim is made.
 
+### Final integration check — 2026-10-25T04:17:49+05:30
+
+After normally integrating main `752acf3`, application source `8da67439a6597cc02f9a9ddd557497a48725915e` passed full `npm run check` again (367 assertions in 48 suites, typecheck/lint/build and three budget tests). Its entry is `index-BXoj8iPG.js` (441521 raw/160440 gzip bytes); tracking is `tracking.worker-CRawvhz1.js` (160846 raw/47741 gzip bytes); the other six sizes match the previous table. All eight JS files remain below the enforced limit, without changing Vite's warning threshold. A [fresh final preview run](evidence/2026-10-25-bundle-after-final.json) again completed the dataset trial (131 misses, zero hits), synthetic performer (131 Perfect, zero misses), and Songs returns, with empty runtime console/CSP logs. This later functionality run is separate from the controlled before/after pair. Later UI/training work on main is outside this explicitly tested checkpoint; no performance or release claim is added.
+
 ## Main-thread frame budget
 
 GPU execution overlaps CPU submission. Leave browser/compositor headroom, but measure it rather than assuming a fixed overhead.

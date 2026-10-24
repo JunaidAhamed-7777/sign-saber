@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:17:49+05:30 — Final tested bundle checkpoint after camera-source integration
+
+- Changed: Normally integrated main `752acf3`, retained the final source-identified production-preview receipt, and updated docs16. No additional application code was required.
+- Why: Preserve the new camera-source work and verify that module splitting still satisfies issue #1's complete acceptance.
+- Validation: Full `npm run check` passed again (typecheck/lint, 367 assertions/48 suites, production build with no >500 kB warning, three budget regressions). All eight emitted JS chunks passed; the largest entry is 441521 raw/160440 gzip bytes. Actual preview completed both 80-second trials and Songs with 131 real dataset misses and 131 synthetic Perfect hits, no runtime console errors/CSP violations. Root docs tests and link checker passed before this evidence-only commit; changed-source formatting and whitespace checks passed.
+- Limits: Tested source `8da67439a6597cc02f9a9ddd557497a48725915e`; later UI/training changes on main are outside this frozen checkpoint. Browser/environment/cache and single-run limitations remain those documented above. No webcam, FPS, load-time or P0–P5 release-gate claim is made.
+
 ## 2026-10-25T04:10:13+05:30 — Recheck issue #1 after the new renderer integration
 
 - Changed: Normally merged main `cfdcc40` into the issue branch, retained both new controlled build/browser receipts, and updated docs16 with the current chunk table and actual first-load waterfall. No additional application code was needed; the existing groups still satisfy the budget with the new effects.

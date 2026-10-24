@@ -1,6 +1,6 @@
 # 10 — Rendering: Silhouette
 
-The silhouette is the first thing anyone sees and the thing judges remember. It is a Tron-style ghost of the player: a dark translucent body with a glowing rim whose colour follows the music, drawn from the segmentation mask on a camera-aligned plane, with a 2.5D glowing skeleton behind it for depth. **No raw webcam pixels are ever drawn.** The only camera-derived data that reaches the GPU is the single-channel `MaskFrame` and the landmark arrays.
+The silhouette is the first thing anyone sees and the thing judges remember. It is a neon reflection of the player: a dark translucent body with a glowing rim whose colour follows the music, drawn from the segmentation mask on a camera-aligned plane, with a 2.5D glowing skeleton behind it for depth. **No raw webcam pixels are ever drawn in the scene or DOM.** The renderer receives only the single-channel `MaskFrame` and landmark arrays; the tracking worker may use camera textures internally for inference. This is a rendering specification; all performance figures below are targets until measured under [16](16-performance-budget.md).
 
 Owning files: `render/silhouette.ts` (plane, textures, material), `render/skeleton.ts` (joints and bones), `render/shaders/silhouette.vert.glsl`, `render/shaders/silhouette.frag.glsl`.
 
@@ -17,11 +17,11 @@ Inputs (read every render frame, never mutated):
 ## 1. Mask upload: `MaskFrame` → `THREE.DataTexture`
 
 1. Allocate **two** `DataTexture`s `maskA`, `maskB` of size `MASK_W × MASK_H`, format `RedFormat`, type `UnsignedByteType`, internal format `R8`. `minFilter = magFilter = LinearFilter`, `wrapS = wrapT = ClampToEdgeWrapping`, `generateMipmaps = false`, `flipY = false` (the worker already produces top-left origin; the shader flips `v` once, see §3.1). `unpackAlignment = 1` (width 320 is a multiple of 4 anyway, but set it so a future resolution change does not corrupt rows).
-2. On each new `TrackingFrame` with `mask !== null`: write into the *older* of the two textures (`texture.image.data.set(mask.data)`; `texture.needsUpdate = true`). Three.js r15x+ uploads a `DataTexture` with `texSubImage2D` when the size is unchanged, so this is a ~0.1 ms upload at 320×180.
-3. Record `maskSwapTime = performance.now()` and swap roles: the just-written texture becomes `uMaskCurr`, the other `uMaskPrev`.
+2. On each accepted new mask under [16 §Quality tiers](16-performance-budget.md#quality-tiers): validate the dimensions and byte length, then copy into the *older* texture's preallocated backing array (`texture.image.data.set(mask.data)`; `texture.needsUpdate = true`). Keep `colorSpace = NoColorSpace`: mask confidence is data, not sRGB colour. Never construct a new texture or backing array for a tracking update. [Three.js DataTexture](https://threejs.org/docs/pages/DataTexture.html) documents the buffer-backed texture interface; the upload cost must be profiled on the pinned renderer and target GPU.
+3. Record `maskSwapTime = performance.now()` and swap roles: the just-written texture becomes `uMaskCurr`, the other `uMaskPrev`. On the first valid mask or after a stream reset, seed both retained arrays with that mask so blending cannot reveal an uninitialised or previous-player image.
 4. If no mask has arrived for > `TRACKING_LOST_PAUSE_MS`, set `uPresence` toward 0 over 400 ms so the silhouette dissolves instead of freezing.
 
-The main thread MUST NOT copy or convert the mask; the worker's `Uint8Array` is used as-is (it is transferred, so the renderer owns it until the next frame).
+This single bounded copy is intentional: it gives each texture stable storage while the tracking transport recycles transferred buffers. No canvas conversion, RGBA expansion, or camera-image readback is allowed here. Return transport buffers only after their consumers finish; never retain a transferred `MaskFrame` as a permanent highlight. A new segmentation mask may arrive less often than hand landmarks; update the texture only when the mask timestamp changes.
 
 ## 2. Plane placement
 
@@ -33,9 +33,9 @@ const corner = (px: number, py: number) => CAM_POS.clone().add(new Vector3(px, p
 // Plane corners: corner(±PLAY_W/2, PLAY_CENTER_Y ± PLAY_H/2); all four have z === SILHOUETTE_Z.
 ```
 
-Build a `PlaneGeometry(1, 1)` and set `mesh.scale.set(PLAY_W * k, PLAY_H * k, 1)`, `mesh.position.copy(corner(0, PLAY_CENTER_Y))`. UV `(0,0)` is the bottom-left corner of the plane. Because the mapping is a pure projection, a point tracked at mirrored-image `(u′, v)` lands on the same screen pixel whether drawn on the play plane (hand cursors) or the silhouette plane (mask). This is the alignment guarantee tested in §10.
+Build a `PlaneGeometry(1, 1)` and set `mesh.scale.set(PLAY_W * k, PLAY_H * k, 1)`, `mesh.position.copy(corner(0, PLAY_CENTER_Y))`. UV `(0,0)` is the bottom-left corner of the plane. With the base camera position, a point tracked at mirrored-image `(u′, v)` lands on the same screen ray on the play plane and silhouette plane. Camera translation introduces parallax between these planes; test baseline alignment with camera kinetics disabled and measure its error again at maximum enabled motion. Do not promise pixel alignment under arbitrary camera translation. The example above is initialization code; do not call its allocation-heavy `corner` helper every frame.
 
-The plane is `renderOrder = -10`, `material.transparent = true`, `depthWrite = false`, `depthTest = true`. Blocks (z from −48 to +3.5) pass in front of it when their z > `SILHOUETTE_Z`; notes still far away (z < −1.4) are correctly occluded by the body, which reads as the player standing in the lane.
+The plane is `renderOrder = -10`, `material.transparent = true`, `depthWrite = false`, `depthTest = true`. The body is a backdrop: gameplay targets and hazards remain readable over it. A transparent plane that does not write depth does not physically occlude distant notes. Keep this deliberate compositing order consistent with [13 §6.4](13-rendering-environment-camera-postfx.md#64-render-order-and-transparency); do not add an invisible depth-only body that hides incoming targets.
 
 ## 3. Fragment shader design
 
@@ -96,7 +96,7 @@ float rim   = clamp(grad * rimPx, 0.0, 1.0);        // 1 at the edge, falls off 
 rim *= smoothstep(0.02, 0.2, body) * smoothstep(0.02, 0.2, 1.0 - body); // only where the edge actually is
 ```
 
-`dFdx/dFdy` cost nothing extra and automatically give a rim of constant screen width. `uRimPx = 6`. The alternative Sobel on the raw mask (3×3) is kept behind a `#define SOBEL_RIM` for the low tier where derivatives on a near-binary field can flicker: Sobel on `blurredMask` with the kernel in texel space, `rim = clamp(length(sobel) * 2.2, 0, 1)`.
+This derivative expression is a cheap starting approximation; it scales edge intensity and does not guarantee a six-pixel-wide contour. Measure the contour at each output scale and tune against reference screenshots. A robust contour may require mask-space dilation or additional samples; profile that alternative rather than adding a costly Sobel-of-blur path to the low tier. `uRimPx` starts from `SIL_RIM_PX`.
 
 ### 3.4 Interior fill
 
@@ -112,11 +112,11 @@ vec2 cell = fract(vPlanePos.xy / 0.06) - 0.5;
 float gridLine = 1.0 - smoothstep(0.0, 0.08, min(abs(cell.x), abs(cell.y)));
 fillCol += vec3(0.03, 0.08, 0.10) * gridLine * 0.6;
 // faint inner glow of the rim colour, 10 % at the edge fading inward
-fillCol += rimCol * 0.10 * smoothstep(0.65, 0.35, m) * body;
+fillCol += rimCol * 0.10 * (1.0 - smoothstep(0.35, 0.65, m)) * body;
 float fillA = uFillAlpha * body;
 ```
 
-`vPlanePos` is the plane-local position in metres passed from the vertex shader (so the pattern does not swim when the plane scales with quality).
+`vPlanePos` is the plane-local position in metres passed from the vertex shader (so the pattern does not swim when the plane scales with quality). Shader fragments are design excerpts: declare matching varyings, helpers and uniforms in the full shader; compute `rimCol` before using it. Convert CSS palette colours to linear RGB on the CPU; the example fill values are illustrative, not a substitute for colour conversion. Use increasing `smoothstep` edges throughout, because reversed edges have undefined results under [GLSL smoothstep](https://registry.khronos.org/OpenGL-Refpages/gl4/html/smoothstep.xhtml).
 
 ### 3.5 Rim colour from band energies
 
@@ -135,7 +135,7 @@ float rimIntensity = 1.6 + uBandLow * 1.2 + uKick * 2.0 + uDrop * 1.5;
 vec3  rimEmissive  = rimCol * rimIntensity * rim;
 ```
 
-`uKick` is set to `intensity` of a `music:event` with `kind === 'kick'` and decays on the CPU (`uKick *= exp(-dt / 60ms)`). The CPU also widens `uRimPx` by `+3 * uKick` so the rim visibly thickens on every kick.
+`uKick` is set to `intensity` of a `music:event` with `kind === 'kick'` and decays on the CPU using `KICK_DECAY_MS`; `uDrop` uses `DROP_DECAY_MS`. Use the same elapsed-time units and decay parameters across [13](13-rendering-environment-camera-postfx.md). The CPU also widens `uRimPx` by `+3 * uKick` so the rim visibly thickens on a kick. Calm mode suppresses the transient widening and white flash.
 
 ### 3.6 Halo and composition
 
@@ -143,7 +143,7 @@ A soft outer halo makes bloom read as an aura rather than a thin line:
 
 ```glsl
 // Halo: band just OUTSIDE the body, from the blurred field's tail
-float halo = smoothstep(0.35, 0.05, m) * smoothstep(0.0, 0.05, m);   // 0.05 < m < 0.35
+float halo = (1.0 - smoothstep(0.05, 0.35, m)) * smoothstep(0.0, 0.05, m); // 0.05 < m < 0.35
 vec3  haloCol = rimCol * 0.45 * halo * (0.6 + 0.4 * uBandMid);
 
 vec3  rgb = fillCol * fillA + rimEmissive + haloCol;
@@ -173,10 +173,10 @@ Tracking arrives at ≤ 30 Hz; rendering at 60. Without smoothing, the mask step
 
 1. Keep `uMaskPrev` / `uMaskCurr` (§1).
 2. Each render frame: `uMaskBlend = clamp((performance.now() - maskSwapTime) / expectedMaskIntervalMs, 0, 1)` where `expectedMaskIntervalMs` is the exponential moving average of the last 8 inter-mask intervals (≈ 33 ms at 30 Hz, 42 ms at 24 Hz).
-3. The shader samples both and `mix`es (§3.2). This is a linear cross-fade, not motion interpolation; fast arm sweeps show a faint double edge for one frame, which the rim glow hides. It is strictly better than stepping.
-4. [POLISH] Motion-compensated blend: shift `uMaskPrev` sampling by the hand-cursor velocity near the hand positions. Not planned for the hackathon.
+3. The shader samples both and `mix`es (§3.2). This is a linear cross-fade, not motion interpolation. It introduces up to one mask interval of visual lag and may show double edges during fast motion. Compare it against the latest-mask path in the same replay; retain blending only where it improves appearance without harming hand/body alignment. Use frame reception time for this visual blend, and preserve capture time separately for latency metrics.
+4. [STRETCH] Motion-compensated blend is a separate experiment after the P4 benchmark gate in [the roadmap](../ROADMAP.md). Hand velocity alone does not describe whole-body optical flow; it must not become a required dependency.
 
-Cost: one extra texture fetch per tap (18 instead of 9 at 1080p ≈ 0.25 ms on Iris Xe). Low tier sets `uMaskBlend = 1` and skips the prev fetch via a `#define`.
+Cost: one extra texture fetch per tap (18 instead of 9); measure GPU cost instead of inferring milliseconds from fetch counts. Low tier sets `uMaskBlend = 1` and skips the previous fetch via a shader define.
 
 ## 5. The 2.5D skeleton (`render/skeleton.ts`)
 
@@ -193,17 +193,17 @@ For each joint `i` with mirrored-image `(u′, v)` and `worldLandmarks[i].z` (me
 ```ts
 P_play = (( u′ − 0.5) · PLAY_W,  PLAY_CENTER_Y + (0.5 − v) · PLAY_H, 0)
 P_sil  = CAM_POS + (P_play − CAM_POS) · k                 // on the silhouette plane
-P      = P_sil + (0, 0, −0.06 + 0.5 · worldZ_i)           // just behind the plane, pushed by depth
+P      = P_sil + (0, 0, min(0, SIL_SKELETON_Z_OFFSET − SIL_SKELETON_DEPTH_SCALE · worldZ_i))
 ```
 
-The `−0.06 m` keeps every joint behind the plane so the fill tints it; the `0.5 · worldZ` term gives real parallax when the player twists (a forward punch pulls the wrist sphere toward the camera and it brightens, see 5.4). Visibility < 0.5 → joint and its bones fade out over 150 ms (per-instance alpha attribute).
+MediaPipe world depth is negative toward the camera, while game-world +Z points toward it; negate that depth before applying the decorative scale. Clamp at the silhouette plane so the background skeleton cannot cover targets. This produces approximate parallax, not measured metric reconstruction. Visibility < 0.5 → joint and its bones fade out over 150 ms (per-instance alpha attribute).
 
 Positions are One-Euro filtered **separately** from the game cursors (lower cutoff, `0.8 Hz`) because the skeleton is decorative and should look calm.
 
 ### 5.3 Geometry
 
 - Joints: one `InstancedMesh(SphereGeometry(1, 12, 8), jointMat, 13)`, per-instance scale 0.035–0.05 m (head 0.11), per-instance colour attribute = current `rimCol` (CPU evaluates the same mixing formula once per frame and writes it into the uniform shared by all silhouette materials).
-- Bones: one `InstancedMesh(CapsuleGeometry(1, 1, 4, 8), boneMat, 12)`; per instance, position = midpoint, quaternion = `setFromUnitVectors(+Y, dir)`, scale `(0.018, len/2, 0.018)`.
+- Bones: one `InstancedMesh(CylinderGeometry(1, 1, 1, 8), boneMat, 12)`; per instance, position = midpoint, quaternion = `setFromUnitVectors(+Y, dir)`, scale `(0.018, len, 0.018)`. The unit-height cylinder spans exactly between joint centres; joint spheres conceal its end caps. A capsule's total height includes its hemispheres, so scaling a `CapsuleGeometry(1,1)` by `len/2` would not match the intended length.
 - Material (both): `MeshBasicMaterial`-like `ShaderMaterial`, additive blending (`AdditiveBlending`), `depthWrite: false`, emissive intensity 1.3 so it blooms softly, a fresnel-ish falloff (`pow(1 − dot(n, v), 1.5)`) so spheres read as orbs, not discs.
 - Hand glow spots: two `Sprite`s (soft radial texture, 0.28 m) at `HandCursor.pos` projected to the silhouette plane (same `k`), additive, colour = that hand's tint from [12](12-rendering-hands-trails.md), alpha pulsing with `speed`. These sit **behind** the hand particle systems and visually anchor the hands into the body.
 
@@ -219,22 +219,22 @@ Used in `SELECT` and `RESULTS` background: `uFillAlpha = 0.55`, `uScanSpeed = 0.
 
 ## 7. Quality tiers
 
-| Tier | Mask taps | Temporal blend | Skeleton | Halo | Hand spots |
-| --- | --- | --- | --- | --- | --- |
-| high | 9 × 2 textures | yes | joints + bones | yes | yes |
-| medium | 9 × 2 | yes | joints + bones | yes | yes |
-| low | 5 × 1 | no (`uMaskBlend = 1`) | joints only | no | yes |
+Use the canonical [16 §Quality tiers](16-performance-budget.md#quality-tiers) preset for mask taps/textures, blending, skeleton, halo, spots and upload cadence. Compile the no-previous-mask branch for the single-texture variant (`uMaskBlend = 1`); do not leave its previous-texture fetch active behind a uniform that merely hides the result. Retain allocated storage across tier changes and update the active shader/material only on a deliberate transition.
 
-The plane always renders at full output resolution: it covers ~60 % of the screen and is the cheapest large thing on screen (≤ 18 texture fetches + ~40 ALU per fragment).
+The plane renders at the tier's drawing-buffer resolution; the DOM stays at native CSS resolution. Its large screen coverage can make it fill-rate limited, so compare shader variants at identical viewports and mask inputs.
 
 ## 8. Performance notes
 
-- Texture upload: 57.6 KB per mask, ≤ 30 times/s → negligible. Do not create a new `DataTexture` per frame.
+- Texture payload: `MASK_W × MASK_H` bytes per mask (57,600 bytes at 320×180). Count actual uploads and dropped masks. Do not create a new `DataTexture` per frame.
 - No readback, no canvas 2D, no `ImageData` conversions on the main thread.
 - The plane is a single draw call; skeleton 2 draw calls; hand spots 2. Total 5.
 - Shader derivatives (`dFdx`) require WebGL2 or `OES_standard_derivatives`; WebGL2 is already a hard requirement.
 - Avoid `discard` in the fragment shader (breaks early-z on some tile GPUs); use alpha = 0 instead.
-- Measured target: ≤ 0.6 ms GPU at 1080p on Iris Xe for plane + skeleton.
+- Provisional budget: ≤ 0.8 ms GPU for plane + skeleton + spots at the declared 1080p test configuration. Report measured p50/p95 and timer-query availability under [16](16-performance-budget.md); no result is recorded yet.
+
+### Resource lifetime and repeatability
+
+Allocate textures, mesh buffers, shader variants and joint scratch objects before play. Hide the live body when camera permission is revoked; a decorative LFO must not fabricate a tracked player. Missing masks with valid pose show the explicit skeleton fallback. Dispose owned textures, geometries and materials on renderer shutdown/context recovery; changing tier reuses or disposes the old variant rather than leaking it. Replay uses fixture mask bytes, capture timestamps and a fixed song/visual clock so the same frame can be compared across tiers. The synthetic attract LFO is background decoration and must never be included as live tracking evidence.
 
 ## 9. Debug view (`D` key, dev builds)
 
@@ -244,18 +244,19 @@ The plane always renders at full output resolution: it covers ~60 % of the scree
 
 ## 10. Acceptance criteria
 
-- [ ] At no state, tier, or failure mode is any colour from the webcam frame visible. The GPU receives only `MaskFrame` and landmark arrays (verifiable: the `<video>` element has `display: none` and no `drawImage` of it exists outside the worker frame producer).
+- [ ] At no state, tier, or failure mode are raw camera pixels visible in the scene or DOM. Camera frames are used only for tracking; rendering receives mask/landmark data. Inspect all texture inputs, screenshots and the hidden video element.
 - [ ] The rim colour visibly shifts between magenta, cyan and gold across a track with a strong bass/treble contrast, and flashes on kicks.
 - [ ] With the debug overlay on, the mask edge at the wrist and the hand-cursor position coincide within 2 % of the frame width across the whole play plane (both corners and centre).
-- [ ] No visible 30 Hz stepping of the silhouette at 60 FPS render (temporal blend on, medium tier or above).
-- [ ] Losing tracking dissolves the silhouette in ≤ 400 ms; regaining it fades it back.
-- [ ] Blocks that have passed `SILHOUETTE_Z` render in front of the body; blocks still far away are occluded by it.
-- [ ] Plane + skeleton + spots ≤ 5 draw calls and ≤ 0.8 ms GPU on the demo laptop.
-- [ ] Rim stays ~6 px wide at 1080p and ~4 px at 720p (constant screen width).
+- [ ] Compare latest-mask and cross-fade variants on the same fast/slow-motion replay; record added mask age and choose the variant with acceptable lag and contour stability.
+- [ ] Once mask age crosses `TRACKING_LOST_PAUSE_MS`, the silhouette dissolves over ≤ 400 ms; valid pose may continue as the skeleton fallback. Returning data fades it back without a stale-mask flash.
+- [ ] Distant and near targets remain readable over the silhouette; no depth-only body hides incoming notes.
+- [ ] Plane + skeleton + spots use ≤ 5 draw calls. Where valid GPU timer samples exist, compare them against the provisional 0.8 ms subsystem budget and investigate overruns; if unavailable, record that limitation. Full release timing gates come from [24](24-benchmark-and-evidence.md#6-initial-acceptance-targets), not an unmeasurable subsystem threshold.
+- [ ] Capture rim screenshots at 720p/1080p and each render scale; the intended ~6 px reference contour remains legible without erasing fingers. Record any approximation limits.
+- [ ] Ten scene/tier/retry cycles leave texture and geometry counts bounded after warm-up; the stored highlight survives tracking-buffer recycling.
 
 ## Constants required
 
-Proposed additions to the [constants table](02-architecture.md#constants) (rendering section):
+Rendering defaults below form the silhouette sub-registry linked by [02](02-architecture.md#constants). Export them centrally from `core/constants.ts` during P0; that file is currently a stub. Shader literals are illustrative defaults, not permission to scatter tunables through runtime code.
 
 | Name | Value | Meaning |
 | --- | --- | --- |

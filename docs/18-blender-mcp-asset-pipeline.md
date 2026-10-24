@@ -1,14 +1,14 @@
 # 18 — Blender MCP Asset Pipeline
 
-Sign Saber needs a handful of small, stylised 3D assets. They are produced in Blender, driven through **Blender MCP** (the Blender Model Context Protocol add-on + server, which lets an AI assistant such as Claude execute `bpy` in a running Blender instance), and exported as glTF Binary into `app/public/assets/models/`. Every asset also has a **procedural Three.js fallback** so the game never blocks on Blender.
+Sign Saber needs a handful of small, stylised 3D assets. Blender and optional **Blender MCP** produce authored geometry; the runtime loads glTF Binary assets and has a **procedural Three.js fallback** for every asset. Build those fallbacks during P1/P2 before authored P3 assets ([roadmap](../ROADMAP.md)). This pipeline is specified, not yet executed: no `.blend`, exported GLB, measured asset payload or working validation command is claimed here.
 
 Rendering consumers: [11](11-rendering-blocks-and-destruction.md) (fractured cube, armour, beam ring, glyphs), [13](13-rendering-environment-camera-postfx.md) (pylons), [14](14-ui-ux.md) (results podium).
 
 ## 1. Setup
 
-1. Install Blender 4.x. Enable the bundled **Cell Fracture** add-on (`Edit → Preferences → Add-ons → "Object: Cell Fracture"`). In Blender 4.2+ it is an extension; install it from the Extensions tab if missing.
-2. Install the Blender MCP add-on (`addon.py` from the blender-mcp project) in Blender and start its server from the sidebar panel (`N` → *BlenderMCP* → *Connect to Claude*); default port 9876.
-3. Register the MCP server with the AI client (Claude Desktop / Claude Code: `uvx blender-mcp` as an MCP server entry). Confirm with a trivial command ("get scene info").
+1. Choose and record one Blender release plus the Cell Fracture extension/add-on version; verify availability in a fresh asset-only file. Do not assume every Blender install bundles the same operator. [Blender's 4.2 pipeline notes](https://developer.blender.org/docs/release_notes/4.2/pipeline_assets_io/) describe exporter changes; the actual installed RNA operator schema controls scripts below.
+2. Optional: install the add-on/server from the [Blender MCP upstream project](https://github.com/ahujasid/blender-mcp), recording the exact release/commit. Use its current installation guidance rather than an assumed sidebar label; the upstream documents localhost port 9876. This is an authoring tool, not a runtime dependency.
+3. Register that server with the chosen AI client and confirm a read-only scene-info operation. Save the fresh asset file before any generated Python; keep authoring independent from the running game and use manual Blender operations if MCP is unavailable.
 4. Set the scene unit scale to metric, 1.0 (`Scene Properties → Units`), and work in a fresh file saved as `assets-src/blender/signsaber_assets.blend`.
 5. Export path convention: all GLBs go to `app/public/assets/models/<name>.glb`. Commit the `.blend` and the exported GLBs.
 
@@ -20,7 +20,7 @@ Any step may be done by hand in Blender's UI instead of via MCP; the MCP route i
 | --- | --- |
 | Units | 1 Blender unit = 1 metre; the game scales where needed |
 | Up axis | glTF export converts Blender +Z up to glTF +Y up automatically (`export_yup=True`) |
-| Transforms | Apply all (`Ctrl+A → All Transforms`) before export; object scale MUST be 1 |
+| Transforms | Apply rotation and scale before export; scale MUST be 1. Preserve each shard's centroid location and the authored pivot. Applying location blindly would destroy the shard-offset contract. |
 | Modifiers | Applied on export (`export_apply=True`) |
 | Materials | Principled BSDF, base colour only, **no textures**, no emission (emission is done in shaders) |
 | Excluded | Cameras, lights, animations, shape keys, skins |
@@ -35,7 +35,7 @@ Any step may be done by hand in Blender's UI instead of via MCP; the MCP route i
 | Spec | Value |
 | --- | --- |
 | Source | 1 × 1 × 1 m cube centred at the origin |
-| Fracture | Cell Fracture, **14 cells**, source: own particles / random points, noise 0.3, margin 0.001, recursion 0 |
+| Fracture | Cell Fracture, **14 cells**, deterministic child-vertex seed points, no additional unseeded noise, margin 0.001, recursion 0. Record seed and extension version. |
 | Shards | 14 meshes named `shard_00` … `shard_13`, each with **origin at its own centroid** (`Origin to Center of Mass (Volume)`), each a closed convex mesh |
 | Interior faces | Cell Fracture's inner faces get material slot `inner` (base colour `#FFFFFF`) so the shader can tint cross-sections; outer faces slot `outer` (`#808080`) |
 | Polycount | ≤ 700 tris total (shards are convex polyhedra; ~40–60 tris each) |
@@ -108,7 +108,7 @@ Consumer: [13 §3](13-rendering-environment-camera-postfx.md#3-pylons-dust-horiz
 
 Issue these as instructions to the assistant connected to Blender MCP (each maps to one or more `execute_blender_code` calls). Verify after each step with "get scene info" / a viewport screenshot.
 
-1. **Reset**: "Delete all objects in the scene and set units to metric, scale 1.0."
+1. **Start a fresh asset file**: create the named asset collection and set units to metric, scale 1.0. Do not reset a shared or unsaved working scene.
 2. **Fractured cube**: "Create a 1 m cube at the origin named `block_src`. Run the fracture script below (§5.1). Confirm 14 objects named shard_00..shard_13 exist, each with origin at centre of mass, and report the total volume."
 3. **Armour**: "Create four 0.84×0.84×0.06 m plates on the ±X and ±Y faces of a unit cube at 0.02 m offset, bevel 0.03 m/3 segments, join into one mesh named `armor_plates`, origin at world origin, apply transforms."
 4. **Beam ring**: "Add a torus major 0.42 minor 0.03, 48×8 segments, named `beam_ring`, with four 0.06 m cubes at the cardinal points joined in. Apply transforms."
@@ -118,7 +118,21 @@ Issue these as instructions to the assistant connected to Blender MCP (each maps
 8. **Export**: "Run the export script below (§5.2)." It exports each asset group to its own `.glb` with the settings in §2.
 9. **Save** `assets-src/blender/signsaber_assets.blend`.
 
-## 5. Scripts
+## 5. Authoring script templates
+
+These templates require the pinned Blender/extension versions and must be validated in Blender before they become a supported script. First inspect the available operator schema:
+
+```python
+import bpy
+print("Blender:", bpy.app.version_string)
+for op in (bpy.ops.object.add_fracture_cell_objects, bpy.ops.export_scene.gltf):
+    try:
+        print(op.idname(), sorted(op.get_rna_type().properties.keys()))
+    except RuntimeError as exc:
+        raise RuntimeError("Required authoring operator unavailable; use the manual or procedural path") from exc
+```
+
+Record this output with the asset build, not as a claim that the templates ran. Operator names/options can change; fail with the missing capability rather than silently exporting an incomplete asset.
 
 ### 5.1 Fracture script (paste into MCP `execute_blender_code` or Blender's Text Editor)
 
@@ -146,8 +160,8 @@ src.data.materials.append(ensure_mat("outer", (0.5, 0.5, 0.5)))
 src.data.materials.append(ensure_mat("inner", (1.0, 1.0, 1.0)))
 
 # Seed points: random points inside the cube, slightly biased to the centre so shards are irregular
-random.seed(SEED)
-points = [Vector((random.uniform(-0.45, 0.45), random.uniform(-0.45, 0.45), random.uniform(-0.45, 0.45))) for _ in range(CELLS)]
+rng = random.Random(SEED)
+points = [Vector((rng.uniform(-0.45, 0.45), rng.uniform(-0.45, 0.45), rng.uniform(-0.45, 0.45))) for _ in range(CELLS)]
 
 # Cell Fracture (add-on must be enabled). Uses our points via a temporary particle-free path:
 # the operator can take 'PENCIL'/'PARTICLE_OWN'/'VERT_OWN' sources; we feed vertices of a helper mesh.
@@ -156,11 +170,12 @@ helper_me.from_pydata([p for p in points], [], [])
 helper = bpy.data.objects.new("fracture_points", helper_me)
 bpy.context.collection.objects.link(helper)
 helper.parent = src
+helper_name = helper.name
 
-bpy.ops.object.add_fracture_cell_objects(
+fracture_options = dict(
     source={'VERT_CHILD'},
     source_limit=CELLS,
-    source_noise=0.3,
+    source_noise=0.0,          # all randomness is already in our recorded seed points
     cell_scale=(1.0, 1.0, 1.0),
     recursion=0,
     use_smooth_faces=False,
@@ -176,8 +191,15 @@ bpy.ops.object.add_fracture_cell_objects(
     collection_name="shards",
     use_debug_points=False,
 )
+supported = set(bpy.ops.object.add_fracture_cell_objects.get_rna_type().properties.keys())
+missing = set(fracture_options) - supported
+if missing:
+    raise RuntimeError(f"Fracture template needs adaptation for this version: {sorted(missing)}")
+result = bpy.ops.object.add_fracture_cell_objects(**fracture_options)
+assert 'FINISHED' in result, f"Fracture did not finish: {result}"
 
-bpy.data.objects.remove(helper, do_unlink=True)
+if helper_name in bpy.data.objects:
+    bpy.data.objects.remove(bpy.data.objects[helper_name], do_unlink=True)
 
 # Rename, recentre precisely to centre of mass, apply transforms, report volume
 shards = [o for o in bpy.data.collections["shards"].objects if o.type == 'MESH']
@@ -193,9 +215,10 @@ for i, o in enumerate(shards):
     bm = bmesh.new(); bm.from_mesh(o.data); total += bm.calc_volume(signed=False); bm.free()
 print(f"{len(shards)} shards, total volume {total:.4f} m^3 (expect ~1.0)")
 assert len(shards) == CELLS, "cell count mismatch: adjust CELLS or seed"
+assert 0.98 <= total <= 1.02, "volume validation failed; do not export"
 ```
 
-If the operator name differs in your Blender version (4.2+ extension: `bpy.ops.object.add_fracture_cell_objects` is still the id), check `bpy.ops.object` for `fracture` in the Python console. If the vertex-child source is unavailable, use `source={'PARTICLE_OWN'}` after adding a particle system with 14 particles frame 1 to `block_src`.
+The [Blender-maintained legacy Cell Fracture source](https://github.com/blender/blender-addons/blob/main/object_fracture_cell/__init__.py) documents `VERT_CHILD`; this is not a guarantee for every extension release. If the installed schema differs, adapt and verify the template against that version or use the complete eight-octant fallback. Do not substitute an unseeded particle system and call the output reproducible. Also verify closedness and inner/outer materials before export; a volume sum alone does not prove the meshes are usable.
 
 ### 5.2 Export script
 
@@ -217,12 +240,15 @@ GROUPS = {
 
 def export(name, objects):
     bpy.ops.object.select_all(action='DESELECT')
-    found = [bpy.data.objects[n] for n in objects if n in bpy.data.objects]
-    if not found:
-        print(f"skip {name}: no objects"); return
+    missing = [n for n in objects if n not in bpy.data.objects]
+    if missing:
+        if name in {"obstacle_frame", "results_podium"} and len(missing) == len(objects):
+            print(f"optional asset omitted: {name}"); return
+        raise RuntimeError(f"{name}: missing required objects {missing}")
+    found = [bpy.data.objects[n] for n in objects]
     for o in found: o.select_set(True)
     bpy.context.view_layer.objects.active = found[0]
-    bpy.ops.export_scene.gltf(
+    options = dict(
         filepath=os.path.join(OUT, f"{name}.glb"),
         export_format='GLB',
         use_selection=True,
@@ -237,9 +263,16 @@ def export(name, objects):
         export_image_format='NONE',
         export_texcoords=True,
         export_normals=True,
-        export_colors=True,          # pylon emissive mask lives in vertex colours
         export_extras=False,
     )
+    supported = set(bpy.ops.export_scene.gltf.get_rna_type().properties.keys())
+    missing_options = set(options) - supported
+    if missing_options:
+        raise RuntimeError(f"Export template needs adaptation: {sorted(missing_options)}")
+    # Vertex-colour export option names vary by exporter release. Enable the active
+    # colour attribute in the pinned version's UI/schema, then inspect COLOR_0 in GLB.
+    result = bpy.ops.export_scene.gltf(**options)
+    assert 'FINISHED' in result, f"Export failed for {name}: {result}"
     tris = sum(sum(len(p.vertices) - 2 for p in o.data.polygons) for o in found)
     print(f"exported {name}.glb: {len(found)} objects, {tris} tris")
 
@@ -249,7 +282,7 @@ for name, objs in GROUPS.items():
 
 ## 6. Validation in the browser
 
-`scripts/inspect-glb.ts` (run with `npx tsx scripts/inspect-glb.ts app/public/assets/models/block_fractured.glb`) or the in-app debug console (`D` then `M`):
+The repository does not yet contain `scripts/inspect-glb.ts` or a model-inspection command. Add an actual validator and documented package script during P3 before advertising a command. Until then, the planned browser inspection uses the bundled Three.js `GLTFLoader` (this is a developer-console excerpt, not a shipped menu):
 
 ```ts
 const gltf = await new GLTFLoader().loadAsync(url);
@@ -264,7 +297,7 @@ gltf.scene.traverse(o => {
 
 Checks that MUST pass:
 
-- `block_fractured.glb`: exactly 14 children `shard_00..shard_13`; each `scale = (1,1,1)`; positions (centroids) all within the unit cube; Σ |signed volume| ∈ [0.98, 1.02] (compute with the slicer test helper from [11 §9](11-rendering-blocks-and-destruction.md#9-tests)); `inner` material faces exist (second geometry group or a second material).
+- `block_fractured.glb`: exactly the 14 semantic shard nodes `shard_00..shard_13` after traversing hierarchy; each has `scale = (1,1,1)`; transformed centroids lie within the unit cube; Σ |signed volume| ∈ [0.98, 1.02] (compute with the planned slicer test helper from [11 §9](11-rendering-blocks-and-destruction.md#9-tests)); `inner` faces exist as material groups or primitives. Account for exporter-created roots and material splits rather than requiring 14 direct scene children.
 - `pylon.glb`: has a `color` attribute; strip vertices have `r > 0.9`.
 - Every asset: `scale = (1,1,1)` after load; Y is up (the pylon's height is along +Y); tri counts within budget.
 
@@ -274,19 +307,25 @@ If Blender MCP or Blender is unavailable, `render/assets.ts` returns these when 
 
 | Asset | Fallback recipe |
 | --- | --- |
-| `block_fractured` | Split a `BoxGeometry` with 3 random planes through near-centre points using the convex slicer ([11 §3.1](11-rendering-blocks-and-destruction.md#31-convex-plane-cut-algorithm-renderslicerts)) recursively → 8 shards; set `aShard` ids; centroids from the slicer |
+| `block_fractured` | Eight complete box octants with known centroids and `aShard` ids, built once at boot. This path does not depend on the runtime cube slicer accepting arbitrary clipped polyhedra. |
 | `glyphs` | `ExtrudeGeometry` from `THREE.Shape`s built from the same SVG paths used for the atlas (`SVGLoader.parse` → `toShapes`), depth 0.04 |
 | `armor` | 4 × `RoundedBoxGeometry(0.84, 0.84, 0.06, 3, 0.03)` (three/examples) positioned on the ±X/±Y faces at 0.02 m offset, merged with `mergeGeometries` |
 | `beam_ring` | `TorusGeometry(0.42, 0.03, 8, 48)` + 4 `BoxGeometry(0.06)` merged |
-| `pylon` | `CylinderGeometry(0.15, 0.25, 6, 6)` with a vertex `color` attribute: vertices with `|x| < 0.05 && z > 0 && 0.5 < y < 5.5` white, else black |
+| `pylon` | Six-sided tapered cylinder translated upward by half its height to put its base at the origin, plus a thin merged strip with explicit vertex colour. Do not rely on selecting strip vertices that the low-poly cylinder does not contain. |
 | `obstacle_frame` | 12 thin `BoxGeometry` beams merged (0.05 m square), pivot moved to the +Z face centre |
 | `results_podium` | `CylinderGeometry(0.8, 0.8, 0.12, 6)` |
 
 ## 8. Licensing
 
-All assets are authored by the team for this project and are released under the repository's MIT licence. Glyph SVGs MUST be drawn by the team (or taken from a CC0 icon set with attribution recorded in `app/public/assets/models/README.md`). No third-party models.
+Planned team-authored geometry is released under the repository's MIT licence when committed. Record the authoring-tool/extension versions and their own licences separately; a tool's licence is not the asset's provenance. Glyph SVGs MUST be drawn by the team or sourced with an explicit compatible licence and attribution. Record actual source URLs, licence files and any modifications in the asset manifest. No unlicensed third-party models or invented asset credits.
 
-## 9. Checklist
+## 9. Reproducibility and failure proof
+
+Each authored asset build records source `.blend` path, Blender/exporter/extension/MCP versions, generator seed, expected node names, triangle count, byte size, SHA-256 and licence/source. Validate both the GLB structure and its in-game appearance; glTF may introduce hierarchy roots and split material primitives, so inspect semantic mesh names rather than assuming exactly 14 direct scene children. Use [Khronos glTF Validator](https://github.com/KhronosGroup/glTF-Validator) for structural errors and the browser for rendering/pivot/axis correctness.
+
+Load the entire required group or select its procedural fallback: a partial shard list is an asset failure. Exercise missing, corrupt and wrong-schema GLBs, and record which fallback appeared. Preload/merge geometry before PLAYING; no network request or new GLTF parsing may occur on a hit. Reuse pooled geometry and dispose replaced owned resources. Benchmark authored and fallback assets with the same fixed event replay and tier; record both asset mode and hash in the evidence. The shipped game must boot without Blender, MCP, network access or an asset-authoring account after its local assets are installed.
+
+## 10. Checklist
 
 - [ ] Blender 4.x with Cell Fracture enabled; Blender MCP server connected and responding.
 - [ ] `block_fractured.glb`: 14 named shards, centroid origins, volume ≈ 1.0, `inner`/`outer` materials.

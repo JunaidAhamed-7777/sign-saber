@@ -1,8 +1,10 @@
 # 11 — Rendering: Blocks & Destruction
 
-Blocks are the targets; their destruction is the payoff (pillar P2). This document specifies the intact block look, the three destruction effects (slice, shatter, poof), the two failure looks (bad cut, miss), and obstacles. Everything here is driven by game events ([02 §events](02-architecture.md#game--renderer--ui-events)); the renderer never decides outcomes.
+Blocks are the targets; their destruction is the kinetic payoff. This document specifies the intact block look, the three destruction effects (slice, shatter, poof), the two failure looks (bad cut, miss), and obstacles. Everything here is driven by game events ([02 §events](02-architecture.md#game--renderer--ui-events)); the renderer never decides outcomes.
 
 Owning files: `render/blocks.ts` (intact instancing), `render/slicer.ts` (plane cut), `render/shatter.ts`, `render/poof.ts`, `render/obstacles.ts`, shaders `block.vert.glsl`, `block.frag.glsl`, `fragment.vert.glsl`, `fragment.frag.glsl`, `obstacle.frag.glsl`.
+
+Build the readable target, hit flash and procedural destruction in P1/P2 before the exact swing-plane cut in P3 ([roadmap](../ROADMAP.md)). Pools, draw counts and GPU costs below are design budgets, not measured results. A simpler effect that stays readable and within budget is an acceptable recorded quality fallback; a false claim of exact slicing is not.
 
 ## 1. Palette
 
@@ -37,7 +39,7 @@ Per-instance attributes (all `InstancedBufferAttribute`, updated only for the in
 
 ### 2.2 Material: custom glass `ShaderMaterial`
 
-`MeshPhysicalMaterial` with `transmission` renders the scene to a texture per frame and is far outside budget. The look is faked with three cheap terms:
+Transmission materials require an additional scene capture and must earn their cost in a measured comparison. The baseline uses three cheaper terms:
 
 ```glsl
 // block.frag.glsl (core)
@@ -60,11 +62,15 @@ void main() {
   float facing = smoothstep(0.3, 0.9, abs(n.z));              // front/back faces carry the glyph strongest
   vec3 core = vColor * glyph * facing * (2.2 + 0.8 * vStrength + 0.6 * vState.y) * (0.9 + 0.1 * sin(uTime * 6.0));
   // soft inner glow around the glyph (the "core" reads as a light source inside)
-  float d = length(vLocal.xy) / (0.5 * BLOCK_HALF);           // 0 centre .. 1 edge
+  float d = length(vLocal.xy) / BLOCK_HALF;                   // 0 centre .. 1 face-edge midpoint
   core += vColor * (1.0 - smoothstep(0.1, 0.7, d)) * 0.35 * facing;
   // edge lines: thin bright lines along the cube edges
   vec3 e = abs(vLocal) / BLOCK_HALF;                           // 0..1
-  float edge = 1.0 - smoothstep(0.0, 0.06, min(min(1.0 - e.x, 1.0 - e.y), 1.0 - e.z));
+  vec3 faceDist = 1.0 - e;
+  // Two coordinates must be close to a box boundary; the smallest is zero
+  // everywhere on a face and cannot distinguish an edge from its centre.
+  float secondSmallest = max(min(faceDist.x, faceDist.y), min(max(faceDist.x, faceDist.y), faceDist.z));
+  float edge = 1.0 - smoothstep(0.0, 0.06, secondSmallest);
   edge = clamp(edge, 0.0, 1.0);
   vec3 edgeCol = vColor * edge * 1.1;
 
@@ -76,7 +82,7 @@ void main() {
 }
 ```
 
-`BLOCK_HALF` is a `#define` injected as `BLOCK_SIZE / 2`. The vertex shader applies the instance matrix, writes `vLocal = position` (local space), and the per-instance attributes. Material: `transparent: true`, `depthWrite: true` (blocks are convex and mostly opaque-looking; depth write prevents inner-face sorting artefacts), `side: FrontSide`, premultiplied-style blending as in [10 §3.6](10-rendering-silhouette.md#36-halo-and-composition). Fog: standard Three.js exponential fog chunks are included (`#include <fog_pars_fragment>` / `<fog_fragment>`) so distant blocks fade into the void.
+`BLOCK_HALF` is a shader define injected as `BLOCK_SIZE / 2`. The vertex shader applies the instance matrix, writes `vLocal = position` (local space), and the per-instance attributes. These are shader excerpts, not standalone compilable files; include complete fog varyings and declarations in both stages. Baseline material: `transparent: true`, `depthWrite: true`, `side: FrontSide`, premultiplied-style blending as in [10 §3.6](10-rendering-silhouette.md#36-halo-and-composition). Instanced transparent cubes are not individually sorted by Three.js, so this is stylised glass rather than physically correct transmission. Test overlapping notes and the silhouette at every tier; prefer an opaque tinted shell/glyph if sorting compromises the required gesture.
 
 The glyph atlas is a 768×256 RGBA texture generated at boot by drawing three SVG paths (palm, fist, pointing finger) to a canvas; the GLB glyph meshes from [18](18-blender-mcp-asset-pipeline.md) are an alternative for the Results podium, not for in-lane blocks (an extra draw call per block type is not worth it).
 
@@ -87,10 +93,10 @@ The glyph atlas is a 768×256 RGBA texture generated at boot by drawing three SV
 | Spawn fade-in | `spawnFade = smoothstep(0, 1, progressSinceSpawn / 0.25)` over the first 250 ms | alpha and emissive ramp up; scale from 0.6 → 1 |
 | Approach | fog + size | nothing extra; the lane and fog do the work |
 | Hit-zone glow | `hitZoneGlow = 1 − clamp(|timingError| / WINDOW_GOOD_MS, 0, 1)` | rim + core brighten as the block enters the window — the "hit now" cue |
-| Rotation | slow yaw `0.4 rad/s × (1 + strength)` for slash; none for smash (armour reads as heavy); beam targets hover ±0.08 m at 1 Hz | |
-| Scale | `BLOCK_SIZE × (0.9 + 0.25 × strength)` | strong onsets = bigger blocks |
+| Rotation | slow decorative yaw for slash; none for smash (armour reads as heavy); beam ornament may rotate around the fixed aim centre | Keep the required glyph legible and the visual target centred on its authoritative collision/aim position. |
+| Scale | collision-sized outer shell | Keep the gameplay silhouette at `BLOCK_SIZE`; strength may change the inner glyph, emissive pulse and decorative halo, never imply a larger hit volume. |
 
-Instance matrices are rebuilt only for live instances each frame (≤ `MAX_LIVE_NOTES` `compose()` calls, < 0.1 ms).
+Instance matrices are rebuilt only for live instances each frame (≤ `MAX_LIVE_NOTES` `compose()` calls). Profile CPU update cost; reuse scratch transforms and attribute buffers.
 
 ### 2.4 Armour plates (smash)
 
@@ -98,7 +104,7 @@ Four bevelled plates (from `armor.glb`, merged) sit 0.02 m proud of the ±x and 
 
 ### 2.5 Beam rings
 
-A torus (`beam_ring.glb`, major 0.42 m, minor 0.03 m) around the beam target, gold emissive, spinning 1.5 rad/s about the lane axis, with a second counter-spinning ring at 0.5 scale. The target cube itself is drawn with the standard block shader at `BEAM_HOVER_Z` with `hitZoneGlow` replaced by a breathing pulse synced to the beat grid. A thin gold "aim assist" line from the target to the hit plane fades in when a charged hand's `pointDir` ray passes within `2 × BEAM_AIM_RADIUS`.
+A torus (`beam_ring.glb`, major 0.42 m, minor 0.03 m) surrounds the fixed beam target at `BEAM_HOVER_Z`, with a smaller counter-rotating ornament. Its required glyph and aim centre stay steady; Calm removes ring rotation. Use [07](07-hit-detection-and-scoring.md)'s baseline-camera projection of that world centre onto the play plane for a target reticle and candidate check against the measured fingertip position. `pointDir` shapes the decorative hand cone but does not choose a hit target. Optional aim assistance must reuse the authoritative eligibility/radius rule, not a separate raycast that promises a different target.
 
 ## 3. Slice (slash blocks)
 
@@ -118,7 +124,7 @@ Input: plane `(n, d)` in block-local space (`n` unit, plane `n·p = d`, |d| < `B
 5. Write non-indexed `position`, `normal`, `uv`, `aCap` arrays into two pre-allocated `BufferGeometry` objects from the slice pool (capacity: 6 faces × 5 verts max → 3 tris × 3 verts = ≤ 90 body verts + ≤ 18 cap verts; allocate 128 vertices each). Set `drawRange` to the actual count.
 6. Compute each half's centroid (average of its face-polygon centroids weighted by area, or simply the signed-volume centroid via the divergence theorem — the unit test needs volumes anyway, see §9) and store it; the half's mesh pivot is moved to that centroid so rotation looks natural.
 
-Degenerate planes (plane misses the cube, i.e. all 8 corner distances share a sign) MUST fall back to the canonical half-cut through the centre with the same normal (`d = 0`).
+Transform the plane with the inverse-transpose rule for normals, including the block's visual rotation and scale; transforming only its point gives a visibly wrong cut. Reject a zero or non-finite normal before normalisation. Degenerate planes (plane misses the cube, or is tangent and produces a zero-volume sliver) fall back to a centre cut with a valid normal. The small geometric tolerances above are numerical guards, not gameplay hit windows. Use the signed-volume centroid for pivots; an area-weighted surface centroid is not a volume centroid.
 
 ### 3.2 Half material
 
@@ -140,9 +146,9 @@ alpha = 1 − smoothstep(0.6, 1.0, t / HALF_LIFETIME_MS)       // fade in the la
 
 Slice pool: 12 halves (6 simultaneous slices); the oldest is recycled if exhausted.
 
-### 3.4 Fallback (if the slicer is not green by H6)
+### 3.4 Fallback (if the exact slicer fails the P3 correctness gate)
 
-Pre-cut halves at 4 canonical angles (vertical, horizontal, two diagonals) built once at boot with the same slicer code paths replaced by hand-made geometry; pick the one whose normal is closest to `cutPlane.normal`. Everything else in §3.3 is unchanged.
+Pre-cut halves at 4 canonical angles (vertical, horizontal, two diagonals) built once at boot from independent hand-made geometry; pick the one whose normal is closest to `cutPlane.normal`. Everything else in §3.3 is unchanged. Do not generate the fallback through a slicer that has failed correctness tests. Label this mode canonical-cut in benchmark metadata and the demo capability record; reserve “exact swing-plane cut” for the tested runtime slicer.
 
 ## 4. Shatter (smash blocks)
 
@@ -150,7 +156,9 @@ Triggered by `note:hit` with `note.type === 'smash'`.
 
 ### 4.1 Asset
 
-`block_fractured.glb` ([18](18-blender-mcp-asset-pipeline.md)): 14 shards `shard_00..shard_13` of a 1 m cube, each with its origin at its centroid. At boot, load once with `GLTFLoader`, read each shard's geometry and its local offset `o_i` (the shard origin in cube space), and scale all by `BLOCK_SIZE`. Build **one** `InstancedMesh` per shard geometry? No — 14 draw calls per shatter is wasteful. Instead merge all shards into a single geometry with a per-vertex `aShard` id (0..13), and instance *that* merged geometry once per shattering block (`MAX_FRAGMENTS / 14 ≈ 18` simultaneous shatters, pool of 18 instances). The vertex shader applies per-shard transforms read from a `DataTexture` (18 blocks × 14 shards × 2 texels: position+scale, quaternion) updated per frame, or from a uniform array `mat4 uShard[14]` if only one shattering block is drawn per instance (choose the uniform array: `InstancedMesh` of 18 with `onBeforeRender` per instance is not possible, so use **one `Mesh` per active shatter** from a pool of 18, each with its own `uShard[14]` uniform array; 1 draw call per active shatter, ≤ 18 total — acceptable, typically 1–3 are alive).
+`block_fractured.glb` ([18](18-blender-mcp-asset-pipeline.md)) contains 14 shards `shard_00..shard_13` of a 1 m cube, each with its origin at its centroid. At boot load once, retain each centroid offset `o_i`, and merge centroid-local shard geometry with a per-vertex `aShard` id. Apply `BLOCK_SIZE` exactly once to vertices and offsets. The initial implementation uses one pooled `Mesh` per active shatter, one merged geometry and one owned `uShard[14]` transform array per pool slot: one draw call per active shatter. Check the device's vertex-uniform limit before choosing this path; if unavailable, use an atlas of transforms or the simpler eight-piece fallback, not shader compile failure during play. Shared shader programs are fine; uniforms must not leak from one shatter to another.
+
+`SHATTER_POOL` bounds allocated slots, while `MAX_FRAGMENTS` bounds active individual pieces including armour. A full shatter reserves 18 pieces (14 body + 4 armour), so active shatters are at most `min(SHATTER_POOL, floor(MAX_FRAGMENTS / 18))`. On exhaustion recycle the oldest decorative effect deterministically; never drop a judgement or delay input. Measure the typical and saturation cases separately.
 
 ### 4.2 Shard motion
 
@@ -172,21 +180,21 @@ The four armour plates are added as 4 more "shards" (their own small pool) with 
 
 ### 4.3 Material
 
-`fragment.frag.glsl`: block fill + rim as in §2.2, plus `rgb = mix(rgb, vec3(1.0) * 2.5, flash)` and emissive edges. Depth write on. A 6-frame magenta light flash at the impact point (a `PointLight` is too costly; use a 0.9 m additive sprite instead, see [12](12-rendering-hands-trails.md) for the sprite material).
+`fragment.frag.glsl`: block fill + rim as in §2.2, plus `rgb = mix(rgb, vec3(1.0) * 2.5, flash)` and emissive edges. Depth write on. A pooled additive sprite provides a brief magenta impact glow rather than a dynamic `PointLight`; its lifetime is expressed in milliseconds so it is independent of frame rate (see [12](12-rendering-hands-trails.md) for the sprite material). Calm mode uses a steady tint without a white flash.
 
 ### 4.4 Fallback
 
-If the GLB is unavailable, build 8 procedural shards at boot: split the cube by three random planes through near-centre points using the §3.1 slicer recursively (cube → 2 → 4 → 8). This reuses tested code and still gives irregular convex pieces.
+If the GLB is unavailable, build 8 procedural octants at boot from ordinary box geometry. The baseline slicer accepts a cube, not arbitrary recursively clipped polyhedra, so recursive fracture is not a valid fallback until that broader algorithm is implemented and tested. Optional irregular procedural pieces may be generated offline with a tested convex-polyhedron clipper. A missing Blender asset must never block play or depend on an unverified slicer.
 
 ## 5. Poof (beam targets)
 
-Triggered by `beam:fire` (which the game emits together with the `note:hit` for the target). The look is "the lights go out": the block stops being a light source, then collapses.
+Triggered exactly once by `note:hit` with `note.type === 'beam'`. `beam:fire` owns the ray visual only and may represent a whiff with `note === null`; it must never independently despawn a target or launch a second poof. The look is "the lights go out": the block stops being a light source, then collapses.
 
 Timeline (`POOF_LIFETIME_MS` = 700):
 
 | t | Effect |
 | --- | --- |
-| 0–150 ms | Emissive (rim, core, edges) → 0 with flicker: `emissive × (0.5 + 0.5 · step(0.5, fract(t · 45 Hz))) × (1 − t/150ms)`; fill goes to near-black glass; rings stop spinning and fade |
+| 0–150 ms | Emissive (rim, core, edges) eases monotonically to 0; fill goes to near-black glass; rings stop spinning and fade. Convey power loss with the collapsing ring, not rapid flashing. |
 | 120 ms | Impact flash sprite at the target (gold, 0.7 m, 100 ms) and a thin expanding ring (torus scale 0.3 → 1.6 m, alpha 1 → 0 over 300 ms) |
 | 150–700 ms | Scale → 0 with ease-in-cubic; 24 sparks (GPU `Points`, additive, gold → dim red, speed 1.5–3 m/s radial, gravity ×0.4, size 0.03 → 0) |
 | 700 ms | Release |
@@ -195,7 +203,7 @@ Fragments or halves are **not** spawned; the whole point is the contrast with sl
 
 ## 6. Bad cut
 
-`note:badcut`: the block is **not** destroyed. For 220 ms it is pushed back along the lane by 0.8 m (`offset = 0.8 · sin(π · t/220ms)` added to the lane position — it springs back), wobbles (±8° roll at 14 Hz, decaying), and `iState.w` (red flash) goes 1 → 0 over 120 ms. The glyph pulses twice to remind the player which gesture it wanted. It then continues toward `MISS_Z` and becomes a miss (which the game core also reports; the renderer applies the dim state on `note:miss`). A short "clang" SFX and a 0.015 m camera micro-shake accompany it.
+`note:badcut`: the block is **not** destroyed visually. Over `BADCUT_MS` it deflects by `BADCUT_PUSHBACK_M` using a single smooth spring arc; the glyph and a brief red tint explain the required gesture. It then dims and continues to despawn. A bad cut is one terminal judgement: the renderer must not fabricate a later Miss or reset combo again. The game owns this lifecycle and emits the eventual despawn ([07](07-hit-detection-and-scoring.md)). A short clang SFX accompanies it; Calm mode removes wobble and camera shake.
 
 ## 7. Miss
 
@@ -228,9 +236,9 @@ The obstacle's **leading face** reaches `z = 0` at `obstacle.t`; the slab extend
 `tests/unit/slicer.test.ts`:
 
 1. **Volume conservation.** For 200 random planes through the cube, `volume(A) + volume(B) = BLOCK_SIZE³` within 1e-6 (signed volume via Σ over triangles of `(a · (b × c)) / 6`).
-2. **Closedness.** Every edge of each half appears exactly twice with opposite winding (manifold check) — guarantees the cap is correctly stitched.
+2. **Closedness.** Weld vertex positions within the documented geometric tolerance before counting edges, because face normals and UV seams deliberately duplicate vertices in the non-indexed buffer. Every welded edge must occur exactly twice with opposite winding. Check cap normals and outward winding independently.
 3. **Degenerate planes** (missing the cube) fall back to the centre cut and still conserve volume.
-4. **Axis-aligned plane at d = 0** yields two 0.6 × 0.6 × 0.3 boxes (vertex count 8 + 8 … after fan triangulation 36 + 36 body + 18 cap verts… assert via bounding boxes, not counts).
+4. **Axis-aligned plane at d = 0** yields two `BLOCK_SIZE × BLOCK_SIZE × BLOCK_SIZE/2` boxes. Assert bounding boxes and volumes, not seam-dependent vertex counts. Include planes through an edge/vertex, nearly tangent planes and rotated blocks with fixed seeds.
 
 `tests/unit/fragments.test.ts`: ballistic `p(t)` matches `p0 + v0 t + ½ g t²` to 1e-9; lifetime release occurs exactly at `FRAGMENT_LIFETIME_MS`.
 
@@ -248,20 +256,29 @@ The obstacle's **leading face** reaches `z = 0` at `obstacle.t`; the slab extend
 | Obstacles | 8 instanced | 1 / 1 |
 | **Total** | | **~8 / 49** |
 
-Quality tiers: low tier halves `MAX_FRAGMENTS` (shatters of 7 shards: drop every other shard id), disables the cap heat decay (constant white for 300 ms) and the aim-assist line, and uses 12 sparks per poof.
+The total above is a draw-call estimate before culling and tier policy, not proof that this fits the whole-scene budget. Use [16 §Quality tiers](16-performance-budget.md#quality-tiers) for the effective fragment cap and lifetime; `MAX_FRAGMENTS` also caps the shatter/armour combination (§4.1). Quality tiers must preserve the intact object at the destruction boundary: low tier uses eight complete octants rather than dropping alternating shards and leaving holes, reduces active effects and poof sparks, and disables the aim-assist line. Reduce glow intensity rather than freezing a white flash. All tiers retain the same judgement events and target timing.
+
+### Repeatable effects and lifetime
+
+Derive effect randomness from the beatmap seed, note/obstacle ID and effect kind; never call unseeded `Math.random()` in play. Store each effect's start time in the session visual clock and evaluate the closed-form motion from that time. Pausing freezes effects and resuming does not advance their age by the paused duration. Replaying the same events at a fixed tier must choose the same variants, trajectories and pool eviction order. GPU screenshots may differ across drivers; event counts and CPU geometry invariants must not.
+
+Allocate geometry, index/attribute buffers, shard uniforms, sprite textures and scratch vectors before play. Reset free lists on retry and unsubscribe event handlers once on teardown. Dispose owned resources when the renderer closes or replaces them; do not dispose shared geometry when returning one slot to its pool. Capture pool high-water marks, overflow/recycle counts, draw calls and p50/p95 GPU time for the same saturation replay under [16](16-performance-budget.md).
 
 ## 11. Acceptance criteria
 
 - [ ] All intact blocks of all three types render in ≤ 3 draw calls regardless of count.
 - [ ] A slash block cut by a vertical swing splits left/right; a horizontal swing splits top/bottom; a diagonal swing produces a visibly diagonal cut — the cap faces the player white-hot and cools to the block colour.
-- [ ] A smash block explodes into ≥ 12 distinct shards that originate from the fist's impact point and tumble under gravity; no shard pops or freezes.
+- [ ] High/medium smash effects show the complete 14-piece body plus armour; the declared low/procedural fallback shows eight complete pieces. Pieces tumble from the impact without unexplained holes or freezes.
 - [ ] A beam target visibly "powers down" (flicker, lights out) before collapsing; it never breaks into pieces.
-- [ ] A bad cut never destroys the block, flashes red, and the block then misses.
+- [ ] A bad cut deflects/dims the block and counts exactly once; subsequent despawn produces no additional Miss judgement.
 - [ ] Obstacles are clearly red and translucent; the player can see blocks through them; being inside one triggers the glitch within one frame of `obstacle:hit`.
 - [ ] Slicer unit tests pass (volume conservation and manifold check on 200 random planes).
 - [ ] Six simultaneous slices + three shatters + one poof stay within the renderer's GPU budget on the medium tier ([16](16-performance-budget.md)).
+- [ ] A deliberately saturated pool recycles decorative effects deterministically without changing score, hit latency or live-note counts; all owned resources remain bounded across ten retries.
 
 ## Constants required
+
+This is the rendering destruction sub-registry linked from [02](02-architecture.md#constants). Values are planned defaults to export centrally during P0; the constants module is currently a stub.
 
 | Name | Value | Meaning |
 | --- | --- | --- |

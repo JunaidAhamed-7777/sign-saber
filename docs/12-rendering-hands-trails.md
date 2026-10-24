@@ -17,6 +17,8 @@ The tint is applied at the particle edges and the blade glow layer; the core sta
 
 One `THREE.Points` per hand with `MAX_TRAIL_PARTICLES_PER_HAND` vertices and a custom `ShaderMaterial`. All motion is computed **on the GPU** from a few uniforms; the CPU uploads nothing per frame except uniforms.
 
+The shared spine texture is the exception: the CPU updates its preallocated position samples (§4). Seed static particle attributes from the session's deterministic effect seed so replaying the same gestures gives the same composition. GPU motion uses the session visual clock, not wall-clock time; a pause freezes particles and beam lifetimes.
+
 ### 2.1 Attributes (static, filled once)
 
 | Attribute | Type | Meaning |
@@ -42,7 +44,7 @@ uniform float uBladeMix;    // 0 orbit .. 1 blade (CPU eased, see §4.4)
 uniform float uBand;        // 0.5*mid + 0.5*high from BandEnergies
 uniform vec3  uTint, uCore;
 uniform float uPresence;    // 0..1 eased on present flag
-uniform sampler2D uSpine;   // 1 × 64 RGBA32F: blade spine samples (xyz) + width (w), see §4
+uniform sampler2D uSpine;   // 64 × 1 RGBA32F: blade spine samples (xyz) + path parameter (w), see §4
 ```
 
 ### 2.3 Idle orbit (vertex shader)
@@ -81,7 +83,7 @@ void main() {
   vec2 d = gl_PointCoord - 0.5; float r2 = dot(d, d);
   if (r2 > 0.25) { gl_FragColor = vec4(0.0); return; }   // outside the disc (alpha 0, no discard on low tier)
   float soft = exp(-r2 * 14.0);
-  vec3 col = mix(uTint, uCore, smoothstep(0.08, 0.0, r2) * 0.8 + vHeat);
+  vec3 col = mix(uTint, uCore, clamp((1.0 - smoothstep(0.0, 0.08, r2)) * 0.8 + vHeat, 0.0, 1.0));
   gl_FragColor = vec4(col * soft * vAlpha * (1.6 + vHeat), soft * vAlpha);
 }
 ```
@@ -97,9 +99,9 @@ A single `Mesh` per hand: a flat ring (`RingGeometry(0.11, 0.125, 48)`) at `Hand
 | `none` | hidden (fades out over 120 ms) |
 | `open` | thin full ring in the hand tint, alpha 0.6, slow 20°/s spin of a subtle 8-notch pattern |
 | `fist` | ring shrinks to radius 0.07, thickness ×2, alpha 0.9; the particle knot (§2.3) does the rest |
-| `point` | ring moves to `HandCursor.tip`; **charge arc**: `uArc = charge` fills the ring clockwise from 12 o'clock over `BEAM_CHARGE_MS` (`alpha = step(angle, uArc × 2π)`), gold `#FFC32B`; at `charge == 1` the ring pops to radius 0.16 for 90 ms and stays gold-bright with a 6 Hz pulse until fired or the gesture ends |
+| `point` | ring moves to `HandCursor.tip`; **charge arc**: `uArc = charge` fills clockwise from 12 o'clock over `BEAM_CHARGE_MS`, gold `#FFC32B`; at `charge == 1` it expands once to radius 0.16 over 90 ms, then holds a steady gold-ready cue until fired or the gesture ends. Calm mode omits expansion. |
 
-Arc shader: `float ang = atan(vLocal.y, vLocal.x) + π/2; ang = mod(ang, 2π); alpha *= step(ang, uArc * 2π);` plus a bright leading dot at the arc end.
+Arc shader: `float ang = mod(atan(vLocal.x, vLocal.y) + 2.0 * PI, 2.0 * PI); alpha *= step(ang, uArc * 2.0 * PI);` plus a bright leading dot at the arc end. Test zero, quarter, half and full charge against the intended clockwise orientation.
 
 ## 4. Blade ribbon (`render/blade.ts`)
 
@@ -107,16 +109,16 @@ Arc shader: `float ang = atan(vLocal.y, vLocal.x) + π/2; ang = mod(ang, 2π); a
 
 From `HandCursor.history` (`TRAIL_HISTORY` = 24 positions, newest last, play-plane world coords, ~33 ms apart):
 
-1. Take the newest `N` positions whose cumulative path length ≤ `bladeLength` (`HandCursor.bladeLength`, 0 when inactive). Always include at least 4 points; if the history is shorter, extrapolate backward along `−vel`.
+1. Take the newest `N` positions whose cumulative path length ≤ `bladeLength` (`HandCursor.bladeLength`, 0 when inactive). At a hand's first appearance, seed the visual spine from its valid position; extrapolate backward only when a finite nonzero velocity exists. Never join the previous person's history or bridge a tracking-loss gap. Missing/zero-length history produces no ribbon until a direction is available.
 2. Resample the polyline to exactly **48 spine samples** using Catmull–Rom (centripetal, α = 0.5) with the first/last points duplicated as phantom controls. Spine sample 0 is the oldest (tail), sample 47 is at `HandCursor.pos` (hilt).
 3. Width profile per sample `s ∈ [0,1]` (0 tail → 1 hilt). The blade is widest near the hilt and tapers toward the tip: `core(s) = BLADE_CORE_W · (0.35 + 0.65 · s) · smoothstep(0, 0.08, s)`, `glow(s) = BLADE_GLOW_W · (0.4 + 0.6 · s) · smoothstep(0, 0.08, s)`. The tail fades to zero width over the first 8 %; the hilt is full width.
-4. Write the spine into a `1 × 64` `RGBA32F` `DataTexture` (`xyz` = position, `w` = `s`) — the particle shader reads it to elongate (§4.4). Only 48 texels are used.
+4. Write the spine into a **64 × 1** `RGBA32F` `DataTexture` (`xyz` = position, `w` = `s`) — matching the horizontal UV sampling in §4.2. Use nearest filtering and `NoColorSpace`; only the tier's sample count is used. This texture is uploaded from a retained `Float32Array`; never recreate it in the frame loop.
 
 Note on direction: because history is oldest→newest, the *visual* blade extends **behind** the hand along the swing path, like a light trail that has snapped rigid. That is the intended read — a katana you see as a streak. The tip spark (§4.5) sits at the oldest sample.
 
 ### 4.2 Ribbon mesh
 
-Two `Mesh`es per hand sharing one `BufferGeometry` of `48 × 2` vertices, indexed as a triangle strip (94 triangles): a **core** layer and a **glow** layer (same geometry, different material and width uniform). Vertex attributes: `aS` (0..1 along the spine) and `aSide` (−1/+1). Positions are not stored per vertex; the vertex shader builds them:
+Two `Mesh`es per hand sharing one `BufferGeometry` of `BLADE_SPINE_SAMPLES × 2` vertices, indexed as ordinary triangle-list quads (94 triangles at 48 samples): a **core** layer and a **glow** layer (same geometry, different material and width uniform). Set a finite bounding sphere covering the visual path or disable frustum culling for these two small meshes; a GPU-generated spine cannot rely on an empty CPU position attribute for bounds. Vertex attributes: `aS` (0..1 along the spine) and `aSide` (−1/+1). The example below shows the 48-sample variant; inject the actual last-sample index and texture width for low tier rather than continuing to sample texel 47 after reducing to 32 samples.
 
 ```glsl
 uniform sampler2D uSpine; uniform float uWidthScale; uniform vec3 uCamPos;
@@ -126,20 +128,20 @@ void main() {
   vec3 p  = texture(uSpine, vec2((aS * 47.0 + 0.5) / 64.0, 0.5)).xyz;
   vec3 p1 = texture(uSpine, vec2((min(aS + 1.0/47.0, 1.0) * 47.0 + 0.5) / 64.0, 0.5)).xyz;
   vec3 p0 = texture(uSpine, vec2((max(aS - 1.0/47.0, 0.0) * 47.0 + 0.5) / 64.0, 0.5)).xyz;
-  vec3 tangent = normalize(p1 - p0);
+  vec3 tangent = safeDirection(p1 - p0, uLastValidTangent);
   vec3 toCam   = normalize(uCamPos - p);
-  vec3 side    = normalize(cross(tangent, toCam));      // ribbon normal faces the camera
+  vec3 side    = safeDirection(cross(tangent, toCam), uLastValidSide); // guard near-parallel vectors
   float w = width(aS) * uWidthScale;                     // core: 0.04 profile; glow: 0.14 profile
   vS = aS; vSide = aSide;
   gl_Position = projectionMatrix * viewMatrix * vec4(p + side * aSide * w, 1.0);
 }
 ```
 
-Fragment: core layer = `uCore × 2.6` at alpha `1 − |vSide|^3`, `depthWrite: false`, normal blending (reads as solid white-hot); glow layer = `uTint × 1.4 × (1 − |vSide|)²`, additive. Both fade with `vS` toward the tail: `alpha *= smoothstep(0, 0.12, vS)`. A subtle lengthwise energy flow: `alpha *= 0.85 + 0.15 · sin(vS · 40 − uTime · 30)`.
+Fragment: core layer = `uCore × 2.6` at alpha `1 − |vSide|^3`, `depthWrite: false`, normal blending (reads as solid white-hot); glow layer = `uTint × 1.4 × (1 − |vSide|)²`, additive. Both fade with `vS` toward the tail: `alpha *= smoothstep(0, 0.12, vS)`. A subtle lengthwise energy flow: `alpha *= 0.85 + 0.15 · sin(vS · 40 − uTime · 30)`. `safeDirection` is a finite-length guard with a retained fallback; define its declarations and scratch uniforms in the implementation. A low-speed or lost hand must not generate NaNs or a screen-sized ribbon.
 
 ### 4.3 Blade length
 
-`bladeLength` comes from the input pipeline: `lerp(BLADE_LEN_MIN, BLADE_LEN_MAX, clamp((speed − BLADE_ON_SPEED) / (BLADE_FULL_SPEED − BLADE_ON_SPEED), 0, 1))`, and 0 when `bladeActive` is false. The renderer eases the *drawn* length with a critically damped spring (ω = 22 rad/s) so the blade grows and retracts smoothly rather than popping.
+`bladeLength` comes from the input pipeline: `lerp(BLADE_LEN_MIN, BLADE_LEN_MAX, clamp((speed − BLADE_ON_SPEED) / (BLADE_FULL_SPEED − BLADE_ON_SPEED), 0, 1))`, and 0 when `bladeActive` is false. The renderer eases the *drawn* length with a critically damped spring (ω = 22 rad/s) so the blade grows and retracts smoothly rather than popping. This trail is cosmetic: collision uses the measured contact sweep from [07](07-hit-detection-and-scoring.md), never the smoothed ribbon, extrapolated cursor or its tail. Do not mutate `HandCursor` or history to make visual prediction score hits.
 
 ### 4.4 Particles elongate into the blade
 
@@ -164,15 +166,17 @@ At `uBladeMix = 1` the cloud *is* the blade's sparkle: particles sit along the s
 
 ### 5.1 Charging
 
-While `gesture === 'point'` and `0 < charge < 1`: the indicator arc (§3) fills; particles form the forward cone (§2.3); a faint gold line (`Line2`-free: a thin additive ribbon using the same ribbon shader with a 2-sample spine) extends from `HandCursor.tip` toward the aimed target's position when a beam target is within `2 × BEAM_AIM_RADIUS` of the fingertip ray (the game exposes the *candidate target* via `HandCursor`'s sibling data in the game's live-object list; the renderer finds the nearest beam target in play-plane distance to `tip` itself — read-only, so no contract change).
+While `gesture === 'point'` and `0 < charge < 1`: the indicator arc (§3) fills and particles form the decorative cone (§2.3). The target's fixed world centre is projected from `CAM_POS` onto the play plane as specified in [07](07-hit-detection-and-scoring.md); compare the measured fingertip position with that projected reticle using the authoritative eligibility/radius rule. The optional aim-assist line may display that shared read-only candidate, never choose a separate nearest object or use the shaking camera/`pointDir` to decide a hit. With no authoritative candidate, show an unlinked direction cue. A two-point line needs its own sampling path rather than an unchanged 48-point texture index.
 
 ### 5.2 Firing (`beam:fire` → `{ hand, from, to, note }`)
+
+`note` may be null for a whiff; still show the emitted ray but no target flash or poof. A valid `note:hit` starts the target's power-down once at event time; the beam visual must not award or despawn anything.
 
 | t | Effect |
 | --- | --- |
 | 0 | Flash sprite at `from` (0.3 m, white → gold, 60 ms) |
 | 0–120 ms | Beam cylinder: `CylinderGeometry(0.035, 0.035, 1, 12, 1, true)` oriented from `from` to `to`, scaled to the distance (~14 m), additive. Fragment: core white `× 3`, edge gold, two scrolling noise bands (`fbm(vUv.y · 6 − uTime · 18)`) for energy, radial falloff `pow(1 − |vUv.x·2−1|, 2)`. Width: 0 → 0.07 m in 25 ms, hold, → 0 by 120 ms |
-| 40 ms | Impact flash at `to` (0.7 m, gold) and the target's poof begins ([11 §5](11-rendering-blocks-and-destruction.md#5-poof-beam-targets)) |
+| 40 ms | Cosmetic impact glow at `to` for a valid target; its poof already began at `note:hit` ([11 §5](11-rendering-blocks-and-destruction.md#5-poof-beam-targets)). Calm mode uses a steady gold tint. |
 | 0–200 ms | Indicator ring at the fingertip blinks white twice |
 
 One cylinder mesh per hand (pooled, reused). The beam is straight in world space — it does **not** follow the lane pitch; it aims where the finger points, which is what makes it feel like a laser.
@@ -185,19 +189,17 @@ One cylinder mesh per hand (pooled, reused). The beam is straight in world space
 
 ## 7. Quality tiers
 
-| Tier | Particles per hand | Ribbon layers | Spine samples | Tip sparks | Beam noise |
-| --- | --- | --- | --- | --- | --- |
-| high | 256 | core + glow | 48 | yes | 2 octaves |
-| medium | 160 | core + glow | 48 | yes | 1 octave |
-| low | 96 | core only (wider) | 32 | no | none |
+Use the canonical [16 §Quality tiers](16-performance-budget.md#quality-tiers) preset for particle count, ribbon layers/samples, sparks and beam-noise octaves. Set particle draw range and spine sampling constants from that preset rather than reallocating buffers at each tier. Keep the maximum retained texture/buffer capacity and mark only active samples; the low-tier ribbon retains the same measured path, with fewer cosmetic samples and a wider single core.
 
 ## 8. Performance
 
-Per hand: 1 `Points` draw, 2 ribbon draws, 1 indicator ring, 1 tip sprite, occasionally 1 beam cylinder → ≤ 6 draw calls per hand, 12 total. CPU per frame: Catmull–Rom resample of ≤ 24 points to 48 (≈ 15 µs), one 64-texel texture upload per hand, uniform sets. GPU: particles are 256 tiny sprites — < 0.1 ms. The ribbon vertex shader does 3 texture fetches per vertex × 96 vertices — negligible. No per-frame geometry allocation anywhere; all typed arrays are preallocated.
+Per hand: 1 `Points` draw, 2 ribbon draws, 1 indicator ring, 1 tip sprite, occasionally 1 beam cylinder → ≤ 6 baseline draw calls per hand, 12 total; additional emitted sparks/flash sprites count against the shared effect budget in [11](11-rendering-blocks-and-destruction.md). CPU work includes resampling ≤ `TRAIL_HISTORY` samples, one retained 64-texel upload per hand, and uniform writes. Measure its p50/p95 cost under [16](16-performance-budget.md); no microsecond result is assumed. Preallocate all geometry, typed arrays, interpolation scratch and effect instances before play. Stop drawing absent hands after the presence fade; reset their visual histories on reacquisition.
+
+Calm mode retains hand position, gesture identity, charge progress and target readability, while suppressing twinkle, moving notches, tip flicker and impact flashes. Settings change appearance only: every quality/motion mode must produce identical scoring for the same replay.
 
 ## 9. Acceptance criteria
 
-- [ ] An idle open hand shows a calm, two-ring orbit of particles whose speed audibly follows the music's mids/highs.
+- [ ] An idle open hand shows a calm, two-ring orbit whose motion visibly follows the music's mids/highs; Calm mode keeps the gesture cue steady.
 - [ ] A fast open-hand swing (≥ `BLADE_ON_SPEED`) grows a visibly solid white-hot blade with a tinted glow along the swing path within 120 ms; it retracts smoothly within 250 ms when the hand slows below `BLADE_OFF_SPEED`.
 - [ ] Blade length is visibly longer for faster swings (≈ 0.4 m at threshold, ≈ 1.6 m at a hard swing).
 - [ ] A fist compacts the particles into a dense knot and shrinks the ring; a point forms a forward cone from the fingertip in the pointing direction and the gold arc fills over exactly `BEAM_CHARGE_MS` (verifiable in the debug HUD).
@@ -205,8 +207,12 @@ Per hand: 1 `Points` draw, 2 ribbon draws, 1 indicator ring, 1 tip sprite, occas
 - [ ] The beam fires as a straight gold-white cylinder from fingertip to target with a flash at both ends and is gone within 120 ms.
 - [ ] Nothing in this document allocates geometry or typed arrays after boot (verify with the allocation sampler in Chrome DevTools: zero `Float32Array` allocations per frame from `render/trails.ts` / `render/blade.ts`).
 - [ ] ≤ 12 draw calls for both hands combined on the high tier.
+- [ ] Fixed-seed rapid-motion, stationary, camera-loss and first-frame fixtures produce finite geometry with bounded updates at 30/60/120 Hz; no stale path bridges a missing hand.
+- [ ] Pausing freezes the trail/beam clock, and replaying the same events produces identical effect choices and score across tiers.
 
 ## Constants required
+
+This is the hands/trails rendering sub-registry linked from [02](02-architecture.md#constants). Export these planned defaults centrally during P0; the runtime constants module is currently a stub.
 
 | Name | Value | Meaning |
 | --- | --- | --- |

@@ -4,20 +4,22 @@ The UI is a React 19 DOM overlay drawn above the Three.js canvas ([ADR-002](03-d
 
 Pillar reminder: **P1 Readable at a glance** governs every decision here. If a judge standing 2.5 m from the laptop cannot read it, it is wrong.
 
+This document specifies planned behaviour; the current React screens are stubs. Build the P1 full-song path first, complete the P2 recovery paths, and add P3 presentation only after both work ([roadmap](../ROADMAP.md)). Wireframes show illustrative content and do not assert that any demo track or score already exists.
+
 ## Design language
 
 | Principle | Rule |
 | --- | --- |
 | **Dark void** | The DOM background is always transparent; the 3D void (`--void`) is the only background. Panels are translucent glass so the silhouette and grid stay visible behind menus. |
 | **Neon accents, sparingly** | One accent colour per element. Accents are reserved for interactive or live data (score, combo, Start). Decorative chrome is `--muted`. |
-| **Glassmorphism panels** | `background: var(--panel); backdrop-filter: blur(18px) saturate(140%); border: 1px solid rgba(255,255,255,0.14); border-radius: 14px;` plus an inner luminous edge: `box-shadow: inset 0 0 0 1px rgba(25,245,255,0.18), 0 0 32px rgba(25,245,255,0.08);`. The glow colour follows the panel's accent. |
-| **Uppercase display type** | Titles, numbers, buttons and labels are uppercase Orbitron with `letter-spacing: 0.08em`. Body copy and coaching text are sentence-case Rajdhani. |
-| **Beat-aware** | Every HUD element may breathe with the beat via the `--beat` CSS variable (§Motion). Menus pulse their accent glow; the HUD scales numbers by at most 3 %. |
+| **Quiet panels** | Use a dark, nearly opaque panel and a subtle structural border. One short accent rule identifies the selected track or primary action. Blur is optional in menus only and disabled on low tier; no glowing border around every panel. The player and destruction supply the spectacle. |
+| **Distinct display type** | Use Orbitron for the title, rank and selected display numbers; Rajdhani for controls, metadata and coaching. Reserve uppercase/letter spacing for short labels so instructions remain readable at a distance. |
+| **Beat-aware, restrained** | The combo ring or song progress may respond to `--beat` (§Motion). Score, accuracy and safety/coaching text stay spatially stable. Avoid pulsing the whole interface. |
 | **No raw webcam pixels, ever** | The DOM never renders the `<video>` element visibly. The silhouette is the only representation of the player (P1, [01](01-vision.md)). |
 
 ## Typography
 
-Fonts are bundled as woff2 in `app/public/assets/fonts/` and declared with `@font-face` + `font-display: block` so BOOT never flashes fallback type ([ADR-013](03-decisions.md#adr-013--everything-the-demo-needs-is-bundled-and-works-offline)).
+Fonts are bundled as woff2 in `app/public/assets/fonts/`, with their licence/attribution files ([ADR-013](03-decisions.md#adr-013--everything-the-demo-needs-is-bundled-and-works-offline)). Preload the small required subset and use `font-display: swap` with metric-compatible fallbacks: a missing font must never hide Retry, camera permission guidance or Start. Reserve label/number widths to prevent layout jumps. Offline checks include failed-font behaviour, not only the happy path.
 
 | Role | Family | Weight | Size (clamp) | Use |
 | --- | --- | --- | --- | --- |
@@ -78,7 +80,7 @@ Colour is never the only cue (§Accessibility): each block type also has a disti
 | Beat variable | `--beat` is written every frame from the beat grid (`beatOffsetMs + k · 60000 / bpm`, [09](09-beatmap-format.md)): `--beat = 1 − fract((songTime − beatOffsetMs) / beatPeriod)` eased with `pow(x, 3)` so it snaps to 1 on the beat and decays. HUD elements use `transform: scale(calc(1 + var(--beat) * 0.03))` and glow `opacity: calc(0.5 + var(--beat) * 0.5)`. |
 | Judgement pops | Appear at the projected hit position, rise 60 px over 600 ms while fading; Perfect adds a 1.15× overshoot; Bad Cut adds a 2-frame horizontal glitch (`clip-path` slices). |
 | Combo milestones | At combo 10 / 25 / 50 / 100 the combo ring emits a radial flash (`box-shadow` 0 → 80 px) and the number does a 1.3× punch over 240 ms. |
-| Reduced motion | `prefers-reduced-motion: reduce` disables stagger, beat scaling and the milestone flash in the HUD. It does **not** change gameplay rendering ([13](13-rendering-environment-camera-postfx.md) owns that). |
+| Reduced motion | `prefers-reduced-motion: reduce` initially selects Calm intensity. It disables stagger, beat scaling, milestone flashes, camera kinetics, glitch and transient scene flashes. The renderer implements the same preference ([13 §5.4](13-rendering-environment-camera-postfx.md#54-motion-preference)). |
 
 ## Screens
 
@@ -119,6 +121,7 @@ Colour is never the only cue (§Accessibility): each block type also has a disti
 - Progress is the aggregated weighted value from [04 §BOOT](04-state-machine.md#boot). The stage label shows the asset currently loading (`strings.boot.stage.*`).
 - The logo pulses at 72 BPM (no song yet) using `--beat` driven by a fixed period.
 - Error cards use `--danger` border glow and the exact copy in §Strings. The Retry button re-runs only the failed stage.
+- Before requesting camera access, explain “Camera images stay on this device; only a silhouette appears in the game.” Permission denial, a camera already in use, an unsupported renderer, and missing assets need distinct actionable states from [04](04-state-machine.md). Never keep a fabricated loading percentage moving after failure. Stage progress is determinate only when the loader knows its denominator; inference/model initialisation uses a named indeterminate stage.
 
 ### SELECT
 
@@ -154,6 +157,9 @@ Colour is never the only cue (§Accessibility): each block type also has a disti
 - **YouTube field**: enabled only when the companion service health check succeeded in the last 10 s ([23](23-youtube-companion-service.md)); otherwise disabled with the offline copy. Enter submits; a spinner replaces the ↵ while resolving.
 - **Difficulty**: segmented control, default Normal, persisted in `localStorage`.
 - **Start**: disabled (`--muted` 40 %) until `validateBeatmap` returns no errors; shows `strings.select.startDisabled` as a tooltip. Enter/Space on focus or click fires `select:start`.
+- Upload accepts only supported, decodable local audio within [08](08-beatmap-generation.md)'s limits; an extension alone is not validation. Show file name, elapsed work and the active stage. Percentages must come from completed work units; decode and unknown-duration stages use indeterminate progress. Cancel returns to Select and invalidates the job token so a late worker result cannot overwrite a newer selection. Preserve the previous valid selection after an invalid upload, clearly identifying which track Start would launch.
+- If no bundled tracks exist, omit the library cards and show the honest asset/setup failure rather than invented tracks. Wireframe titles such as Neon Drift are examples only. An empty/quiet upload explains why no playable notes were found. A tempo-fallback badge is paired with its limitation rather than a precise BPM presented as detected truth.
+- Place a persistent, readable explanation beside disabled Start; disabled native controls cannot be relied on to expose a hover/focus tooltip. Show Standard/Calm intensity, volume and camera status before starting. Readiness remains the state machine's decision; the UI cannot bypass calibration.
 
 ### CALIBRATION
 
@@ -182,10 +188,11 @@ Colour is never the only cue (§Accessibility): each block type also has a disti
 
 - The three steps are exactly the three conditions in [04 §CALIBRATION](04-state-machine.md#calibration). A step's tick turns `--cyan` only after its condition has held for `CALIB_PRESENCE_MS`; a regressed condition turns it back to `◌` with a 160 ms fade.
 - **Wave meter**: a 24-sample sparkline of the active hand's mirrored-image x plus a reversal counter `n / WAVE_REVERSALS`. Fills as reversals accumulate within `WAVE_WINDOW_MS`.
-- **Coaching line** (Body L, centre-bottom) shows exactly one string at a time, priority order: no body → one hand missing → too close → too far → low light → steady. Strings in §Strings. Low light is flagged when the mask's mean confidence inside the body bounding box < 0.55 for 1 s (constant proposed in §Constants required).
+- **Coaching line** (Body L, centre-bottom) shows exactly one string at a time, priority order: no body → one hand missing → too close → too far → unstable tracking → steady. Strings in §Strings. Low model/mask confidence indicates uncertain tracking, not a measured light level; suggest facing the light or clearing the background without asserting darkness. Use the existing presence/confidence rules from [05](05-tracking-pipeline.md), not an invented luminance sensor.
 - **Dashed target frame**: a rectangle on the silhouette layer spanning the `CALIB_SHOULDER_MIN`…`CALIB_SHOULDER_MAX` sweet spot, so the player sees where to stand.
 - **Countdown**: Display XL numerals 3 → 2 → 1 each entering on a beat of the track (`START_COUNTDOWN_MS`), scaling 1.4 → 1.0 with the `count` SFX. Retry runs (`calibrationCached = true`) skip the wave step and show only the presence tick and the countdown.
 - `‹ BACK` fires `calib:back`.
+- Show “Clear space around you. Use comfortable movements; stop if uncomfortable.” before the countdown. A wave is a convenient confirmation, not the only control: provide an accessible keyboard/button confirmation that still requires the same live presence and stable calibration. Explain any supported seated/reduced-reach profile before it changes the playable lane range; do not silently change difficulty or scoring mid-song.
 
 ### PLAYING (HUD)
 
@@ -219,20 +226,13 @@ Colour is never the only cue (§Accessibility): each block type also has a disti
 | Combo milestones | centre, over the ring | `combo` crossing 10/25/50/100 | Flash + strings `hud.milestone.*`. |
 | Tracking indicator | bottom-left | tracking rate, `present` | `● 30 Hz` in `--cyan`; turns `--gold` below 20 Hz and `--danger` when no hands for 500 ms (precursor to auto-pause). |
 | Song progress | bottom, full width | `songTimeMs`, `durationMs`, `events` | Bar with elapsed/total; `▲` markers at every `drop` event so the player sees it coming; a `●` playhead. |
-| Debug overlay (dev only, key `D`) | right column, monospace | loop + tracking stats | Frame time (median/p95), tracking Hz, inference ms, motion-to-photon estimate, live notes, pool usage, cursor speeds, current gesture confidences, quality tier, FPS floor warnings. Includes landmark/hit-volume toggles that the renderer reads from the store. |
+| Debug overlay (dev only, key `D`) | right column, monospace | loop + tracking stats | Frame interval p50/p95/p99, tracking Hz, inference and capture-to-render age, live notes, pool high-water/overflow, quality tier and drawing-buffer size. Label capture-to-render age as an estimate; actual motion-to-photon needs the external measurement in [16](16-performance-budget.md). Display input mode LIVE/REPLAY prominently in diagnostics and evidence. Includes read-only landmark/hit-volume toggles. |
 
 The play area (the projected `PLAY_W × PLAY_H` rectangle) MUST stay free of HUD panels. Indicators sit outside it; the judgement pops are the only text inside.
 
 #### Projecting hit positions to screen
 
-```ts
-// ui/project.ts — called by the pop adapter on note:hit / note:miss / note:badcut
-const v = impactPos.clone().project(camera);          // NDC −1..1 (camera = renderer.cameraRig.camera)
-const x = (v.x * 0.5 + 0.5) * canvas.clientWidth;
-const y = (1 - (v.y * 0.5 + 0.5)) * canvas.clientHeight;
-```
-
-`impactPos` comes from the event payload; for misses the renderer supplies the note's position at `MISS_Z`. The camera rig exposes the live camera so FOV punches ([13](13-rendering-environment-camera-postfx.md)) are reflected. Pops are positioned with `transform: translate3d(x, y, 0)` and never trigger layout.
+The renderer owns a projection helper that writes numeric screen coordinates into caller-owned scratch storage. Convert event `Vec3` data into its retained Three.js vector internally; `impactPos` is plain data and has no `.clone()` method. Project through the same camera matrix used for the displayed frame, convert NDC to CSS pixels, and include the canvas rectangle's page offset. Misses use the note position supplied by the read-only scene adapter. UI positions pops using `transform: translate3d(x, y, 0)`; it neither mutates the camera nor creates a separate world mapping. Reproject or retire active pops coherently on resize.
 
 ### PAUSED
 
@@ -251,9 +251,10 @@ const y = (1 - (v.y * 0.5 + 0.5)) * canvas.clientHeight;
 └──────────────────────────────────────────────────────────────┘
 ```
 
-- Reason text per `pauseReason` in the store: `tracking` → `strings.paused.trackingLost`; `manual` → `strings.paused.manual`; `hidden` → `strings.paused.hidden`.
+- Reason text per `pauseReason` in the store: `tracking` → `strings.paused.trackingLost`; `manual` → `strings.paused.manual`; `hidden` → `strings.paused.hidden`; `audio`/`fatal` → the actionable audio or subsystem recovery message from [04](04-state-machine.md).
 - When the reason is `tracking` and `BodyState.present` returns, the countdown line appears (`RESUME_COUNTDOWN_MS`) and the buttons stay available.
 - Buttons MUST be reachable by mouse and keyboard (Tab/Enter, `Space` resumes, `Esc` resumes, `Q` quits) because the player may be out of frame.
+- Resume requests still pass [04](04-state-machine.md)'s readiness checks; a button must not resume into missing required hands or a suspended audio context. Only a tracking-loss pause may auto-resume. A hidden-tab/manual pause waits for the player's action, and failed audio resume leaves a clear “Enable audio to continue” action. Quit, Standard/Calm intensity and volume stay available. Fatal errors show recovery guidance rather than a countdown.
 
 ### RESULTS
 
@@ -264,7 +265,7 @@ const y = (1 - (v.y * 0.5 + 0.5)) * canvas.clientHeight;
 │  ┌──────────────────────────────┐   ┌──────────────────────────────────────┐ │
 │  │                              │   │                                      │ │
 │  │             S                │   │        (highlight viewport:          │ │
-│  │        (Display XL)          │   │         3D silhouette + skeleton     │ │
+│  │        (Display XL)          │   │        2.5D silhouette + skeleton    │ │
 │  │                              │   │         at peak combo, turntable)    │ │
 │  │  SCORE        312 940        │   │                                      │ │
 │  │  ACCURACY      91.4 %        │   │                                      │ │
@@ -282,8 +283,9 @@ const y = (1 - (v.y * 0.5 + 0.5)) * canvas.clientHeight;
 
 - **Rank letter** enters first: scale 2.5 → 1.0 with ease-out-quint over 500 ms, colour by rank (SS/S `--gold`, A `--cyan`, B/C `--text`, D `--muted`), with the `combo` SFX on SS/S.
 - Then stats rows, then judgement bars, then kinetic energy, then buttons — 120 ms stagger each. Bars animate width from 0 over 400 ms; widths are proportional to the largest count.
-- **Highlight viewport**: the renderer's `highlight.ts` draws into a render target shown through a `<canvas>` region; the UI only reserves the box and shows the caption `PEAK COMBO · m:ss` from `peakComboSongTimeMs`.
+- **Highlight viewport**: the UI reserves a rectangle in the existing canvas; `highlight.ts` composites an owned snapshot there ([13 §8](13-rendering-environment-camera-postfx.md#8-highlight-capture-renderhighlightts)). It is a stylised 2.5D memory, not reconstructed volumetric video. Caption the actual captured time, and omit the region if no valid snapshot exists. Do not require GPU readback into a second DOM canvas.
 - **Kinetic energy tooltip** (`ⓘ`, hover/focus): `strings.results.kineticTooltip`.
+- Mark the motion estimate “for fun” next to the value, not only in a tooltip. Webcam landmark speed and assumed effective mass are insufficient to measure metabolic calories; kJ/kcal are explicitly a modelled estimate and excluded from judging evidence about fitness. The wireframe's energy values are illustrative and must be replaced by real session output, never hard-coded. Count all note outcomes once so the judgement bars sum to the chart total.
 - `Retry` → `results:retry`; `Songs` → `results:songs`. Enter = Retry, Esc = Songs.
 
 ## Input handling
@@ -307,16 +309,18 @@ Menus are operated with mouse and keyboard. Hands-free menu navigation is `[STRE
 | `T` | any, dev build only | Cycle quality tier ([16](16-performance-budget.md#quality-tiers)) |
 | `F11` | any | Browser fullscreen (documented for the demo, [20](20-demo-and-judging.md)) |
 
-Focus management: on each state change the screen moves focus to its primary action so Enter always does the obvious thing. A visible focus ring (`outline: 2px solid var(--cyan); outline-offset: 3px`) is mandatory.
+Focus management: on an explicit screen transition move focus to its heading or primary available action; preserve focus while progress, tracking or scores update. A visible focus ring (`outline: 2px solid var(--cyan); outline-offset: 3px`) is mandatory. Bind global shortcuts only when the event target is not an input, textarea, select or contenteditable control; Enter in the YouTube field submits that field, never Start as well. Prevent double activation from both key handlers and a native button click. Quit/Retry must tear down the previous session before a second one can start.
 
 ## Accessibility
 
 - **Colour is never the only cue.** Block types carry glyphs (3D) and the gesture indicators carry glyph + label; judgements carry text + colour + motion; rank carries a letter.
-- **Contrast.** Body text on `--panel` over the void ≥ 7:1 (`--text` on `--panel` measures ≈ 14:1). `--muted` is used only for secondary text ≥ 16 px where it still exceeds 4.5:1. Accent text on dark backgrounds (`--cyan`, `--gold`) is used only at Display sizes.
+- **Contrast.** Target ≥ 4.5:1 for normal text, ≥ 3:1 for large text and essential non-text controls; aim for 7:1 on instructions. Measure composited panels over the brightest allowed scene frame, not only against the empty void. Use an opaque backing where transparency fails. No contrast measurement has been recorded yet.
 - **Legible from 2.5 m.** HUD numbers ≥ 28 px at 1080p; coaching text ≥ 20 px; nothing the player must act on is below Body L during `CALIBRATION` or `PLAYING`.
-- **Reduced motion** respected for the HUD only (§Motion).
+- **Reduced motion** selects Calm across DOM and rendering; players may change the preference before Start or while Paused. The controls and required gesture cues remain readable.
 - **Keyboard operability** for every button; `aria-live="polite"` on the coaching line and the pause reason so screen readers announce changes.
-- **No flashing above 3 Hz** in the DOM layer. Beat pulses are scale/opacity changes within 3 %, not full-screen flashes.
+- **Flashing review** covers the combined scene and DOM, including destruction, beam-ready cues and drop transitions. Avoid deliberate strobing; verify the applicable flash thresholds under [WCAG 2.2 flashing guidance](https://www.w3.org/WAI/WCAG22/Understanding/three-flashes-or-below-threshold.html). Calm removes transient flashes. A tiny pulse and a full-screen high-contrast flash have different risks; a DOM-only frequency rule is insufficient.
+- **Assistive technology.** Menu headings have a coherent hierarchy; native buttons/inputs have labels and validation descriptions. Mark generation busy, announce completed/error stages once, and keep per-hit score pops out of live regions. Tooltips open on focus as well as hover. Tab order follows the screen's reading order.
+- **Viewport resilience.** Test the supported laptop viewport, 720p, 1080p, 16:10 and 200 % browser zoom. Keep menu content scrollable and controls reachable; reserve the play rectangle using the actual projected bounds. Do not claim mobile support from a narrow-window layout check.
 
 ## Strings
 
@@ -335,7 +339,7 @@ All user-facing copy lives in `ui/strings.ts` as a single frozen object. Compone
 | `boot.error.noWebgl.title` | `WEBGL2 NOT AVAILABLE` |
 | `boot.error.noWebgl.body` | `Open in Chrome or Edge with hardware acceleration on.` |
 | `boot.error.models.title` | `MODELS NOT FOUND` |
-| `boot.error.models.body` | `Run npm run models to download models into app/public/models.` |
+| `boot.error.models.body` | `Tracking models could not load. Check your connection, then Retry.` |
 | `boot.error.retry` | `RETRY` |
 | `select.library` | `LIBRARY` |
 | `select.yourTrack` | `YOUR TRACK` |
@@ -364,7 +368,7 @@ All user-facing copy lives in `ui/strings.ts` as a single frozen object. Compone
 | `calib.coach.oneHand` | `Show me both hands.` |
 | `calib.coach.tooClose` | `Too close — step back a little.` |
 | `calib.coach.tooFar` | `Too far — step closer.` |
-| `calib.coach.lowLight` | `It's dark in here — turn toward the light.` |
+| `calib.coach.lowLight` | `Tracking is uncertain. Face the light and keep your hands clear.` |
 | `calib.coach.steady` | `Looking good. Hold still.` |
 | `calib.coach.wave` | `Wave a hand to confirm.` |
 | `calib.waveCount` | `{n} / {total}` |
@@ -387,13 +391,15 @@ All user-facing copy lives in `ui/strings.ts` as a single frozen object. Compone
 | `paused.quit` | `QUIT` |
 | `results.title` | `RESULTS` |
 | `results.score` / `.accuracy` / `.maxCombo` | `SCORE` / `ACCURACY` / `MAX COMBO` |
-| `results.kinetic` | `KINETIC ENERGY` |
-| `results.kineticValue` | `{kj} kJ · ≈ {kcal} kcal` |
-| `results.kineticTooltip` | `Estimated from tracked hand and torso speeds: ½·m·v² per swing with a 2.5 kg arm and 30 kg torso, converted at 25 % metabolic efficiency. A playful estimate, not a medical one.` |
+| `results.kinetic` | `MOTION ESTIMATE · FOR FUN` |
+| `results.kineticValue` | `≈ {kj} kJ · ≈ {kcal} kcal (modelled)` |
+| `results.kineticTooltip` | `A playful model using tracked speeds and assumed body masses. Camera tracking cannot measure the energy or calories you actually used. This value is not a fitness measurement.` |
 | `results.peakCombo` | `PEAK COMBO · {time}` |
 | `results.retry` / `.songs` | `RETRY` / `SONGS` |
 
 Interpolation uses `{name}` placeholders and a 10-line `t(key, vars)` helper; no i18n library.
+
+Retain `calib.coach.lowLight` as the existing key while correcting its meaning to uncertain tracking. The strings list also needs implemented keys for camera privacy, unsupported/busy camera, upload Cancel, empty/silent audio, Standard/Calm, audio-unlock recovery, safe-space guidance and unexpected-state recovery. Add them with those flows, not hard-coded JSX. Technical setup commands belong in developer documentation, not the default player-facing failure card.
 
 ## Store
 
@@ -403,12 +409,12 @@ Interpolation uses `{name}` placeholders and a 10-line `t(key, vars)` helper; no
 export interface UiStore {
   // machine
   machineState: 'BOOT' | 'SELECT' | 'CALIBRATION' | 'PLAYING' | 'PAUSED' | 'RESULTS';
-  pauseReason: 'tracking' | 'manual' | 'hidden' | null;
+  pauseReason: 'tracking' | 'manual' | 'hidden' | 'audio' | 'fatal' | null;
 
   // boot
   bootProgress: number;                        // 0..1
   bootStage: keyof typeof strings.boot.stage | null;
-  bootError: 'cameraDenied' | 'noWebgl' | 'models' | null;
+  bootError: { kind: 'cameraDenied' | 'cameraUnavailable' | 'noWebgl' | 'models'; message: string } | null;
 
   // select
   library: LibraryEntry[];                     // bundled tracks
@@ -435,6 +441,9 @@ export interface UiStore {
   // results
   results: SessionStats | null;
 
+  // appearance only; persist the explicit choice locally, never recorded camera data
+  visualPreferences: { intensity: 'standard' | 'calm' };
+
   // dev
   debug: { visible: boolean; drawLandmarks: boolean; drawHitVolumes: boolean; stats: DebugStats | null; tier: 'high' | 'medium' | 'low' };
 
@@ -453,10 +462,12 @@ export interface HandIndicator { present: boolean; gesture: Gesture; charge: num
 
 - `state:change` → `machineState`, `pauseReason` immediately.
 - `song:progress`, `combo:change`, `note:hit` (score/accuracy), tracking updates → written into a pending patch and flushed at most every 50 ms (`UI_TEXT_HZ` = 20) via a single `set`.
-- `note:hit` / `note:miss` / `note:badcut` / `obstacle:dodged` → `pushPop` immediately (after projection).
+- `note:hit` / `note:miss` / `note:badcut` / `obstacle:dodged` → `pushPop` immediately (after projection); enforce one terminal pop/outcome per note ID. Bad-cut visual despawn is not a second miss.
 - `session:end` → `results` immediately.
 
 Components select narrowly (`useStore(s => s.hud.score)`) so a score change re-renders only the score element. Lists (library, pops) use stable ids as keys.
+
+Subscribe once per adapter lifetime and return an unsubscribe/dispose function; React development remounts must not double event handlers or score pops. Keep high-rate hand/charge geometry in the renderer; the DOM store uses display-rate summaries. Clear session-specific pending patches, generation tokens and pops on Quit/Retry; asynchronous results from a disposed session must not mutate the next screen. The renderer receives appearance preferences through a read-only adapter without UI writes to game state.
 
 ## Components
 
@@ -485,7 +496,7 @@ Components select narrowly (`useStore(s => s.hud.score)`) so a score change re-r
 
 ## Acceptance criteria
 
-1. Every machine state renders exactly one screen component; an unknown state renders nothing and logs an error in dev.
+1. Every machine state renders exactly one screen component; an unknown state shows a recoverable failure with Retry/Return to songs guidance and records the error. It never becomes a blank screen or fabricated success.
 2. No visible `<video>` element exists in the DOM at any time; the only player representation is the 3D silhouette.
 3. All UI text comes from `ui/strings.ts`; a grep for `>[A-Z]{3,}<` in `ui/**/*.tsx` finds no literal uppercase copy.
 4. HUD numbers are ≥ 28 px at 1920×1080, use tabular numerals, and tween rather than jump.
@@ -495,10 +506,13 @@ Components select narrowly (`useStore(s => s.hud.score)`) so a score change re-r
 8. Start is disabled until `validateBeatmap` passes; pressing Enter on a disabled Start does nothing.
 9. Calibration ticks turn on only after `CALIB_PRESENCE_MS`; the coaching line shows the highest-priority string and updates within 200 ms of the condition changing.
 10. PAUSED is fully operable with keyboard alone and with mouse alone.
-11. RESULTS shows all `SessionStats` fields, the highlight viewport and the kinetic tooltip; Enter retries and Esc returns to Select.
-12. With `prefers-reduced-motion: reduce`, HUD stagger, beat scaling and milestone flashes are disabled; gameplay rendering is unchanged.
+11. RESULTS shows real `SessionStats`, a clearly labelled motion estimate, and the valid owned highlight if available; Enter retries and Esc returns to Select. Missing snapshots never hide real stats.
+12. With `prefers-reduced-motion: reduce`, Calm disables decorative DOM and scene motion/flash paths; deterministic replay yields the same judgements and score as Standard.
 13. Every interactive element has a visible focus ring and is reachable by Tab.
-14. Fonts load from the local bundle with the network disconnected; no FOUT.
+14. Fonts load from the local bundle offline after installation; failed font requests retain readable controls without layout-breaking shifts.
+15. Invalid/oversized/empty audio, Cancel, repeated selection and late worker completion preserve the correct selection and leave no stuck loading state.
+16. Keyboard shortcuts respect text entry; pause/retry/focus work at 200 % zoom; camera/audio/model failures each show a useful recovery action.
+17. Ten start/pause/quit/retry cycles leave event subscriptions, pending async jobs and UI updates bounded; replay diagnostics visibly identify REPLAY.
 
 ## Constants required
 

@@ -13,7 +13,7 @@ import onnx
 import onnxruntime as ort
 import torch
 from upper_body import CONFIG, KEYPOINTS, ROOT, UpperBodyDataset, UpperBodyNet, decode_heatmaps, file_hash, load_records
-from train import load_checkpoint, write_json
+from train import load_checkpoint, training_contract, write_json
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -25,7 +25,7 @@ def main():
         parser.error("Export parity uses between one and 64 real held-out crops")
     torch.set_num_threads(CONFIG["cpuThreads"])
     checkpoint = load_checkpoint(args.checkpoint)
-    if checkpoint["configSha256"] != file_hash(ROOT / "config.json"):
+    if training_contract(checkpoint["config"]) != training_contract(CONFIG):
         raise ValueError("Export configuration differs from checkpoint")
     rows, info = load_records(args.datasets, "val", allow_partial=True)
     # Evenly spaced held-out crops so every requested dataset is represented in the parity check.

@@ -114,6 +114,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: the a-priori calibration photo (declared annotation rule) yielded one detected hand in every frame, so the unchanged calibration (both hand slots seen) never became ready in 30 s — the same outcome as a player showing one hand. Cold first GPU inference exceeded the 15 s first-result deadline on the first attempt of each fresh profile; the retry succeeded.
 - Validation: sweep under the new handedness mapping: 442/484 matched hands agree with annotated wrists; pose detected on 21/21 swept photos; median labelled-joint error 0.119 shoulder widths. Background CPU was 66% busy before launch and 99.9% during the lane (other workloads on the machine).
 - Limits: timings are contaminated by unrelated machine load; still photos only; not webcam evidence.
+## 2026-10-25T04:49:34+05:30 — Partial COCO + MPII run evaluated and exported
+
+- Changed: Compact dataset storage so worker processes no longer get a pickled copy of every index row (40.5 MB down to 12.9 MB per worker; items are byte-identical on 36 checked samples). Training now uses 1 DataLoader worker, and export checks the training contract instead of the raw config hash. STATUS.md/STATUS.json, training/README.md and README.md now record the partial run.
+- Why: The user asked to wrap up. The run was stopped at step 1,800 of 7,210 while the machine was memory-thrashing.
+- Validation: Full held-out evaluation (3,776 people, oracle crops): heatmap loss 0.00416 and pooled PCK@0.2 0.334 (COCO 0.393, MPII 0.310), compared with the untrained head (0.01808 / 0.016), the 3-step preflight (0.02128 / 0.014) and a mean-pose-in-crop guess (PCK 0.093). ONNX parity passed on 16 crops (1.8e-6). Unit tests pass 12/12.
+- Limits: This is a partial run: one epoch plus 358 batches, and the schedule never annealed. Results use oracle crops, with no detector and no browser or webcam evaluation. The model was not promoted, and the game keeps MediaPipe.
 
 ## 2026-10-25T04:01:41+05:30 — Shortened the full run under machine contention and allowed execution-only resume changes
 

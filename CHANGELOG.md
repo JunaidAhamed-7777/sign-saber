@@ -8,7 +8,7 @@ Implementation and historical specification work are recorded below. Automated, 
 
 ## 2026-10-25T04:42:00+05:30 — Hit spark bursts and subtle gameplay camera response
 
-- Changed:  adds a bounded spark pool ( × , one additive Points draw, closed-form motion, seeded directions) for Slash hits (spray flattened into the cut plane) and Smash hits; tier count follows the poof preset and Calm halves it.  adds trauma-based smooth value-noise shake (hits, perfect, bad cut, obstacle, kick, drop; capped by /) and a  breath, active only in play and never in Calm.
+- Changed: `render/sparks.ts` adds a bounded spark pool (`HIT_SPARK_POOL` × `HIT_SPARKS`, one additive Points draw, closed-form motion, seeded directions) for Slash hits (spray flattened into the cut plane) and Smash hits; tier count follows the poof preset and Calm halves it. `render/cameraRig.ts` adds trauma-based smooth value-noise shake (hits, perfect, bad cut, obstacle, kick, drop; capped by `SHAKE_MAX_M`/`SHAKE_MAX_ROLL_DEG`) and a `CAMERA_BASS_FOV_DEG` breath, active only in play and never in Calm.
 - Why: Hit payoff and kinetic response from docs 11–13, kept restrained per the user's playability request.
 - Validation: Lint, build and 64 render/quality/slicer assertions pass; synthetic-performer trial screenshot in native Chrome inspected (planned motion, no camera).
 - Limits: No frame-safety projection test for the shake, no GPU timing, no flashing review.

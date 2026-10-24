@@ -650,10 +650,6 @@ button:disabled,
   line-height: 1.3;
   color: var(--muted);
 }
-.native-note::before {
-  content: '⌨ ';
-  color: var(--muted);
-}
 .meta {
   font-size: 16px;
   color: var(--muted-strong);
@@ -889,7 +885,8 @@ button:disabled,
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
-.song-tag.selected {
+.song-check {
+  align-self: start;
   display: grid;
   place-items: center;
   width: 24px;
@@ -898,20 +895,19 @@ button:disabled,
   background: var(--cyan);
   color: var(--void);
   font-size: 14px;
+  font-weight: 700;
 }
-.song-tag {
-  align-self: start;
+.song-copy .song-tag {
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--cyan);
   white-space: nowrap;
 }
-.song-tag.loading {
-  color: var(--muted-strong);
+.song-copy .song-tag.loading {
+  color: var(--cyan);
 }
-.song-tag.failed {
+.song-copy .song-tag.failed {
   color: var(--danger-text);
 }
 .track-header {
@@ -995,10 +991,6 @@ button:disabled,
   display: flex;
   flex-direction: column;
   gap: 10px;
-}
-.upload-label {
-  font-size: 20px;
-  font-weight: 700;
 }
 .upload-control input {
   display: block;
@@ -2072,13 +2064,10 @@ button:disabled,
   .inline-row .song-copy small {
     font-size: 14px;
   }
-  .inline-row .song-tag {
+  .inline-row .song-check {
     position: absolute;
-    top: 4px;
+    top: 6px;
     right: 6px;
-    font-size: 11px;
-  }
-  .inline-row .song-tag.selected {
     width: 20px;
     height: 20px;
     font-size: 12px;

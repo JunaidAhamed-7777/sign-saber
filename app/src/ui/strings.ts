@@ -172,7 +172,6 @@ export const strings = Object.freeze({
   // Interface shell, cards and settings pages.
   musicLibrary: 'Music library',
   selectedTrack: 'Selected track',
-  yourAudio: 'Your audio',
   trackLoadingTag: 'Loading',
   trackFailedTag: 'Could not load',
   retryTrack: 'Retry track',
@@ -181,6 +180,7 @@ export const strings = Object.freeze({
   bpm: 'BPM',
   datasetTrialCaption: 'Annotated poses · no webcam',
   nativeShort: 'Mouse or keyboard',
+  startLive: 'Start live play',
   arrangementPreparing: 'Preparing 80-second cut',
   playPage: 'Play',
   soundVisualsPage: 'Sound & visuals',

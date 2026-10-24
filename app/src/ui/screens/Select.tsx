@@ -37,20 +37,22 @@ function SongCard({
       <span className="song-copy">
         <strong>{track.title}</strong>
         <span>{track.artist}</span>
-        <small>
-          {duration(track.durationMs)}
-          <span className="song-meta-tempo">
-            {' · '}
-            {track.bpm !== null ? `${track.bpm} ${t.bpm}` : t.tempoUnclear}
-          </span>
-        </small>
+        {state === 'loading' || state === 'failed' ? (
+          <small className={`song-tag ${state}`}>{tag}</small>
+        ) : (
+          <small>
+            {duration(track.durationMs)}
+            <span className="song-meta-tempo">
+              {' · '}
+              {track.bpm !== null ? `${track.bpm} ${t.bpm}` : t.tempoUnclear}
+            </span>
+          </small>
+        )}
       </span>
-      {state === 'selected' ? (
-        <span className="song-tag selected" aria-label={tag}>
+      {state === 'selected' && (
+        <span className="song-check" aria-label={tag}>
           <span aria-hidden="true">✓</span>
         </span>
-      ) : (
-        tag && <span className={`song-tag ${state}`}>{tag}</span>
       )}
     </Button>
   );
@@ -123,7 +125,7 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
     });
   const upload = (
     <div className="upload-control">
-      <label htmlFor="audio-file" className="upload-label">
+      <label htmlFor="audio-file" className="visually-hidden">
         {t.upload}
       </label>
       <input
@@ -169,11 +171,7 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
     ...page,
     content: (
       <>
-        <RailHeading
-          level={1}
-          eyebrow={t.musicLibrary}
-          title={page.id === 'upload' ? t.yourAudio : t.library}
-        />
+        <RailHeading level={1} eyebrow={t.musicLibrary} title={page.id === 'upload' ? t.upload : t.library} />
         {page.content}
       </>
     ),

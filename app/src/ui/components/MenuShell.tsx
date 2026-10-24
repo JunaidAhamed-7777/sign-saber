@@ -404,7 +404,7 @@ function useSettingsPages(runtime: GameRuntime, enabled: boolean): MenuPage[] {
           </Button>
           {!camera.calibrationValid && <p className="note native-note">{strings.nativeCamera}</p>}
           <Button runtime={runtime} id="start" disabled={!canStartLive}>
-            {strings.start}
+            {strings.startLive}
           </Button>
           {!canStartLive && <p className="note">{strings.startRequirements}</p>}
           <Button runtime={runtime} id="camera-off" disabled={!camera.calibrationValid}>

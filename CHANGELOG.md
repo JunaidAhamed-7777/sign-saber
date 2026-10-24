@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T03:28:35+05:30 — Song card status line, upload heading and live-start label
+
+- Changed: Loading/failed status now replaces the song card's meta line (no title truncation); the selected card shows a compact check badge. The upload page uses its own heading with a visually hidden input label, the live camera action reads “Start live play”, and the decorative keyboard glyph was removed from native-only notes.
+- Why: Screenshot review showed the right-column status tag squeezing titles and duplicate upload headings.
+- Validation: `npm run check` passed (324 assertions, build); headless Chrome screenshots of a blocked-audio failure, settings pages and credits at 1440×900 and 800×600 were inspected.
+- Limits: Presentation-only; no live camera or hand-navigation verification.
+
 ## 2026-10-25T03:24:55+05:30 — Interface shell, generated covers and compact reflow
 
 - Changed: Rebuilt the shared menu presentation in `app/src/ui/**` and `App.tsx`: token-derived panel rails, status pill, gesture legend with original SVG icons, distinct hover/focus/hand-armed/pressed/selected/disabled/busy button states, procedural per-track cover art (`ui/coverArt.ts`, no external images), difficulty on the first ready page, explicit native-only Enable sound, grouped Settings pages (sound/visuals, camera/live play, credits/diagnostics) and a three-card credits view. Song-load failures now show the actual error, a failed card state and a Retry track action instead of only “Choose a track to begin.” Compact viewports (≤1099 px wide or ≤699 px tall, registered as `MENU_COMPACT_MAX_WIDTH_PX`/`MENU_COMPACT_MAX_HEIGHT_PX`) reflow rails above/below the figure with grouped full-size pages instead of one control per page. Calibration shows a joint/hand checklist (live) or source-labelled pre-roll, move legend and large countdown; Pause shows reason/countdown; Results shows rank reveal, stats and per-judgement bars; HUD has edge score/combo/accuracy, multiplier ring, milestone callout, keyed judgement pop and a styled progress bar. Runtime adds only a `judgementSeq` display counter so repeated identical pops retrigger.

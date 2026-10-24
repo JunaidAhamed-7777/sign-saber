@@ -15,6 +15,13 @@ No gameplay implementation has been recorded yet. Documentation and scaffold mai
 - Limitations: <known issues or "None identified in these checks">
 ```
 
+## 2026-10-25T01:02:56+05:30 — Exclude local training dependencies from doc checks
+
+- Changed: The documentation walker now excludes nested Python virtual environments, Python caches and the isolated npm cache; extended the existing regression fixture to cover training/.venv third-party Markdown.
+- Why: The new isolated training environment exposed dependency-internal links outside this repository. Those must not be interpreted as project documentation.
+- Validation: Both documentation-checker assertions passed; the repository link checker passed with zero errors after this fix.
+- Correction: The 01:01 audio/game entry incorrectly says documentation checks passed before that commit. They actually failed on four links in the newly installed ONNX Runtime package; PowerShell continued to the commit because the earlier command lacked an explicit exit-code guard. The audio/game assertions did pass. Subsequent chained validation now explicitly stops on a nonzero exit code. No history was rewritten.
+
 ## 2026-10-25T01:01:41+05:30 — Capture-time game and audio spine
 
 - Changed: Implemented framework-free session/spawning, swept palm/blade collision, capture-time judgement, delayed miss deadlines, deterministic two-hand arbitration, beam charge/aim/fire, torso walls, combo/multiplier, genuine frozen results and motion estimate. Implemented heard-time audio clock, pre-roll, explicit preview/source disposal, decode admission, analyser and bounded original procedural SFX; added shared math/pool/hash utilities.

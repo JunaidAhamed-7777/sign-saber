@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Documentation validation correction
+
+- Codex fixed the doc walker to ignore local Python dependency environments and recorded the real failed-check/commit sequence in CHANGELOG.md. Regression and repository documentation checks then passed.
+
 ## 2026-10-25 — Game and audio implementation
 
 - A dedicated agent implemented and reviewed the pure audio/game spine, 33 meaningful assertions and deterministic replay across render schedules. The integrator reviewed lifecycle/clock/score integration and committed this completed portion separately at the user's request for frequent checkpoints.

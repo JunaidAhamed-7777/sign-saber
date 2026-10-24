@@ -18,6 +18,8 @@ test('validates paths, fragments, references and encoded filenames; ignores code
   try {
     mkdirSync(join(root, 'node_modules'));
     writeFileSync(join(root, 'node_modules', 'README.md'), '[bad](missing.md)');
+    mkdirSync(join(root,'training','.venv','Lib','site-packages'),{recursive:true});
+    writeFileSync(join(root,'training','.venv','Lib','site-packages','Privacy.md'),'[dependency](missing.md)');
     writeFileSync(join(root, 'two words.md'), '# Target\n## Repeated\n## Repeated');
     writeFileSync(join(root, 'README.md'), '# Home\n[ok](two%20words.md#repeated-1)\n[ref][t]\n[t]: <two words.md#target>\n`[code](absent.md)`\n```md\n[code](also-absent.md)\n```\n[web](https://example.com)');
     assert.deepEqual(checkDocs(root).errors, []);

@@ -4,7 +4,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, extname, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const excluded = new Set(['.git', 'node_modules', 'dist', 'build', 'coverage', '.vite']);
+const excluded = new Set(['.git', 'node_modules', 'dist', 'build', 'coverage', '.vite', '.venv', 'venv', '__pycache__', '.npm-task-cache']);
 
 function markdownFiles(root) {
   const files = [];

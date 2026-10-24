@@ -65,6 +65,8 @@ Use broad rectangular targets and whole-card song selection with visibly distinc
 
 The shared menu target registry and semantic action handler serve mouse, keyboard and hand input. Open palm steers; a deliberate point confirms once; hover never clicks. Preserve target geometry during progress/feedback, show disabled reasons persistently and let native input interrupt hand input safely.
 
+Song cards and the selected-track header carry a generated cover: deterministic procedural art from the track's own metadata, tinted by its library role, with no external image or separate rights record. Hand hover/armed/confirming/latched phases are drawn on the targeted control itself (gold readiness bar) as well as the pointer, without moving it.
+
 The **Set up camera** action is available before song selection. A failed setup keeps the menu usable. Preview/Stop are explicit actions; audio does not start from selecting/hovering. Browser permission, audio unlock and system pickers require native actions where the browser demands them. Point-click never pretends to grant browser trust.
 
 Calm respects reduced motion across both DOM and scene, keeps the placeholder static and preserves required status/gesture cues. Copy is direct: name the next action and the actual failure. Cursor coordinates/confirmation progress are not continually announced to assistive technology; meaningful status changes are.

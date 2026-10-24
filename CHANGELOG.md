@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:22:47+05:30 — 200% zoom and narrow compact tiers
+
+- Changed: At ≤520 px tall the compact rails hide page captions, button sub-captions and chips and use 16 px button text; at ≤760 px wide compact song cards drop the cover so titles fit. Targets stay at `MENU_TARGET_MIN_PX` with `MENU_TARGET_GAP_PX` gaps. The breakpoint test whitelists these documented sub-tiers.
+- Why: A 720×450 (200% zoom of 1440×900) screenshot showed the bottom rail scrolling and truncated song titles.
+- Validation: After merging main, `npm ci`, typecheck, lint, 369/369 assertions in 48 files (`--testTimeout=90000` because of 100% CPU from parallel jobs), build and prettier check passed. Headless Chrome screenshots at 720×450 (menu, pause), 1024×640 (performer pre-roll) and 1440×900 (pause run summary with autofocused Resume) were inspected.
+- Limits: Zoom was emulated by viewport size, not browser zoom; no human readability check.
+
 ## 2026-10-25T04:07:42+05:30 — Pause run summary, performer footer label and short-window tier
 
 - Changed: Pause shows the run so far (song position, score, combo/multiplier, accuracy) beside the frozen figure. The footer uses `trialCopy().controls`, so the synthetic performer is labelled “Synthetic performer · mouse/keyboard to pause or quit” instead of “Dataset replay”; the duplicate footer keyboard hint was removed (the header keeps it). Compact armed trial pre-roll keeps only countdown and Back below the stage so the play-projected figure's hips stay clear. A ≤520 px tall sub-tier (for example 200% zoom) hides secondary captions/chips without shrinking targets. Rail pages are labelled `role="group"` regions. DESIGN.md notes generated covers and on-control hand states.

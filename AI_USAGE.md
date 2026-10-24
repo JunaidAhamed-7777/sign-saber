@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Automated release-drill implementation
+
+- Codex implemented the clean-commit installation and offline synthetic browser harness for issue #3, reused the shared CDP helper, retained actual test/browser failures and fixed the missing favicon exposed by those checks. Pure-helper coverage verifies loopback policy, options, failure reporting, evidence retention and CDP messages. Final committed-snapshot acceptance evidence follows separately.
+
 ## 2026-10-25 — Fixed-tier integration and requested handoff
 
 - An agent connected actual cosmetic tier/contrast consumers and eight integration assertions, with explicit unsupported features. Another refreshed the UI/navigation/roadmap status. Codex froze parallel work on the user's handoff request, preserved a concise implementation/evidence inventory and ran the final checks before committing/pushing all repository changes.

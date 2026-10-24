@@ -6,6 +6,14 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:11:38+05:30 — Release-drill implementation and retained failures
+
+- Changed: Added `scripts/release-drill.mjs` and pure-helper tests. The drill clones the exact committed SHA, captures install/check/build command logs, serves the prepared build with the existing server, blocks external browser destinations, and observes native-input synthetic playback/results/retry/Songs. It writes dated JSON/Markdown evidence, preserves previous attempts and excludes camera/model preparation. Added a local SVG favicon declaration in `app/index.html` after the browser exposed a missing favicon request.
+- Why: Issue #3 requires repeatable clean-clone and offline release evidence with visible failures and no console/CSP errors.
+- Validation: Helper tests passed 5/5; documentation tests passed 2/2 and 521 local links checked with zero errors. A fresh clone of `ad41466` passed `npm ci`, the full application check (363 assertions) and production build. The integrated `cfdcc40` worktree plus favicon passed `npm run check` (367 assertions/48 suites/build). Main `752acf3` is now integrated for the committed-snapshot run. An earlier `5a786e5` clone failed one gapless-test timeout; its failure is retained. The first browser attempt reached the selected song and enabled sound, then exposed an incorrect harness predicate (the successful sound action replaces its button) and a real favicon 404; both were corrected.
+- Limits: The corrected committed-snapshot browser journey and injected missing-asset drill are pending the next evidence step. No complete P5, live-camera, recognition, audible-sync or performance gate is claimed. The initial failed-run filename uses its UTC date; subsequent evidence includes the local timezone/date explicitly.
+
+
 ## 2026-10-25T04:02:00+05:30 — wip: a-priori dataset-camera trial and measured calibration photo
 
 - Changed: retained `docs/evidence/2026-10-25-dataset-camera-apriori-trial.json` and its sweep app evidence. The harness now retries camera setup once after an error (as a person would), shares one Chrome profile across lanes (first lane cold GPU program cache), records whole-machine CPU busy fractions and GPU adapters, exports app evidence when calibration framing fails, times the sweep from the accepted setup and saves JPEG screenshots. `prepare-dataset-camera.mjs --calibration-from <sweep evidence>` moves the photo with the best measured two-hand detection to the calibration slot and records the evidence hash plus the declared rule's own choice.
@@ -26,7 +34,6 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: docs14 asks transitions to move focus to the primary available action; the setup subflow had no rendered-structure test; docs needed to match the shipped interface.
 - Validation: Typecheck, lint and build passed; 335 of 336 assertions passed. The failing assertion is main's `tests/unit/gapless.test.mjs` “never trims a buffer…” timing out at ~5.3–7.8 s against the 5 s limit while the machine CPU was at 100% (parallel training); it also failed in isolation under that load and is unrelated to UI files. Correction: the previous entry (“Ready page with performer action…”) claimed a passing check, but that run had the same two to three audio timeouts. Root docs tests passed 2/2; checker reported 47 files, 517 local links, 0 errors.
 - Limits: Autofocus behaviour was not exercised with a screen reader or real keyboard-only session.
-
 ## 2026-10-25T03:46:00+05:30 — Watchable synthetic performer trial
 
 - Changed: Added `performer/trial.ts` and a **Watch synthetic performer** action. The runtime drives the selected (arranged) chart with planned performer frames through the same tracking consumer, renderer, scoring and results as other sources, calibrates the performer's lean reference once it stands still, shows hand HUD state and exports evidence lane `synthetic-performer-logic-replay`. A source-aware `ui/trialCopy.ts` labels banner, status, setup, figure and results honestly for annotations versus performer.

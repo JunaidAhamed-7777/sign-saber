@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-24T22:15:13.351Z",
+  "evidenceDate": "2026-10-25",
+  "evidenceTimezone": "Asia/Calcutta",
+  "commit": "ad41466990b7e62321b835c7261df4559dc53921",
+  "passed": false,
+  "injectMissingAsset": false,
+  "environment": {
+    "node": "v26.8.1",
+    "npm": "11.19.0",
+    "os": "win32 10.0.26300 x64"
+  },
+  "steps": [
+    {
+      "name": "Clone current commit",
+      "passed": true,
+      "durationMs": 3249,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-clone-current-commit.log",
+      "outputTail": "Cloning into 'C:\\Users\\Junaid\\AppData\\Local\\Temp\\sign-saber-release-drill-dRqEul\\repo'...\ndone.\n"
+    },
+    {
+      "name": "Checkout tested SHA",
+      "passed": true,
+      "durationMs": 2875,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-checkout-tested-sha.log",
+      "outputTail": "HEAD is now at ad41466 Merge branch 'agent/dataset-camera'\n"
+    },
+    {
+      "name": "npm ci",
+      "passed": true,
+      "durationMs": 79318,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-npm-ci.log",
+      "outputTail": "\nadded 187 packages, and audited 188 packages in 1m\n\n47 packages are looking for funding\n  run `npm fund` for details\n\nfound 0 vulnerabilities\nnpm notice\nnpm notice New major version of npm available! 11.19.0 -> 12.2.1\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1\nnpm notice To update run: npm install -g npm@12.2.1\nnpm notice\n"
+    },
+    {
+      "name": "npm run check",
+      "passed": true,
+      "durationMs": 149651,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-npm-run-check.log",
+      "outputTail": "\n> sign-saber@0.1.0 check\n> npm run typecheck && npm run lint && npm run test && npm run build\n\nnpm notice run sign-saber@0.1.0 typecheck\nnpm notice run tsc -p tsconfig.json && tsc -p tsconfig.node.json\nnpm notice run sign-saber@0.1.0 lint\nnpm notice run eslint .\nnpm notice run sign-saber@0.1.0 test\nnpm notice run vitest run\n\n RUN  v5.0.5 C:/Users/Junaid/AppData/Local/Temp/sign-saber-release-drill-dRqEul/repo/app\n\n\n Test Files  47 passed (47)\n      Tests  363 passed (363)\n   Start at  03:48:35\n   Duration  29.00s (transform 54%, tests 35%, import 11%)\n\n    Isolate  47 workers spawned · ~1.55s startup each (spawn + environment, per file)\n             at least ~3.30s faster with isolate: false — reuses workers across files instead of one per file\n\nnpm notice run sign-saber@0.1.0 build\nnpm notice run vite build\nvite v8.3.5 building client environment for production...\ntransforming...\n✓ 108 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                               1.40 kB │ gzip:   0.80 kB\ndist/assets/generator.worker-B6OPcKR7.js     22.44 kB\ndist/assets/tracking.worker-DeV5KsxN.js     160.84 kB\ndist/assets/index-D613XqhR.css               34.93 kB │ gzip:   7.56 kB\ndist/assets/index-tWIDsd3B.js             1,096.06 kB │ gzip: 304.51 kB │ map: 5,070.92 kB\n\n✓ built in 4.49s\n[plugin builtin:vite-reporter] \n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n"
+    },
+    {
+      "name": "npm run build",
+      "passed": true,
+      "durationMs": 7142,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-npm-run-build.log",
+      "outputTail": "\n> sign-saber@0.1.0 build\n> vite build\n\nvite v8.3.5 building client environment for production...\ntransforming...\n✓ 108 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                               1.40 kB │ gzip:   0.80 kB\ndist/assets/generator.worker-B6OPcKR7.js     22.44 kB\ndist/assets/tracking.worker-DeV5KsxN.js     160.84 kB\ndist/assets/index-D613XqhR.css               34.93 kB │ gzip:   7.56 kB\ndist/assets/index-tWIDsd3B.js             1,096.06 kB │ gzip: 304.51 kB │ map: 5,070.92 kB\n\n✓ built in 2.98s\n[plugin builtin:vite-reporter] \n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n"
+    },
+    {
+      "name": "BOOT → SELECT offline",
+      "passed": true,
+      "durationMs": 2745,
+      "catalogEntries": 3
+    },
+    {
+      "name": "Select song and enable sound with native CDP input",
+      "passed": false,
+      "durationMs": 30867,
+      "error": "Sound did not unlock"
+    }
+  ],
+  "exclusions": [
+    "camera/model preparation",
+    "live recognition",
+    "human QA",
+    "audible synchronization",
+    "P4 performance gates"
+  ],
+  "harnessSha256": "dbd6c78608fc686137b28d91d4d37f63f54261a18611c2de5fd0ca164e73bf1c",
+  "browserHelperSha256": "82a80d9715efa8d32fecd13ca635ed81db4d7beb53ec9756523b986fa4257958",
+  "invokingCheckoutDirty": true,
+  "browser": {
+    "requests": [
+      {
+        "url": "http://127.0.0.1:64030/",
+        "method": "GET",
+        "type": "Document",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:64030/assets/index-tWIDsd3B.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:64030/assets/index-D613XqhR.css",
+        "method": "GET",
+        "type": "Stylesheet",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:64030/assets/fonts/orbitron.ttf",
+        "method": "GET",
+        "type": "Font",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:64030/assets/models/armor.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:64030/assets/models/beam_ring.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:64030/assets/models/glyphs.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:64030/assets/models/pylon.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:64030/assets/models/block_fractured.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:64030/assets/models/arena_environment.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:64030/assets/tracks/manifest.json",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:64030/assets/fonts/rajdhani.ttf",
+        "method": "GET",
+        "type": "Font",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:64030/assets/tracks/pamgaea/normal.json",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:64030/assets/tracks/pamgaea/audio.mp3",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:64030/favicon.ico",
+        "method": "GET",
+        "type": "Other",
+        "target": "page"
+      }
+    ],
+    "blockedRequests": [],
+    "consoleErrors": [
+      {
+        "source": "network",
+        "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      }
+    ],
+    "cspViolations": [],
+    "failedRequests": [
+      {
+        "url": "http://127.0.0.1:64030/favicon.ico",
+        "status": 404
+      }
+    ],
+    "interceptionErrors": [
+      "CDP socket closed",
+      "CDP socket closed"
+    ],
+    "version": "Chrome/155.0.8059.86",
+    "states": [
+      {
+        "state": "boot",
+        "at": 739.4000000022352
+      },
+      {
+        "state": "select",
+        "at": 1798.2000000029802
+      }
+    ],
+    "lastScreen": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your music\nP\nPamgaea\nKevin MacLeod\n2:48 · Tempo unclear\n✓\nE\nElectro Cabello\nKevin MacLeod\n3:10 · Tempo unclear\nC\nCipher\nKevin MacLeod\n3:51 · Tempo unclear\n←\nPrevious\nChoose your music\n1 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nP\nSELECTED TRACK\nPamgaea\n\n2:48 · 269 notes · Kevin MacLeod\n\nTempo unclear · mapped to onsets\nDIFFICULTY\nEasy\nNormal\nHard\nPreview\nMake 80-second cut\nTry level with dataset\nAnnotated poses · no webcam\nWatch synthetic performer\nPlanned motion · no camera\n\nSound enabled.\n\n←\nPrevious\nReady when you are\n1 of 4\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click\n\nMouse and keyboard always work",
+    "chromeStderr": "\r\nDevTools listening on ws://127.0.0.1:61997/devtools/browser/c2339a33-1a2d-441f-9ac9-f6e28d4a30b0\r\n[36048:25712:1025/034948.738:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 7408: Access is denied. (0x5)\r\n[36048:39560:1025/034953.201:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 4280: Access is denied. (0x5)\r\n[36048:39560:1025/034956.832:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 35000: Access is denied. (0x5)\r\n[36048:39560:1025/035000.474:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 30912: Access is denied. (0x5)\r\n"
+  },
+  "failure": "Error: Sound did not unlock\n    at waitFor (file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:107:9)\n    at async file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:192:9\n    at async step (file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:250:23)\n    at async browserJourney (file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:188:7)\n    at async runDrill (file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:280:5)\n    at async file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:301:15",
+  "finishedAt": "2026-10-24T22:20:15.149Z"
+}

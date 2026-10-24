@@ -692,3 +692,13 @@ export const BLADE_LENGTH_SPRING_RAD_S = 22,
   TRAIL_PARTICLE_SIZE_MAX_M = 0.035;
 export const SHATTER_PIECE_SCALE = 0.8,
   SHATTER_VISIBLE_FRACTION = 0.6;
+// Hit spark bursts (docs11 payoff): bounded pool, closed-form motion.
+export const HIT_SPARK_POOL = 10,
+  HIT_SPARKS = 28,
+  HIT_SPARK_SPEED_MIN = 1.8,
+  HIT_SPARK_SPEED_MAX = 5.2,
+  HIT_SPARK_LIFETIME_MS = 480,
+  HIT_SPARK_SIZE_M = 0.045;
+export const CAMERA_SHAKE_HZ = 12,
+  CAMERA_BASS_FOV_DEG = 0.5;
+export const TRAUMA_PERFECT = 0.15;

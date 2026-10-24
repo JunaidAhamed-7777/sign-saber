@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:42:00+05:30 — Hit spark bursts and subtle gameplay camera response
+
+- Changed:  adds a bounded spark pool ( × , one additive Points draw, closed-form motion, seeded directions) for Slash hits (spray flattened into the cut plane) and Smash hits; tier count follows the poof preset and Calm halves it.  adds trauma-based smooth value-noise shake (hits, perfect, bad cut, obstacle, kick, drop; capped by /) and a  breath, active only in play and never in Calm.
+- Why: Hit payoff and kinetic response from docs 11–13, kept restrained per the user's playability request.
+- Validation: Lint, build and 64 render/quality/slicer assertions pass; synthetic-performer trial screenshot in native Chrome inspected (planned motion, no camera).
+- Limits: No frame-safety projection test for the shake, no GPU timing, no flashing review.
+
 ## 2026-10-25T04:37:00+05:30 — Blade ribbons, hand particles and a cleaner shatter
 ## 2026-10-25T04:41:00+05:30 — Dataset camera trial evidence and docs
 

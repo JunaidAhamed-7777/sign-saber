@@ -20,7 +20,6 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: Lint, build and 64 render/quality/slicer assertions pass; synthetic-performer trial screenshot in native Chrome inspected (planned motion, no camera).
 - Limits: No frame-safety projection test for the shake, no GPU timing, no flashing review.
 
-## 2026-10-25T04:37:00+05:30 — Blade ribbons, hand particles and a cleaner shatter
 ## 2026-10-25T04:41:00+05:30 — Dataset camera trial evidence and docs
 
 - Changed: added `docs/evidence/2026-10-25-dataset-camera-trial.md` with the final run's JSON, per-lane app evidence and setup screenshots; docs05 §1.3, docs17 §3, docs24 §2/§9 and README describe the dataset camera, harness and judgement trace (docs05 handedness link now points at the trial report). The camera controller keeps the last stopped source's evidence so failed dataset runs stay inspectable. A refused camera Confirm (readiness lapsed between display and click) now shows the existing framing status instead of being ignored silently. The harness treats a guard flipping between check and click as "not yet clickable", retries guarded clicks like a persistent user, waits for a genuinely new setup preview and handles fatal pauses.

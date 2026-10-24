@@ -4,6 +4,8 @@ Sign Saber is a planned webcam-controlled rhythm game with a neon body silhouett
 
 Begin with **[ROADMAP.md](../ROADMAP.md)**. It is the canonical implementation order and explains what to build, where to start, how to test it and what evidence unlocks the next phase. [19 — Build Plan](19-build-plan.md) is the working checklist; [24 — Benchmark & Evidence](24-benchmark-and-evidence.md) is the measurement protocol. No deadline, team size, folder ownership or judging rubric from an earlier event is binding.
 
+[DESIGN.md](../DESIGN.md) preserves the figure-centred visual direction and maps the UI palette/font roles; docs14/25 own screen and input behavior. All three are specification, not evidence of rendered screens.
+
 ## Product and contracts
 
 - [01 — Vision & Pillars](01-vision.md): the player promise, core release and deliberate limits.
@@ -28,6 +30,7 @@ Begin with **[ROADMAP.md](../ROADMAP.md)**. It is the canonical implementation o
 - [12 — Hands & Trails](12-rendering-hands-trails.md): orbit particles, blade ribbon and charge feedback.
 - [13 — Environment, Camera & Post FX](13-rendering-environment-camera-postfx.md): reactive void, bounded effects, quality tiers and 2.5D highlight.
 - [14 — UI / UX](14-ui-ux.md): screen flow, HUD, copy, accessibility and resilient controls.
+- [25 — Menu, Hand Navigation & Camera Setup](25-menu-and-hand-navigation.md): central placeholder/live figure, camera-optional browsing, three-song starter library and core palm-to-point control.
 - [18 — Asset Pipeline](18-blender-mcp-asset-pipeline.md): optional Blender-assisted production, procedural fallback and asset budgets.
 
 ## Proof and execution

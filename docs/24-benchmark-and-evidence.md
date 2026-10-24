@@ -35,7 +35,7 @@ Public exports exclude participant names, raw webcam footage, uploaded audio and
 
 Run on the demo laptop and, before claiming broad laptop support, another integrated-GPU laptop. Report machines separately. Primary acceptance: 60 Hz display, 1920×1080 CSS viewport where available, declared drawing-buffer size, auto tier, production build, hardware acceleration and mains power. A smaller screen is valid evidence with its actual dimensions, not a 1080p result.
 
-- **Cold start:** three fresh browser launches with application caches cleared, local assets retained, network disabled. Measure loading and time to interactive SELECT. Separate first-install downloads from offline boot.
+- **Cold start:** three fresh browser launches with application caches cleared, local assets retained, network disabled. Measure shell/catalog-to-interactive SELECT with the placeholder and no camera request. Measure explicit Set up camera → trustworthy preview → valid calibration separately; initial downloads, permission wait and user calibration time must not be hidden in or confused with shell startup.
 - **Warm start:** five starts after caching; record boot time and probe choice.
 - **Representative play:** three complete runs of each bundled track at Normal, including the 45-second demo cut. Report full active play and a predeclared busiest 20-second section separately.
 - **Stress:** three 60-second runs at documented maximum note/fragment/half/particle counts with mask uploads. State if overload exceeds a valid generated map.
@@ -59,6 +59,7 @@ Compare fixed low/medium/high tiers separately from adaptation. Export every dow
 - Distinguish capture opportunities, skipped-busy opportunities, bitmaps created, frames submitted, results returned, stale results discarded and fresh results consumed. `skipRate = skippedCaptureOpportunities / captureOpportunities` is not an inference failure rate. Report hand/pose/mask rates separately.
 - `inferenceMs` measures actual task execution, excluding result wait. A 30 Hz capture request does not prove 30 Hz tracking.
 - Gesture evaluation uses held-out labels plus live trials: per-class precision/recall, confusion matrix, false activations per idle minute, transition latency, re-acquisition and occlusion failures. Do not average away the weakest class/player.
+- Menu evaluation records intended selections, first-attempt success, unintended/duplicate activations, Open→Point confirmation latency, retries, native takeover and standing reach for each person/control class. Keep the intentional menu confirmation interval visible in latency definitions. A static placeholder contributes zero tracking/gesture samples; test both camera-free onboarding and the calibrated live menu. Core mouse/key/hand outcomes must agree under [25](25-menu-and-hand-navigation.md).
 - `captureToInferDoneMs + frameIntervalMs` is only a **pipeline estimate**. Physical motion-to-photon requires an external high-frame-rate recording of hand and screen, a declared onset rule, camera frame rate and resolution of measurement. Use at least 20 trials; report median/p95. Audio-device latency needs a separate audible/visual or loopback experiment; clock-offset checks are not audio-latency measurements.
 
 ### Memory and resource lifetime

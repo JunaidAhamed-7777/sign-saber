@@ -8,6 +8,10 @@ Sign Saber is a planned browser rhythm game: a webcam turns your movement into a
 
 Start with the **[build roadmap](ROADMAP.md)** for exact implementation order, dependencies, commit-sized tasks and acceptance gates. The **[docs index](docs/README.md)** links every subsystem contract. Contributors: [AGENTS.md](AGENTS.md).
 
+The core menu will keep a human figure in the centre, with song choices/actions around it. Before camera setup/calibration, it shows a placeholder and **Set up camera**; browsing works by mouse/keyboard. After setup, move an open palm to steer a cursor and point to click, alongside the native controls. See the [menu and camera setup contract](docs/25-menu-and-hand-navigation.md).
+
+The planned initial library contains **three full songs**—Pamgaea, Electro Cabello and Cipher by Kevin MacLeod—with local audio, credited sources and pre-generated difficulty maps. The [starter music registry](app/public/assets/tracks/README.md) records the selections and acquisition requirements. Audio/maps are not bundled in the current scaffold yet.
+
 ## What should make it memorable
 
 - A live neon reflection appears before play; the player immediately understands that the webcam sees their movement.

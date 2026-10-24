@@ -184,6 +184,14 @@ else                                 charge = max(0, charge − BEAM_CHARGE_DECA
 - `FINGER_EXT_ANGLE_DEG`, `FINGER_CURL_ANGLE_DEG`, `BLADE_ON_SPEED`, `BLADE_OFF_SPEED` are exposed on a dev-only `window.__tune` object (hot-editable in the console) with a "copy as constants" button so the agreed values go back into `core/constants.ts` in one paste. No tuning value lives anywhere else.
 - Tuning session protocol (P2/P4 in [the roadmap](../ROADMAP.md)): at least three consenting people × three gestures × near/mid/far distance × palm-facing/45°. Separate tuning fixtures from held-out evaluation fixtures, report per-gesture precision/recall and transition latency, and keep failures in the corpus. Record any failing case before changing thresholds; rerun all held-out cases after a change.
 
+## Menu input is a separate consumer [CORE]
+
+The same Open/Point evidence also drives [25 — Menu & Hand Navigation](25-menu-and-hand-navigation.md). A filtered mirrored-image palm centroid moves the menu pointer; an armed transition into pointing activates its target once. This consumer works before body/play-plane calibration and uses its own named confidence/timing guards. It does not reuse `HandCursor.tip`, `pointDir`, blade history or beam charge as UI coordinates/click state.
+
+Route input by state/surface: menu commands are enabled only on the allowed app-owned controls; PLAYING disables the menu driver and uses gestures for gameplay. Reset menu latches and gameplay charge/sweep history across that boundary so pointing at Start cannot become an opening beam shot. A held Point never repeats menu clicks. The short Open → ambiguous → Point shape transition may retain the armed candidate within `MENU_TRANSITION_GRACE_MS`, but never activates until fresh confident Point confirmation passes. Tracking loss or prolonged ambiguity disarms it.
+
+Share classifier output and stable hand identity instead of running a second incompatible classifier in React. Camera setup can provide a labelled live preview and menu input before committing `BodyCalibration`; an illustrative placeholder never supplies hands or gesture evidence. [14](14-ui-ux.md#input-handling) defines equivalent mouse/keyboard controls and native-browser exceptions.
+
 ## 9. Unit tests (`tests/unit/classifier.test.ts`)
 
 Fixtures are recorded `HandRaw` sequences in `tests/fixtures/hands/*.json` (`{ label, frames: HandRaw[] }`).

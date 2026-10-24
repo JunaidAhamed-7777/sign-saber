@@ -111,19 +111,19 @@ value += (raw − value) · k
 
 The default retention coefficients correspond to `τ = −1/(60 · ln(retention))`; do not also hardcode a contradictory release time. Then auto-gain uses `peak = max(raw, peak · exp(−dt / ANALYSER_PEAK_DECAY_S))` with `ANALYSER_PEAK_FLOOR`. Clamp normalized output to 0..1 and preserve actual silence at zero; gain normalization must not manufacture beats. Output is `BandEnergies { low, mid, high, rms }`, read by the renderer every frame ([10](10-rendering-silhouette.md), [13](13-rendering-environment-camera-postfx.md)). Allocate FFT/time-domain arrays once.
 
-The analyser is also running (on the preview source) in `SELECT` so the attract scene's silhouette edge reacts to a track preview if the user plays one.
+The analyser may run on an explicitly requested preview source in `SELECT`. A camera is not required to browse or preview the bundled library. If setup is incomplete, keep the static central person and **Set up camera** action; preview energy can tint the background grid but cannot animate that illustration as if it were tracked. Selecting/hovering a song or arming a hand target never autoplays its preview. Stop/disconnect the old preview on replacement, setup countdown, Start or SELECT exit so it cannot mix with the scheduled song.
 
 ## 5. Autoplay policy
 
 Browsers block audio until a user gesture. Rules:
 
-1. Create/unlock the live `AudioContext` inside an explicit enable/start/preview action in BOOT or SELECT, never from a background load timer. Unlocking does not itself start music. Until then the `SongClock` is `idle`; Start explains when audio needs enabling. Decode assets through the initialized context or an offline decoding context, before the play session starts.
-2. On `select:start`, `await ctx.resume()` and verify `ctx.state === 'running'`; if not, show "Click anywhere to enable audio" and retry on the next gesture.
+1. Create/unlock the live `AudioContext` inside a real browser mouse/key enable/start/preview action in SELECT, never from a background load timer. BOOT reaches the catalog without sound or camera permission. Unlocking does not itself start music. Until then the `SongClock` is `idle`; Start explains when audio needs enabling. Decode assets through the initialized context or an offline decoding context before the play session starts.
+2. A webcam-recognized point is an app command, not trusted browser user activation; do not claim it can unlock a blocked context or grant camera permission. Reuse an already unlocked context for hand-operated preview/Start. If audio is still blocked, keep the current selection and show the explicit **Enable sound** mouse/key action; request `ctx.resume()` directly from that real event before awaiting unrelated work. On `select:start`, verify the context is running before proceeding. See [browser user activation](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/User_activation).
 3. `visibilitychange` → hidden does *not* suspend the context by itself (that would double-pause); the state machine's `pause:request` does.
 
 ## 6. SFX bus (`audio/sfx.ts`)
 
-All SFX are short OGG one-shots in `app/public/assets/sfx/`, decoded once at BOOT into `AudioBuffer`s. Graph: `oneShot → sfxGain(per sound) → sfxBus → master`.
+All SFX are short OGG one-shots in `app/public/assets/sfx/`, decoded once during asset preparation into `AudioBuffer`s before play. Their preparation must not hold the camera-free menu behind an audio-unlock prompt; pending sounds stay silent until the explicit unlock succeeds. Graph: `oneShot → sfxGain(per sound) → sfxBus → master`.
 
 | Sound | File | Trigger | Gain (dB) | Notes |
 | --- | --- | --- | --- | --- |

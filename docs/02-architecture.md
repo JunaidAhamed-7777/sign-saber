@@ -147,6 +147,14 @@ export interface BodyState {
 }
 ```
 
+### Menu navigation and camera setup
+
+`MenuPointerState`, `MenuActivation` and `CameraSetupState` have their authoritative shapes in [25 — Menu & Hand Navigation](25-menu-and-hand-navigation.md). Export them once from the planned framework-free `core/menuInput.ts` contract module. They are separate from scored game events: `gestures/menuPointer.ts` consumes fresh mirrored image-space hands, while `ui/menuTargets.ts` registers app-owned target geometry and dispatches semantic actions through the same guards as mouse/keyboard.
+
+The menu pointer uses viewport CSS pixels and a separate comfortable 2D reach rectangle, not the play-plane/camera projection or body calibration. Open palm moves; an armed Open → Point transition activates once, with release/rearm and stale-input/layout/native-input cancellation. It runs only in allowed menu surfaces, never in PLAYING. Read [25](25-menu-and-hand-navigation.md#hand-pointer-contract) before implementing gesture navigation; hover does not select.
+
+BOOT can reach SELECT with no camera/models/tracking sample. Until current body calibration is valid, browse mode shows an illustrative central placeholder and **Set up camera**. SELECT's camera setup subflow loads/trains no new models: it initializes the pinned tracker, verifies live input and records calibration without requiring a song. Its `camera:setup` / `camera:ready` / `camera:error` / `camera:cancel` commands are SELECT self-transitions in [04](04-state-machine.md). Only validated setup produces a live browse figure/readiness; the placeholder never produces tracking or benchmark data.
+
 ### Game → Renderer / UI: events
 
 The event bus (`core/events.ts`) is a typed emitter. The following events are the complete public surface of the game core:
@@ -518,7 +526,21 @@ These are **initial, unmeasured design defaults** used by [08](08-beatmap-genera
 | --- | --- |
 | `UI_TEXT_HZ` | 20 — store flush rate for text fields |
 | `POP_LIFETIME_MS` / `MAX_POPS` | 600 / 6 — judgement pops |
-| `DWELL_SELECT_MS` | 900 — [STRETCH] hands-free hover-dwell selection |
+| `STARTER_TRACK_MIN_COUNT` | 3 — distinct full-length bundled songs required by P2; demo excerpts do not count |
+| `MENU_LIBRARY_PAGE_SIZE` | 3 — initial bounded song-card page; explicit Previous/Next for larger libraries |
+| `MENU_STAGE_MIN_FRACTION` | 0.44 — minimum clear central-stage fraction of viewport width on supported side-rail layout |
+| `MENU_TARGET_MIN_PX` / `MENU_TARGET_GAP_PX` | 72 / 16 — minimum gesture target dimensions / separation in CSS pixels |
+| `MENU_REACH_BOUNDS` | `{ left: .20, right: .80, top: .15, bottom: .85 }` — initial mirrored-image menu reach rectangle; personalize independently of game calibration |
+| `MENU_GESTURE_CONFIDENCE_MIN` | 0.6 — current geometric-classifier confidence needed to arm/confirm; not a statistical probability |
+| `MENU_OPEN_ARM_MS` | 160 — same-target open-palm readiness interval; hover never activates |
+| `MENU_POINT_CONFIRM_MS` | 100 — stable Point confirmation after the armed pose transition |
+| `MENU_TRANSITION_GRACE_MS` | 200 — fresh ambiguous pose allowed while changing an armed open palm into Point; never grants activation itself |
+| `MENU_POINT_MAX_MOVE_PX` | 24 — maximum CSS-pixel displacement from the frozen open anchor during confirmation |
+| `MENU_CLICK_COOLDOWN_MS` | 350 — minimum interval after committed menu activation; opening/rearming still required |
+| `MENU_TRACK_MAX_AGE_MS` | 150 — maximum main-performance-domain sample age for menu arming/clicking |
+| `MENU_HANDOVER_COOLDOWN_MS` | 500 — hand quiet period after native input or explicit controlling-hand change |
+
+Menu defaults are initial unmeasured values; tune with held-out menu fixtures and live standing-distance trials, recording changes with their test results. `DWELL_SELECT_MS` is retired: point-click navigation is CORE rather than an optional dwell mode. Runtime central exports remain a P0 implementation task.
 
 ### Companion service (YouTube)
 

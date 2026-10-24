@@ -4,7 +4,7 @@ This is the working agreement for humans and coding agents in this repository. T
 
 ## Start with the product and roadmap
 
-- Read [docs/README.md](docs/README.md), [ROADMAP.md](ROADMAP.md), then the numbered specifications relevant to the task.
+- Read [docs/README.md](docs/README.md), [ROADMAP.md](ROADMAP.md), then the numbered specifications relevant to the task. For UI, read [DESIGN.md](DESIGN.md), [14](docs/14-ui-ux.md) and [25](docs/25-menu-and-hand-navigation.md); preserve the clear central human stage and shared mouse/keyboard/hand behavior.
 - Use the evidence gates in the roadmap. `[CORE]` is the release requirement; `[POLISH]` follows the P2 complete-core gate; `[STRETCH]` follows P4 with all core gates still passing. No hour offset or deadline is assumed.
 - Keep useful existing work. Inspect `git status` before editing; coordinate files when people or agents work in parallel. There is no permanent folder ownership. Agree temporary edit boundaries for each task.
 - Source layout may change when it makes implementation clearer. Update links, source headers and architecture in the same change; avoid moving files merely to make the tree look different.

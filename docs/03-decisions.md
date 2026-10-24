@@ -132,7 +132,7 @@ Each record states a planned decision, its alternatives and the consequence we a
 
 ## ADR-012 — YouTube via a local companion service; MP3 upload is the primary path
 
-**Decision.** An optional local Node service may wrap `yt-dlp` for rights-cleared content ([23](23-youtube-companion-service.md)). It is `[POLISH]`, currently an empty entry point, and must not block boot or play. Supported local-file upload is the primary new-song path; two attributed bundled tracks with validated maps are the demo path.
+**Decision.** An optional local Node service may wrap `yt-dlp` for rights-cleared content ([23](23-youtube-companion-service.md)). It is `[POLISH]`, currently an empty entry point, and must not block boot or play. Local upload is the new-song path; three full attributed starter songs with pre-generated difficulty maps are the first-run path. See the [starter registry](../app/public/assets/tracks/README.md).
 
 **Alternatives.** Direct browser extraction depends on unsupported/CORS-restricted service internals; third-party conversion services introduce availability, rights and data-handling dependencies. Neither belongs on the core path.
 
@@ -152,7 +152,7 @@ Each record states a planned decision, its alternatives and the consequence we a
 
 ## ADR-014 — Quality tiers chosen at boot, not a settings menu
 
-**Decision.** Choose `high` / `medium` / `low` using capability checks and a representative tracking/render workload, then downgrade with hysteresis as in [16 §Quality tiers](16-performance-budget.md#quality-tiers). Record all changes. Comparative benchmarks fix the tier; automatic selection is evaluated separately. Comfortable scene intensity/reduced motion remains an accessible user choice in [14](14-ui-ux.md).
+**Decision.** BOOT chooses a conservative initial `high` / `medium` / `low` candidate without opening the camera; validate it on the representative tracking/render workload only after explicit setup. Downgrade with hysteresis as in [16 §Quality tiers](16-performance-budget.md#quality-tiers). Record changes. Comparative benchmarks fix the tier; selection is evaluated separately. Comfortable intensity/reduced motion remains an accessible choice in [14](14-ui-ux.md).
 
 **Why.** The default should work without technical tuning. Refresh-limited rAF intervals from an empty scene cannot distinguish GPU headroom; quality selection must reflect the integrated workload. The user must still be able to reduce uncomfortable motion/effects.
 
@@ -179,3 +179,13 @@ Each record states a planned decision, its alternatives and the consequence we a
 **Why.** The actual event constraints are unknown. A live slash and correct clocks reduce more risk than optional assets or a network companion. Each gate produces reviewable behavior and evidence.
 
 **Consequences.** Commit small coherent milestones frequently. `[POLISH]` follows P2; `[STRETCH]` follows P4. If the actual release scope changes, update the vision, roadmap, README and demo together.
+
+---
+
+## ADR-017 — The menu frames the person and supports deliberate hand clicks
+
+**Decision.** Ship the three-song menu before camera permission. Keep a clearly illustrative person at its centre with **Set up camera** until matching calibration succeeds; setup is a SELECT subflow independent of song choice. App-owned controls share mouse/keyboard and Open-palm → Point activation, with one-shot arming/release and stable side-rail geometry. Follow [25](25-menu-and-hand-navigation.md).
+
+**Why.** A player should immediately see where they belong, hear/choose the included music and understand how to get ready. Hand control is part of the core experience; an accidental dwell click or a panel over the body would undermine it.
+
+**Consequences.** Keep menu coordinates independent of 3D camera/body calibration, share canonical action guards and preserve native input for setup/recovery and browser-owned actions. A webcam gesture does not grant trusted browser activation. Placeholder/preview/live/saved figures remain distinct; no illustrative figure supplies tracking evidence.

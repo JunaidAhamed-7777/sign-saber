@@ -14,6 +14,7 @@
 
 - [ ] Confirm actual event rules, if applicable; record unknowns rather than inventing them.
 - [ ] Establish clean-clone setup, dependency lockfile, capability checks and truthful BOOT errors.
+- [ ] Build camera-free SELECT with the central placeholder and **Set up camera**; define independent setup/menu-pointer contracts and shared native/hand target dispatch from [25](25-menu-and-hand-navigation.md).
 - [ ] Implement shared contracts, central constant exports, typed events, state machine and audio/performance clock mapping.
 - [ ] Pin model/asset versions and checksums; record licenses and asset sizes.
 - [ ] Add deterministic fixture input and named instrumentation boundaries before expensive visual work.
@@ -22,11 +23,12 @@
 
 ## P1 — First playable
 
-- [ ] Play one licensed bundled excerpt against a tiny validated fixed map.
+- [ ] Expose/play the first attributed starter song or credited excerpt against a tiny validated fixed map, without upload.
 - [ ] Implement camera → tracking worker → captured landmarks → open-hand cursor → slash contact → score → HUD.
 - [ ] Connect a minimal Three.js lane and readable slash targets; procedural visuals are sufficient.
 - [ ] Calibrate mirror/reach and preserve exact capture-time scoring. Test late arrivals, duplicate samples and misses.
 - [ ] Complete one session and restart it without duplicate events, lingering sound or stale state.
+- [ ] Complete setup without selecting music first; select/start the prototype with mouse/keyboard and Open → Point control. Cancel stale/lost/held-point input safely.
 - **Gate:** a replay produces identical event logs under varied render cadence; a consenting player can actually hit slash notes with the live webcam and reach results. Record the two checks separately.
 
 ## P2 — Complete core
@@ -34,7 +36,8 @@
 - [ ] Add Fist/Smash, Point/Beam, lean/walls, one terminal outcome per object, combo, rank and unmultiplied accuracy.
 - [ ] Complete BOOT/SELECT/CALIBRATION/PLAYING/PAUSED/RESULTS error and recovery paths.
 - [ ] Implement decode, DSP stages, deterministic assignment, schema validation, versioned cache and cancel/retry.
-- [ ] Replace the `beatmaps` placeholder with a working generator; add two attributed tracks and validated difficulty maps.
+- [ ] Replace the `beatmaps` placeholder with a working generator; package three full attributed starter songs, manifest/credits/previews and validated Easy/Normal/Hard maps.
+- [ ] Complete side-rail menus, placeholder/setup/live states, native/hand equivalence, one-click rearming and offline starter-library checks; these are CORE.
 - [ ] Enforce comfortable reach, density, gesture transition and wall/note constraints; evaluate silence and low-confidence music.
 - [ ] Prove a new local song can be analyzed, played and completed; include unsupported/corrupt input checks.
 - **Gate:** every core mechanic works with a real player; full-session replay, generator quality checks and targeted integration assertions pass. Only then admit `[POLISH]` work.

@@ -6,6 +6,8 @@ Owning files: `render/environment.ts` (grid, pylons, dust, horizon), `render/cam
 
 The signature is a readable silhouette and gesture payoff on a quiet stage. P3 adds music-driven spectacle after the P2 core gate; P4 proves what the demo laptop can sustain ([roadmap](../ROADMAP.md)). Every millisecond figure in this document is a provisional budget, not a benchmark result.
 
+The menu uses that stage before a camera exists. Reserve the central person area and side controls from [25 — Menu & Hand Navigation](25-menu-and-hand-navigation.md): show the static illustrative person and **Set up camera** until actual camera setup and matching body calibration are complete. The explicit setup panel can show a labelled live mask/pose preview; no camera failure blocks the mouse/keyboard catalog. The decorative environment may still render, but must not imply input or sensor readiness.
+
 ## 1. The void
 
 - `scene.background = new Color('#05060D')`; the composer's clear colour is the same.
@@ -88,6 +90,8 @@ A `PerspectiveCamera(CAM_FOV_DEG, aspect, 0.1, 400)`. The rig owns the camera an
 ### 5.1 Base pose
 
 `basePos = CAM_POS`, `baseLook = CAM_LOOK_AT`, `baseFov = CAM_FOV_DEG`. The silhouette plane projection uses these base values (not the rigged ones), see [10 §2](10-rendering-silhouette.md#2-plane-placement).
+
+In `SELECT`, camera setup, `CALIBRATION` controls/countdown, PAUSED menu interaction and RESULTS, keep menu framing fixed while a hand target can be armed. Suppress camera breathing, shake, lean parallax and preview-triggered drop/FOV impulses there so a stable target does not drift under the pointer. Fit the placeholder/live-body composition to the reserved centre stage independently of gameplay collision geometry. Restore the documented game camera before pre-roll; the menu pointer uses 2D viewport coordinates rather than this camera projection. Background grid colour may respond to an explicitly started preview without moving the controls/person stage.
 
 ### 5.2 Trauma model
 
@@ -224,7 +228,7 @@ Use the canonical [16 §Quality tiers](16-performance-budget.md#quality-tiers) p
 
 ## 8. Highlight capture (`render/highlight.ts`)
 
-On `highlight:capture { songTimeMs }`, store a snapshot owned by the highlight subsystem: copy the current mask into a dedicated retained byte buffer and the 13 valid joint positions into retained arrays; record pose age, note/hand metadata and the event timestamp. A transport `MaskFrame` reference is not durable because its buffer can be recycled. Apply `HIGHLIGHT_MIN_COMBO` and `HIGHLIGHT_DEBOUNCE_MS` to capture work, and caption the timestamp actually captured; if throttling skips the absolute peak, say “highlight moment” rather than inventing an exact peak pose.
+On `highlight:capture { songTimeMs }`, store a snapshot owned by the highlight subsystem: copy the current real mask into a dedicated retained byte buffer and the 13 valid joint positions into retained arrays; record pose age, note/hand metadata and the event timestamp. A placeholder/setup guide can never be captured as a player's moment. A transport `MaskFrame` reference is not durable because its buffer can be recycled. Apply `HIGHLIGHT_MIN_COMBO` and `HIGHLIGHT_DEBOUNCE_MS` to capture work, and caption the timestamp actually captured; if throttling skips the absolute peak, say “highlight moment” rather than inventing an exact peak pose.
 
 Render the mask/skeleton/hands to a `HIGHLIGHT_RT_SIZE` target only when capture work is budgeted. The mask is a flat image-derived plane: it does not become a volumetric person when viewed off-axis. Results may show a front-facing 2.5D memory with a small skeleton parallax/turntable, clearly described as a stylised replay. Calm mode presents a still. The render target stays inside the existing renderer, positioned via a viewport/scissor or composite quad; the React UI reserves its rectangle and never reads GPU pixels back into a second canvas every frame. If no valid snapshot exists, omit the viewport and keep the real result stats. Capture and teardown must leave the active camera/layers/clear state intact and release old GPU targets. Profile capture frames separately; no ≤1 ms result is assumed.
 
@@ -239,6 +243,7 @@ Render the mask/skeleton/hands to a `HIGHLIGHT_RT_SIZE` target only when capture
 - [ ] Emissive surfaces bloom; the silhouette fill, glass fill and obstacle fill do not (bloom mask debug view).
 - [ ] P4 evidence records actual GPU availability/timings, total pass count and frame percentiles for each tier; release passes the canonical thresholds in [24](24-benchmark-and-evidence.md#6-initial-acceptance-targets).
 - [ ] The owned highlight snapshot survives tracking-buffer reuse and displays the pose at its recorded time; Results omits it if no valid moment was captured.
+- [ ] Menus keep a stable central placeholder/live-body stage with reachable side controls; camera/preview music cannot move an armed target. No-camera/uncalibrated states show **Set up camera** and do not claim sensor readiness or produce a fake highlight.
 - [ ] Calm mode removes camera/UV motion and flashes in both DOM and scene without changing replay score; ten retries/context-recovery cycles leave render-target, texture and listener counts bounded.
 
 ## Constants required

@@ -39,8 +39,10 @@ These are `[CORE]` release requirements. P1 proves a smaller vertical slice; P2 
 
 ### Flow
 
-- BOOT detects required capabilities, loads local runtime assets with real progress and exposes actionable errors. Camera access follows an explicit user action. Raw webcam pixels are not displayed in the shipped scene.
-- SELECT offers at least two attributed bundled tracks and local upload. MP3/WAV/OGG/M4A are candidate extensions; browser decoding and file limits determine support. A file is ready only after decode, analysis and validation succeed.
+- BOOT detects shell/rendering capabilities and loads the local catalog with real progress. SELECT opens without camera setup; tracking assets initialize in the explicit setup flow. Raw webcam pixels are not displayed in the shipped scene.
+- SELECT ships with at least three distinct full-length attributed starter songs and pre-generated Easy/Normal/Hard maps, plus optional local upload. A new player needs no upload/network to choose music. MP3/WAV/OGG/M4A are candidate upload extensions; actual decoding and limits determine support.
+- The menu reserves its centre for the human figure, with library/actions in side rails. Mouse, keyboard and open-palm movement → point-click operate the same app-owned controls. Hand navigation is CORE; hovering alone never clicks. [25](25-menu-and-hand-navigation.md) defines the interaction and exceptions for native browser actions.
+- Before current camera setup/calibration succeeds, the central figure is a clearly illustrative placeholder with **Set up camera**. Browsing remains usable by mouse/keyboard. Setup works without a selected song, shows a labelled live positioning preview and replaces the browse placeholder only after valid calibration; it never invents tracking evidence.
 - CALIBRATION confirms visible shoulders and hands, comfortable reach, mirror identity and wave or accessible button/key confirmation before the countdown. It coaches the player without claiming to diagnose low light from landmark confidence alone.
 - PLAYING reaches the real end of the selected track. Losing usable tracking for `TRACKING_LOST_PAUSE_MS` auto-pauses; stable reacquisition may start the tracking-loss resume countdown. Manual/hidden-tab pauses require an explicit resume, and no scoring occurs during any countdown.
 - PAUSED supports resume and quit with complete cleanup; RESULTS supports retry. Returning to SELECT never leaves old workers, sound sources, notes or score events alive.

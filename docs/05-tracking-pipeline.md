@@ -18,6 +18,8 @@ main: workerClient ◄──TrackingFrame─────────────
 
 ## 1. Camera capture (`tracking/camera.ts`)
 
+Camera capture is opt-in. BOOT prepares the menu without opening a stream; **Set up camera** starts the `SELECT` setup subflow in [04](04-state-machine.md#camera-setup-within-select). Before successful camera setup and matching body calibration, the browse menu shows the clearly illustrative central placeholder from [25](25-menu-and-hand-navigation.md), not this pipeline's output. Permission/model/device failures keep mouse/keyboard music browsing available. Do not emit synthetic `TrackingFrame`s, presence or tracking-rate samples for the placeholder.
+
 ### 1.1 Opening the stream
 
 ```ts
@@ -34,8 +36,9 @@ const stream = await navigator.mediaDevices.getUserMedia({
 
 1. Attach to a hidden `<video playsinline muted autoplay>`; `await video.play()`.
 2. Read the actual settings via `stream.getVideoTracks()[0].getSettings()`; log `width × height @ fps`. If the delivered frame rate is below the P4 tracking floor, log a warning (the pipeline still works; `TRACK_TARGET_HZ` is a cap, not a floor).
-3. If `getUserMedia` rejects with `NotAllowedError` → `boot:error` with the camera-denied card ([04 §BOOT](04-state-machine.md#boot)). `NotFoundError` → "No camera found". `OverconstrainedError` → retry once with no constraints at all.
+3. If `getUserMedia` rejects with `NotAllowedError` → the current setup's `camera:error`, with permission guidance and **Set up camera**/Retry in SELECT. `NotFoundError` → "No camera found"; `NotReadableError` explains a busy device. `OverconstrainedError` → retry once with no constraints at all. None of these errors makes shell BOOT depend on a camera.
 4. The raw feed MUST never be attached to a visible element in production builds. The debug overlay (`D` key, dev only) MAY show it at 25 % opacity.
+5. Associate the permission request, stream, model initialization and calibration with one setup generation. Cancel or replacement invalidates that generation; a late successful permission promise must stop its returned tracks instead of reviving old setup. `track.onended`, permission revocation, camera/device/crop changes and explicit camera-off invalidate calibration. Temporary hand/body occlusion hides stale visual/input and coaches framing without automatically declaring a previously valid setup uncalibrated.
 
 ### 1.2 Frame callback and centre-crop
 
@@ -56,6 +59,8 @@ Created as a module worker so Vite bundles it:
 ```ts
 new Worker(new URL('./tracking.worker.ts', import.meta.url), { type: 'module' });
 ```
+
+Create/initialize the worker and fetch local WASM/models when camera setup is requested, with progress scoped to that setup. Optional local prefetch may reduce latency but cannot request permission, start inference or block entry to the camera-free menu. First valid samples permit a labelled live tracking preview; they do not alone make `CameraSetupState.state` ready or hide the browse placeholder. Readiness also requires confirmed matching `BodyCalibration`.
 
 ### 2.1 Initialisation
 
@@ -175,7 +180,7 @@ class TrackingClient {
 
 - The loop calls `take()` until the bounded pending ring is drained ([02 §Frame loop](02-architecture.md#frame-loop)). If no new result arrived it returns `null`. The input state advances once per sequence; replay drains all samples due at the current song time rather than dropping intermediate records to match render fps.
 - `hz` is an EMA over recent results; benchmark percentiles use raw samples, not that EMA. `mainToMainMs = arrivalTime − tCapture` is capture-to-game only when capture metadata exists; otherwise label it callback-receipt-to-game. Never call it true motion-to-photon latency.
-- On `error.fatal` the client stops and emits `tracking:fatal` so BOOT/PLAYING can show the error card.
+- On `error.fatal` the client stops and emits `tracking:fatal`; SELECT routes it to setup recovery/`camera:error`, while PLAYING pauses with the actual fault. Camera failure never fabricates readiness or makes the placeholder a tracked body.
 - `stop()` cancels rVFC, invalidates asynchronous capture work and returns borrowed buffers. Full disposal additionally stops media tracks, clears `video.srcObject`, closes MediaPipe tasks/canvases and terminates the worker. Retrying creates a fresh generation token; a late old-generation result cannot revive a stopped session.
 
 ## 3. Filtering (`tracking/filters.ts`)
@@ -224,6 +229,8 @@ Rationale: wrong slot assignment makes a trail jump across the screen; position 
 
 Used only in `CALIBRATION` step 2 ([04](04-state-machine.md#calibration)). Runs per hand on the filtered wrist landmark (index 0) `u′`.
 
+The SELECT setup confirmation may use the common menu action or accessible mouse/key confirmation instead; permission/model initialization is not started by a wave detector. Pre-play wave confirmation remains separate from menu pointing and beam charge.
+
 State per hand: `dir ∈ {−1, 0, +1}`, `extremeU`, `prevU`, and a fixed timestamp ring with capacity `WAVE_REVERSALS`.
 
 1. On each new sample with the hand present, compute `du = u′ − prevU`; update `prevU`. A change below `WAVE_DEAD_BAND` cannot establish an initial direction.
@@ -254,7 +261,9 @@ Per frame with `posePresent`:
 
 Lean uses translation (`leanX`), not tilt; `tilt` is exposed for the renderer (skeleton lean) and as a secondary signal: if `|tilt| ≥ LEAN_TILT_ASSIST_DEG` and `|leanX| ≥ LEAN_OFF`, the lean is accepted even if `LEAN_ON` was not reached. This rewards an exaggerated lean without demanding a full side-step.
 
-`BodyCalibration` capture ([04 §CALIBRATION](04-state-machine.md#calibration)): average `centerX`, `shoulderWidthNorm`, `v₀` over the final `CALIB_SAMPLE_MS` of calibration step 1; `physicalScale = CALIB_ASSUMED_SHOULDER_M / shoulderWidthNorm`.
+`BodyCalibration` capture ([04 §Camera setup](04-state-machine.md#camera-setup-within-select)): average `centerX`, `shoulderWidthNorm`, `v₀` over `CALIB_SAMPLE_MS` of valid comfortable framing, and set `physicalScale = CALIB_ASSUMED_SHOULDER_M / shoulderWidthNorm`. Confirm the current camera/crop/player/mapping identity before marking it valid. The pre-play CALIBRATION step rechecks or refreshes this data, rather than being the first opportunity to configure the camera.
+
+Before a valid body calibration, expose actual normalized hand/pose measurements for the labelled setup preview and [25](25-menu-and-hand-navigation.md)'s 2D menu pointer, but keep gameplay `leanX`, `lean`, `duck` and `torsoSpeed` at safe neutral values. Do not dereference absent calibration, divide by an unvalidated shoulder span, infer kinetic energy, or create play-plane scoring input from a placeholder. Menu pointer reach fitting is independent of `BodyCalibration`; changing it cancels the current menu-click episode.
 
 ## 6. Latency and diagnostics
 
@@ -279,14 +288,14 @@ Measure motion-to-photon with an external high-frame-rate recording that include
 
 | Failure | Detection | Response |
 | --- | --- | --- |
-| Camera permission denied | `NotAllowedError` | BOOT error card with retry |
+| Camera permission denied | `NotAllowedError` | SELECT setup error with permission guidance/Retry; central placeholder and mouse/keyboard browsing remain |
 | Camera in use by another app | `NotReadableError` | Card: "Close other apps using the camera" |
 | Worker init fails (WASM/model 404) | `error.where === 'init'` | Card: run `npm run models` |
 | GPU delegate unavailable | create throws | CPU retry + warning badge |
-| Worker stalls | no result for `TRACK_STALL_MS` | `tracking:stalled` → pause; after `TRACK_RECOVERY_MS` terminate and recreate worker once |
+| Worker stalls | no result for `TRACK_STALL_MS` while capture is expected | PLAYING → safe pause; SELECT/setup → useful setup error and placeholder. After `TRACK_RECOVERY_MS` terminate and recreate once only for the current explicit setup/recovery attempt |
 | Two people in frame | `numPoses: 1` picks the most prominent; hands may belong to either | Calibration coaching text: "One player in frame"; hand identity tracker keeps continuity |
-| Backlit player / dark room | mean mask confidence < 0.3 across the body region | Coaching text in CALIBRATION: "Face the light, avoid windows behind you" |
-| Tab hidden | `visibilitychange` | `pause:request`; rVFC stops naturally |
+| Uncertain body tracking | Confidence/presence gates remain low for their registered interval | Suggest facing the light or clearing the background in setup/CALIBRATION; landmark/mask confidence does not measure luminance or diagnose darkness |
+| Tab hidden | `visibilitychange` | PLAYING emits `pause:request`; other states suspend capture/menu gestures without changing top-level state. Resume work only for the current visible setup/session |
 
 ## 8. Acceptance criteria
 
@@ -295,6 +304,8 @@ Measure motion-to-photon with an external high-frame-rate recording that include
 - [ ] Moving the real right hand to the player's right increases `u′` and reports `handedness: 'right'`; the mask shows the arm on the same side.
 - [ ] Crossing hands and uncrossing them does not swap trail colours (identity tracker).
 - [ ] Covering the camera for 2 s in `PLAYING` pauses the game; uncovering can resume with the countdown only for an automatic tracking-loss pause. A user pause remains paused.
+- [ ] First load, denied permission and no-camera scenarios reach the browse menu without synthetic tracking. Setup can start before song selection; only confirmed valid calibration replaces its central placeholder. Cancelled setup, revoked permission and device/crop replacement cannot accept old frames or calibration.
+- [ ] Fresh real hand landmarks can move/activate the menu during the labelled setup preview without a body calibration; no lean, beam charge, note contact or kinetic estimate is generated by that menu driver.
 - [ ] A one-second wave at normal speed completes calibration step 2; a slow single pass does not.
 - [ ] Stepping 30 cm to the side yields `lean` change within 150 ms; standing still for 10 s produces no spurious lean.
 - [ ] Unit tests: One Euro step response, mirroring of a fixture frame, identity tracker on a label-flip fixture, wave detector on a recorded wave and on a recorded non-wave; async capture overlap, error acknowledgement, detached-buffer reuse and stale-generation rejection.

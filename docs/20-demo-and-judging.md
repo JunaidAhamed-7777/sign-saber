@@ -10,7 +10,7 @@ The actual event's slot length and rubric have not been supplied. The three-minu
 
 Three points, each backed by something the audience sees:
 
-1. **Your body is the controller.** Live silhouette → open-hand slice → fist smash → charged point → lean dodge.
+1. **Your body is the controller.** A figure-centred menu → open-palm pointer/point-click selection → live silhouette → slice/smash/beam/lean.
 2. **The music creates the challenge.** Analyze a supported local file outside the bundled library, display actual readiness time, then play its generated section.
 3. **The engineering is inspectable.** Show two measured results from the tested build with hardware/configuration and an evidence link. If those measurements do not exist, describe the design and say they are unmeasured.
 
@@ -18,7 +18,7 @@ Never promise “any song,” universal tracking, exact calories, true 3D recons
 
 ## Prepare one coherent showcase
 
-Create a rights-cleared **45-second demo excerpt** during P3, before the P4 benchmark matrix; it is not present yet. Run it through the actual generation and validation pipeline. Choose an excerpt/seed whose valid map exposes Slash, Smash, Beam, a readable wall and a musical drop. Do not move notes off the music to satisfy a script; adjust the script to the map. Retain its audio/map hashes and the seed. Rehearse and record the final candidate during P5.
+Package all three full [starter songs](../app/public/assets/tracks/README.md) by P2, then create a separately credited **45-second demo excerpt** during P3, before the P4 benchmark matrix; none is installed yet. Generate/validate from that exact edited audio. Choose an excerpt/seed that exposes Slash, Smash, Beam, a readable wall and a drop; adapt the script to the valid map. Retain audio/map hashes and seed. Rehearse/record the actual candidate during P5.
 
 The first run must finish to real RESULTS. Do not switch an unfinished session to an unrelated screenshot or imply a prerecorded result came from the live play. If a hand-edited map is ever used, label it as such and demonstrate unedited generation separately.
 
@@ -28,7 +28,7 @@ Also prepare a different supported upload file with redistribution permission, a
 
 One presenter can drive and speak; a second person can narrate while the first plays. Practise both roles. Keep silence around the best visual moments.
 
-- **0:00–0:12 — The reveal.** Start in SELECT with the real camera active. Step into frame, raise a hand and let the silhouette follow. Say: “That's a webcam. That's me.”
+- **0:00–0:12 — The reveal.** For the short slot, complete real setup before the timed run, then use an open palm and point to select a starter song beside the live central figure. Say: “My hand chooses the music. My body plays it.” Demonstrate the unconfigured placeholder/**Set up camera** path separately or in a longer slot; never imply a prerecorded setup or calibrated figure is the first permission grant.
 - **0:12–0:22 — The premise.** Deliver the one-sentence promise. Keep the screen visible; do not open architecture slides over the player.
 - **0:22–0:35 — Calibration.** Start the demo excerpt, confirm comfortable tracking/reach, wave and count in. Describe only what the audience can see. The rehearsal must establish whether this timing is feasible.
 - **0:35–1:20 — A complete 45-second run.** Say “Open hand slices,” then let the real cut be visible. Explain fist, charged point and lean when those objects appear. Stop talking for the drop. Keep the demo map easy enough to complete reliably. Demonstrate a deliberate Bad Cut only if rehearsed and it does not obscure the hero moment.
@@ -65,7 +65,7 @@ Before the slot:
 - [ ] Close unrelated workloads, mute notifications and prevent sleep. Recheck thermal state; do not quote a cold benchmark during a throttled live session.
 - [ ] Unlock Web Audio through an explicit click; check volume from the audience position. Countdowns and real playback must both be audible.
 - [ ] Calibrate the presenter, test every showcased gesture and check fresh tracking in the overlay, then hide the diagnostics.
-- [ ] Reset to SELECT with the real demo excerpt selected. Make the separate upload file available and declare cache state for the planned generation proof.
+- [ ] Exercise the camera-free placeholder/**Set up camera** path before the slot, then prepare actual valid setup for the short live reveal. Confirm all three full songs are present; reset to SELECT with the demo excerpt available and verify open-palm/point selection without covering the figure. Declare cache state for the separate upload proof.
 - [ ] Verify fallback video playback and the evidence report with network disabled; keep an accessible local copy on a second device if available.
 - [ ] Confirm stage/recording permission and the actual slot length.
 

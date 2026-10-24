@@ -160,15 +160,64 @@ This is a complete schema example with intentionally synthetic metadata/hash, no
 
 ## Bundled tracks
 
-Each planned track folder contains licensed audio, attribution/edits, three difficulty JSON files and an optional 512×512 cover. No tracks/maps are committed yet. `npm run beatmaps` is currently a TODO failure; implement it in P2 using the same DSP/assignment code and canonical decoded input, then commit valid maps plus source/PCM/map hashes. Node does not provide browser `AudioContext`; the build must explicitly supply PCM (for example, a licensed canonical WAV or a documented ffmpeg preprocessing step), not assume browser decode works in Node. Bundled playback must not depend on live generation.
+**[CORE] Ship at least three distinct, full-length starter songs with the game.** A first-time player can choose a song and play immediately after browser/camera setup, without supplying a file, installing the companion, visiting an external music site or generating a chart. The first validated starter song or a properly credited prototype excerpt is a P1 dependency; all three full songs with Easy/Normal/Hard maps are a P2 gate. A short derivative demo excerpt is additional content and does not count as a third full song.
 
-Three bundled tracks are required for the demo ([20](20-demo-and-judging.md)):
+The selected pack and exact credits are maintained once in the [starter music registry](../app/public/assets/tracks/README.md#selected-starter-pack). The proposed range is an approachable electronic groove, a contrasting mid-tempo rhythm and a more energetic showcase. These roles are selection intent; decoded timing, generator quality, difficulty and human playability must still be checked. Catalog BPM is reference metadata, not evidence of our detector's output.
 
-| Slug | Purpose | Length |
-| --- | --- | --- |
-| `demo-cut` | A 45-second edit of a high-energy track with a clear drop, so a full run to RESULTS fits the 3-minute demo | 45 s |
-| `<full-track-1>` | Full-length electronic track, 120–130 BPM, for judges who want to play | 2–3 min |
-| `<full-track-2>` | Full-length track of a different genre (e.g. rock or hip-hop) to show generator robustness | 2–3 min |
+Each planned track folder contains licensed local audio, attribution/change records, three validated difficulty JSON files and optionally original or separately licensed cover art. Missing cover art gets a generated typographic fallback; do not reuse catalog artwork without its own rights record. No tracks/maps or manifest are committed yet. `npm run beatmaps` is currently a TODO failure; implement it in P2 using the same DSP/assignment code and canonical decoded input, then commit the audio/map assets and their provenance. Node does not provide browser `AudioContext`; the build must explicitly supply PCM (for example, a licensed canonical WAV or documented ffmpeg preprocessing), not assume browser decode works in Node. Bundled playback must not depend on live generation.
+
+### Starter library manifest
+
+Planned `app/public/assets/tracks/manifest.json` has this versioned shape. `BundledTrackEntry` is the source of truth for the library adapter; menu-only view state does not change track identity. The paths below are manifest data, not arbitrary user URLs.
+
+```ts
+export interface BundledTrackEntry {
+  slug: string;                       // unique lowercase slug, stable selection identity
+  title: string;
+  artist: string;
+  role: 'intro' | 'groove' | 'showcase'; // editorial guidance, not a difficulty restriction
+  audioUrl: string;                   // local /assets/tracks/<slug>/audio.mp3
+  coverUrl?: string;                  // local asset with its own rights record, or omit
+  durationMs: number;                 // measured from the packaged decoded audio
+  bpm: number | null;                 // confident analysis result; null means unknown
+  preview: { startMs: number; durationMs: number }; // measured, in-track bounds
+  difficultyMaps: Record<Difficulty, string>;     // local easy/normal/hard JSON URLs
+  generatorVersion: number;
+  warnings: string[];                 // preserve uncertain-tempo/onset-only disclosure
+  hashes: {
+    audioSha256: string;
+    canonicalPcmSha256: string;
+    maps: Record<Difficulty, string>;
+  };
+  rights: {
+    sourceUrl: string;                // provenance link; never fetched to play
+    license: 'CC0-1.0' | 'CC-BY-4.0' | 'CC-BY-3.0';
+    licenseUrl: string;
+    attribution: string;
+    changes: string;                  // actual edits/encoding, or explicitly unchanged
+  };
+}
+
+export interface BundledTrackManifest {
+  version: 1;
+  tracks: BundledTrackEntry[];
+}
+```
+
+Validate the manifest before populating SELECT: object/array shape, supported version, unique safe slugs, bounded text, allowed role/license, finite duration/BPM/preview values, in-track preview range, all required difficulty paths and lowercase SHA-256 strings. Local runtime paths must stay beneath the entry's track directory; provenance/license URLs are displayed as links and never treated as executable/fetchable audio. On selection, validate the actual `BeatmapV1`, audio/map hashes, source identity, packaged duration and generator version. A catalog BPM must not silently overwrite a different measured tempo; review the discrepancy and retain the warning.
+
+### Selection, preview and failure behavior
+
+- SELECT lists the bundled library on first launch, with clear title, artist, duration, available difficulty and selected state. Mouse, keyboard and the core palm-to-point controls in [14](14-ui-ux.md#input-handling) select the same stable slug and invoke the same actions. Keep the human figure in the central stage; song choices live in the bounded side rail.
+- Selecting a card does not start a song or play a preview. A labelled Preview action starts/stops the bounded preview segment only after the browser's trusted audio enable action. Hover and palm motion remain silent. New preview/Start/Back/Retry cancels the previous preview; only one preview source is active.
+- Load/decode selected audio on demand, with actual progress/errors, rather than retaining three full decoded buffers. Asset readiness and native audio unlock are distinct. Pre-generated maps make the bundled path independent of the analysis worker or optional service.
+- All runtime music, charts, optional covers and credits are served from the prepared local bundle; no CDN, thumbnail request or catalog fetch is required. Verify the full three-song library with external network disconnected. Credits remain readable in the app and repository without visiting the publisher.
+- A missing/corrupt audio/map disables only the affected entry, explains the error and offers Retry or another available song. Do not substitute a different track under the same title. An empty library shows a useful setup error and optional upload path; it cannot pass the P2/release starter-pack gate.
+- The release content check confirms at least three distinct full songs, all three valid difficulty maps per song, actual preview bounds, audio/map hashes and complete credits. Complete each track with real inputs during QA. Original music and a three-song catalog do not replace the independent held-out evaluation in [24](24-benchmark-and-evidence.md).
+
+### Demo excerpt
+
+During P3, create the separate `demo-cut` derivative described in [20](20-demo-and-judging.md): approximately 45 seconds, with declared source track, edit boundaries and changes/credits. Generate and validate its map from that exact edited audio; reusing the full song's timestamps/hash would be invalid. Rehearse the excerpt only after the real mechanics and charts support the intended sequence. Keep the three full starter songs available alongside it.
 
 ## Versioning
 

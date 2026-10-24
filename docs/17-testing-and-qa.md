@@ -69,7 +69,7 @@ Show `REPLAY` visibly. `?speed=0.25` is inspection only and must scale the simul
 
 ## 3. Browser integration smoke test [CORE]
 
-Add the smoke harness in P1 and extend it through P2: BOOT → SELECT → explicit audio unlock → CALIBRATION → PLAYING → pause/resume → RESULTS → retry/quit. Use one continuous labelled replay with calibration and scoring segments, or an explicit harness state setup; two unrelated `?replay` query values cannot play at once. Assert expected judgements, score and stopped audio after quit rather than merely `score > 0`. Exercise camera-denied/model-missing/corrupt-upload paths. Headless replay cannot prove real GPU delegate/permissions/webcam behavior; those remain live checks. Playwright or an equivalent harness is a justified development dependency only when added with an actual runnable command.
+Add the smoke harness in P1 and extend it through P2: camera-free BOOT → SELECT placeholder/catalog → explicit setup with no song → confirmed camera calibration → song selection/audio enable → CALIBRATION → PLAYING → pause/resume → RESULTS → retry/quit. Use a labelled deterministic source or explicit harness setup, never two unrelated replay values at once. Assert menu activation requests, expected judgements/score and stopped audio after quit. Denied camera/missing models leave SELECT usable; corrupt-upload failures preserve a usable selection. Headless replay cannot prove real browser activation, GPU delegate, permission or webcam behavior; keep live checks separate. Add a browser-harness dependency only with a real documented command.
 
 ## 4. Manual QA checklist
 
@@ -79,10 +79,10 @@ Run with at least three first-time players, including different heights/reach wh
 
 | # | Step | Pass criteria |
 | --- | --- | --- |
-| B1 | Open `http://localhost:5173` in Chrome | Logo + progress bar within 1 s; progress reaches 100 % in < 8 s with cached models |
-| B2 | Deny the camera prompt | Useful permission guidance and Retry; if the browser persists denial, explain site settings rather than promise a new prompt. Grant permission there and retry successfully. |
-| B3 | Disable network (airplane mode), hard reload | Boots fully (ADR-013) |
-| B4 | Delete `public/models/*.task`, reload | Error card names `npm run models` |
+| B1 | Open the app with camera permission unset | Shell/catalog loads to SELECT with the central illustrative person and **Set up camera**; no permission prompt or tracking-model prerequisite. Record shell-ready time separately from camera-setup time. |
+| B2 | Invoke Set up camera, then deny permission | Useful SELECT setup guidance and Retry; placeholder and mouse/keyboard music browsing remain. Persistent denial explains site settings; no fabricated repeated permission prompt. |
+| B3 | Disable external network, hard reload a prepared local build | All three song entries, credits, placeholder and menu work; locally prepared models can complete explicit setup. Initial downloads are a separate prerequisite. |
+| B4 | Remove a tracking model in the QA copy, reload | SELECT still opens. Only explicit camera setup fails with a named missing-model/recovery message; no fake tracking success. |
 | B5 | Open in a browser without WebGL2 (or `--disable-webgl`) | "Open in Chrome or Edge…" card, no exception in console |
 | B6 | Check diagnostics | Actual tier/drawing-buffer dimensions, delegate and timestamp source shown; probe result is not confused with a live benchmark. |
 
@@ -90,14 +90,18 @@ Run with at least three first-time players, including different heights/reach wh
 
 | # | Step | Pass criteria |
 | --- | --- | --- |
-| S1 | Land on Song Select | Attract scene shows the live silhouette moving with the player; ≥ 2 bundled tracks listed with BPM/duration |
-| S2 | Drop an MP3 | Progress "Listening… N %" then BPM + note count; Start enabled; total < 4 s for a 3-minute track |
-| S3 | Drop the same MP3 again | Instant (cache hit) |
+| S1 | Land on Song Select before camera setup | At least three distinct full starter songs and actual metadata/difficulty availability; central placeholder with **Set up camera**. Live figure appears only after matching calibration. Unknown BPM stays unknown. |
+| S2 | Drop a supported MP3 | Honest stage progress, validated map and measured file-to-ready time per [24](24-benchmark-and-evidence.md); Start still checks camera/calibration/audio readiness. Upload never silently grants those prerequisites. |
+| S3 | Drop the same MP3 again | Validated cache hit preserves identity/warnings; report actual retrieval time rather than calling it instantaneous. |
 | S4 | Drop a 3-second clip / a silent WAV / a `.txt` renamed `.mp3` | "Track too short" / "No audio detected" / "Unsupported or corrupt audio file"; Start disabled; no console exception |
 | S5 | Switch difficulty on an uploaded track | Note count changes in < 200 ms |
 | S6 | Companion service not running | URL field disabled with offline copy within 1 s |
 | S7 | Companion running [POLISH] | Paste URL → title shown → fetch → map generated; disconnect network mid-fetch → error copy, UI usable |
-| S8 | Press Start without a map | Not possible (button disabled) |
+| S8 | Attempt Start without map, camera setup, matching calibration or usable audio | Guarded for every modality, with a persistent explanation and available setup/audio action. No gesture bypass. |
+| S9 | Set up camera without selecting a song | Labelled live setup preview verifies identity/reach; success returns to live browse figure. Cancel/denial/reconfigure invalidates pending work and preserves music selection; no song audio is scheduled. |
+| S10 | Select/preview/stop each starter song, then complete it | Mouse/key/hand use the same slug/actions. Hover/selection do not autoplay. All three full songs and maps work offline; actual credits match. One corrupt asset disables only its entry. |
+| S11 | Open-palm movement → Point on controls in SELECT/setup/PAUSED/RESULTS | Pointer remains on last open anchor; one confirmed click per episode. Repeat held Point, hand swapping, stale input, target motion, state/layout changes and native takeover produce no duplicate/unintended action. |
+| S12 | Hover without Point; fold fingers briefly between Open and Point | Hover never activates. Fresh ambiguous transition within the named grace may complete; timeout/lost evidence disarms. Browser-owned picker/permission/audio actions ask for real native input. |
 
 ### CALIBRATION
 
@@ -112,6 +116,8 @@ Run with at least three first-time players, including different heights/reach wh
 | C7 | Walk out of frame during countdown | Countdown aborts, line 1 un-ticks, no transition |
 | C8 | A second person crosses the frame | Unmatched hands are rejected; ambiguity causes coaching/pause rather than assigning another person's hand to the player. `numHands: 2` alone cannot guarantee identity. Record any remaining limitation. |
 | C9 | Retry from Results | Shortened calibration (presence + countdown only) |
+
+Menu-controller unit/replay tests must cover the exact arm/confirmation/transition/cooldown boundaries in [25](25-menu-and-hand-navigation.md), both controlling hands, zero-area reach bounds, CSS/DPR/zoom conversion, geometry epochs and 30/60/120 Hz render schedules. Verify placeholder/setup-preview/live identities and the persistent Back/Cancel-only allowlist during countdown; the Start/Resume point must not click through.
 
 ### PLAYING
 

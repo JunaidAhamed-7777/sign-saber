@@ -1,8 +1,18 @@
 # 10 — Rendering: Silhouette
 
-The silhouette is the first thing anyone sees and the thing judges remember. It is a neon reflection of the player: a dark translucent body with a glowing rim whose colour follows the music, drawn from the segmentation mask on a camera-aligned plane, with a 2.5D glowing skeleton behind it for depth. **No raw webcam pixels are ever drawn in the scene or DOM.** The renderer receives only the single-channel `MaskFrame` and landmark arrays; the tracking worker may use camera textures internally for inference. This is a rendering specification; all performance figures below are targets until measured under [16](16-performance-budget.md).
+The central person is the visual anchor: before camera setup/calibration it is a clearly illustrative placeholder; after successful setup it becomes the player's live neon reflection. The tracked silhouette is a dark translucent body with a glowing rim whose colour follows the music, drawn from the segmentation mask on a camera-aligned plane, with a 2.5D glowing skeleton behind it for depth. **No raw webcam pixels are drawn in the production scene or DOM.** The renderer receives only the single-channel `MaskFrame` and landmark arrays; the tracking worker may use camera textures internally for inference. The explicit developer diagnostic in [05](05-tracking-pipeline.md) is separate and opt-in. This is a rendering specification; all performance figures below are targets until measured under [16](16-performance-budget.md).
 
 Owning files: `render/silhouette.ts` (plane, textures, material), `render/skeleton.ts` (joints and bones), `render/shaders/silhouette.vert.glsl`, `render/shaders/silhouette.frag.glsl`.
+
+## 0. Placeholder, setup preview and live body
+
+Follow [25 — Menu & Hand Navigation](25-menu-and-hand-navigation.md) and [04 — Camera setup](04-state-machine.md#camera-setup-within-select). In the browse menu, camera state `not-set-up`/`setting-up`/`error` or invalid calibration shows a static neutral human outline centred in the reserved person stage, with the clear action **Set up camera** and honest status beside it. Use lightweight app-owned vector/procedural geometry so a missing model, webcam or network cannot remove the onboarding figure. It is illustration, not a fake tracked person: no invented pose/mask, reactive hand motion, TRACKING OK indicator, replay badge, kinetic energy or tracking/latency samples.
+
+During the explicit setup subflow, the same reserved stage may show the labelled **Live tracking preview** from actual mask/pose data plus a static target outline. The preview assists framing and comfortable calibration without claiming readiness. Only confirmed live camera/crop/player/mapping calibration lets the browse screen replace the placeholder with the live body. A stale stored calibration or the first frame alone is insufficient.
+
+If a configured camera is temporarily occluded, hide stale body data and show a static framing guide with **Step into frame**; do not turn an ordinary occlusion into a new permission request. Permission revocation, camera-off or changed mapping invalidates calibration and restores **Set up camera**. A valid pose with a failed segmentation mask may use the labelled skeleton fallback; that fallback is actual input, unlike the placeholder.
+
+Menus may fit the body/placeholder composition to their central stage while preserving its full intended outline; this is a presentation transform independent of the calibrated play plane. Restore the gameplay projection below before pre-roll/play. The [25](25-menu-and-hand-navigation.md) palm pointer maps directly to menu coordinates and must not be derived from a shaking camera or from this fitted body's screen projection.
 
 Inputs (read every render frame, never mutated):
 
@@ -215,7 +225,9 @@ Render order: skeleton `renderOrder = -11` (before the plane), plane `-10`. Beca
 
 ## 6. Attract-scene variant
 
-Used in `SELECT` and `RESULTS` background: `uFillAlpha = 0.55`, `uScanSpeed = 0.35`, `uRimPx = 4`, band uniforms driven by a slow synthetic LFO (`low = 0.3 + 0.2 sin(0.4t)`, etc.) when no song plays, skeleton joint brightness ×0.6. On `RESULTS`, the highlight capture ([13 §Highlight](13-rendering-environment-camera-postfx.md)) replaces the live silhouette on the right of the screen while the live one stays faint on the left.
+For a genuinely tracked, validly calibrated body in `SELECT`/`RESULTS`, use the restrained attract treatment: `uFillAlpha = 0.55`, `uScanSpeed = 0.35`, `uRimPx = 4`, skeleton joint brightness ×0.6. Explicit track previews may drive its colour from actual band energies. A slow decorative colour LFO is allowed when no song plays; it never moves joints, creates masks or supplies presence. Calm keeps the body treatment steady.
+
+The placeholder is a separate static illustration and does not run this live-body pipeline or pretend to react to a camera. Keep it in the same centre stage until setup completes. On RESULTS, an owned captured highlight ([13 §Highlight](13-rendering-environment-camera-postfx.md#8-highlight-capture-renderhighlightts)) is labelled as a saved moment and composed without obscuring the centre or controls; it is never a replacement for current tracking status.
 
 ## 7. Quality tiers
 
@@ -234,7 +246,7 @@ The plane renders at the tier's drawing-buffer resolution; the DOM stays at nati
 
 ### Resource lifetime and repeatability
 
-Allocate textures, mesh buffers, shader variants and joint scratch objects before play. Hide the live body when camera permission is revoked; a decorative LFO must not fabricate a tracked player. Missing masks with valid pose show the explicit skeleton fallback. Dispose owned textures, geometries and materials on renderer shutdown/context recovery; changing tier reuses or disposes the old variant rather than leaking it. Replay uses fixture mask bytes, capture timestamps and a fixed song/visual clock so the same frame can be compared across tiers. The synthetic attract LFO is background decoration and must never be included as live tracking evidence.
+Allocate textures, mesh buffers, shader variants and joint scratch objects before play; the shell's placeholder resources are independent of lazy camera/model setup. Hide the live body when camera permission is revoked and restore the setup illustration/action; a decorative LFO must not fabricate a tracked player. Missing masks with valid pose show the explicit skeleton fallback. Dispose owned textures, geometries and materials on renderer shutdown/context recovery; changing tier reuses or disposes the old variant rather than leaking it. Replay uses fixture mask bytes, capture timestamps and a fixed song/visual clock so the same frame can be compared across tiers. The synthetic attract LFO and placeholder are decoration and must never be included as live tracking evidence.
 
 ## 9. Debug view (`D` key, dev builds)
 
@@ -244,7 +256,8 @@ Allocate textures, mesh buffers, shader variants and joint scratch objects befor
 
 ## 10. Acceptance criteria
 
-- [ ] At no state, tier, or failure mode are raw camera pixels visible in the scene or DOM. Camera frames are used only for tracking; rendering receives mask/landmark data. Inspect all texture inputs, screenshots and the hidden video element.
+- [ ] At no production state, tier or failure mode are raw camera pixels visible in the scene or DOM. Camera frames are used only for tracking; rendering receives mask/landmark data. Inspect all texture inputs, screenshots and the hidden video element; any developer raw-frame diagnostic is explicitly opted into and excluded from the shipped flow.
+- [ ] With no permission, failed models or invalid calibration, a static illustrative person and **Set up camera** remain visible at the menu centre. A labelled real setup preview replaces the illustration only within setup; the browse view switches to a live figure only after confirmed matching calibration. No placeholder data enters tracking, scoring or benchmark samples.
 - [ ] The rim colour visibly shifts between magenta, cyan and gold across a track with a strong bass/treble contrast, and flashes on kicks.
 - [ ] With the debug overlay on, the mask edge at the wrist and the hand-cursor position coincide within 2 % of the frame width across the whole play plane (both corners and centre).
 - [ ] Compare latest-mask and cross-fade variants on the same fast/slow-motion replay; record added mask age and choose the variant with acceptable lag and contour stability.

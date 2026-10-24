@@ -4,6 +4,13 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Core menu, starter library and camera setup specification
+
+- Codex integrated the user's mouse/hand menu and central-person requirements, including a placeholder and **Set up camera** before valid calibration. Three agents reviewed the UI specification, camera lifecycle and music content independently; no Devin contribution was involved in this pass.
+- Added the palm-move/point-click contract, shared action/geometry guards, camera-optional browsing/setup and browser-native exceptions. Updated the cross-module docs, roadmap, QA/demo/benchmark expectations and durable DESIGN.md context.
+- Selected three real Kevin MacLeod starter songs from official catalog pages and documented licenses/attribution, planned manifests/previews and packaging checks. Audio/maps remain unacquired and untested; no generated result or playability is claimed.
+- Validation actually run: scaffold `npm run check` passed with zero gameplay tests; two docs-checker tests and 455 local links across 39 Markdown files passed; whitespace check, DESIGN.md lint and strict static frontend audit passed. The static audit JSON is retained locally. No runtime UI, webcam or performance validation was performed.
+
 ## 2026-10-24 — Codex documentation and roadmap pass
 
 - Built on the existing Claude-edited specification/scaffold rather than replacing its useful technical detail.

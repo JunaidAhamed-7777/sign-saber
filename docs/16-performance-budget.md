@@ -102,7 +102,7 @@ Apply effective pixel ratio to the 3D drawing buffer, not the DOM HUD. Mask cade
 
 ### Boot probe
 
-Start at medium on an unknown device. Prewarm shaders, then probe a representative scene with declared notes, shards, mask uploads and bloom for at least two seconds. A procedural mask is labelled in diagnostics. Measure callback interval percentiles, CPU headroom and valid GPU duration. Compare delivery against actual refresh rate: a fast GPU does not make 60 Hz rAF deltas fall below 10 ms.
+Start at medium on an unknown device. BOOT may run capability/render-only checks, but must reach the camera-free menu and placeholder without opening a stream. Prewarm required effects and validate the full representative tracking-on scene after explicit setup succeeds, with declared notes, shards, mask uploads and bloom for at least two seconds. Procedural input is labelled in diagnostics. Measure interval percentiles, CPU headroom and valid GPU duration; an empty/placeholder scene cannot certify play performance.
 
 Downshift when delivery fails or CPU headroom is inadequate. Test high only in a separate scene pass that meets the same gates with the higher workload; without reliable GPU timing, remain conservative. Persist a probe result with browser/build/viewport/DPR identity and re-probe after relevant changes. Camera-on play validates the choice because a synthetic scene omits inference contention. `?probe=1` reruns; `?tier=low|medium|high` forces a declared QA tier.
 

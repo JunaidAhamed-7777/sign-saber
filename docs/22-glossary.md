@@ -44,6 +44,10 @@
 
 ## Build and measurement terms
 
+- **Menu pointer:** an independent viewport-space cursor driven by the chosen hand's palm centroid; Open moves and an armed Point transition activates one app-owned control. It is not the gameplay blade/beam cursor.
+- **Placeholder person:** an illustrative central menu figure before current camera/body calibration is ready. It produces no tracking samples, confidence, score or benchmark evidence.
+- **Camera setup:** a SELECT subflow that enables/checks the camera and records calibration without needing a selected song. Its labelled live positioning preview is distinct from a calibrated browse figure.
+
 - **Accuracy:** unmultiplied earned base points divided by possible base points, as defined in [07](07-hit-detection-and-scoring.md). It measures judgement quality independently of multiplier recovery.
 - **Capture time:** the main-performance-domain timestamp associated with a camera/input sample; distinct from inference completion and consumption time. It is a browser pipeline timestamp, not direct measurement of physical motion onset.
 - **Tracking age:** consumption time minus normalized capture time. A fast inference result can still be stale if it waited in a queue.

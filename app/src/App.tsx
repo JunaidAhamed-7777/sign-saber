@@ -31,17 +31,21 @@ function Status() {
   const replay = useStore((s) => s.replay);
   const camera = useStore((s) => s.camera);
   const ready = useStore((s) => s.trackingReady);
-  const tone = replay ? 'dataset' : camera.calibrationValid ? (ready ? 'active' : 'warning') : 'idle';
+  const datasetCamera = useStore((s) => s.cameraSource === 'dataset');
+  const tone =
+    replay || datasetCamera ? 'dataset' : camera.calibrationValid ? (ready ? 'active' : 'warning') : 'idle';
   return (
     <span className={`camera-status ${tone}`} role="status">
       <i aria-hidden="true" />
       {replay
         ? trial.source
-        : camera.calibrationValid
-          ? ready
-            ? t.cameraReady
-            : t.lostFigure
-          : t.cameraNotReady}
+        : datasetCamera
+          ? t.datasetCamera
+          : camera.calibrationValid
+            ? ready
+              ? t.cameraReady
+              : t.lostFigure
+            : t.cameraNotReady}
     </span>
   );
 }
@@ -144,6 +148,7 @@ export function App({ runtime }: { runtime: GameRuntime }) {
   const replay = useStore((s) => s.replay);
   const stats = useStore((s) => s.stats);
   const fatal = useStore((s) => s.fatal);
+  const datasetCamera = useStore((s) => s.cameraSource === 'dataset');
   useEffect(() => {
     document.documentElement.dataset.motion = calm ? 'calm' : 'standard';
   }, [calm]);
@@ -165,6 +170,14 @@ export function App({ runtime }: { runtime: GameRuntime }) {
             ◆
           </span>
           {runtime.flags?.replay ? t.replay : trial.banner}
+        </div>
+      )}
+      {datasetCamera && !replay && (
+        <div className="replay-label" role="note">
+          <span className="replay-mark" aria-hidden="true">
+            ◆
+          </span>
+          {t.datasetCameraBanner}
         </div>
       )}
       {credits ? (

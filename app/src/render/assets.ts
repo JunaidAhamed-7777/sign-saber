@@ -6,7 +6,7 @@ import type { Vec3 } from '../core/types';
 import { ASSET_MODEL_MAX_BYTES } from '../core/constants';
 
 export type GeometryAsset =
-  'armor' | 'beam_ring' | 'glyphs' | 'pylon' | 'block_fractured' | 'arena_environment';
+  'armor' | 'beam_ring' | 'glyphs' | 'pylon' | 'block_fractured' | 'arena_environment' | 'block_shell';
 export interface ShardAsset {
   geometry: THREE.BufferGeometry;
   offset: Vec3;
@@ -15,7 +15,15 @@ export interface ArenaAssets {
   armor: THREE.BufferGeometry;
   beamRing: THREE.BufferGeometry;
   glyphs: Record<'slash' | 'smash' | 'beam', THREE.BufferGeometry>;
+  /** Directional cut chevron pointing +Y; drawn only for notes whose `dir` is not `any`. */
+  glyphArrow: THREE.BufferGeometry;
+  /** 1 m bevelled glass shell; per-vertex `aTrim` is 1 on the emissive bevel trims. */
+  blockShell: THREE.BufferGeometry;
+  /** Faceted inner light core of the block, centred at the origin. */
+  blockCore: THREE.BufferGeometry;
+  /** Pylon with per-vertex `aTrim` = 1 on the recessed strip and lit crown. */
   pylon: THREE.BufferGeometry;
+  /** Centroid-local shards; per-vertex `aInner` is 1 on fracture (cross-section) faces. */
   shards: ShardAsset[];
   shardMode: 'procedural-eight' | 'authored-eight' | 'authored-fourteen';
   environment: THREE.Group | null;
@@ -31,6 +39,7 @@ const ASSET_NAMES: readonly GeometryAsset[] = [
   'pylon',
   'block_fractured',
   'arena_environment',
+  'block_shell',
 ];
 
 /** Validate binary framing and ban external resources before GLTFLoader can follow a URI. */
@@ -74,11 +83,11 @@ export function signedGeometryVolume(geometry: THREE.BufferGeometry): number {
   }
   return volume;
 }
-function merge(parts: THREE.BufferGeometry[]): THREE.BufferGeometry {
+function merge(parts: THREE.BufferGeometry[], keep: readonly string[] = []): THREE.BufferGeometry {
   const normalized = parts.map((part) => {
     const out = part.index ? part.toNonIndexed() : part.clone();
     for (const name of Object.keys(out.attributes))
-      if (name !== 'position' && name !== 'normal') out.deleteAttribute(name);
+      if (name !== 'position' && name !== 'normal' && !keep.includes(name)) out.deleteAttribute(name);
     if (!out.getAttribute('normal')) out.computeVertexNormals();
     return out;
   });
@@ -89,6 +98,12 @@ function merge(parts: THREE.BufferGeometry[]): THREE.BufferGeometry {
 }
 function box(w: number, h: number, d: number, x = 0, y = 0, z = 0): THREE.BufferGeometry {
   return new THREE.BoxGeometry(w, h, d).translate(x, y, z);
+}
+/** Adds a constant per-vertex float attribute (for example a material-derived surface flag). */
+function tag(geometry: THREE.BufferGeometry, name: string, value: number): THREE.BufferGeometry {
+  const count = geometry.getAttribute('position').count;
+  geometry.setAttribute(name, new THREE.BufferAttribute(new Float32Array(count).fill(value), 1));
+  return geometry;
 }
 function glyph(kind: 'slash' | 'smash' | 'beam'): THREE.BufferGeometry {
   const parts = [box(0.38, 0.32, 0.05, 0, -0.1, 0)];
@@ -103,13 +118,36 @@ function glyph(kind: 'slash' | 'smash' | 'beam'): THREE.BufferGeometry {
   }
   return merge(parts);
 }
+function chevron(): THREE.BufferGeometry {
+  const arm = (angle: number, x: number): THREE.BufferGeometry =>
+    new THREE.BoxGeometry(0.42, 0.13, 0.04).rotateZ(angle).translate(x, 0.02, 0);
+  return merge([arm(Math.PI / 4, -0.14), arm(-Math.PI / 4, 0.14)]);
+}
+/** Fallback shell: an unbevelled unit cube; the block shader derives its edge trims procedurally. */
+function fallbackShell(): THREE.BufferGeometry {
+  return tag(new THREE.BoxGeometry(1, 1, 1).toNonIndexed(), 'aTrim', 0);
+}
 export function fallbackShards(): ShardAsset[] {
   const result: ShardAsset[] = [];
-  for (let index = 0; index < 8; index++)
-    result.push({
-      geometry: box(0.5, 0.5, 0.5),
-      offset: { x: index & 1 ? 0.25 : -0.25, y: index & 2 ? 0.25 : -0.25, z: index & 4 ? 0.25 : -0.25 },
-    });
+  for (let index = 0; index < 8; index++) {
+    const offset = { x: index & 1 ? 0.25 : -0.25, y: index & 2 ? 0.25 : -0.25, z: index & 4 ? 0.25 : -0.25 },
+      geometry = box(0.5, 0.5, 0.5),
+      position = geometry.getAttribute('position'),
+      normal = geometry.getAttribute('normal'),
+      inner = new Float32Array(position.count);
+    // Faces lying on the cube's internal x/y/z = 0 planes are fracture (inner) surfaces.
+    for (let i = 0; i < position.count; i++) {
+      const world =
+        Math.abs(normal.getX(i)) > 0.5
+          ? position.getX(i) + offset.x
+          : Math.abs(normal.getY(i)) > 0.5
+            ? position.getY(i) + offset.y
+            : position.getZ(i) + offset.z;
+      inner[i] = Math.abs(world) < 1e-6 ? 1 : 0;
+    }
+    geometry.setAttribute('aInner', new THREE.BufferAttribute(inner, 1));
+    result.push({ geometry, offset });
+  }
   return result;
 }
 function fallbackAssets(): ArenaAssets {
@@ -119,18 +157,32 @@ function fallbackAssets(): ArenaAssets {
     box(0.06, 0.84, 0.84, 0.55, 0, 0),
     box(0.06, 0.84, 0.84, -0.55, 0, 0),
   ]);
-  const pylon = new THREE.CylinderGeometry(0.15, 0.25, 6, 6).translate(0, 3, 0);
+  // Fallback pylon has no recessed strip, so its aTrim mask is empty (body only).
+  const pylon = tag(new THREE.CylinderGeometry(0.15, 0.25, 6, 6).translate(0, 3, 0), 'aTrim', 0);
   return {
     armor,
     beamRing: new THREE.TorusGeometry(0.42, 0.03, 8, 48),
     glyphs: { slash: glyph('slash'), smash: glyph('smash'), beam: glyph('beam') },
+    glyphArrow: chevron(),
+    blockShell: fallbackShell(),
+    blockCore: new THREE.IcosahedronGeometry(0.17, 0),
     pylon,
     shards: fallbackShards(),
     shardMode: 'procedural-eight',
     environment: null,
   };
 }
-function meshGeometry(scene: THREE.Object3D, name: string): { geometry: THREE.BufferGeometry; offset: Vec3 } {
+interface ExtractOptions {
+  /** Convert the glTF COLOR_0 red channel into a float `aTrim` mask (0 when absent). */
+  readonly trim?: boolean;
+  /** Tag primitives whose material is named `inner` with `aInner` = 1. */
+  readonly inner?: boolean;
+}
+function meshGeometry(
+  scene: THREE.Object3D,
+  name: string,
+  options: ExtractOptions = {},
+): { geometry: THREE.BufferGeometry; offset: Vec3 } {
   const node = scene.getObjectByName(name);
   if (!node) throw new Error(`Model is missing ${name}.`);
   scene.updateMatrixWorld(true);
@@ -141,11 +193,23 @@ function meshGeometry(scene: THREE.Object3D, name: string): { geometry: THREE.Bu
     if (child instanceof THREE.Mesh) {
       const geometry = child.geometry.clone().applyMatrix4(child.matrixWorld);
       geometry.translate(-center.x, -center.y, -center.z);
+      if (options.trim) {
+        const color = geometry.getAttribute('color'),
+          trim = new Float32Array(geometry.getAttribute('position').count);
+        if (color) for (let i = 0; i < trim.length; i++) trim[i] = color.getX(i) > 0.5 ? 1 : 0;
+        geometry.setAttribute('aTrim', new THREE.BufferAttribute(trim, 1));
+      }
+      if (options.inner) {
+        const material = (Array.isArray(child.material) ? child.material[0] : child.material) as
+          THREE.Material | undefined;
+        tag(geometry, 'aInner', material?.name === 'inner' ? 1 : 0);
+      }
       parts.push(geometry);
     }
   });
   if (!parts.length) throw new Error(`Model node ${name} contains no geometry.`);
-  return { geometry: merge(parts), offset: { x: center.x, y: center.y, z: center.z } };
+  const keep = [...(options.trim ? ['aTrim'] : []), ...(options.inner ? ['aInner'] : [])];
+  return { geometry: merge(parts, keep), offset: { x: center.x, y: center.y, z: center.z } };
 }
 function disposeSource(scene: THREE.Object3D): void {
   const geometries = new Set<THREE.BufferGeometry>(),
@@ -173,8 +237,12 @@ export class AssetRegistry {
   constructor() {
     this.collect(this.assets);
   }
-  private extract(scene: THREE.Object3D, name: string): { geometry: THREE.BufferGeometry; offset: Vec3 } {
-    const asset = meshGeometry(scene, name);
+  private extract(
+    scene: THREE.Object3D,
+    name: string,
+    options: ExtractOptions = {},
+  ): { geometry: THREE.BufferGeometry; offset: Vec3 } {
+    const asset = meshGeometry(scene, name, options);
     this.ownedGeometries.add(asset.geometry);
     return asset;
   }
@@ -183,6 +251,9 @@ export class AssetRegistry {
       assets.armor,
       assets.beamRing,
       assets.pylon,
+      assets.glyphArrow,
+      assets.blockShell,
+      assets.blockCore,
       ...Object.values(assets.glyphs),
       ...assets.shards.map((s) => s.geometry),
     ])
@@ -232,7 +303,7 @@ export class AssetRegistry {
             for (let i = 0; i < names.length; i++)
               if (names[i] !== `shard_${String(i).padStart(2, '0')}`)
                 throw new Error('Fractured shard names are incomplete.');
-            const shards = names.map((node) => this.extract(scene!, node));
+            const shards = names.map((node) => this.extract(scene!, node, { inner: true }));
             let volume = 0;
             for (const shard of shards) {
               volume += Math.abs(signedGeometryVolume(shard.geometry));
@@ -249,14 +320,22 @@ export class AssetRegistry {
             this.assets.shards = shards;
             this.assets.shardMode = shards.length === 14 ? 'authored-fourteen' : 'authored-eight';
           } else if (name === 'glyphs') {
-            this.assets.glyphs = {
-              slash: this.extract(scene, 'glyph_palm').geometry,
-              smash: this.extract(scene, 'glyph_fist').geometry,
-              beam: this.extract(scene, 'glyph_point').geometry,
-            };
+            const glyphs = {
+                slash: this.extract(scene, 'glyph_palm').geometry,
+                smash: this.extract(scene, 'glyph_fist').geometry,
+                beam: this.extract(scene, 'glyph_point').geometry,
+              },
+              arrow = this.extract(scene, 'glyph_arrow').geometry;
+            this.assets.glyphs = glyphs;
+            this.assets.glyphArrow = arrow;
+          } else if (name === 'block_shell') {
+            const shell = this.extract(scene, 'block_shell', { trim: true }).geometry,
+              core = this.extract(scene, 'block_core').geometry;
+            this.assets.blockShell = shell;
+            this.assets.blockCore = core;
           } else if (name === 'armor') this.assets.armor = this.extract(scene, 'armor_plates').geometry;
           else if (name === 'beam_ring') this.assets.beamRing = this.extract(scene, 'beam_ring').geometry;
-          else this.assets.pylon = this.extract(scene, 'pylon').geometry;
+          else this.assets.pylon = this.extract(scene, 'pylon', { trim: true }).geometry;
           this.collect(this.assets);
           this.status[name] = { state: 'authored', error: null };
         } catch (error) {

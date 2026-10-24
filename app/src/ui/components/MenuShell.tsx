@@ -261,6 +261,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
   const mask = useStore((s) => s.maskAvailable);
   const replay = useStore((s) => s.replay);
   const trialSource = useStore((s) => s.trialSource);
+  const datasetCamera = useStore((s) => s.cameraSource === 'dataset');
   const live = available && (replay || camera.calibrationValid || camera.mode === 'camera-setup');
   const saved = state === 'RESULTS' && highlight !== null;
   const frozen = state === 'PAUSED' && !!runtime.renderer?.hasFrozenFigure;
@@ -326,6 +327,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
       {state !== 'PLAYING' && (
         <p className="figure-caption">
           {label}
+          {datasetCamera && !placeholder ? ` · ${strings.datasetCamera}` : ''}
           {saved ? ` · ${Math.max(0, highlight! / 1000).toFixed(1)} s` : ''}
         </p>
       )}
@@ -416,6 +418,20 @@ function useSettingsPages(runtime: GameRuntime, enabled: boolean): MenuPage[] {
           <Button runtime={runtime} id="camera-off" disabled={!camera.calibrationValid}>
             {strings.cameraOff}
           </Button>
+        </>
+      ),
+    });
+  if (state === 'SELECT')
+    pages.push({
+      id: 'settings-dataset-camera',
+      label: strings.datasetCameraUse,
+      content: (
+        <>
+          <RailHeading eyebrow={strings.settings} title={strings.datasetCameraUse} />
+          <Button runtime={runtime} id="camera-dataset" nativeOnly disabled={camera.state === 'setting-up'}>
+            {strings.datasetCameraUse}
+          </Button>
+          <p className="note">{strings.datasetCameraAbout}</p>
         </>
       ),
     });

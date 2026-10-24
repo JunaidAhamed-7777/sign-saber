@@ -227,9 +227,11 @@ export async function checkModelAssets({ khronos = null } = {}) {
     "glyphs",
     "pylon",
     "arena_environment",
+    "block_shell",
   ];
+  // This generator's assets come first; entries from separate generators may follow.
   assert.deepEqual(
-    manifest.assets.map((a) => a.id),
+    manifest.assets.slice(0, ids.length).map((a) => a.id),
     ids,
   );
   const budgets = {
@@ -239,11 +241,12 @@ export async function checkModelAssets({ khronos = null } = {}) {
     glyphs: 1200,
     pylon: 600,
     arena_environment: 3000,
+    block_shell: 400,
   };
   const reports = [];
   let totalTriangles = 0,
     totalBytes = 0;
-  for (const entry of manifest.assets) {
+  for (const entry of manifest.assets.filter((a) => ids.includes(a.id))) {
     const path = resolve(root, "app/public" + entry.path),
       bytes = await readFile(path);
     assert.equal(hash(bytes), entry.sha256, entry.id + " hash");
@@ -260,7 +263,11 @@ export async function checkModelAssets({ khronos = null } = {}) {
       assert.equal(glb.instances.length, manifest.shardCount);
       let volume = 0;
       for (const instance of glb.instances) {
-        assert.match(instance.name, /^shard_0[0-7]$/);
+        assert.match(instance.name, /^shard_[0-9]{2}$/);
+        assert.ok(
+          Number(instance.name.slice(6)) < manifest.shardCount,
+          "contiguous shard names",
+        );
         const measured = volumeAndCentroid(instance);
         volume += measured.volume;
         for (let a = 0; a < 3; a++) {
@@ -284,7 +291,7 @@ export async function checkModelAssets({ khronos = null } = {}) {
     }
     if (entry.id === "glyphs")
       for (const instance of glb.instances) {
-        assert.match(instance.name, /^glyph_(palm|fist|point)$/);
+        assert.match(instance.name, /^glyph_(palm|fist|point|arrow)$/);
         assert.ok(instance.triangles.length <= 400);
         assert.ok(
           instance.bounds.max[0] - instance.bounds.min[0] <= 0.80001 &&
@@ -314,6 +321,23 @@ export async function checkModelAssets({ khronos = null } = {}) {
     }
     if (entry.id === "armor" || entry.id === "beam_ring")
       for (const instance of glb.instances) volumeAndCentroid(instance);
+    if (entry.id === "block_shell") {
+      for (const instance of glb.instances) {
+        volumeAndCentroid(instance);
+        for (let a = 0; a < 3; a++)
+          assert.ok(
+            instance.bounds.min[a] >= -0.50001 &&
+              instance.bounds.max[a] <= 0.50001,
+            "block shell inside the unit cube",
+          );
+      }
+      const shell = glb.instances.find((i) => i.name === "block_shell");
+      assert.ok(
+        shell.colors.some((c) => c[0] > 0.9) &&
+          shell.colors.some((c) => c[0] < 0.1),
+        "block shell COLOR_0 trim mask",
+      );
+    }
     if (entry.id === "arena_environment") {
       for (const i of glb.instances) {
         const b = i.bounds;
@@ -364,8 +388,14 @@ export async function checkModelAssets({ khronos = null } = {}) {
     totalTriangles += glb.triangles;
     totalBytes += bytes.length;
   }
-  assert.equal(totalTriangles, manifest.totalTriangles);
-  assert.equal(totalBytes, manifest.totalGlbBytes);
+  assert.equal(
+    manifest.assets.reduce((n, a) => n + a.triangles, 0),
+    manifest.totalTriangles,
+  );
+  assert.equal(
+    manifest.assets.reduce((n, a) => n + a.bytes, 0),
+    manifest.totalGlbBytes,
+  );
   assert.ok(
     totalTriangles <= 6000 && totalBytes <= 1024 * 1024,
     "combined asset budgets",

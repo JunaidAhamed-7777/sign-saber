@@ -37,3 +37,6 @@ server/cache/*
 
 # Temporary isolated npm cache
 .npm-task-cache/
+
+# Sign Saber: local dataset-camera photo reel (COCO crops; pixels are never committed)
+app/public/dataset-camera/

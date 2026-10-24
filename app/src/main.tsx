@@ -1,11 +1,8 @@
-/**
- * Sign Saber — main.tsx
- *
- * Responsibility: Application entry: creates the WebGL renderer, starts the game loop, mounts the React root.
- * Spec: docs/02-architecture.md §Frame loop; docs/04-state-machine.md §BOOT
- * Inputs: DOM #app, #hud
- * Outputs: Running app
- *
- * Implementation follows ROADMAP.md phase gates. This file documents the module contract only.
- */
-export {};
+import { createRoot } from 'react-dom/client';
+import { App } from './App';
+import { GameRuntime } from './core/runtime';
+import './ui/theme.css';
+const runtime = new GameRuntime(document.getElementById('app')!);
+createRoot(document.getElementById('hud')!).render(<App runtime={runtime} />);
+void runtime.boot();
+if (import.meta.hot) import.meta.hot.dispose(() => runtime.dispose());

@@ -1,27 +1,14 @@
-# Sign Saber — web client
+# Sign Saber web client
 
-Vite + TypeScript + Three.js + React. The specification lives in [`../docs/`](../docs/README.md); start with [02 — Architecture](../docs/02-architecture.md) for the module map and contracts.
+Vite, TypeScript, Three.js, React and Zustand. See the [root README](../README.md) for the current dataset-first workflow and [architecture](../docs/02-architecture.md) for contracts.
 
-## Commands
+From this folder, run `npm ci` then `npm run dev`. The menu browses local music without a camera. Enable sound, choose a track and use **Try level with dataset**; it builds a real short arrangement and clearly labels its static annotated-pose source. No model inference or webcam accuracy is implied.
 
-| Command | What it does |
-| --- | --- |
-| `npm install` | Install dependencies |
-| `npm run models` | Copy MediaPipe WASM from `node_modules` and download the `.task` models into `public/models/` (needs network once; see `scripts/download-models.mjs`) |
-| `npm run dev` | Dev server on <http://localhost:5173> (camera works on `localhost` without HTTPS) |
-| `npm run typecheck` | Strict TypeScript check |
-| `npm run lint` | ESLint |
-| `npm run test` | Vitest; currently ten placeholder files and zero assertions, not gameplay coverage |
-| `npm run build` | Production build into `dist/` |
-| `npm run check` | typecheck + lint + test + build (what CI runs) |
-| `npm run beatmaps` | Placeholder; exits with an error until the real P2 generator exists |
+- `npm run check`: strict typecheck, ESLint, asserted Vitest suites and production build.
+- `npm run format:check`: source formatting; generated assets/raw evidence are excluded to preserve hashes.
+- `npm run build` / `npm run preview`: prepared loopback build at [127.0.0.1:4173](http://127.0.0.1:4173).
+- `npm run models`: pinned/hashed optional MediaPipe preparation before a camera-capable offline build.
+- `npm run beatmaps`: real shared-DSP bundled-map generator; requires ffmpeg.
+- `npm run music` / `npm run fonts`: verify/reacquire documented pinned source assets.
 
-## Folder map
-
-See [02 — Architecture §Source layout](../docs/02-architecture.md#source-layout). Every file under `src/` currently holds only a documented contract; the browser page is an empty shell. Start implementation with P0/P1 in [ROADMAP.md](../ROADMAP.md). The inherited event timing/folder restrictions no longer apply; keep contracts and links accurate if paths change.
-
-## Runtime assets
-
-`public/models/` is git-ignored except for its README. The downloader copies WASM and fetches models; P0 still needs pinned model checksums. `public/assets/tracks/` has no bundled music yet. A fully prepared production build must pass the offline exercise in P5; downloading models does not make the stub game playable.
-
-Use Node 22.12+ on CI's Node 22 line. `npm ci` reproduces the lockfile. From the root, `node scripts/check-docs.mjs` validates local documentation paths/fragments; see the [root README](../README.md) for current command/status details.
+All three full songs, nine maps, local fonts, six Blender-authored GLBs and attributed dataset annotations are packaged. Source photos and raw camera pixels are not distributed. Native camera setup and gameplay human/performance acceptance remain separate open gates. See [the roadmap](../ROADMAP.md) and [evidence protocol](../docs/24-benchmark-and-evidence.md).

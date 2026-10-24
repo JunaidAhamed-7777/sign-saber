@@ -23,8 +23,9 @@ export default tseslint.config(
       'no-restricted-syntax': [
         'warn',
         {
-          selector: "NewExpression[callee.name=/^(Vector2|Vector3|Quaternion|Matrix4|Color)$/]",
-          message: 'Avoid allocating Three.js math objects in hot paths; reuse module-level scratch instances (docs/16-performance-budget.md).',
+          selector: 'NewExpression[callee.name=/^(Vector2|Vector3|Quaternion|Matrix4|Color)$/]',
+          message:
+            'Avoid allocating Three.js math objects in hot paths; reuse module-level scratch instances (docs/16-performance-budget.md).',
         },
       ],
     },

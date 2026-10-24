@@ -29,7 +29,7 @@ omitted:
 
 ## Overview
 
-**Status: maintained specification, not a rendered interface.** The project is still a scaffold. This file preserves the visual direction for the next implementation chat; [14 — UI/UX](docs/14-ui-ux.md) and [25 — Menu & Hand Navigation](docs/25-menu-and-hand-navigation.md) remain the behavioral equivalents of a UX contract.
+**Status: implemented experimental interface with a dataset-first trial.** The shared rails, upper-body placeholder, local content and Blender arena are rendered; release-level human/accessibility/performance verification remains open. This file preserves the visual direction; [14 — UI/UX](docs/14-ui-ux.md) and [25 — Menu & Hand Navigation](docs/25-menu-and-hand-navigation.md) remain the behavioral equivalents of a UX contract.
 
 The reference is a rhythm arena's control booth: the person is the live instrument, framed by quiet controls. The audience stands in front of a laptop and needs to see themselves, choose music and understand an action from normal playing distance. This is a product interface with a theatrical player reveal, rather than a marketing landing page or a dense dashboard. The initial language is English; no Japan-market or multilingual support is claimed.
 
@@ -37,7 +37,7 @@ The figure is upper body only: head, arms/hands and torso ending at the hips; ne
 
 Avoid full-screen menu panels over the player, tiny floating controls, unrelated decorative chrome, hover autoplay and fake tracked figures. Familiar buttons and explicit feedback carry the utility; the player and music carry the expression.
 
-**Token mapping:** this frontmatter preserves the existing palette/font roles from the UI spec and is their visual source going forward. During P0, map it once to the planned `app/src/ui/theme.css`: background→`--void`, panel→`--panel`, primary→`--cyan`, smash→`--magenta`, beam→`--gold`, danger→`--danger`, text→`--text`, muted→`--muted`. The CSS excerpt in [14](docs/14-ui-ux.md#colour-tokens) mirrors this source. Runtime CSS is not implemented yet. Font scales/motion/components stay in docs14; behavioral/menu geometry values stay in [02](docs/02-architecture.md#constants). Change their owners and adapters together when implementation exists.
+**Token mapping:** this frontmatter preserves the existing palette/font roles from the UI spec and is their visual source going forward. During P0, map it once to the planned `app/src/ui/theme.css`: background→`--void`, panel→`--panel`, primary→`--cyan`, smash→`--magenta`, beam→`--gold`, danger→`--danger`, text→`--text`, muted→`--muted`. The CSS excerpt in [14](docs/14-ui-ux.md#colour-tokens) mirrors this source. Runtime CSS now maps these tokens in ui/theme.css. Font scales/motion/components stay in docs14; behavioral/menu geometry values stay in [02](docs/02-architecture.md#constants). Change their owners and adapters together when implementation exists.
 
 ## Colors
 

@@ -69,6 +69,26 @@ beforeEach(() => {
 });
 afterEach(() => vi.unstubAllGlobals());
 describe('generation job lifecycle (synthetic browser boundaries)', () => {
+  it('preserves explicit derivative title/artist without changing file-byte identity', async () => {
+    const client = new GeneratorClient({} as BaseAudioContext);
+    const generated = client.generate(file(), 'normal', undefined, {
+      title: 'Derived arrangement',
+      artist: 'Original credited artist',
+    });
+    await vi.waitFor(() => expect(FakeWorker.instances).toHaveLength(1));
+    const worker = FakeWorker.instances[0]!,
+      request = worker.messages[0]!;
+    expect(request.type).not.toBe('cancel');
+    if (request.type !== 'cancel')
+      expect(request.meta).toMatchObject({
+        title: 'Derived arrangement',
+        artist: 'Original credited artist',
+        source: 'upload',
+      });
+    worker.emit({ type: 'done', jobId: request.jobId, map: returnedMap(worker), warnings: [] });
+    expect((await generated).map.song.artist).toBe('Original credited artist');
+    client.dispose();
+  });
   it('cancels immediately even while a native read promise cannot be aborted', async () => {
     const client = new GeneratorClient({} as BaseAudioContext);
     const slowFile = {

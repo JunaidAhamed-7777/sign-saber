@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Integrated dataset-first game
+
+- Codex integrated lifecycle/audio/source ownership and the actual 80 s dataset trial; agents built shared accessible menu pages and the authored/fallback renderer, exact slicer and head-to-hips snapshots. Native browser results, 250 assertions and source checks are recorded separately from unavailable human/performance proof. Original starter music and working history were preserved.
+
 ## 2026-10-25 — Upper-body RGB training research
 
 - A dedicated agent researched primary dataset grants and local compute, acquired the explicitly eligible COCO subset/MPII annotations and implemented real RGB training/evaluation/export. Seven assertions and numeric ONNX parity passed. The genuine short preflight worsened held-out loss; incomplete training and oracle ROI are disclosed, with no production model promotion.

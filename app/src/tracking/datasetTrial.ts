@@ -59,12 +59,14 @@ export function validateDatasetTrial(value: unknown): DatasetTrialFixture {
     value.samples.length > DATASET_TRIAL_MAX_SAMPLES
   )
     throw new Error('Unsupported annotated dataset trial.');
-  const identities=new Set<string>();
+  const identities = new Set<string>();
   for (const sample of value.samples) {
     if (
       !record(sample) ||
       typeof sample.sampleId !== 'string' ||
-      !sample.sampleId.trim() || sample.sampleId.length>ASSET_TEXT_MAX_CHARS || identities.has(sample.sampleId) ||
+      !sample.sampleId.trim() ||
+      sample.sampleId.length > ASSET_TEXT_MAX_CHARS ||
+      identities.has(sample.sampleId) ||
       !Number.isFinite(sample.width) ||
       !Number.isFinite(sample.height) ||
       Number(sample.width) <= 0 ||
@@ -78,12 +80,16 @@ export function validateDatasetTrial(value: unknown): DatasetTrialFixture {
       if (
         !record(point) ||
         typeof point.name !== 'string' ||
-        !Object.hasOwn(joints,point.name) ||
+        !Object.hasOwn(joints, point.name) ||
         seen.has(point.name) ||
         !Number.isFinite(point.x) ||
         !Number.isFinite(point.y) ||
-        typeof point.visibility!=='number' || ![0,1,2].includes(point.visibility) ||
-        Number(point.x)<0 || Number(point.x)>Number(sample.width) || Number(point.y)<0 || Number(point.y)>Number(sample.height)
+        typeof point.visibility !== 'number' ||
+        ![0, 1, 2].includes(point.visibility) ||
+        Number(point.x) < 0 ||
+        Number(point.x) > Number(sample.width) ||
+        Number(point.y) < 0 ||
+        Number(point.y) > Number(sample.height)
       )
         throw new Error('Invalid annotated upper-body joint.');
       seen.add(point.name);
@@ -131,8 +137,11 @@ export class DatasetTrial {
   private nextAt: number;
   private sequence = 0;
   sampleIndex = 0;
-  private lastDelivered=-Infinity;
-  private static clock(now:number):void{if(!Number.isFinite(now)||now<0||now>Number.MAX_SAFE_INTEGER/2)throw new RangeError('Invalid dataset clock timestamp.');}
+  private lastDelivered = -Infinity;
+  private static clock(now: number): void {
+    if (!Number.isFinite(now) || now < 0 || now > Number.MAX_SAFE_INTEGER / 2)
+      throw new RangeError('Invalid dataset clock timestamp.');
+  }
   constructor(
     readonly fixture: DatasetTrialFixture,
     now: number,
@@ -158,7 +167,8 @@ export class DatasetTrial {
     return new DatasetTrial(validateDatasetTrial(JSON.parse(new TextDecoder().decode(bytes))), now);
   }
   rebase(now: number): void {
-    DatasetTrial.clock(now);if(now<this.lastDelivered)throw new RangeError('Dataset clock cannot run backwards.');
+    DatasetTrial.clock(now);
+    if (now < this.lastDelivered) throw new RangeError('Dataset clock cannot run backwards.');
     this.nextAt = now;
   }
   advance(
@@ -167,7 +177,8 @@ export class DatasetTrial {
     consume: (frame: TrackingFrame, arrival: number, changed: boolean) => void,
   ): void {
     DatasetTrial.clock(now);
-    if((now-this.nextAt)*DATASET_TRIAL_HZ/1000>=DATASET_TRIAL_MAX_CATCHUP_FRAMES)throw new RangeError('Dataset timeline stalled; return to Songs and restart the trial.');
+    if (((now - this.nextAt) * DATASET_TRIAL_HZ) / 1000 >= DATASET_TRIAL_MAX_CATCHUP_FRAMES)
+      throw new RangeError('Dataset timeline stalled; return to Songs and restart the trial.');
     while (this.nextAt <= now) {
       const time = this.nextAt,
         songTime = songAt(time);
@@ -180,7 +191,7 @@ export class DatasetTrial {
       frame.seq = this.sequence++;
       frame.tCapture = time;
       frame.tInferDone = time;
-      this.lastDelivered=time;
+      this.lastDelivered = time;
       consume(frame, time, changed);
       this.nextAt += 1000 / DATASET_TRIAL_HZ;
     }

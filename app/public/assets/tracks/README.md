@@ -48,6 +48,14 @@ The optional development command `node scripts/check-audio-resampling.mjs` runs 
 
 From `app/`, the asset integrity and chart assertions are part of `npm run test`. The tests hash all three audio files/all nine maps and exercise malformed manifests/maps, density, walls, beam sustain and deterministic synthetic signals. Tests do not listen to music or establish human playability.
 
+## Dynamic arrangements
+
+[The arrangement module](../../../../app/src/audio/arrange.ts) can render a new continuous 80-second derivative: a 10-second fade in, 60-second central highlight and 10-second fade out. The selection scores measured energy and distinct onset evidence; confident beat analysis can constrain highlight starts to tracked beats. Uncertain tempo stays labelled, and this heuristic is not a verified chorus detector. Shorter inputs retain their actual duration with proportional fades rather than looping or inventing missing music.
+
+The output is an actual float32 WAV file and audio buffer. Its receipt records the original file identity, selected source sample bounds, fade/highlight bounds, changes, derivative WAV hash and canonical analysis PCM hash. Generate a fresh chart from those derivative file bytes; the original full-song chart must never be shifted under edited audio. The local in-memory derivative follows the local-file generator path while retaining the original track/artist and edit provenance.
+
+`node scripts/check-audio-resampling.mjs --arrangement` runs the actual native browser path for all three starter tracks, decodes each rendered WAV and regenerates a Normal map from its edited PCM. [The recorded result](../../../../app/tests/fixtures/audio/arrangement-browser-result.json) verifies numeric audio/map identity and fades. It does not establish audible quality, human preference for the chosen highlight or live playability. The three original full songs and original acquisition bytes remain packaged separately.
+
 ## Credits
 
 "Pamgaea", "Electro Cabello" and "Cipher" Kevin MacLeod (incompetech.com).

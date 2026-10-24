@@ -12,7 +12,7 @@ This is the working agreement for humans and coding agents in this repository. T
 ## Treat contracts as build inputs
 
 - Identifiers in [02 — Architecture](docs/02-architecture.md) are normative: use `TrackingFrame`, `HandCursor`, `note:hit`, `WINDOW_PERFECT_MS` and other named contracts verbatim.
-- Shared tunables are registered in [02 §Constants](docs/02-architecture.md#constants); renderer/UI-only tables in the linked subsystem docs are explicit sub-registries. During P0, export the specified values centrally from `app/src/core/constants.ts`. That file is currently a stub: do not claim code and tables are already synchronized.
+- Shared tunables are registered in [02 §Constants](docs/02-architecture.md#constants); renderer/UI-only tables in the linked subsystem docs are explicit sub-registries. During P0, export the specified values centrally from `app/src/core/constants.ts`. That file now exports the registry: keep code and tables synchronized.
 - No hidden tunables or subsystem magic numbers. Add a new value to its registry and central exports together once implementation exists. Structural counts and unit conversions should still be named where that improves clarity.
 - If behavior or a contract changes, update its producers, consumers, docs and meaningful tests together. Record the behavior change in `CHANGELOG.md`.
 - Document planned behavior as planned. A passing stub build is not a working game; a replay result is not evidence that a webcam works.
@@ -29,7 +29,7 @@ This is the working agreement for humans and coding agents in this repository. T
 
 ## Validate and record meaningful work
 
-- For application milestones, run `npm run check` in `app/` (typecheck, lint, test, production build). Add behavior tests as implementation arrives; the current ten test files contain no assertions.
+- For application milestones, run `npm run check` in `app/` (typecheck, lint, test, production build). Add behavior tests as implementation arrives; the application now has asserted suites; do not restore empty-suite success.
 - For documentation changes, run `node --test scripts/check-docs.test.mjs` and `node scripts/check-docs.mjs` from the root. The checker verifies local Markdown paths and headings; it does not verify remote URLs or runtime claims.
 - Run targeted additional checks when a change introduces new risks. Follow [17 — Testing & QA](docs/17-testing-and-qa.md) and [24 — Benchmark & Evidence](docs/24-benchmark-and-evidence.md) for release evidence.
 - Update `CHANGELOG.md` in each meaningful commit: actual timestamp with timezone, changed files/behavior, reason, checks actually run and limitations. Preserve the historical record; correct old claims in a new entry.

@@ -1,10 +1,10 @@
 # Sign Saber — Documentation Index
 
-Sign Saber is a planned webcam-controlled rhythm game with a neon body silhouette, gesture-specific destruction and local music analysis. **The repository currently contains specification and scaffold only.** A MUST describes a build requirement; it does not assert that the requirement has shipped.
+Sign Saber is a planned webcam-controlled rhythm game with a neon body silhouette, gesture-specific destruction and local music analysis. **The repository now includes implemented core logic, local content, authored assets and a browser-exercised dataset trial. Release/live-camera gates remain open.** A MUST describes a build requirement; it does not assert that the requirement has shipped.
 
 Begin with **[ROADMAP.md](../ROADMAP.md)**. It is the canonical implementation order and explains what to build, where to start, how to test it and what evidence unlocks the next phase. [19 — Build Plan](19-build-plan.md) is the working checklist; [24 — Benchmark & Evidence](24-benchmark-and-evidence.md) is the measurement protocol. No deadline, team size, folder ownership or judging rubric from an earlier event is binding.
 
-[DESIGN.md](../DESIGN.md) preserves the figure-centred visual direction and maps the UI palette/font roles; docs14/25 own screen and input behavior. All three are specification, not evidence of rendered screens.
+[DESIGN.md](../DESIGN.md) preserves the figure-centred visual direction and maps the UI palette/font roles; docs14/25 own screen and input behavior. They define the implemented visual/behavioral contract; specific browser evidence and open release gates are recorded separately.
 
 ## Product and contracts
 

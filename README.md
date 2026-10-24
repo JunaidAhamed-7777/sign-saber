@@ -1,30 +1,14 @@
 # Sign Saber
 
-**Your body is the controller. The music builds the arena.**
+**Your upper body is the controller. The music builds the arena.**
 
-Sign Saber is a planned browser rhythm game: a webcam turns your movement into a neon silhouette; open hands cut, fists shatter, pointing charges a beam, and leaning dodges incoming walls. Local audio becomes a playable level through on-device beat analysis. No headset or handheld controller.
+Sign Saber is an experimental browser rhythm game with a camera-free music menu, head-to-hips figure, local song analysis and a Three.js arena. **The current priority is a clearly labelled dataset trial.** Camera-free playback, an actual 80-second arrangement and genuine trial results have been exercised in the browser. Live calibrated gesture play, held-out music quality and P4/P5 release evidence remain open.
 
-**Current status: implementation in progress.** Shared contracts and the audio/game logic now have real assertions, including deterministic capture-time replay. The integrated menu, content and camera path are being delivered in separate checkpoints. Live webcam play and P0–P5 acceptance are not complete.
+Start with [ROADMAP.md](ROADMAP.md), [the subsystem index](docs/README.md), [DESIGN.md](DESIGN.md) and [AGENTS.md](AGENTS.md). The user's current scope excludes legs everywhere: placeholder, tracked input, live/setup view, pause and saved results.
 
-Start with the **[build roadmap](ROADMAP.md)** for exact implementation order, dependencies, commit-sized tasks and acceptance gates. The **[docs index](docs/README.md)** links every subsystem contract. Contributors: [AGENTS.md](AGENTS.md).
+## Run
 
-The core menu will keep a human figure in the centre, with song choices/actions around it. Before camera setup/calibration, it shows a placeholder and **Set up camera**; browsing works by mouse/keyboard. After setup, move an open palm to steer a cursor and point to click, alongside the native controls. See the [menu and camera setup contract](docs/25-menu-and-hand-navigation.md).
-
-The local starter library now packages **three full songs**—Pamgaea, Electro Cabello and Cipher by Kevin MacLeod—with exact credits, unchanged CC-BY audio, measured previews, verified hashes and Easy/Normal/Hard maps. See the [starter music registry](app/public/assets/tracks/README.md). Tempo confidence is low for all three, so maps disclose onset-only timing; human musical evaluation is pending.
-
-## What should make it memorable
-
-- A live neon reflection appears before play; the player immediately understands that the webcam sees their movement.
-- A slash splits a block along the swing plane; a punch releases shards; a held point fires a charged beam. Each gesture has its own readable payoff.
-- Beats, drops and quiet passages shape the map and the arena. The generator must pass onset, silence and playability checks before an uploaded song is called ready.
-- The demo ends with real results and a **2.5D** silhouette highlight. The movement-energy number is a playful estimate, never measured exertion or calories burned.
-- The technical story is backed by repeatable evidence: fixed-seed replay, live-camera checks, frame-time percentiles, tracking freshness and musical-quality evaluation. Targets are not results. See [24 — Benchmark & Evidence](docs/24-benchmark-and-evidence.md).
-
-## Run the scaffold
-
-Use Node **22.12+** on the Node 22 line used by CI; `app/package.json` declares a broader `>=20.19` range. A desktop Chrome/Edge build, WebGL2 and a webcam will be needed for gameplay. Compatibility is established by the P0 capability checks, not by an untested minimum browser version.
-
-From the repository root:
+Use a current Node 22 release (CI baseline) or the locally exercised Node 26.8.1/npm 12.2.1. From the repository root:
 
 ```powershell
 cd app
@@ -32,60 +16,84 @@ npm ci
 npm run dev
 ```
 
-Open [localhost:5173](http://localhost:5173). **The current page is an empty scaffold**, not the proposed BOOT or Song Select screen.
+Open [localhost:5173](http://localhost:5173). The initial menu requests no camera or models. The three songs, charts, fonts, dataset annotations and Blender assets are local repository files.
 
-Checks, from `app/`:
+1. Choose Pamgaea, Electro Cabello or Cipher.
+2. Choose **Enable sound** with mouse/keyboard.
+3. **Try level with dataset** automatically builds the short cut; **Make 80-second cut** also lets you prepare it separately. The engine renders 10 seconds fading in, a 60-second energy/onset-supported highlight and 10 seconds fading out, then generates a fresh chart from the edited WAV. Short admitted files disclose proportionally shorter sections. This is a musical heuristic, not verified chorus detection.
+4. Choose **Try level with dataset**. A visible banner identifies independent, attributed COCO still annotations. They contain no recorded movement, hand gestures, metric depth or masks; missing gesture input produces real misses. The browser trial reached actual results with 131 Miss and zero invented hits.
+5. Esc/Space pauses. Resume, Retry and Songs use the same guarded lifecycle. Side-rail pages expose difficulty, preview, volume, appearance, credits and optional live-camera controls.
+
+All three full original songs remain available. The arrangement uses one continuous source window with raised-cosine amplitude fades, avoiding hard joins. It retains exact source/sample/fade bounds and original/new hashes; the old chart is never reused under edited audio. User audio upload is local, bounded and cancellable.
+
+## Prepared local build
 
 ```powershell
-npm run check
+cd app
+npm run build
+npm run preview
 ```
 
-This runs typecheck, lint, Vitest and the production build. Vitest now executes asserted game/audio/core tests. Remaining empty scaffold suites are being replaced during integration; a passing logic replay is not webcam evidence.
+Open [127.0.0.1:4173](http://127.0.0.1:4173). The loopback-only server applies response CSP to documents and workers and serves local audio ranges/WASM. Dataset play needs no model download, account, upload, companion service or external network. A prepared offline venue exercise and all P5 failure drills have not been completed.
 
-From the repository root, check documentation paths and heading fragments:
+## Optional camera path
 
-```powershell
-node --test scripts/check-docs.test.mjs
-node scripts/check-docs.mjs
-```
-
-## Asset preparation and future commands
-
-The existing model downloader can prepare the runtime files after dependencies are installed:
+Prepare pinned MediaPipe assets before building a camera-capable offline bundle:
 
 ```powershell
 cd app
 npm run models
+npm run build
 ```
 
-It copies the installed MediaPipe WASM and downloads model files once; network access is required for the download. The script currently uses upstream `latest` model URLs and size-based reuse. P0 must add pinned model checksums and an asset manifest before calling an offline build reproducible. Do not claim that running this script makes the stub game work.
+Camera setup lives in Settings, independently of song choice. It requires a deliberate native permission action and labelled positioning preview; matching calibration is required for live Start. Head/shoulders/hands/hips must be visible. Only head, arms/hands and torso through hips are retained/displayed. The upstream pretrained pose network may internally infer legs, but application outputs, masks and recordings exclude them. Raw camera pixels stay local; the dependency's disclosed metrics attempts are blocked by the prepared server's same-origin response policy.
 
-- `npm run build` / `npm run preview` in `app/`: create/serve the scaffold production bundle; preview uses [localhost:4173](http://localhost:4173).
-- `npm run beatmaps` in `app/`: **placeholder; deliberately exits with an error**. The real generation command is a P2 task.
-- `npm run server` in `server/`: invokes the current empty companion entry point and exits. The optional service is a future `[POLISH]` feature, specified in [23](docs/23-youtube-companion-service.md).
-- No environment variables or API keys are needed. Browser upload and the eventual bundled tracks are the primary audio paths.
+Bounded buffers, capture-time scoring, palm-to-point menu navigation, gesture hysteresis, charge, torso walls and recovery are implemented. Native camera setup reached GPU preview and Cancel retained browsing. **No consenting person has yet completed matching calibration or a verified live scored hit.** Dataset/synthetic evidence cannot establish webcam accuracy, handedness or latency.
 
-## Build and verification
+## Assets and content
 
-The [roadmap](ROADMAP.md) has six capability gates: foundations → first playable → complete core → signature spectacle → measured optimization → release proof. There is no inherited event timetable, fixed team size or permanent folder ownership.
+- [Starter music registry](app/public/assets/tracks/README.md): full Pamgaea, Electro Cabello and Cipher by Kevin MacLeod, unchanged CC-BY 4.0 MP3s, exact credits/acquisition receipts, measured metadata, nine maps and hashes. All three currently disclose low-tempo-confidence/onset-only timing.
+- [Blender pack](app/public/assets/models/README.md): six original MIT GLBs authored through the official Blender MCP local bridge, plus [saved source and build notes](assets-src/blender/README.md). Actual pack: 3,320 triangles / 194,488 GLB bytes, independent geometry checks and zero-error/warning Khronos reports. Cell Fracture is unavailable, so eight complete shards are explicit. The arena leaves the central upper-body stage clear.
+- [Local fonts](app/public/assets/fonts/README.md): pinned Orbitron and Rajdhani with OFL notices.
+- [Dataset attribution](app/public/assets/fixtures/ATTRIBUTION.txt): eight actual independent COCO upper-body annotations; source photo pixels are not bundled.
 
-The proposed stack is TypeScript, Vite, imperative Three.js, `postprocessing`, React/Zustand for the DOM overlay, MediaPipe Hands/Pose in a worker, Web Audio and a deterministic DSP worker. [02 — Architecture](docs/02-architecture.md) defines identifiers and contracts; [03 — Decisions](docs/03-decisions.md) explains tradeoffs. The present `app/`, `server/`, `scripts/` and `assets-src/` paths are implementation starting points and may evolve with the docs.
+Rendering includes pooled authored/fallback geometry, exact capped swing-plane halves, smash fragments, beam reticles/lines, visible wall cues, owned saved/frozen upper bodies and actual audio-reactive emission. Calm preserves the gameplay rules. Human comfort, contrast/flashing, full layout/zoom and GPU/resource-soak acceptance remain pending where not specifically recorded.
 
-Targets such as 60 FPS, fresh ≥24 Hz tracking and sub-four-second analysis of a defined three-minute input are **unmeasured goals**. Only the controlled protocol in [24](docs/24-benchmark-and-evidence.md) can support performance claims. Webcam, human usability, music-quality and offline validation remain pending.
+## Checks and reproducibility
+
+From `app/`:
+
+```powershell
+npm run check
+npm run beatmaps
+```
+
+`check` runs typecheck, lint, asserted Vitest suites and production build; it no longer permits empty test suites. The integrated worktree passed 250 assertions. `beatmaps` is a real shared-DSP generation/validation command and requires ffmpeg for canonical PCM. Bundled MP3 iTunSMPB trim is honoured before analysis; browser source-zero/resampling checks caught and corrected real errors.
+
+From the root:
+
+```powershell
+node --test scripts/check-docs.test.mjs
+node scripts/check-docs.mjs
+node --test scripts/serve.test.mjs
+node --test scripts/check-model-assets.test.mjs
+node scripts/check-model-assets.mjs
+node scripts/check-audio-resampling.mjs
+node scripts/check-audio-resampling.mjs --arrangement
+```
+
+The browser numeric harness requires Chrome (or `BROWSER_BINARY`) and ffmpeg; its retained JSON separates numeric audio correctness from audible sync/webcam evidence. The static server's symlink test is skipped on this host because symlink creation is unavailable. No 60 FPS, tracking-rate, generator-speed, musical-F1 or motion-to-photon target is claimed as measured success. [24](docs/24-benchmark-and-evidence.md) defines release proof.
+
+`npm run music` / `npm run fonts` verify/reacquire the pinned local source assets when explicitly needed. Generated map JSON must not be reformatted without updating hashes. The optional `server/` companion remains outside the core implementation; no working companion command is advertised.
+
+## Model research
+
+[Training notes](training/README.md) distinguish downloaded/licensed data, a real RGB training preflight and full training. New weights are not promoted into the game. The brief CPU preflight's validation loss worsened; exporting a numerically matching ONNX file is not proof of accurate tracking. Raw datasets, environments and research checkpoints remain local/ignored.
 
 ## Sources and licenses
 
-- [Three.js](https://github.com/mrdoob/three.js/blob/dev/LICENSE) — MIT; [postprocessing](https://github.com/pmndrs/postprocessing/blob/main/LICENSE.md) — Zlib.
-- [React](https://github.com/facebook/react/blob/main/LICENSE), [Zustand](https://github.com/pmndrs/zustand/blob/main/LICENSE), [Vite](https://github.com/vitejs/vite/blob/main/LICENSE) — MIT.
-- [MediaPipe](https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE) — Apache-2.0 for the project; record the separate model terms, model versions and hashes in the P0 asset manifest. [Hand Landmarker](https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker/web_js) documents the synchronous inference API used by the proposed worker.
-- [Web Audio](https://www.w3.org/TR/webaudio/) supplies the master clock; [getOutputTimestamp](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/getOutputTimestamp) maps audio output to performance time. See [15](docs/15-audio-playback-sync.md) for the project's clock contract.
-- [yt-dlp](https://github.com/yt-dlp/yt-dlp#license) is an optional future companion dependency; its source is Unlicense, with distribution-specific third-party notices. It is not required for core gameplay.
-- The three starter songs and local Orbitron/Rajdhani fonts carry exact source/license notices. No independent reference corpus or authored GLBs are packaged; [track attribution](app/public/assets/tracks/README.md) is the registry. Do not assume a public download implies permission to redistribute it.
-
-Project code is MIT: [LICENSE](LICENSE). Development history: [CHANGELOG.md](CHANGELOG.md). AI contributions: [AI_USAGE.md](AI_USAGE.md).
+Code and original authored geometry are [MIT](LICENSE). Music retains CC-BY terms and fonts retain OFL terms; their notices are packaged separately. The locked runtime uses [Three.js](https://github.com/mrdoob/three.js/blob/dev/LICENSE), [React](https://github.com/facebook/react/blob/main/LICENSE), [Zustand](https://github.com/pmndrs/zustand/blob/main/LICENSE), [Vite](https://github.com/vitejs/vite/blob/main/LICENSE) and [postprocessing](https://github.com/pmndrs/postprocessing/blob/main/LICENSE.md). MediaPipe's project is [Apache-2.0](https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE); model pins/terms are recorded with the model preparation sources. The game uses Web Audio's output clock; procedural fallback SFX are original generated buffers.
 
 ## Submission
 
-There is no playable release or submitted demo yet. Actual event rules, deadline, submission channel and participant roster have not been supplied. Add them when confirmed.
-
-P5 produces a tested release commit/tag, clean-clone run record, actual demo URL/recording, benchmark evidence, manual QA record, music credits and known limitations. Record the tested release SHA here then; do not substitute a scaffold SHA or a planned feature list for release evidence. The [demo script](docs/20-demo-and-judging.md) and [release checklist](docs/19-build-plan.md#release-checklist) define that handoff.
+This is a work in progress, not a declared P5 release. Actual event/team/submission details, a public deployment, human trials, complete performance evidence and demo recording are not supplied or complete. No release SHA/tag is asserted. [CHANGELOG.md](CHANGELOG.md) records tested checkpoints and actual limitations; [AI_USAGE.md](AI_USAGE.md) records AI contributions. The [demo protocol](docs/20-demo-and-judging.md) and [release checklist](docs/19-build-plan.md#release-checklist) remain the acceptance standard.

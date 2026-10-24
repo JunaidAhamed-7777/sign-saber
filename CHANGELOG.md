@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T02:00:32+05:30 — Integrated dataset-first game, shared rails and authored renderer
+
+- Changed: Wired the camera-free menu, native/hand semantic target registry, side-rail/compact paging, sound/preview/upload, automatic 80 s dataset trial, calibration/pause/results recovery and owned head-to-hips figures. Integrated Blender assets/fallbacks, bounded shards, exact capped swing-plane cuts, beam reticles/lines, wall cues and actual music emission with Calm behavior. Updated real npm commands, source formatting protection, runtime/geometry/UI assertions and current docs/status.
+- Why: Deliver a runnable music→edit→level→results spine under the user's dataset-first direction, keeping webcam work optional and preserving all three full source songs.
+- Validation: Full check passed typecheck/lint/250 assertions/build; source format check passed. Browser completed a real edited 80 s Pamgaea dataset trial with genuine 131 Miss/zero fabricated hits; initial screenshot and limitations are retained in docs/evidence. Geometry tests include 200 seeded capped cuts. Docs checks passed before commit.
+- Limits: Static poses lack hand gestures, so this trial proves playback/spawn/miss/results rather than human gesture accuracy. Full human/zoom/flashing/offline/soak/performance gates remain open. Strict frontend static audit reports custom-component parser false positives; it does not establish accessibility compliance. Beam poof presentation is being refined separately.
+
 ## 2026-10-25T01:50:01+05:30 — Reproducible upper-body model research preflight
 
 - Changed: Added an isolated, source-licensed RGB training pipeline, 13-joint head/arms/hips target, masked labels, explicit oracle ROI, resumable acquisition/checkpoints, held-out evaluation and ONNX parity/export. Raw data, environments and weights remain ignored. COCO acquisition contains 8,503 eligible CC-BY photos; MPII annotations are prepared and image acquisition remains in progress.

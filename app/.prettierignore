@@ -3,3 +3,6 @@ node_modules
 public/models
 public/assets
 *.glsl
+
+# Preserve raw numeric browser/fixture evidence.
+tests/fixtures/**/*.json

@@ -2,7 +2,7 @@
   "name": "sign-saber",
   "private": true,
   "version": "0.1.0",
-  "description": "Controller-free, full-body 3D rhythm combat game driven by a webcam.",
+  "description": "Upper-body rhythm combat with local music and labelled dataset trials.",
   "type": "module",
   "engines": {
     "node": ">=20.19"
@@ -10,16 +10,18 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
+    "preview": "node ../scripts/serve.mjs",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "test:watch": "vitest",
     "models": "node ../scripts/download-models.mjs",
-    "beatmaps": "echo \"TODO(P2): implement bundled beatmap generation — see ../ROADMAP.md and docs/09-beatmap-format.md\" && exit 1",
-    "check": "npm run typecheck && npm run lint && npm run test && npm run build"
+    "beatmaps": "node ../scripts/generate-beatmaps.mjs",
+    "check": "npm run typecheck && npm run lint && npm run test && npm run build",
+    "fonts": "node ../scripts/acquire-fonts.mjs",
+    "music": "node ../scripts/acquire-starter-music.mjs"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.1.1",

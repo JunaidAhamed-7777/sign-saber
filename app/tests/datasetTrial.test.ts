@@ -60,13 +60,14 @@ describe('real static annotation trial, explicitly not recorded motion', () => {
   it('does not interpolate unrelated photo subjects or accumulate pause backlog', () => {
     const source = new DatasetTrial(validateDatasetTrial(fixture), 0);
     const changes: number[] = [];
-    for(let now=0;now<=DATASET_TRIAL_HOLD_MS+20;now+=20)source.advance(
-      now,
-      (t) => t,
-      (_frame, _arrival, changed) => {
-        if (changed) changes.push(source.sampleIndex);
-      },
-    );
+    for (let now = 0; now <= DATASET_TRIAL_HOLD_MS + 20; now += 20)
+      source.advance(
+        now,
+        (t) => t,
+        (_frame, _arrival, changed) => {
+          if (changed) changes.push(source.sampleIndex);
+        },
+      );
     expect(changes).toEqual([1]);
     source.rebase(60000);
     let count = 0;
@@ -77,5 +78,16 @@ describe('real static annotation trial, explicitly not recorded motion', () => {
     );
     expect(count).toBe(1);
   });
-  it('rejects long catch-up before delivering an unbounded backlog',()=>{const source=new DatasetTrial(validateDatasetTrial(fixture),0);let callbacks=0;expect(()=>source.advance(60000,t=>t,()=>callbacks++)).toThrow(/stalled/);expect(callbacks).toBe(0);});
+  it('rejects long catch-up before delivering an unbounded backlog', () => {
+    const source = new DatasetTrial(validateDatasetTrial(fixture), 0);
+    let callbacks = 0;
+    expect(() =>
+      source.advance(
+        60000,
+        (t) => t,
+        () => callbacks++,
+      ),
+    ).toThrow(/stalled/);
+    expect(callbacks).toBe(0);
+  });
 });

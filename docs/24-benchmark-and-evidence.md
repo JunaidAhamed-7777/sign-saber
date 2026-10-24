@@ -8,7 +8,7 @@ The objective is a game that feels immediate, makes music playable, and keeps it
 
 Implement switchable input, a monotonic session clock, bounded performance rings and evidence export during P0/P1 in [ROADMAP.md](../ROADMAP.md). Add stress scenes and comparisons when the corresponding features exist; publish the complete evaluation during P4/P5.
 
-The benchmark harness, recorder, replay switches and exports described here are **planned**. `npm run check` exists today and checks the scaffold. `npm run beatmaps` currently fails with a TODO message; its future evaluation option must be implemented before reporting output. A green build containing zero tests does not prove gameplay correctness.
+Bounded instrumentation, explicit recorder/replay seams and diagnostics export now exist; the complete P4 scenario/repetition/measurement harness remains **planned**. `npm run check` runs real asserted tests and `npm run beatmaps` generates/validates actual content. Numeric browser audio and static-annotation trials remain separate from live-camera/performance evidence.
 
 ## 2. Keep three evidence lanes separate
 

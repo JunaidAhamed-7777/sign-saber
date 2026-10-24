@@ -1,0 +1,9 @@
+.venv/
+data/
+checkpoints/
+exports/
+runs/
+__pycache__/
+.acquisition-manifest.lock/
+DATASETS.json.*.tmp
+*.pyc

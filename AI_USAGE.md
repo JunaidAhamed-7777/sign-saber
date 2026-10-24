@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Upper-body RGB training research
+
+- A dedicated agent researched primary dataset grants and local compute, acquired the explicitly eligible COCO subset/MPII annotations and implemented real RGB training/evaluation/export. Seven assertions and numeric ONNX parity passed. The genuine short preflight worsened held-out loss; incomplete training and oracle ROI are disclosed, with no production model promotion.
+
 ## 2026-10-25 — Blender MCP level assets
 
 - A dedicated agent used the verified official Blender MCP add-on in a fresh isolated Blender 5.2.2 instance to author the level assets/background, validate exported geometry and retain reproducibility evidence. Cell Fracture absence and the complete eight-shard fallback are explicit; no existing user scene was changed.

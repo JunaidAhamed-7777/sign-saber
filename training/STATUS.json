@@ -1,0 +1,322 @@
+{
+  "version": 1,
+  "kind": "real-data-preflight",
+  "status": "preflight_completed_not_production",
+  "startedAt": "2026-10-24T20:00:48.850651+00:00",
+  "device": "cpu",
+  "cpuThreads": 2,
+  "python": "3.12.14",
+  "torch": "2.9.1+cpu",
+  "numpy": "2.2.6",
+  "config": {
+    "version": 1,
+    "seed": 20261025,
+    "bodyKeypoints": [
+      "nose",
+      "left_eye",
+      "right_eye",
+      "left_ear",
+      "right_ear",
+      "left_shoulder",
+      "right_shoulder",
+      "left_elbow",
+      "right_elbow",
+      "left_wrist",
+      "right_wrist",
+      "left_hip",
+      "right_hip"
+    ],
+    "imageSize": 192,
+    "heatmapSize": 48,
+    "heatmapSigma": 2,
+    "cropPadding": 0.15,
+    "minLabeledUpperJoints": 4,
+    "mpiiValidationModulo": 10,
+    "headChannels": [
+      128,
+      64,
+      32
+    ],
+    "cpuThreads": 2,
+    "batchSize": 8,
+    "epochs": 20,
+    "freezeBackboneEpochs": 1,
+    "headLearningRate": 0.001,
+    "backboneLearningRate": 0.0001,
+    "weightDecay": 0.0001,
+    "occludedJointWeight": 0.5,
+    "flipProbability": 0.5,
+    "brightnessJitter": 0.15,
+    "contrastJitter": 0.15,
+    "pckShoulderFraction": 0.2,
+    "checkpointEverySteps": 100,
+    "validationEverySteps": 500,
+    "exportAbsoluteTolerance": 0.0001,
+    "downloadConcurrency": 4,
+    "minFreeDiskBytes": 68719476736,
+    "artifactScope": "local-noncommercial-research",
+    "pretrained": "MobileNet_V3_Small_Weights.IMAGENET1K_V1",
+    "pretrainedUrl": "https://download.pytorch.org/models/mobilenet_v3_small-047dcff4.pth"
+  },
+  "configSha256": "73468f3838e24bc549f4fb09b4af79161bbab32b1ca5947e206f77cbea8b54d4",
+  "dataFingerprint": {
+    "train": {
+      "uniqueImages": 8131,
+      "imageBytesAggregateSha256": "b1badb0f151c3a07b0587a1d5fa0b52ca6bb6e2817caf541a84d7b6efec37999"
+    },
+    "validation": {
+      "uniqueImages": 372,
+      "imageBytesAggregateSha256": "c4f426d735e81bc0f483bcb385d654e1a0528f1f99619dfc918f126c8e52bd43"
+    },
+    "indexSources": [
+      {
+        "dataset": "coco2017",
+        "split": "train",
+        "indexSha256": "6f28d3cf1f56ac137f5fb2dd545d791609593937c37d5d931de04203677fe394"
+      },
+      {
+        "dataset": "coco2017",
+        "split": "val",
+        "indexSha256": "14534044766b4c112eb9d1d8327c24862950745267f9532e1f954707ebde928e"
+      }
+    ],
+    "selectionSha256": "c53ab16ccc5850f07d0e8c5dc140b7a98ec99e8aa45d2f2e8e2639def309561c"
+  },
+  "trainData": {
+    "sources": [
+      {
+        "dataset": "coco2017",
+        "split": "train",
+        "indexSha256": "6f28d3cf1f56ac137f5fb2dd545d791609593937c37d5d931de04203677fe394"
+      }
+    ],
+    "availableRecords": 20121,
+    "missingRecords": {},
+    "partialData": false,
+    "recordsByDataset": {
+      "coco2017": 20121
+    }
+  },
+  "validationData": {
+    "sources": [
+      {
+        "dataset": "coco2017",
+        "split": "val",
+        "indexSha256": "14534044766b4c112eb9d1d8327c24862950745267f9532e1f954707ebde928e"
+      }
+    ],
+    "availableRecords": 919,
+    "missingRecords": {},
+    "partialData": false,
+    "recordsByDataset": {
+      "coco2017": 919
+    }
+  },
+  "requestedEpochs": 20,
+  "requestedPreflightSteps": 3,
+  "completedEpochs": 0,
+  "completedSteps": 3,
+  "fullDatasetTrainingCompleted": false,
+  "publication": "local-noncommercial-research-only",
+  "knownLimitations": [
+    "No live-webcam evaluation",
+    "No calibrated landmark visibility head",
+    "Finger landmarks are not supervised by this body model",
+    "A preflight checkpoint is not a production model",
+    "Ground-truth upper-body ROI used; production person localization is a separate requirement"
+  ],
+  "gitHead": "f61b6108d420f5de0328b21bd707480788ca3d11",
+  "dirtyTree": true,
+  "initialization": {
+    "kind": "ImageNet pretrained RGB backbone; newly initialized pose head",
+    "source": "https://download.pytorch.org/models/mobilenet_v3_small-047dcff4.pth",
+    "sha256": "047dcff4addef86ea5bc2eff13c9614dc11f47ab1160d0a71a25e7db994f4e1f",
+    "bodyPoseWeightsPreviouslyTrainedByThisProject": false
+  },
+  "baseline": {
+    "samples": 919,
+    "batches": 115,
+    "meanHeatmapLoss": 0.01747508065208145,
+    "metricDefinition": "Unfiltered labelled-joint Euclidean error in source pixels and PCK@0.2 shoulder span, not COCO AP.",
+    "joints": {
+      "nose": {
+        "labeled": 663,
+        "meanPixelError": 72.05189416922775,
+        "pck": 0.029827315541601257,
+        "pckSamples": 637
+      },
+      "left_eye": {
+        "labeled": 578,
+        "meanPixelError": 77.76977937031782,
+        "pck": 0.016245487364620937,
+        "pckSamples": 554
+      },
+      "right_eye": {
+        "labeled": 581,
+        "meanPixelError": 77.78798656332309,
+        "pck": 0.02857142857142857,
+        "pckSamples": 560
+      },
+      "left_ear": {
+        "labeled": 520,
+        "meanPixelError": 76.55091400146485,
+        "pck": 0.025896414342629483,
+        "pckSamples": 502
+      },
+      "right_ear": {
+        "labeled": 516,
+        "meanPixelError": 80.95806061944296,
+        "pck": 0.01195219123505976,
+        "pckSamples": 502
+      },
+      "left_shoulder": {
+        "labeled": 889,
+        "meanPixelError": 64.02629346815351,
+        "pck": 0.011481056257175661,
+        "pckSamples": 871
+      },
+      "right_shoulder": {
+        "labeled": 893,
+        "meanPixelError": 61.41506311260706,
+        "pck": 0.016073478760045924,
+        "pckSamples": 871
+      },
+      "left_elbow": {
+        "labeled": 746,
+        "meanPixelError": 64.02034305439558,
+        "pck": 0.004166666666666667,
+        "pckSamples": 720
+      },
+      "right_elbow": {
+        "labeled": 757,
+        "meanPixelError": 65.14158957921057,
+        "pck": 0.0027359781121751026,
+        "pckSamples": 731
+      },
+      "left_wrist": {
+        "labeled": 662,
+        "meanPixelError": 65.8933842650353,
+        "pck": 0.01901743264659271,
+        "pckSamples": 631
+      },
+      "right_wrist": {
+        "labeled": 690,
+        "meanPixelError": 68.86844156237616,
+        "pck": 0.019726858877086494,
+        "pckSamples": 659
+      },
+      "left_hip": {
+        "labeled": 828,
+        "meanPixelError": 73.30686814312773,
+        "pck": 0.013819095477386936,
+        "pckSamples": 796
+      },
+      "right_hip": {
+        "labeled": 834,
+        "meanPixelError": 66.64402503875806,
+        "pck": 0.02383939774153074,
+        "pckSamples": 797
+      }
+    },
+    "annotationBreakdown": {
+      "visibleJoints": 8190,
+      "occludedLabeledJoints": 967,
+      "samplesWithoutShoulderNormalization": 48
+    }
+  },
+  "evaluation": {
+    "samples": 919,
+    "batches": 115,
+    "meanHeatmapLoss": 0.020227328121014264,
+    "metricDefinition": "Unfiltered labelled-joint Euclidean error in source pixels and PCK@0.2 shoulder span, not COCO AP.",
+    "joints": {
+      "nose": {
+        "labeled": 663,
+        "meanPixelError": 74.19935014129224,
+        "pck": 0.026687598116169546,
+        "pckSamples": 637
+      },
+      "left_eye": {
+        "labeled": 578,
+        "meanPixelError": 84.89437186429245,
+        "pck": 0.009025270758122744,
+        "pckSamples": 554
+      },
+      "right_eye": {
+        "labeled": 581,
+        "meanPixelError": 79.72245264463703,
+        "pck": 0.048214285714285716,
+        "pckSamples": 560
+      },
+      "left_ear": {
+        "labeled": 520,
+        "meanPixelError": 79.85828723540673,
+        "pck": 0.013944223107569721,
+        "pckSamples": 502
+      },
+      "right_ear": {
+        "labeled": 516,
+        "meanPixelError": 85.70723035354023,
+        "pck": 0.00796812749003984,
+        "pckSamples": 502
+      },
+      "left_shoulder": {
+        "labeled": 889,
+        "meanPixelError": 63.74486322048947,
+        "pck": 0.006888633754305396,
+        "pckSamples": 871
+      },
+      "right_shoulder": {
+        "labeled": 893,
+        "meanPixelError": 69.3545226538168,
+        "pck": 0.0057405281285878304,
+        "pckSamples": 871
+      },
+      "left_elbow": {
+        "labeled": 746,
+        "meanPixelError": 64.00185116110794,
+        "pck": 0.011111111111111112,
+        "pckSamples": 720
+      },
+      "right_elbow": {
+        "labeled": 757,
+        "meanPixelError": 64.19456984848769,
+        "pck": 0.006839945280437756,
+        "pckSamples": 731
+      },
+      "left_wrist": {
+        "labeled": 662,
+        "meanPixelError": 62.56702119130022,
+        "pck": 0.03169572107765452,
+        "pckSamples": 631
+      },
+      "right_wrist": {
+        "labeled": 690,
+        "meanPixelError": 63.47986930626026,
+        "pck": 0.036418816388467376,
+        "pckSamples": 659
+      },
+      "left_hip": {
+        "labeled": 828,
+        "meanPixelError": 70.02050543522489,
+        "pck": 0.008793969849246231,
+        "pckSamples": 796
+      },
+      "right_hip": {
+        "labeled": 834,
+        "meanPixelError": 70.40841036277423,
+        "pck": 0.018820577164366373,
+        "pckSamples": 797
+      }
+    },
+    "annotationBreakdown": {
+      "visibleJoints": 8190,
+      "occludedLabeledJoints": 967,
+      "samplesWithoutShoulderNormalization": 48
+    }
+  },
+  "finishedAt": "2026-10-24T20:01:12.019163+00:00",
+  "localRunDirectory": "runs/coco-cpu-preflight-complete-images-3",
+  "checkpointSha256": "3cb89a31cb7bb111648af6a9daa5928895c3734d5460c53e4e2d7741e213dee5",
+  "promotedToGame": false
+}

@@ -1,0 +1,8 @@
+# Install torch/torchvision from https://download.pytorch.org/whl/cpu first.
+torch==2.9.1
+torchvision==0.24.1
+numpy==2.2.6
+Pillow==12.0.0
+scipy==1.16.3
+onnx==1.19.1
+onnxruntime==1.23.2

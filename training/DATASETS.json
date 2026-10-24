@@ -1,0 +1,275 @@
+{
+  "version": 1,
+  "checkedAt": "2026-10-24T19:33:14.189Z",
+  "intendedUse": "Local noncommercial image-model research for head/arms/torso through hips. Actual bounded preflight steps and evaluation are recorded separately; no model has been promoted to the game.",
+  "scope": {
+    "canonicalBodyKeypoints": [
+      "nose",
+      "left_eye",
+      "right_eye",
+      "left_ear",
+      "right_ear",
+      "left_shoulder",
+      "right_shoulder",
+      "left_elbow",
+      "right_elbow",
+      "left_wrist",
+      "right_wrist",
+      "left_hip",
+      "right_hip"
+    ],
+    "hands": "Separate 21-landmark hand localization; body-only datasets cannot supervise finger joints.",
+    "missingAnnotationPolicy": "Mask missing labels; head top is not relabelled as nose; no invented leg/world-depth ground truth."
+  },
+  "datasets": [
+    {
+      "id": "coco2017",
+      "role": "initial_train_and_validation",
+      "source": "https://cocodataset.org/#download",
+      "terms": "https://raw.githubusercontent.com/cocodataset/cocodataset.github.io/master/dataset/termsofuse.htm",
+      "annotationSchema": "17 body points with visibility; use first 13 upper-body joints",
+      "publishedSize": {
+        "trainImages": 118287,
+        "validationImages": 5000,
+        "imageArchivesApproxGB": 19,
+        "annotationsBytes": 252907541
+      },
+      "rights": {
+        "annotations": "CC-BY-4.0",
+        "images": "Individual Flickr licenses; acquisition/training must retain image/source/license records and select attribution-only CC-BY image licenses."
+      },
+      "access": {
+        "annotations": "http://images.cocodataset.org/annotations/annotations_trainval2017.zip",
+        "images": "Official COCO image URLs from annotations; HTTPS endpoint failed during this inspection, HTTP endpoint available."
+      },
+      "status": "eligible_images_acquired_training_pending",
+      "downloaded": true,
+      "trained": false,
+      "localAnnotations": {
+        "version": 1,
+        "url": "http://images.cocodataset.org/annotations/annotations_trainval2017.zip",
+        "acquiredAt": "2026-10-24T19:34:53.880Z",
+        "bytes": 252907541,
+        "sha256": "113a836d90195ee1f884e704da6304dfaaecff1f023f49b6ca93c4aaae470268",
+        "transport": "http:",
+        "publisherChecksum": null,
+        "note": "SHA records actual acquired bytes; no publisher-provided checksum was found. Local research only."
+      },
+      "localImageAcquisition": {
+        "selected": 8503,
+        "availableInIndex": 8503,
+        "limitApplied": false,
+        "completed": 8503,
+        "failures": [],
+        "completedAt": "2026-10-24T19:59:36.522Z",
+        "fullEligibleAcquisitionComplete": true
+      },
+      "acquiredScope": "8503 explicit CC-BY eligible photos; 20121 train people / 8131 images and 919 validation people / 372 images. Not all COCO2017.",
+      "localPreflight": {
+        "evidence": "PREFLIGHT_EVIDENCE.json",
+        "status": "3_optimizer_steps_not_production",
+        "completedEpochs": 0,
+        "fullDatasetTrainingCompleted": false,
+        "promotedToGame": false
+      }
+    },
+    {
+      "id": "mpii",
+      "role": "second_research_training_source",
+      "source": "https://www.mpi-inf.mpg.de/departments/computer-vision-and-machine-learning/software-and-datasets/mpii-human-pose-dataset",
+      "terms": "https://www.mpi-inf.mpg.de/departments/computer-vision-and-machine-learning/software-and-datasets/mpii-human-pose-dataset/download",
+      "annotationSchema": "16 body joints, head rectangle and visibility. Eight arm/hip joints map directly; face/nose labels absent.",
+      "publishedSize": {
+        "imagesApprox": 25000,
+        "peopleMoreThan": 40000,
+        "imagesApproxGB": 12.9,
+        "annotationsBytes": 12340483
+      },
+      "rights": {
+        "scope": "Official download page permits research and prohibits commercial use; code/annotations described as Simplified BSD. Images' underlying copyrights are not owned by dataset authors.",
+        "publicationPolicy": "Keep data/checkpoints local research artifacts; no production model or image redistribution assumed."
+      },
+      "access": {
+        "annotations": "https://datasets.d2.mpi-inf.mpg.de/andriluka14cvpr/mpii_human_pose_v1_u12_2.zip",
+        "images": "https://datasets.d2.mpi-inf.mpg.de/andriluka14cvpr/mpii_human_pose_v1.tar.gz"
+      },
+      "status": "archives_acquired_prepare_and_training_pending",
+      "downloaded": false,
+      "trained": false,
+      "localAnnotations": {
+        "version": 1,
+        "url": "https://datasets.d2.mpi-inf.mpg.de/andriluka14cvpr/mpii_human_pose_v1_u12_2.zip",
+        "acquiredAt": "2026-10-24T19:34:02.896Z",
+        "bytes": 12340483,
+        "sha256": "3e8bd6b61d39bc2e2bc5cd33a17b0bd08cd2d06c302f24f552042e53a35bcb76",
+        "transport": "https:",
+        "publisherChecksum": null,
+        "note": "SHA records actual acquired bytes; no publisher-provided checksum was found. Local research only."
+      },
+      "localImagesArchive": {
+        "version": 1,
+        "url": "https://datasets.d2.mpi-inf.mpg.de/andriluka14cvpr/mpii_human_pose_v1.tar.gz",
+        "acquiredAt": "2026-10-24T20:12:31.350Z",
+        "bytes": 12088943206,
+        "sha256": "6d26fbf89f49a7aeff4aa5f98123763f334693806b98eb15630f57a0b50998ce",
+        "transport": "https:",
+        "publisherChecksum": null,
+        "note": "SHA records actual acquired bytes; no publisher-provided checksum was found. Local research only."
+      }
+    },
+    {
+      "id": "coco-wholebody",
+      "role": "candidate_hand_and_face_supervision",
+      "source": "https://github.com/jin-s13/COCO-WholeBody",
+      "terms": "https://github.com/jin-s13/COCO-WholeBody#terms-of-use",
+      "annotationSchema": "133:17 body,6feet,68face,42hands; invalid face/hand flags must mask loss",
+      "publishedSize": {
+        "imageSplit": "COCO2017 train/validation; not every base image has valid whole-body annotations"
+      },
+      "rights": {
+        "scope": "Publisher README states research/noncommercial only while also naming CC-BY-4.0 annotations. Do not infer production permission from the CC label alone.",
+        "images": "COCO/Flickr rights remain separate."
+      },
+      "access": {
+        "annotations": "Official README links OneDrive/Google Drive/Baidu/OpenXLab",
+        "actualDownloadChecked": false
+      },
+      "status": "conditional_research_candidate_terms_review",
+      "downloaded": false,
+      "trained": false
+    },
+    {
+      "id": "halpe136",
+      "role": "candidate_head_neck_hands_and_interaction_occlusion",
+      "source": "https://github.com/Fang-Haoshu/Halpe-FullBody",
+      "terms": null,
+      "annotationSchema": "136:26body including Head/Neck/Hip,68face,21left-hand,21right-hand",
+      "publishedSize": {
+        "imagesApprox": 43000,
+        "peopleApprox": 50000,
+        "sizeBasis": "Published comparison in COCO-WholeBody official README; not a local count."
+      },
+      "rights": {
+        "scope": "No explicit dataset license grant found in official README/repository root. HICO-DET train images and COCO validation images have separate rights; code licenses do not supply a data grant."
+      },
+      "access": {
+        "annotations": "Official Google/Baidu links",
+        "images": "HICO-DET train; COCO validation",
+        "actualDownloadChecked": false
+      },
+      "status": "license_not_cleared_not_acquired",
+      "downloaded": false,
+      "trained": false
+    },
+    {
+      "id": "crowdpose",
+      "role": "candidate_arm_occlusion_evaluation_and_training",
+      "source": "https://github.com/jeffffffli/CrowdPose",
+      "paper": "https://openaccess.thecvf.com/content_CVPR_2019/html/Li_CrowdPose_Efficient_Crowded_Scenes_Pose_Estimation_and_a_New_Benchmark_CVPR_2019_paper.html",
+      "terms": null,
+      "annotationSchema": "14 body joints; no finger landmarks",
+      "publishedSize": {
+        "images": 20000,
+        "peopleApprox": 80000
+      },
+      "rights": {
+        "scope": "No explicit dataset license grant found in official README. Images overlap COCO/MPII/AIC source pools; deduplicate and inherit/check original rights before use."
+      },
+      "access": {
+        "annotations": "Official Google Drive link",
+        "images": "Official Google Drive link",
+        "actualDownloadChecked": false
+      },
+      "status": "license_not_cleared_not_acquired",
+      "downloaded": false,
+      "trained": false
+    },
+    {
+      "id": "aic",
+      "role": "large_candidate_after_access_and_terms_verification",
+      "source": "https://github.com/AIChallenger/AI_Challenger_2017",
+      "paper": "https://arxiv.org/html/1711.06475",
+      "terms": null,
+      "annotationSchema": "14 body points and person boxes; head/arms/hips, no fingers",
+      "publishedSize": {
+        "images": 300000,
+        "peopleApprox": 700000
+      },
+      "rights": {
+        "scope": "The author paper documents the dataset; the inspected official repository does not supply a current explicit data license/access grant."
+      },
+      "access": {
+        "publisher": "https://challenger.ai/",
+        "actualDownloadChecked": false
+      },
+      "status": "access_and_license_not_cleared",
+      "downloaded": false,
+      "trained": false
+    },
+    {
+      "id": "mpi-inf-3dhp",
+      "role": "optional_3d_and_temporal_research_not_needed_for_2d_game",
+      "source": "https://vcai.mpi-inf.mpg.de/3dhp-dataset/",
+      "terms": "https://vcai.mpi-inf.mpg.de/3dhp-dataset/mpi_inf_3dhp.zip",
+      "annotationSchema": "2D,3D,normalized3D body poses with camera calibration; inspect official joint-order utility before conversion",
+      "publishedSize": {
+        "subjects": 8,
+        "cameras": 14,
+        "sequencesPerSubject": 2,
+        "totalFrames": null,
+        "totalBytes": null
+      },
+      "rights": {
+        "scope": "Official metadata archive README restricts to scientific noncommercial research; bundled license also restricts methods/models to noncommercial use and prohibits redistribution.",
+        "publicationPolicy": "No checkpoint/data redistribution assumed."
+      },
+      "access": {
+        "metadataArchiveBytes": 11495,
+        "metadataInspectedInMemory": true,
+        "datasetDownloaded": false,
+        "fullDatasetScripts": "get_dataset.sh/get_testset.sh in official archive"
+      },
+      "status": "research_only_not_acquired_storage_and_joint_review_pending",
+      "downloaded": false,
+      "trained": false
+    }
+  ],
+  "localEnvironment": {
+    "pythonDefault": "3.14.7",
+    "pythonBundled": "3.12.14",
+    "trainingEnvironment": "training/.venv (isolated)",
+    "cpu": "AMD Ryzen 9 5900HX, 8 cores/16 threads",
+    "ramBytes": 16477028352,
+    "diskFreeBytesAtInspection": 334070321152,
+    "gpus": [
+      "AMD Radeon RX6600M",
+      "AMD Radeon integrated graphics"
+    ],
+    "cudaAvailable": false,
+    "gpuTrainingStatus": "No supported training stack verified. RX6600M absent from inspected official Windows ROCm matrix; do not claim GPU acceleration.",
+    "gpuSupportSource": "https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/docs/compatibility/compatibilityrad/windows/windows_compatibility.html"
+  },
+  "trainingPlan": {
+    "architecture": "Actual RGB image network: pretrained MobileNetV3-Small features plus 13-joint heatmap head; masked supervision across canonical common joints.",
+    "checkpointSource": "https://docs.pytorch.org/vision/stable/models/generated/torchvision.models.mobilenet_v3_small.html",
+    "codeLicenseSource": "https://github.com/pytorch/vision/blob/main/LICENSE",
+    "initialTrainingSources": [
+      "coco2017 attribution-only image subset",
+      "mpii official noncommercial research train split"
+    ],
+    "evaluation": "COCO official validation subset and a deterministic MPII video-group research holdout inside its official training partition. Check shared source-image hashes across splits; report declared arm/hip PCK, occlusion and failure counts. A bounded preflight is not completed dataset training.",
+    "execution": "CPU, bounded threads; benchmark actual steps before full run; no fabricated timing or accuracy.",
+    "deployment": "Export checkpoint to ONNX; verify PyTorch/ORT coordinates numerically, then browser WASM/WebGPU capability and live checks before replacing production tracker.",
+    "deploymentSources": [
+      "https://onnxruntime.ai/docs/tutorials/web/",
+      "https://github.com/open-mmlab/mmpose/blob/main/docs/en/user_guides/how_to_deploy.md"
+    ],
+    "mediaPipeLimitation": "Official Model Maker customization table has no pose/hand landmark training path. GestureRecognizer customization trains a category classifier on detected landmarks, not an arm-localization model.",
+    "mediaPipeSource": "https://developers.google.com/edge/mediapipe/solutions/guide",
+    "completedTraining": false
+  },
+  "statusMeaning": {
+    "downloaded": "All images in the explicitly selected eligible image index, not the entire named source benchmark; annotation/archive availability is recorded separately.",
+    "trained": "Completed full eligible-dataset training. Bounded real-data preflight steps do not set this flag."
+  }
+}

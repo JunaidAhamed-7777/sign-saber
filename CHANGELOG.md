@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T01:50:01+05:30 — Reproducible upper-body model research preflight
+
+- Changed: Added an isolated, source-licensed RGB training pipeline, 13-joint head/arms/hips target, masked labels, explicit oracle ROI, resumable acquisition/checkpoints, held-out evaluation and ONNX parity/export. Raw data, environments and weights remain ignored. COCO acquisition contains 8,503 eligible CC-BY photos; MPII annotations are prepared and image acquisition remains in progress.
+- Why: Address the user's large-dataset training request without pretending the browser MediaPipe API can fine-tune arm localization or treating a few training steps as a production model.
+- Validation: Seven Python assertions passed. A real three-step CPU preflight used 24 photo crops with 20,121 train records available and 919 validation people; validation loss worsened 0.0174751→0.0202273. ONNX parity on eight held-out crops passed, with max heatmap error about 1.18e-6. Exact source/sample/checkpoint hashes and negative quality outcome are recorded in training/PREFLIGHT_EVIDENCE.json.
+- Limits: Full multi-dataset training has not completed; no weights were promoted into the game and no tracking-quality improvement is claimed. This is separate noncommercial research, now secondary to the requested dataset level/assets work.
+
 ## 2026-10-25T01:40:13+05:30 — Blender MCP authored level and arena assets
 
 - Changed: Built six original MIT GLBs and a saved Blender source scene through the official Blender MCP local bridge: glyphs, armour, beam ring, pylon, complete eight-shard block and clear-centre neon arena background. Retained generator, bridge/bootstrap, actual preview, exact tool/source hashes, independent geometry reports and repeat-export hash evidence.

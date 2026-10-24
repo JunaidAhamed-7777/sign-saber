@@ -37,6 +37,8 @@ const runtime = {
 beforeEach(() => {
   useStore.setState(structuredClone(initial), true);
   vi.stubGlobal('window', {
+    innerWidth: 1280,
+    innerHeight: 720,
     matchMedia: () => ({ matches: false, addEventListener: () => {}, removeEventListener: () => {} }),
   });
 });
@@ -90,7 +92,6 @@ describe('HUD presentation helpers', () => {
         multiplier: 2,
         accuracy: 0.5,
         judgement: 'miss',
-        judgementSeq: 7,
       },
     });
     const html = renderToStaticMarkup(<Hud />);
@@ -99,10 +100,16 @@ describe('HUD presentation helpers', () => {
     expect(html).toContain('×2');
     expect(html).toContain(strings.milestone10);
     expect(html).toContain('50.0%');
-    expect(html).toContain('class="judgement miss"');
+    expect(html).toContain('judgement-layer');
     expect(html).toContain(`aria-label="${strings.songProgress}"`);
-    useStore.setState({ hud: { ...useStore.getState().hud, judgement: '' } });
-    expect(renderToStaticMarkup(<Hud />)).not.toContain('class="judgement ');
+    // A projected pop renders in a pooled slot with its timing error.
+    useStore.setState({
+      pops: [{ id: 3, judgement: 'great', x: -1.8, y: 1.5, z: 0, timingMs: -32, bornAt: 0 }],
+    });
+    const popped = renderToStaticMarkup(<Hud />);
+    expect(popped).toContain('class="judgement great"');
+    expect(popped).toContain('−32 ms');
+    expect(popped.match(/class="pop-slot/g)).toHaveLength(6);
   });
 });
 describe('pause and trial labelling', () => {

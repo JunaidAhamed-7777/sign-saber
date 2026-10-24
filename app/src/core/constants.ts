@@ -509,3 +509,47 @@ export const QUALITY_TIER_PRESETS = Object.freeze({
     pylons: 8,
   } as const),
 });
+
+// ---- Render polish registry (docs11–13, docs18): targets, post FX, arena response, hands. ----
+// Registered in docs/11, 12 and 13 "Constants required" tables; keep both sides synchronized.
+export const BLOCK_NEAR_GLOW_M = 10,
+  BLOCK_FILL_ALPHA = 0.38,
+  BLOCK_RIM_GAIN = 0.9,
+  BLOCK_TRIM_GAIN = 1.3,
+  BLOCK_TRIM_NEAR_GAIN = 1.6,
+  BLOCK_CORE_GAIN = 1.1,
+  BLOCK_CORE_SPIN_RAD_S = 0.9;
+export const GLYPH_FRONT_GAIN = 1.15,
+  GLYPH_EDGE_GAIN = 0.3,
+  SHARD_INNER_GAIN = 2.2,
+  SHARD_FLASH_MS = 80,
+  SLICE_CAP_HEAT_MS = 300,
+  SLICE_CAP_HEAT_GAIN = 2.5;
+export const BLOOM_SMOOTHING = 0.3,
+  BLOOM_RADIUS = 0.7,
+  BLOOM_ACCENT_MAX = 0.3,
+  VIGNETTE_DARKNESS = 0.45,
+  VIGNETTE_OFFSET = 0.35;
+export const ARENA_NEON_BASE = 1.4,
+  ARENA_BAND_GAIN = 1.5,
+  ARENA_BAND_BASE = 0.35,
+  ARENA_TRANSIENT_GAIN = 2.5,
+  ARENA_TRANSIENT_WINDOW_S = 1.2,
+  ARENA_EMISSION_SLEW_PER_S = 3;
+export const GRID_Y = -0.385,
+  GRID_MINOR_M = 1,
+  GRID_MAJOR_M = 4,
+  GRID_FADE_START_M = 30,
+  GRID_FADE_END_M = 75;
+export const HORIZON_GLOW_W_M = 60,
+  HORIZON_GLOW_H_M = 14,
+  HORIZON_GLOW_Y = 4,
+  HORIZON_GLOW_Z = -140,
+  CAM_FAR_M = 400;
+export const DUST_BOX_W_M = 12,
+  DUST_BOX_H_M = 8,
+  DUST_BOX_D_M = 60,
+  DUST_SPEED_FRACTION = 0.3,
+  DUST_SIZE_MIN_M = 0.02,
+  DUST_SIZE_MAX_M = 0.05,
+  DUST_ALPHA = 0.25;

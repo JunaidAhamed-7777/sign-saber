@@ -1,0 +1,3957 @@
+{
+  "schema": 1,
+  "date": "2026-10-25",
+  "recordedAt": "2026-10-24T23:38:05.422Z",
+  "gitHead": "96aa53681c71e915077a0a8ad9b1a1de9acae529",
+  "dirtyTree": false,
+  "environment": {
+    "node": "v26.8.1",
+    "os": "win32 10.0.26300",
+    "logicalCpus": 16
+  },
+  "sourceHashes": {
+    "scripts/lifecycle-qa.mjs": "6ed574584c931cfc67dcef41a603801b7c9208b4306cc992fb9a258ffb6f45c5",
+    "scripts/lifecycle-helpers.mjs": "1219ff131d42beec406d91061108b9a01529d93e033e9acb14f07a477891a4af",
+    "scripts/lifecycle-probe.mjs": "3c2fed1cbcfec4d3c8a1f5f7a1303b3000cd07989dc8abada105ff199b65f7af",
+    "scripts/cdp-client.mjs": "d9a0a484271c1d479ce7bc426863edf7d874a5bd9356b64245f202bfee8fcea2",
+    "app/src/core/runtime.ts": "2bb4d446b2a910a2e6a5215495544b4ea988e0dcc1533d2c31b2130f7fe21cdb",
+    "app/src/render/renderer.ts": "feafcdb6bb98ead2f6da1c4618176ce61dec609b19716e48db3df3859ed41fe7",
+    "app/src/ui/strings.ts": "ce16989a034e0ee42c61f97b4910be61c57723dc0032e8a029800dc40343cf3b",
+    "app/src/ui/screens/Select.tsx": "402f9e369eec5120bed7d0803acf3e542536475d4e668ae7c65f3821c232d5a0",
+    "app/package-lock.json": "66dc1547569b921b18b85ab19b6e22fc3166133573d1f10764aea146b0bc2bb1"
+  },
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/155.0.8059.86",
+    "revision": "@804d6b05f089b27af8342622a36558c49401a1d4",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+    "jsVersion": "15.5.35.25"
+  },
+  "protocol": {
+    "WebAudio": {
+      "commands": [
+        "enable",
+        "disable",
+        "getRealtimeData"
+      ],
+      "events": [
+        "contextCreated",
+        "contextWillBeDestroyed",
+        "contextChanged",
+        "audioListenerCreated",
+        "audioListenerWillBeDestroyed",
+        "audioNodeCreated",
+        "audioNodeWillBeDestroyed",
+        "audioParamCreated",
+        "audioParamWillBeDestroyed",
+        "nodesConnected",
+        "nodesDisconnected",
+        "nodeParamConnected",
+        "nodeParamDisconnected"
+      ]
+    },
+    "Memory": {
+      "commands": [
+        "getDOMCounters",
+        "getDOMCountersForLeakDetection",
+        "prepareForLeakDetection",
+        "forciblyPurgeJavaScriptMemory",
+        "setPressureNotificationsSuppressed",
+        "simulatePressureNotification",
+        "startSampling",
+        "stopSampling",
+        "getAllTimeSamplingProfile",
+        "getBrowserSamplingProfile",
+        "getSamplingProfile"
+      ]
+    },
+    "HeapProfiler": {
+      "commands": [
+        "addInspectedHeapObject",
+        "collectGarbage",
+        "disable",
+        "enable",
+        "getHeapObjectId",
+        "getObjectByHeapObjectId",
+        "getSamplingProfile",
+        "startSampling",
+        "startTrackingHeapObjects",
+        "stopSampling",
+        "stopTrackingHeapObjects",
+        "takeHeapSnapshot"
+      ],
+      "events": [
+        "addHeapSnapshotChunk",
+        "heapStatsUpdate",
+        "lastSeenObjectId",
+        "reportHeapSnapshotProgress",
+        "resetProfiles"
+      ]
+    },
+    "Target": {
+      "commands": [
+        "activateTarget",
+        "attachToTarget",
+        "attachToBrowserTarget",
+        "closeTarget",
+        "exposeDevToolsProtocol",
+        "createBrowserContext",
+        "getBrowserContexts",
+        "createTarget",
+        "detachFromTarget",
+        "disposeBrowserContext",
+        "getTargetInfo",
+        "getTargets",
+        "sendMessageToTarget",
+        "setAutoAttach",
+        "autoAttachRelated",
+        "setDiscoverTargets",
+        "setRemoteLocations",
+        "getDevToolsTarget",
+        "openDevTools"
+      ],
+      "events": [
+        "attachedToTarget",
+        "detachedFromTarget",
+        "receivedMessageFromTarget",
+        "targetCreated",
+        "targetDestroyed",
+        "targetCrashed",
+        "targetInfoChanged"
+      ]
+    }
+  },
+  "fixtures": {
+    "valid": {
+      "bytes": 529244,
+      "durationSec": 12,
+      "sampleRate": 22050,
+      "sha256": "66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "second": {
+      "bytes": 573344,
+      "durationSec": 13,
+      "sampleRate": 22050,
+      "sha256": "0ec8fc97d01184f7fbdc1abbde8fa96f192ce4d05d9814ca2419119eceefc6e0",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "long": {
+      "bytes": 10584044,
+      "durationSec": 240,
+      "sampleRate": 22050,
+      "sha256": "9ab3b0a21e72768474a95253e107c2fd308a2bdf0e4b467d812382d945446e09",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "short": {
+      "bytes": 44144,
+      "durationSec": 1,
+      "sampleRate": 22050,
+      "sha256": "4b18b7c0677cb7f1edd5dffa482e6943897447f02e1f175dbc793d103d07dd46",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "corrupt": {
+      "bytes": 10,
+      "sha256": "a51bc7aed5605ec18e922abbd62d0de95f30d88bbd8cf5991159f3664e6e30b5"
+    },
+    "wrong": {
+      "bytes": 33,
+      "sha256": "2e66915610e0a099910393ac799a6b8192f8c4388569eca28ec82f42280ca107"
+    },
+    "oversized": {
+      "bytes": 62914561,
+      "source": "sparse zero file; admission limit check only"
+    }
+  },
+  "measurement": {
+    "renderer": "Actual Three.js renderer.info.memory; read-only ?stats=1 diagnostics",
+    "audio": "CDP WebAudio lifetime events; only native string IDs retained; no AudioNode references",
+    "listeners": "CDP Memory.getDOMCounters.jsEventListeners after HeapProfiler.collectGarbage and the same quiet boundary",
+    "workers": "CDP Target.getTargets worker targets in the current isolated browser context",
+    "observers": "Auxiliary observe/disconnect token count, not a retained-GC metric and not a growth gate",
+    "warmup": "One complete generated-chart run, one retry cycle and one quit cycle; then three identical GC/quiet snapshots at the suspended menu boundary before 20 measured cycles"
+  },
+  "limitations": [
+    "Synthetic original WAVs/planned motion; no camera/person/recognition",
+    "Muted headless software rendering; no audible-sync or GPU-performance claim",
+    "Forced GC/resource counts are lifecycle diagnostics, not release performance evidence"
+  ],
+  "scenarios": [
+    {
+      "name": "upload",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "original synthesized upload generated a real nonempty chart",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-valid\",\"sourceHash\":\"66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734\",\"difficulty\":\"normal\",\"notes\":13,\"warnings\":[]}"
+        },
+        {
+          "name": "generation progress was observed",
+          "ok": true,
+          "detail": "[{\"active\":true,\"fraction\":0,\"stage\":\"read\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"}]"
+        },
+        {
+          "name": "performer reached real results with nonzero hits",
+          "ok": true,
+          "detail": "{\"perfect\":12,\"great\":0,\"good\":0,\"miss\":0,\"badcut\":0,\"obstaclesHit\":0,\"obstaclesDodged\":1}"
+        },
+        {
+          "name": "Songs returns to a usable menu",
+          "ok": true
+        },
+        {
+          "name": "no browser console errors (warnings retained separately)",
+          "ok": true,
+          "detail": "[]"
+        }
+      ],
+      "startedAt": "2026-10-24T23:38:06.706Z",
+      "reproduction": "Upload lifecycle-valid.wav, wait for analysis, choose Easy then Normal, Enable sound, Watch synthetic performer, wait for Results, choose Songs.",
+      "results": {
+        "score": 2100,
+        "maxScore": 2400,
+        "accuracy": 1,
+        "rank": "SS",
+        "maxCombo": 12,
+        "counts": {
+          "perfect": 12,
+          "great": 0,
+          "good": 0,
+          "miss": 0,
+          "badcut": 0,
+          "obstaclesHit": 0,
+          "obstaclesDodged": 1
+        },
+        "byType": {
+          "slash": {
+            "hits": 8,
+            "total": 8
+          },
+          "smash": {
+            "hits": 4,
+            "total": 4
+          },
+          "beam": {
+            "hits": 0,
+            "total": 0
+          }
+        },
+        "kineticJoules": 41.58014021277556,
+        "kcal": 0.03975156808104738,
+        "peakComboSongTimeMs": 11498.92100000001
+      },
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:38:29.548Z"
+    },
+    {
+      "name": "cancel",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "a second upload succeeds after cancellation",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-second\",\"sourceHash\":\"0ec8fc97d01184f7fbdc1abbde8fa96f192ce4d05d9814ca2419119eceefc6e0\",\"difficulty\":\"normal\",\"notes\":14,\"warnings\":[]}"
+        },
+        {
+          "name": "cancelled job cannot overwrite the new selection",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-second\",\"sourceHash\":\"0ec8fc97d01184f7fbdc1abbde8fa96f192ce4d05d9814ca2419119eceefc6e0\",\"difficulty\":\"normal\",\"notes\":14,\"warnings\":[]}"
+        },
+        {
+          "name": "no browser console errors (warnings retained separately)",
+          "ok": true,
+          "detail": "[]"
+        }
+      ],
+      "startedAt": "2026-10-24T23:38:29.548Z",
+      "reproduction": "Upload lifecycle-long.wav; click Cancel analysis while progress is active; upload lifecycle-second.wav; verify its source hash remains selected after old work could return.",
+      "cancelledAt": {
+        "active": true,
+        "fraction": 0.45,
+        "stage": "stft"
+      },
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:38:49.083Z"
+    },
+    {
+      "name": "invalid",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "corrupt: an actual input error is shown",
+          "ok": true,
+          "detail": "This browser could not decode that audio. Try MP3 or WAV."
+        },
+        {
+          "name": "corrupt: menu remains usable",
+          "ok": true,
+          "detail": "{\"title\":\"Pamgaea\",\"sourceHash\":\"9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586\",\"difficulty\":\"normal\",\"notes\":178,\"warnings\":[\"lowTempoConfidence\",\"humanRhythmAndComfortReviewPending\"]}"
+        },
+        {
+          "name": "wrong: an actual input error is shown",
+          "ok": true,
+          "detail": "This browser could not decode that audio. Try MP3 or WAV."
+        },
+        {
+          "name": "wrong: menu remains usable",
+          "ok": true,
+          "detail": "{\"title\":\"Pamgaea\",\"sourceHash\":\"9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586\",\"difficulty\":\"normal\",\"notes\":178,\"warnings\":[\"lowTempoConfidence\",\"humanRhythmAndComfortReviewPending\"]}"
+        },
+        {
+          "name": "short: an actual input error is shown",
+          "ok": true,
+          "detail": "Choose audio between 5 and 300 seconds."
+        },
+        {
+          "name": "short: menu remains usable",
+          "ok": true,
+          "detail": "{\"title\":\"Pamgaea\",\"sourceHash\":\"9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586\",\"difficulty\":\"normal\",\"notes\":178,\"warnings\":[\"lowTempoConfidence\",\"humanRhythmAndComfortReviewPending\"]}"
+        },
+        {
+          "name": "oversized: an actual input error is shown",
+          "ok": true,
+          "detail": "Choose a non-empty audio file smaller than 60 MiB"
+        },
+        {
+          "name": "oversized: menu remains usable",
+          "ok": true,
+          "detail": "{\"title\":\"Pamgaea\",\"sourceHash\":\"9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586\",\"difficulty\":\"normal\",\"notes\":178,\"warnings\":[\"lowTempoConfidence\",\"humanRhythmAndComfortReviewPending\"]}"
+        }
+      ],
+      "startedAt": "2026-10-24T23:38:49.083Z",
+      "reproduction": "Choose each corrupt/wrong-format/one-second/over-60-MiB fixture in turn; inspect error, then select bundled music to verify menu recovery.",
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:38:57.342Z"
+    },
+    {
+      "name": "cache",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "unavailable: generation succeeds without cache",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-valid\",\"sourceHash\":\"66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734\",\"difficulty\":\"normal\",\"notes\":13,\"warnings\":[\"cacheUnavailable\"]}"
+        },
+        {
+          "name": "unavailable: cache failure is retained in chart warnings",
+          "ok": true,
+          "detail": "[\"cacheUnavailable\"]"
+        },
+        {
+          "name": "unavailable: visible honest cache-fallback message",
+          "ok": true,
+          "detail": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your own audio\nChoose your own audio\n\nMP3, WAV, OGG or M4A · up to 5 minutes · Use mouse or keyboard for this step.\n\n←\nPrevious\nChoose your own audio\n2 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nL\nSELECTED TRACK\nlifecycle-valid\n\n0:12 · 13 notes\n\nLocal cache unavailable · chart not saved\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nWatch synthetic performer\nPlanned motion · no camera\nTry level with dataset\nAnnotated poses · no webcam\n\nEnable sound with the mouse or keyboard before starting.\n\n←\nPrevious\nReady when you are\n1 of 6\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click"
+        },
+        {
+          "name": "compact viewport keeps the cache notice visible",
+          "ok": true,
+          "detail": "SIGN SABER\nCamera not set up\nChoose your music\n1 of 2\n←\nPrevious\nP\nPamgaea\n2:48\nE\nElectro Cabello\n3:10\nC\nCipher\n3:51\n→\nNext\n\nIllustrative upper body · camera not set up\n\nlifecycle-valid · Normal · 0:12\n\nLocal cache unavailable · chart not saved\n\nEnable sound with the mouse or keyboard before starting.\n\nPlay\n1 of 7\n←\nPrevious\nEnable sound\nMouse or keyboard\nTry level with dataset\nAnnotated poses · no webcam\nWatch synthetic performer\nPlanned motion · no camera\n→\nNext"
+        },
+        {
+          "name": "quota: generation succeeds without cache",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-valid\",\"sourceHash\":\"66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734\",\"difficulty\":\"normal\",\"notes\":13,\"warnings\":[\"cacheUnavailable\"]}"
+        },
+        {
+          "name": "quota: cache failure is retained in chart warnings",
+          "ok": true,
+          "detail": "[\"cacheUnavailable\"]"
+        },
+        {
+          "name": "quota: visible honest cache-fallback message",
+          "ok": true,
+          "detail": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your own audio\nChoose your own audio\n\nMP3, WAV, OGG or M4A · up to 5 minutes · Use mouse or keyboard for this step.\n\n←\nPrevious\nChoose your own audio\n2 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nL\nSELECTED TRACK\nlifecycle-valid\n\n0:12 · 13 notes\n\nLocal cache unavailable · chart not saved\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nWatch synthetic performer\nPlanned motion · no camera\nTry level with dataset\nAnnotated poses · no webcam\n\nEnable sound with the mouse or keyboard before starting.\n\n←\nPrevious\nReady when you are\n1 of 6\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click"
+        }
+      ],
+      "startedAt": "2026-10-24T23:38:57.342Z",
+      "reproduction": "Before load, deny IndexedDB access or make real readwrite transactions throw QuotaExceededError; upload the synthesized WAV and inspect the visible fallback notice.",
+      "screenshots": [
+        "2026-10-25-lifecycle-cache-1440.webp",
+        "2026-10-25-lifecycle-cache-1024.webp"
+      ],
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:39:04.535Z"
+    },
+    {
+      "name": "context",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "menu: actual context-loss extension available",
+          "ok": true
+        },
+        {
+          "name": "menu: useful visible graphics failure or successful recovery",
+          "ok": true,
+          "detail": "{\"before\":{\"state\":\"SELECT\",\"pauseReason\":null,\"status\":\"\",\"error\":null,\"fatal\":\"Graphics context was lost. Reload the game to restore the arena.\",\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":false,\"trackingReady\":false,\"figureAvailable\":false,\"audioReady\":false,\"audio\":{\"contextState\":null,\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":false,\"arrangementReady\":false,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":0,\"stage\":\"\"},\"selection\":null,\"resources\":{\"geometries\":64,\"textures\":13,\"programs\":27,\"contextLost\":true,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":0,\"durationMs\":0,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":false,\"rightPresent\":false,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null},\"after\":{\"state\":\"SELECT\",\"pauseReason\":null,\"status\":\"\",\"error\":null,\"fatal\":\"Graphics context was lost. Reload the game to restore the arena.\",\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":false,\"trackingReady\":false,\"figureAvailable\":false,\"audioReady\":false,\"audio\":{\"contextState\":null,\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":false,\"arrangementReady\":false,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":0,\"stage\":\"\"},\"selection\":null,\"resources\":{\"geometries\":64,\"textures\":13,\"programs\":27,\"contextLost\":true,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":0,\"durationMs\":0,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":false,\"rightPresent\":false,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null},\"text\":\"SIGN SABER\\n\\nUpper-body rhythm combat\\n\\nThe arena could not start\\n\\nOpen Chrome or Edge with WebGL2 and hardware acceleration enabled.\\n\\nGraphics context was lost. Reload the game to restore the arena.\\n\\nRetry\"}"
+        },
+        {
+          "name": "menu: no zombie scoring/audio run",
+          "ok": true,
+          "detail": "{\"state\":\"SELECT\",\"songTimeMs\":null,\"audio\":{\"contextState\":null,\"activeSfxVoices\":0},\"nativeAudio\":[]}"
+        },
+        {
+          "name": "menu: no zombie render callback loop while context remains lost",
+          "ok": true,
+          "detail": "{\"callbacksAfterLoss\":0}"
+        },
+        {
+          "name": "menu: native Retry reload restores the usable song menu",
+          "ok": true
+        },
+        {
+          "name": "play: actual context-loss extension available",
+          "ok": true
+        },
+        {
+          "name": "play: useful visible graphics failure or successful recovery",
+          "ok": true,
+          "detail": "{\"before\":{\"state\":\"PAUSED\",\"pauseReason\":\"fatal\",\"status\":\"Get ready.\",\"error\":null,\"fatal\":\"Graphics context was lost. Reload the game to restore the arena.\",\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":false,\"figureAvailable\":true,\"audioReady\":false,\"audio\":{\"contextState\":\"suspended\",\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":0,\"stage\":\"\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":87,\"textures\":13,\"programs\":31,\"contextLost\":true,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":538.6403333303533,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null},\"after\":{\"state\":\"PAUSED\",\"pauseReason\":\"fatal\",\"status\":\"Get ready.\",\"error\":null,\"fatal\":\"Graphics context was lost. Reload the game to restore the arena.\",\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":false,\"figureAvailable\":true,\"audioReady\":false,\"audio\":{\"contextState\":\"suspended\",\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":0,\"stage\":\"\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":87,\"textures\":13,\"programs\":31,\"contextLost\":true,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":538.6403333303533,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null},\"text\":\"SIGN SABER\\n\\nUpper-body rhythm combat\\n\\nThe arena could not start\\n\\nOpen Chrome or Edge with WebGL2 and hardware acceleration enabled.\\n\\nGraphics context was lost. Reload the game to restore the arena.\\n\\nRetry\"}"
+        },
+        {
+          "name": "play: no zombie scoring/audio run",
+          "ok": true,
+          "detail": "{\"state\":\"PAUSED\",\"songTimeMs\":null,\"audio\":{\"contextState\":\"suspended\",\"activeSfxVoices\":0},\"nativeAudio\":[{\"id\":\"b0f6e757-9641-4b82-badb-fcaf83ee19e2\",\"type\":\"offline\",\"state\":\"suspended\"},{\"id\":\"45628102-fc87-4299-aa99-223196c927fc\",\"type\":\"realtime\",\"state\":\"suspended\"},{\"id\":\"039589b8-da98-426a-afd2-3ce698e2c7c9\",\"type\":\"offline\",\"state\":\"suspended\"}]}"
+        },
+        {
+          "name": "play: no zombie render callback loop while context remains lost",
+          "ok": true,
+          "detail": "{\"callbacksAfterLoss\":0}"
+        },
+        {
+          "name": "play: native Retry reload restores the usable song menu",
+          "ok": true
+        }
+      ],
+      "startedAt": "2026-10-24T23:39:04.535Z",
+      "reproduction": "On the menu and separately during performer play, call the canvas WEBGL_lose_context extension. Check visible failure/recovery, halted audio/scoring and bounded render callbacks.",
+      "screenshots": [
+        "2026-10-25-lifecycle-graphics-error-1440.webp",
+        "2026-10-25-lifecycle-graphics-error-1024.webp"
+      ],
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:39:18.326Z"
+    },
+    {
+      "name": "cycles",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "fixed baseline is the actual suspended-audio menu boundary",
+          "ok": true,
+          "detail": "[{\"id\":\"280ac64b-c924-4cfa-9e05-81b8c19fc83b\",\"type\":\"offline\",\"state\":\"suspended\"},{\"id\":\"39d3ee66-d51e-498b-bd02-b61bffdecf83\",\"type\":\"realtime\",\"state\":\"suspended\"},{\"id\":\"4c65d47b-1244-4e34-97d6-bf212b3cc8e7\",\"type\":\"offline\",\"state\":\"suspended\"}]"
+        },
+        {
+          "name": "quit leaves no connected native buffer sources or active SFX voices",
+          "ok": true
+        },
+        {
+          "name": "all 20 complete measured cycles",
+          "ok": true
+        },
+        {
+          "name": "warmed retained resources do not grow",
+          "ok": true,
+          "detail": "[]"
+        },
+        {
+          "name": "no browser console errors during repeated lifecycle",
+          "ok": true,
+          "detail": "[]"
+        }
+      ],
+      "startedAt": "2026-10-24T23:39:18.326Z",
+      "reproduction": "Warm a complete uploaded performer run, return to Songs, collect garbage, then measure all 20 real start/pause/resume/quit cycles with periodic Results/retry; compare the same idle menu boundary.",
+      "beforeLifecycleWarmup": {
+        "geometries": 107,
+        "textures": 13,
+        "programs": 37,
+        "contextLost": false,
+        "runtimeListeners": 13,
+        "observers": 13,
+        "rafCallbacks": 181,
+        "jsEventListeners": 188,
+        "domNodes": 319,
+        "audioNodes": 9,
+        "audioContexts": 3,
+        "audioNodeTypes": {
+          "AudioDestination": 3,
+          "Analyser": 1,
+          "Gain": 4,
+          "DynamicsCompressor": 1
+        },
+        "nativeAudioContexts": [
+          {
+            "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+            "type": "offline",
+            "state": "suspended"
+          },
+          {
+            "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "type": "realtime",
+            "state": "running"
+          },
+          {
+            "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+            "type": "offline",
+            "state": "suspended"
+          }
+        ],
+        "nativeAudioNodes": [
+          {
+            "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+            "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+            "nodeType": "AudioDestination",
+            "destinations": []
+          },
+          {
+            "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "AudioDestination",
+            "destinations": []
+          },
+          {
+            "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "Analyser",
+            "destinations": [
+              "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+            ]
+          },
+          {
+            "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "Gain",
+            "destinations": [
+              "565a3a42-f833-4546-8fa9-1e845a1daef9"
+            ]
+          },
+          {
+            "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "Gain",
+            "destinations": [
+              "05890bcd-915b-4a73-9aa5-0e7518f37278"
+            ]
+          },
+          {
+            "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "Gain",
+            "destinations": [
+              "79684248-898b-4f54-98d1-17e04a9452f9"
+            ]
+          },
+          {
+            "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "Gain",
+            "destinations": [
+              "05890bcd-915b-4a73-9aa5-0e7518f37278"
+            ]
+          },
+          {
+            "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "DynamicsCompressor",
+            "destinations": [
+              "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+            ]
+          },
+          {
+            "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+            "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+            "nodeType": "AudioDestination",
+            "destinations": []
+          }
+        ],
+        "audio": {
+          "contextState": "running",
+          "activeSfxVoices": 0
+        },
+        "workers": 2,
+        "workerTargets": [
+          {
+            "id": "DFC830D2A70AC87FC931A8915AED03FE",
+            "url": ""
+          },
+          {
+            "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+            "url": ""
+          }
+        ],
+        "state": "SELECT",
+        "at": "2026-10-24T23:39:39.155Z"
+      },
+      "baseline": {
+        "geometries": 107,
+        "textures": 13,
+        "programs": 40,
+        "contextLost": false,
+        "runtimeListeners": 13,
+        "observers": 13,
+        "rafCallbacks": 412,
+        "jsEventListeners": 188,
+        "domNodes": 323,
+        "audioNodes": 11,
+        "audioContexts": 3,
+        "audioNodeTypes": {
+          "AudioDestination": 3,
+          "Analyser": 1,
+          "Gain": 4,
+          "DynamicsCompressor": 1,
+          "AudioBufferSource": 2
+        },
+        "nativeAudioContexts": [
+          {
+            "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+            "type": "offline",
+            "state": "suspended"
+          },
+          {
+            "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "type": "realtime",
+            "state": "suspended"
+          },
+          {
+            "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+            "type": "offline",
+            "state": "suspended"
+          }
+        ],
+        "nativeAudioNodes": [
+          {
+            "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+            "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+            "nodeType": "AudioDestination",
+            "destinations": []
+          },
+          {
+            "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "AudioDestination",
+            "destinations": []
+          },
+          {
+            "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "Analyser",
+            "destinations": [
+              "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+            ]
+          },
+          {
+            "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "Gain",
+            "destinations": [
+              "565a3a42-f833-4546-8fa9-1e845a1daef9"
+            ]
+          },
+          {
+            "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "Gain",
+            "destinations": [
+              "05890bcd-915b-4a73-9aa5-0e7518f37278"
+            ]
+          },
+          {
+            "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "Gain",
+            "destinations": [
+              "79684248-898b-4f54-98d1-17e04a9452f9"
+            ]
+          },
+          {
+            "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "Gain",
+            "destinations": [
+              "05890bcd-915b-4a73-9aa5-0e7518f37278"
+            ]
+          },
+          {
+            "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "DynamicsCompressor",
+            "destinations": [
+              "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+            ]
+          },
+          {
+            "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+            "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+            "nodeType": "AudioDestination",
+            "destinations": []
+          },
+          {
+            "id": "6c68e171-3221-4947-8a98-aa0a6b394edc",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "AudioBufferSource",
+            "destinations": []
+          },
+          {
+            "id": "3ebe28be-7c92-4d44-9b69-8858ea737694",
+            "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+            "nodeType": "AudioBufferSource",
+            "destinations": []
+          }
+        ],
+        "audio": {
+          "contextState": "suspended",
+          "activeSfxVoices": 0
+        },
+        "workers": 2,
+        "workerTargets": [
+          {
+            "id": "DFC830D2A70AC87FC931A8915AED03FE",
+            "url": ""
+          },
+          {
+            "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+            "url": ""
+          }
+        ],
+        "state": "SELECT",
+        "at": "2026-10-24T23:40:08.745Z"
+      },
+      "warmupSamples": [
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 396,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c68e171-3221-4947-8a98-aa0a6b394edc",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "3ebe28be-7c92-4d44-9b69-8858ea737694",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:40:06.591Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 404,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c68e171-3221-4947-8a98-aa0a6b394edc",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "3ebe28be-7c92-4d44-9b69-8858ea737694",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:40:07.653Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 412,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c68e171-3221-4947-8a98-aa0a6b394edc",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "3ebe28be-7c92-4d44-9b69-8858ea737694",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:40:08.745Z"
+        }
+      ],
+      "cycles": [
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 460,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "85dd28ef-4137-4024-9b96-7059063868f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "4d85958e-1faa-4c57-8577-35d7882228fe",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:40:15.314Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 505,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "e3400343-5e2b-4779-b128-5d64661393df",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "6d40ba48-b804-4274-90e5-cb92fa1cb2f3",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:40:22.228Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 552,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "878f39d0-2322-432d-828d-518d99c145e0",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "a738cf76-2164-4b2b-8b4e-fd015c4ac764",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:40:28.988Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 597,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "e1b6cd90-036b-4544-83e8-d4c845b5ad6b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "98a1f23a-a990-4072-b1bb-87300620997f",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:40:35.633Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 791,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 10,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 1
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "99ad0bc5-cbd5-490f-b690-f261e49aa519",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:40:56.777Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 841,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "431d5734-6b60-48c9-99e1-f05df72881d4",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "e6c43cf6-4772-4e8c-bd56-cb0df3d1c7d7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:41:03.364Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 889,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "7eaa1483-b89e-45c2-ab48-eba66ebe902e",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "d8c161d2-b2f0-4278-a9be-9ff5485096b2",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:41:10.050Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 939,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "14302964-60db-4649-ad78-24c155cfffcc",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "ce556bb8-72bc-4d8f-a9e5-097916e3cd4e",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:41:16.637Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 991,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "56319ef1-5286-4ae8-a71e-ee9c2d8c01a8",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "bace7948-68c0-4ae4-aa77-1acc9b68af08",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:41:23.260Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1185,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 10,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 1
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "66a3bd19-30d2-49d0-9bde-5d3bc3758f05",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:41:44.608Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1233,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "c940b8a3-2aae-40d0-8d1f-eecaad18e14c",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "dfd97e81-3de4-4782-91df-d4e69cce93c8",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:41:51.321Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1279,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "efb2bd7b-639b-40dd-bed9-656109f071e8",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "0a512148-95ff-4a3b-9390-86f16803c166",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:41:58.109Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1323,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "9fc6659b-0247-4dcd-8c4b-1cf51d49e2dc",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "fbbb1396-7551-47a4-89e3-8ec254ae0e06",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:42:04.823Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1368,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "d7286be9-d7dd-407b-b6d5-1edb3fa0cdf7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "284221b9-db7d-4471-8f04-83ea78da8334",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:42:11.367Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1566,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 10,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 1
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "f5bc155b-31f6-4328-8a35-7723dc7c0caf",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:42:32.816Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1613,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "77962598-54c3-49d0-b8b3-347ce59edb8c",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "8ca8bd02-0dfe-4367-9835-a4fe58d4aa71",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:42:39.627Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1661,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "dc246e31-5dde-485b-a347-1502d3a61195",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "c946b6dc-4ede-46a2-b6cb-75e529602aa6",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:42:46.270Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1714,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "a9de0acf-d580-47a0-a3b4-d60571b40752",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "d23ccacf-353e-4d58-8e5c-2b7140966a36",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:42:52.997Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1763,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "eb3229b7-783c-4d59-a0da-6e1a5058b152",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            },
+            {
+              "id": "b0d696a5-34b8-4b8d-98ac-15a54f95032d",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:42:59.687Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1973,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 10,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 1
+          },
+          "nativeAudioContexts": [
+            {
+              "id": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "type": "offline",
+              "state": "suspended"
+            },
+            {
+              "id": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "type": "realtime",
+              "state": "suspended"
+            },
+            {
+              "id": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "type": "offline",
+              "state": "suspended"
+            }
+          ],
+          "nativeAudioNodes": [
+            {
+              "id": "6bdc93d7-4cda-487a-8041-209ae246e0af",
+              "contextId": "280ac64b-c924-4cfa-9e05-81b8c19fc83b",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "565a3a42-f833-4546-8fa9-1e845a1daef9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "6c5cbc33-a573-40d0-b9d6-535ab05acf00",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Analyser",
+              "destinations": [
+                "d6777f33-64df-4d58-9fb2-b2541ee5117b"
+              ]
+            },
+            {
+              "id": "05890bcd-915b-4a73-9aa5-0e7518f37278",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "565a3a42-f833-4546-8fa9-1e845a1daef9"
+              ]
+            },
+            {
+              "id": "d6777f33-64df-4d58-9fb2-b2541ee5117b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "dd7978fb-fc9b-4a34-83a6-437c475857e9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "79684248-898b-4f54-98d1-17e04a9452f9"
+              ]
+            },
+            {
+              "id": "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "Gain",
+              "destinations": [
+                "05890bcd-915b-4a73-9aa5-0e7518f37278"
+              ]
+            },
+            {
+              "id": "79684248-898b-4f54-98d1-17e04a9452f9",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "DynamicsCompressor",
+              "destinations": [
+                "b1026ed5-3ff7-4549-aac2-68ee0fefe3f7"
+              ]
+            },
+            {
+              "id": "3a031573-af6d-490f-a278-a9c3b3581605",
+              "contextId": "4c65d47b-1244-4e34-97d6-bf212b3cc8e7",
+              "nodeType": "AudioDestination",
+              "destinations": []
+            },
+            {
+              "id": "0440e481-4d2e-4db4-bdfc-e46ac814d50b",
+              "contextId": "39d3ee66-d51e-498b-bd02-b61bffdecf83",
+              "nodeType": "AudioBufferSource",
+              "destinations": []
+            }
+          ],
+          "audio": {
+            "contextState": "suspended",
+            "activeSfxVoices": 0
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "DFC830D2A70AC87FC931A8915AED03FE",
+              "url": ""
+            },
+            {
+              "id": "5C1B7511A13D9FA58FBB2DB681B9D066",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:43:20.916Z"
+        }
+      ],
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:43:20.924Z"
+    },
+    {
+      "name": "hidden",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "countdown: browser actually hid the game tab",
+          "ok": true,
+          "detail": "{\"state\":\"SELECT\",\"pauseReason\":null,\"status\":\"Choose music when you are ready.\",\"error\":null,\"fatal\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":false,\"trackingReady\":false,\"figureAvailable\":false,\"audioReady\":true,\"audio\":{\"contextState\":\"running\",\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":1,\"stage\":\"ready\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":64,\"textures\":13,\"programs\":27,\"contextLost\":false,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":0,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":false,\"rightPresent\":false,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null}"
+        },
+        {
+          "name": "countdown: expected hidden-tab semantics",
+          "ok": true,
+          "detail": "{\"state\":\"SELECT\",\"pauseReason\":null,\"status\":\"Choose music when you are ready.\",\"error\":null,\"fatal\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":false,\"trackingReady\":false,\"figureAvailable\":false,\"audioReady\":true,\"audio\":{\"contextState\":\"running\",\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":1,\"stage\":\"ready\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":64,\"textures\":13,\"programs\":27,\"contextLost\":false,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":0,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":false,\"rightPresent\":false,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null}"
+        },
+        {
+          "name": "countdown: returning alone never auto-starts",
+          "ok": true,
+          "detail": "SELECT"
+        },
+        {
+          "name": "play: browser actually hid the game tab",
+          "ok": true,
+          "detail": "{\"state\":\"PAUSED\",\"pauseReason\":\"hidden\",\"status\":\"Get ready.\",\"error\":null,\"fatal\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":true,\"figureAvailable\":true,\"audioReady\":false,\"audio\":{\"contextState\":\"suspended\",\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":1,\"stage\":\"ready\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":87,\"textures\":13,\"programs\":31,\"contextLost\":false,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":131.20499999552976,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":229.3333333333334}"
+        },
+        {
+          "name": "play: expected hidden-tab semantics",
+          "ok": true,
+          "detail": "{\"state\":\"PAUSED\",\"pauseReason\":\"hidden\",\"status\":\"Get ready.\",\"error\":null,\"fatal\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":true,\"figureAvailable\":true,\"audioReady\":false,\"audio\":{\"contextState\":\"suspended\",\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":1,\"stage\":\"ready\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":87,\"textures\":13,\"programs\":31,\"contextLost\":false,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":131.20499999552976,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":229.3333333333334}"
+        },
+        {
+          "name": "play: returning alone never auto-starts",
+          "ok": true,
+          "detail": "PAUSED"
+        },
+        {
+          "name": "native Resume works after tab return",
+          "ok": true
+        }
+      ],
+      "startedAt": "2026-10-24T23:43:20.924Z",
+      "reproduction": "Activate another real Chrome tab during the start countdown and separately during play; return to the game tab and inspect cancellation/pause/manual resume.",
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:43:34.790Z"
+    },
+    {
+      "name": "tiers",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "low: requested quality tier boots",
+          "ok": true,
+          "detail": "{\"tier\":\"low\",\"preset\":{\"renderScale\":0.75,\"bloomResolutionScale\":0.25,\"bloomMipLevels\":4,\"bloomIntensity\":0.9,\"chromaticAberration\":\"off\",\"antialiasing\":\"none\",\"trailParticlesPerHand\":96,\"ribbonLayers\":1,\"ribbonCoreWidened\":true,\"ribbonSpineSamples\":32,\"tipSparks\":false,\"beamNoiseOctaves\":0,\"skeleton\":\"joints\",\"maskTaps\":5,\"maskTextures\":1,\"maskTemporalBlend\":false,\"silhouetteHalo\":false,\"handGlowSpots\":true,\"fragmentCap\":128,\"smashGeometry\":\"complete-eight-octant-fallback\",\"fragmentLifetimeScale\":0.7,\"poofSparks\":12,\"aimAssistLine\":\"off\",\"grid\":\"plain-antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":200,\"pylons\":8},\"renderScale\":0.75,\"pixelRatio\":0.75,\"fragmentLifetimeMs\":979.9999999999999,\"bloomEnabled\":true,\"antialiasing\":\"none\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"}]}"
+        },
+        {
+          "name": "low: performer reaches genuine positive results",
+          "ok": true,
+          "detail": "{\"perfect\":12,\"great\":0,\"good\":0,\"miss\":0,\"badcut\":0,\"obstaclesHit\":0,\"obstaclesDodged\":1}"
+        },
+        {
+          "name": "low: no browser console errors",
+          "ok": true,
+          "detail": "[]"
+        },
+        {
+          "name": "medium: requested quality tier boots",
+          "ok": true,
+          "detail": "{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]}"
+        },
+        {
+          "name": "medium: performer reaches genuine positive results",
+          "ok": true,
+          "detail": "{\"perfect\":12,\"great\":0,\"good\":0,\"miss\":0,\"badcut\":0,\"obstaclesHit\":0,\"obstaclesDodged\":1}"
+        },
+        {
+          "name": "medium: no browser console errors",
+          "ok": true,
+          "detail": "[]"
+        },
+        {
+          "name": "high: requested quality tier boots",
+          "ok": true,
+          "detail": "{\"tier\":\"high\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.5,\"bloomMipLevels\":6,\"bloomIntensity\":1.2,\"chromaticAberration\":\"optional-drop\",\"antialiasing\":\"smaa-medium\",\"trailParticlesPerHand\":256,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":2,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":256,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased-glow\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":600,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"smaa-medium\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"smaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]}"
+        },
+        {
+          "name": "high: performer reaches genuine positive results",
+          "ok": true,
+          "detail": "{\"perfect\":12,\"great\":0,\"good\":0,\"miss\":0,\"badcut\":0,\"obstaclesHit\":0,\"obstaclesDodged\":1}"
+        },
+        {
+          "name": "high: no browser console errors",
+          "ok": true,
+          "detail": "[]"
+        }
+      ],
+      "startedAt": "2026-10-24T23:43:34.790Z",
+      "reproduction": "Load fresh low/medium/high fixed-tier pages, upload the same original synthesized WAV, enable sound and complete the planned performer through actual results.",
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:44:33.402Z"
+    }
+  ],
+  "cleanup": {},
+  "completedAt": "2026-10-24T23:44:33.697Z",
+  "passed": true
+}

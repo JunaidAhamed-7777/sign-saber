@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:14:53+05:30 — Preserve complete clean-source lifecycle proof (issue #4)
+
+- Changed: Saved the exact complete browser report and four inspected desktop/compact screenshots under `docs/evidence/2026-10-25-lifecycle-96aa536/`. Clarified the shared CDP client's Node 22+ requirement in the real command documentation.
+- Why: Preserve complete evidence before integrating the newly landed avatar renderer, whose geometry ownership requires a final resource recheck.
+- Validation: The clean source `96aa536` passed all eight independent browser scenarios and every one of the 20 measured cycles. The fixed suspended-audio baseline was 107 geometries, 13 textures, 188 native DOM listeners, two workers, three native audio contexts and eleven native AudioNodes; samples stayed at or below it. Every quit had zero active SFX voices and no connected native buffer sources. Native source IDs changed rather than accumulating; the ten/eleven-node boundary is retained verbatim. Real hidden-tab cancellation/pause/manual resume and all fixed-tier performer Results passed. The exact app code previously passed required typecheck/lint/488 tests/build; root docs checks and helper tests run again for this evidence-only increment.
+- Limits: Synthetic planned motion and muted headless software rendering; no camera, audible-sync or performance acceptance. The separate nine-node running-Results baseline failure remains preserved. Final integration against upstream avatar checkpoint `30572bb` is next; this report is not attributed to that later source.
+
 ## 2026-10-25T05:07:16+05:30 — Add repeatable lifecycle matrix and correct hidden-pause ownership (issue #4)
 
 - Changed: Added `scripts/lifecycle-qa.mjs`, pure fixture/resource/report tests and minimal native fault probes, reusing the shared CDP client without dependencies. The eight independent cases drive real uploads, DSP cancellation, invalid inputs, cache denial/quota, WebGL loss/reload, 20 cycles, actual tab hiding and low/medium/high performer results. Evidence retains raw baseline and first full matrix failures. Window blur now cancels pointer input while actual visibility owns hidden pause; an earlier manual pause is preserved. Fatal UI uses the existing opaque Boot shell. Read-only diagnostics expose context state/active SFX voices. README, scripts index and docs04/17 describe the real command and evidence limits.

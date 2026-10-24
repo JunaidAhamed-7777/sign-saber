@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Complete clean-source lifecycle evidence (issue #4)
+
+- Codex captured and inspected the full eight-case/20-cycle browser result on clean source `96aa536`, preserving native resource IDs, graph disconnections, source hashes, earlier failures and current screenshots. The evidence is explicitly synthetic and separate from camera/audible-sync/performance claims.
+
 ## 2026-10-25 — Repeatable lifecycle harness and independent acceptance review (issue #4)
 
 - Codex authored the native-CDP eight-case harness, deterministic original audio, strict retained-resource/report tests and honest failed-run artifacts. Browser failures led to visibility-owned hidden pauses and an opaque fatal shell with regression assertions. A separate agent reviewed acceptance coverage read-only and identified cancellation/native-audio assertion gaps; these were tightened. No camera, human, audible-sync or performance result is claimed.

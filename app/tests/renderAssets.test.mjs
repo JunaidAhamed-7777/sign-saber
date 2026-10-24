@@ -100,7 +100,7 @@ describe('local authored assets and verified complete fallbacks', () => {
     expect(
       assets.assets.shards.some((s) => Array.from(s.geometry.getAttribute('aInner').array).includes(1)),
     ).toBe(true);
-    const trim = assets.assets.blockShell.getAttribute('aTrim').array;
+    const trim = assets.assets.slashBody.getAttribute('aTrim').array;
     expect(Array.from(trim).includes(1) && Array.from(trim).includes(0)).toBe(true);
     expect(Array.from(assets.assets.pylon.getAttribute('aTrim').array).includes(1)).toBe(true);
     expect(assets.assets.glyphArrow.getAttribute('position').count).toBeGreaterThan(0);

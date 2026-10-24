@@ -8,9 +8,12 @@ import {
   SLICE_INHERIT,
   SLICE_POOL,
   SLICE_SEPARATION_SPEED,
+  SLICE_CAP_HEAT_GAIN,
+  SLICE_CAP_HEAT_MS,
+  BLOCK_SIZE,
 } from '../core/constants';
 import { CubeSlicer } from './slicer';
-import type { CutHalf } from './slicer';
+import type { CutHalf, SlicerFaces } from './slicer';
 interface HalfMesh {
   mesh: THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial[]>;
   source: CutHalf;
@@ -38,11 +41,13 @@ export class SlicePool {
   constructor(
     private readonly scene: THREE.Scene,
     private readonly lifetimeMs: number = HALF_LIFETIME_MS,
+    /** Convex target shape to cut (default: the cube); the renderer passes the Slash diamond. */
+    faces?: SlicerFaces,
   ) {
     if (!Number.isFinite(lifetimeMs) || lifetimeMs <= 0)
       throw new RangeError('Invalid sliced-half lifetime.');
     for (let slot = 0; slot < Math.floor(SLICE_POOL / 2); slot++) {
-      const slicer = new CubeSlicer(),
+      const slicer = new CubeSlicer(BLOCK_SIZE, faces),
         halves: HalfMesh[] = [];
       for (const source of [slicer.result.positive, slicer.result.negative]) {
         const geometry = new THREE.BufferGeometry();
@@ -62,16 +67,17 @@ export class SlicePool {
         geometry.addGroup(0, 0, 0);
         geometry.addGroup(0, 0, 1);
         const body = new THREE.MeshStandardMaterial({
-            color: CYAN,
-            emissive: 0x063741,
-            metalness: 0.45,
+            color: 0x0b2a36,
+            emissive: CYAN,
+            emissiveIntensity: 0.35,
+            metalness: 0.4,
             roughness: 0.3,
             transparent: true,
           }),
           cap = new THREE.MeshStandardMaterial({
             color: WHITE,
-            emissive: 0x198895,
-            emissiveIntensity: 1.2,
+            emissive: 0x8ff8ff,
+            emissiveIntensity: 1,
             roughness: 0.25,
             transparent: true,
           });
@@ -167,7 +173,10 @@ export class SlicePool {
         this.spin.setFromAxisAngle(half.axis, calm ? 0 : half.spin * t);
         half.mesh.quaternion.copy(slot.base).multiply(this.spin);
         for (const material of half.mesh.material) material.opacity = fade;
-        half.mesh.material[1]!.color.copy(CYAN).lerp(WHITE, calm ? 0 : Math.max(0, 1 - age / 300));
+        // Cross-section starts white-hot and cools to the block colour (steady tint in Calm).
+        const heat = calm ? 0 : Math.max(0, 1 - age / SLICE_CAP_HEAT_MS);
+        half.mesh.material[1]!.color.copy(CYAN).lerp(WHITE, heat);
+        half.mesh.material[1]!.emissiveIntensity = 1 + heat * SLICE_CAP_HEAT_GAIN;
       }
     }
   }

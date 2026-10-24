@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T02:16:36+05:30 — Dataset pause and clean-checkout integrity fixes
+
+- Changed: The dataset trial can resume without camera calibration, while live/fatal guards remain enforced. Pinned fixture text to canonical LF bytes and corrected the runtime SHA to the actual Git blob. Added byte-level tamper/line-ending/load assertions and the paused-UI regression. Registered terminal-feedback constants for the renderer follow-up.
+- Why: Real browser pause exposed a disabled Resume control, and a fresh Node22 remote clone exposed a checksum that incorrectly described Windows working-copy CRLF bytes. The initial root-worktree trial did not reveal that clean-checkout failure.
+- Validation: Targeted UI/dataset suites passed 48 assertions; four additional fixture integrity assertions passed. Prior complete check passed 257 assertions; this small fix passed its full application/docs checks before commit.
+- Limits: Paused dataset input is annotated still data, without human gestures or camera readiness. Browser recovery and the repaired remote clean clone are verified in the following evidence checkpoint.
+
 ## 2026-10-25T02:13:55+05:30 — Distinct bounded beam power-down
 
 - Changed: Added a six-slot whole-target beam power-down/collapse effect with seeded sparks, soft flash and ring; no beam hit emits slash halves, shatter pieces or generic cube debris. Whole effects reserve their sparks in the shared fragment cap and recycle deterministically. Registered effect/arena emission values and updated subsystem docs. Normalized the app README formatting.

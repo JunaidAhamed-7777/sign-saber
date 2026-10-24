@@ -26,12 +26,16 @@ vi.mock('../src/state/store', async () => {
 const initial = structuredClone(useStore.getState());
 let compact = false,
   armed = false,
-  frozen = false;
+  frozen = false,
+  dataset = false;
 const runtime = {
   get startArmed() {
     return armed;
   },
   resumeArmed: false,
+  get datasetTrialActive() {
+    return dataset;
+  },
   renderer: {
     get hasFrozenFigure() {
       return frozen;
@@ -44,7 +48,7 @@ const runtime = {
 const targets = (html: string): string[] =>
   [...html.matchAll(/data-target="([^"]+)"/g)].map((match) => match[1]!);
 beforeEach(() => {
-  compact = armed = frozen = false;
+  compact = armed = frozen = dataset = false;
   useStore.setState(structuredClone(initial), true);
   vi.stubGlobal('window', {
     matchMedia: () => ({ matches: compact, addEventListener: () => {}, removeEventListener: () => {} }),
@@ -130,6 +134,18 @@ describe('figure-centred paged menu structure', () => {
     const html = renderToStaticMarkup(<Paused runtime={runtime} />);
     expect(html).toContain('Paused · frozen figure');
     expect(html).not.toContain('person-illustration');
+  });
+  it('enables dataset resume without camera calibration and still blocks live or fatal recovery', () => {
+    useStore.setState({ state: 'PAUSED', trackingReady: false, pauseReason: 'manual' });
+    let html = renderToStaticMarkup(<Paused runtime={runtime} />);
+    expect(html).toMatch(/data-target="resume"[^>]*disabled/);
+    dataset = true;
+    html = renderToStaticMarkup(<Paused runtime={runtime} />);
+    expect(html).not.toMatch(/data-target="resume"[^>]*disabled/);
+    expect(targets(html)).toContain('resume');
+    useStore.setState({ pauseReason: 'fatal' });
+    html = renderToStaticMarkup(<Paused runtime={runtime} />);
+    expect(html).toMatch(/data-target="resume"[^>]*disabled/);
   });
   it('shows actual results and owned timestamp with recovery status rather than a live figure claim', () => {
     const stats = {

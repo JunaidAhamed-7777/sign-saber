@@ -258,6 +258,9 @@ export class GameRuntime {
   get resumeArmed(): boolean {
     return this.machine.state === 'PAUSED' && this.resumeAt !== Infinity;
   }
+  get datasetTrialActive(): boolean {
+    return this.dataset !== null;
+  }
   async command(id: string, source: ActionSource = 'native'): Promise<void> {
     if (this.disposed) return;
     try {

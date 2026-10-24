@@ -5,7 +5,7 @@ import type { MenuPage } from '../components/MenuShell';
 import { strings as t } from '../strings';
 export function Paused({ runtime }: { runtime: GameRuntime }) {
   const reason = useStore((s) => s.pauseReason),
-    ready = useStore((s) => s.trackingReady && s.camera.calibrationValid),
+    ready = useStore((s) => runtime.datasetTrialActive || (s.trackingReady && s.camera.calibrationValid)),
     countdown = useStore((s) => s.countdown),
     error = useStore((s) => s.error);
   useStore((s) => s.status);

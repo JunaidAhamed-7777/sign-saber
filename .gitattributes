@@ -1,4 +1,7 @@
 * text=auto eol=lf
+# Runtime checksum pins include the exact canonical text bytes.
+app/public/assets/fixtures/*.json text eol=lf
+app/public/assets/tracks/**/*.json text eol=lf
 *.png binary
 *.webp binary
 *.glb binary

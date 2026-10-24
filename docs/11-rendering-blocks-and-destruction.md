@@ -296,6 +296,8 @@ This is the rendering destruction sub-registry linked from [02](02-architecture.
 | `SLICE_INHERIT` / `SHATTER_INHERIT` | 0.35 / 0.5 | Fraction of `impactVel` inherited |
 | `SHATTER_BURST_MIN` / `MAX` | 2 / 6 m/s | Radial burst |
 | `BADCUT_PUSHBACK_M` / `BADCUT_MS` | 0.8 / 220 | Deflect |
+| `MISS_DIM_MS` / `TERMINAL_DIM_FACTOR` | 150 ms / 0.25 | Terminal visual dim duration / remaining colour |
+| `BADCUT_TINT` | `0xff1e3c` | Failure feedback red |
 | `OBSTACLE_ALPHA` | 0.35 | |
 | `SPAWN_FADE_MS` | 250 | |
 

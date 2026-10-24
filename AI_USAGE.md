@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Clean-checkout and pause regression fixes
+
+- Parallel clean-clone validation found a real canonical-byte fixture mismatch; browser exercise found the dataset Resume camera dependency. Codex corrected both and added integrity/UI regression assertions, preserving the failed-check evidence and live-camera guards.
+
 ## 2026-10-25 — Beam presentation follow-up
 
 - An agent implemented the separate pooled whole-target beam collapse and bounded shared effect accounting; the integrator registered constants/docs and ran the full 257-assertion check. Numeric render evidence remains separate from human/GPU gates.

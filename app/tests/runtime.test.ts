@@ -404,6 +404,50 @@ afterEach(() => {
 });
 
 describe('runtime browser lifecycle (mocked boundaries)', () => {
+  it('lets real visibility own the hidden pause when blur arrives first', async () => {
+    await prepare();
+    await play();
+    window.dispatchEvent(new Event('blur'));
+    expect(runtime!.machine.state).toBe('PLAYING');
+    (document as unknown as { hidden: boolean }).hidden = true;
+    document.dispatchEvent(new Event('visibilitychange'));
+    await flush();
+    expect(runtime!.machine.state).toBe('PAUSED');
+    expect(runtime!.machine.pauseReason).toBe('hidden');
+    expect(Context.instances[0]!.state).toBe('suspended');
+    (document as unknown as { hidden: boolean }).hidden = false;
+    document.dispatchEvent(new Event('visibilitychange'));
+    step(now + 3000);
+    await flush();
+    expect(runtime!.machine.state).toBe('PAUSED');
+    expect(runtime!.machine.pauseReason).toBe('hidden');
+  });
+  it('preserves an already manual pause when the page later becomes hidden', async () => {
+    await prepare();
+    await play();
+    await runtime!.pause('manual');
+    window.dispatchEvent(new Event('blur'));
+    (document as unknown as { hidden: boolean }).hidden = true;
+    document.dispatchEvent(new Event('visibilitychange'));
+    await flush();
+    expect(runtime!.machine.pauseReason).toBe('manual');
+  });
+  it('cancels an armed countdown on real visibility loss without auto-starting on return', async () => {
+    await prepare();
+    advance(700);
+    await runtime!.command('start');
+    expect(runtime!.machine.state).toBe('CALIBRATION');
+    (document as unknown as { hidden: boolean }).hidden = true;
+    document.dispatchEvent(new Event('visibilitychange'));
+    await flush();
+    expect(runtime!.machine.state).toBe('SELECT');
+    expect(Context.instances[0]!.sources.every((source) => source.disconnected)).toBe(true);
+    (document as unknown as { hidden: boolean }).hidden = false;
+    document.dispatchEvent(new Event('visibilitychange'));
+    step(now + 4000);
+    await flush();
+    expect(runtime!.machine.state).toBe('SELECT');
+  });
   it('stops an invisible run and all future frame work after WebGL context loss', async () => {
     await prepare();
     await play();

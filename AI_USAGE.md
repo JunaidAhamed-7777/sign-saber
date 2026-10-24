@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Repeatable lifecycle harness and independent acceptance review (issue #4)
+
+- Codex authored the native-CDP eight-case harness, deterministic original audio, strict retained-resource/report tests and honest failed-run artifacts. Browser failures led to visibility-owned hidden pauses and an opaque fatal shell with regression assertions. A separate agent reviewed acceptance coverage read-only and identified cancellation/native-audio assertion gaps; these were tightened. No camera, human, audible-sync or performance result is claimed.
+
 ## 2026-10-25 — Lifecycle integration review (issue #4)
 
 - Codex integrated the current main audio/render implementation without rewriting history, checked the context-loss guards against the new SFX director and reran all application/doc checks. Native CDP retained-resource probes and a repeatable eight-scenario harness remain in progress.

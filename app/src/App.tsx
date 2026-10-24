@@ -153,7 +153,9 @@ export function App({ runtime }: { runtime: GameRuntime }) {
     document.documentElement.dataset.motion = calm ? 'calm' : 'standard';
   }, [calm]);
   return (
-    <div className={`application state-${state.toLowerCase()}${credits ? ' showing-credits' : ''}`}>
+    <div
+      className={`application state-${fatal ? 'boot' : state.toLowerCase()}${credits ? ' showing-credits' : ''}`}
+    >
       <header className="app-header">
         <a className="wordmark" href="/" aria-label={t.title}>
           <svg viewBox="0 0 32 32" aria-hidden="true">

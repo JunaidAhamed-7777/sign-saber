@@ -75,6 +75,7 @@ describe('figure-centred paged menu structure', () => {
     for (const state of ['SELECT', 'PAUSED'] as const) {
       useStore.setState({ state, fatal: strings.graphicsLost });
       const html = renderToStaticMarkup(<App runtime={runtime} />);
+      expect(html).toContain('class="application state-boot"');
       expect(html).toContain(strings.graphicsLost);
       expect(html).toContain('href="/"');
       expect(html).not.toContain('data-target="resume"');

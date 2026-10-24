@@ -136,6 +136,7 @@ Displays, in this order, with staggered 120 ms entrance animations:
 ## Implementation notes
 
 - The machine is a plain object: `{ state, transition(event, payload) }` with an exhaustive `switch`; subscribers receive `(prev, next)` via the event bus (`state:change`). React screens subscribe through the Zustand store, which mirrors `state`.
+- Actual `visibilitychange` owns hidden-tab pause/cancel semantics. Window blur immediately cancels the hand pointer but does not invent a manual pause before the hidden event arrives. An already manual pause keeps its reason when the tab later becomes hidden; returning to the tab alone never resumes either pause.
 - Subsystems implement `onEnter(state)` / `onExit(state)` hooks registered with the machine; e.g. the audio engine suspends on entering `PAUSED` and resumes on leaving it. Avoid scattering `if (state === …)` checks in update loops.
 - State transitions have a single owner and an observable sequence number. Hooks are idempotent; listeners, media streams, decoded buffers, workers and render resources have an explicit owner/dispose path. Quit/Retry resets note pools, filters, gesture charge and capture watermarks, so old input cannot score in a new run.
 - Retry may reuse body calibration only for the same camera/crop/player and unchanged viewport mapping. If any of those change, rerun calibration. A cached wave skip never skips readiness or the countdown.

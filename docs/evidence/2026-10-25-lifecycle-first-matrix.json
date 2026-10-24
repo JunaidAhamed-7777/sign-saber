@@ -1,0 +1,1422 @@
+{
+  "schema": 1,
+  "date": "2026-10-25",
+  "recordedAt": "2026-10-24T23:25:49.441Z",
+  "gitHead": "19a50fc94579b73efe06775d79e60a894553ef78",
+  "dirtyTree": true,
+  "environment": {
+    "node": "v26.8.1",
+    "os": "win32 10.0.26300",
+    "logicalCpus": 16
+  },
+  "sourceHashes": {
+    "scripts/lifecycle-qa.mjs": "122800b8d1f2d15e2746eface208700132b4c6256342af26f7f4da995f7e09b0",
+    "scripts/lifecycle-helpers.mjs": "32c069ad9a8332e4221c3b7a393460ef865ce5b2d3c2dc9086f198766b844eec",
+    "scripts/lifecycle-probe.mjs": "3c2fed1cbcfec4d3c8a1f5f7a1303b3000cd07989dc8abada105ff199b65f7af",
+    "scripts/cdp-client.mjs": "d9a0a484271c1d479ce7bc426863edf7d874a5bd9356b64245f202bfee8fcea2",
+    "app/src/core/runtime.ts": "79066ddd8242c58ebb63f2aa4c2a7f75af0f7fff1947439c873b47ea2d6ef795",
+    "app/src/render/renderer.ts": "feafcdb6bb98ead2f6da1c4618176ce61dec609b19716e48db3df3859ed41fe7",
+    "app/src/ui/strings.ts": "ce16989a034e0ee42c61f97b4910be61c57723dc0032e8a029800dc40343cf3b",
+    "app/src/ui/screens/Select.tsx": "402f9e369eec5120bed7d0803acf3e542536475d4e668ae7c65f3821c232d5a0",
+    "app/package-lock.json": "66dc1547569b921b18b85ab19b6e22fc3166133573d1f10764aea146b0bc2bb1"
+  },
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/155.0.8059.86",
+    "revision": "@804d6b05f089b27af8342622a36558c49401a1d4",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+    "jsVersion": "15.5.35.25"
+  },
+  "protocol": {
+    "WebAudio": {
+      "commands": [
+        "enable",
+        "disable",
+        "getRealtimeData"
+      ],
+      "events": [
+        "contextCreated",
+        "contextWillBeDestroyed",
+        "contextChanged",
+        "audioListenerCreated",
+        "audioListenerWillBeDestroyed",
+        "audioNodeCreated",
+        "audioNodeWillBeDestroyed",
+        "audioParamCreated",
+        "audioParamWillBeDestroyed",
+        "nodesConnected",
+        "nodesDisconnected",
+        "nodeParamConnected",
+        "nodeParamDisconnected"
+      ]
+    },
+    "Memory": {
+      "commands": [
+        "getDOMCounters",
+        "getDOMCountersForLeakDetection",
+        "prepareForLeakDetection",
+        "forciblyPurgeJavaScriptMemory",
+        "setPressureNotificationsSuppressed",
+        "simulatePressureNotification",
+        "startSampling",
+        "stopSampling",
+        "getAllTimeSamplingProfile",
+        "getBrowserSamplingProfile",
+        "getSamplingProfile"
+      ]
+    },
+    "HeapProfiler": {
+      "commands": [
+        "addInspectedHeapObject",
+        "collectGarbage",
+        "disable",
+        "enable",
+        "getHeapObjectId",
+        "getObjectByHeapObjectId",
+        "getSamplingProfile",
+        "startSampling",
+        "startTrackingHeapObjects",
+        "stopSampling",
+        "stopTrackingHeapObjects",
+        "takeHeapSnapshot"
+      ],
+      "events": [
+        "addHeapSnapshotChunk",
+        "heapStatsUpdate",
+        "lastSeenObjectId",
+        "reportHeapSnapshotProgress",
+        "resetProfiles"
+      ]
+    },
+    "Target": {
+      "commands": [
+        "activateTarget",
+        "attachToTarget",
+        "attachToBrowserTarget",
+        "closeTarget",
+        "exposeDevToolsProtocol",
+        "createBrowserContext",
+        "getBrowserContexts",
+        "createTarget",
+        "detachFromTarget",
+        "disposeBrowserContext",
+        "getTargetInfo",
+        "getTargets",
+        "sendMessageToTarget",
+        "setAutoAttach",
+        "autoAttachRelated",
+        "setDiscoverTargets",
+        "setRemoteLocations",
+        "getDevToolsTarget",
+        "openDevTools"
+      ],
+      "events": [
+        "attachedToTarget",
+        "detachedFromTarget",
+        "receivedMessageFromTarget",
+        "targetCreated",
+        "targetDestroyed",
+        "targetCrashed",
+        "targetInfoChanged"
+      ]
+    }
+  },
+  "fixtures": {
+    "valid": {
+      "bytes": 529244,
+      "durationSec": 12,
+      "sampleRate": 22050,
+      "sha256": "66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "second": {
+      "bytes": 573344,
+      "durationSec": 13,
+      "sampleRate": 22050,
+      "sha256": "0ec8fc97d01184f7fbdc1abbde8fa96f192ce4d05d9814ca2419119eceefc6e0",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "long": {
+      "bytes": 10584044,
+      "durationSec": 240,
+      "sampleRate": 22050,
+      "sha256": "9ab3b0a21e72768474a95253e107c2fd308a2bdf0e4b467d812382d945446e09",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "short": {
+      "bytes": 44144,
+      "durationSec": 1,
+      "sampleRate": 22050,
+      "sha256": "4b18b7c0677cb7f1edd5dffa482e6943897447f02e1f175dbc793d103d07dd46",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "corrupt": {
+      "bytes": 10,
+      "sha256": "a51bc7aed5605ec18e922abbd62d0de95f30d88bbd8cf5991159f3664e6e30b5"
+    },
+    "wrong": {
+      "bytes": 33,
+      "sha256": "2e66915610e0a099910393ac799a6b8192f8c4388569eca28ec82f42280ca107"
+    },
+    "oversized": {
+      "bytes": 62914561,
+      "source": "sparse zero file; admission limit check only"
+    }
+  },
+  "measurement": {
+    "renderer": "Actual Three.js renderer.info.memory; read-only ?stats=1 diagnostics",
+    "audio": "CDP WebAudio lifetime events; only native string IDs retained; no AudioNode references",
+    "listeners": "CDP Memory.getDOMCounters.jsEventListeners after HeapProfiler.collectGarbage and the same quiet boundary",
+    "workers": "CDP Target.getTargets worker targets in the current isolated browser context",
+    "observers": "Auxiliary observe/disconnect token count, not a retained-GC metric and not a growth gate",
+    "warmup": "One complete generated-chart performer run, return to Songs, then GC/quiet baseline before 20 measured cycles"
+  },
+  "limitations": [
+    "Synthetic original WAVs/planned motion; no camera/person/recognition",
+    "Muted headless software rendering; no audible-sync or GPU-performance claim",
+    "Forced GC/resource counts are lifecycle diagnostics, not release performance evidence"
+  ],
+  "scenarios": [
+    {
+      "name": "upload",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "original synthesized upload generated a real nonempty chart",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-valid\",\"sourceHash\":\"66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734\",\"difficulty\":\"normal\",\"notes\":13,\"warnings\":[]}"
+        },
+        {
+          "name": "generation progress was observed",
+          "ok": true,
+          "detail": "[{\"active\":true,\"fraction\":0,\"stage\":\"read\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0.7500000000000001,\"stage\":\"energy\"}]"
+        },
+        {
+          "name": "performer reached real results with nonzero hits",
+          "ok": true,
+          "detail": "{\"perfect\":12,\"great\":0,\"good\":0,\"miss\":0,\"badcut\":0,\"obstaclesHit\":0,\"obstaclesDodged\":1}"
+        },
+        {
+          "name": "Songs returns to a usable menu",
+          "ok": true
+        },
+        {
+          "name": "no browser console errors (warnings retained separately)",
+          "ok": true,
+          "detail": "[]"
+        }
+      ],
+      "startedAt": "2026-10-24T23:25:51.140Z",
+      "reproduction": "Upload lifecycle-valid.wav, wait for analysis, choose Easy then Normal, Enable sound, Watch synthetic performer, wait for Results, choose Songs.",
+      "results": {
+        "score": 2100,
+        "maxScore": 2400,
+        "accuracy": 1,
+        "rank": "SS",
+        "maxCombo": 12,
+        "counts": {
+          "perfect": 12,
+          "great": 0,
+          "good": 0,
+          "miss": 0,
+          "badcut": 0,
+          "obstaclesHit": 0,
+          "obstaclesDodged": 1
+        },
+        "byType": {
+          "slash": {
+            "hits": 8,
+            "total": 8
+          },
+          "smash": {
+            "hits": 4,
+            "total": 4
+          },
+          "beam": {
+            "hits": 0,
+            "total": 0
+          }
+        },
+        "kineticJoules": 41.39313089303714,
+        "kcal": 0.03957278288053264,
+        "peakComboSongTimeMs": 11496.185333331421
+      },
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:26:23.240Z"
+    },
+    {
+      "name": "cancel",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "a second upload succeeds after cancellation",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-second\",\"sourceHash\":\"0ec8fc97d01184f7fbdc1abbde8fa96f192ce4d05d9814ca2419119eceefc6e0\",\"difficulty\":\"normal\",\"notes\":14,\"warnings\":[]}"
+        },
+        {
+          "name": "cancelled job cannot overwrite the new selection",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-second\",\"sourceHash\":\"0ec8fc97d01184f7fbdc1abbde8fa96f192ce4d05d9814ca2419119eceefc6e0\",\"difficulty\":\"normal\",\"notes\":14,\"warnings\":[]}"
+        },
+        {
+          "name": "no browser console errors (warnings retained separately)",
+          "ok": true,
+          "detail": "[]"
+        }
+      ],
+      "startedAt": "2026-10-24T23:26:23.241Z",
+      "reproduction": "Upload lifecycle-long.wav; click Cancel analysis while progress is active; upload lifecycle-second.wav; verify its source hash remains selected after old work could return.",
+      "cancelledAt": {
+        "active": true,
+        "fraction": 0.45,
+        "stage": "stft"
+      },
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:26:46.602Z"
+    },
+    {
+      "name": "invalid",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "corrupt: an actual input error is shown",
+          "ok": true,
+          "detail": "This browser could not decode that audio. Try MP3 or WAV."
+        },
+        {
+          "name": "corrupt: menu remains usable",
+          "ok": true,
+          "detail": "{\"title\":\"Pamgaea\",\"sourceHash\":\"9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586\",\"difficulty\":\"normal\",\"notes\":178,\"warnings\":[\"lowTempoConfidence\",\"humanRhythmAndComfortReviewPending\"]}"
+        },
+        {
+          "name": "wrong: an actual input error is shown",
+          "ok": true,
+          "detail": "This browser could not decode that audio. Try MP3 or WAV."
+        },
+        {
+          "name": "wrong: menu remains usable",
+          "ok": true,
+          "detail": "{\"title\":\"Pamgaea\",\"sourceHash\":\"9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586\",\"difficulty\":\"normal\",\"notes\":178,\"warnings\":[\"lowTempoConfidence\",\"humanRhythmAndComfortReviewPending\"]}"
+        },
+        {
+          "name": "short: an actual input error is shown",
+          "ok": true,
+          "detail": "Choose audio between 5 and 300 seconds."
+        },
+        {
+          "name": "short: menu remains usable",
+          "ok": true,
+          "detail": "{\"title\":\"Pamgaea\",\"sourceHash\":\"9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586\",\"difficulty\":\"normal\",\"notes\":178,\"warnings\":[\"lowTempoConfidence\",\"humanRhythmAndComfortReviewPending\"]}"
+        },
+        {
+          "name": "oversized: an actual input error is shown",
+          "ok": true,
+          "detail": "Choose a non-empty audio file smaller than 60 MiB"
+        },
+        {
+          "name": "oversized: menu remains usable",
+          "ok": true,
+          "detail": "{\"title\":\"Pamgaea\",\"sourceHash\":\"9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586\",\"difficulty\":\"normal\",\"notes\":178,\"warnings\":[\"lowTempoConfidence\",\"humanRhythmAndComfortReviewPending\"]}"
+        }
+      ],
+      "startedAt": "2026-10-24T23:26:46.602Z",
+      "reproduction": "Choose each corrupt/wrong-format/one-second/over-60-MiB fixture in turn; inspect error, then select bundled music to verify menu recovery.",
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:26:58.431Z"
+    },
+    {
+      "name": "cache",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "unavailable: generation succeeds without cache",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-valid\",\"sourceHash\":\"66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734\",\"difficulty\":\"normal\",\"notes\":13,\"warnings\":[\"cacheUnavailable\"]}"
+        },
+        {
+          "name": "unavailable: cache failure is retained in chart warnings",
+          "ok": true,
+          "detail": "[\"cacheUnavailable\"]"
+        },
+        {
+          "name": "unavailable: visible honest cache-fallback message",
+          "ok": true,
+          "detail": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your own audio\nChoose your own audio\n\nMP3, WAV, OGG or M4A · up to 5 minutes · Use mouse or keyboard for this step.\n\n←\nPrevious\nChoose your own audio\n2 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nL\nSELECTED TRACK\nlifecycle-valid\n\n0:12 · 13 notes\n\nLocal cache unavailable · chart not saved\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nWatch synthetic performer\nPlanned motion · no camera\nTry level with dataset\nAnnotated poses · no webcam\n\nEnable sound with the mouse or keyboard before starting.\n\n←\nPrevious\nReady when you are\n1 of 6\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click"
+        },
+        {
+          "name": "compact viewport keeps the cache notice visible",
+          "ok": true,
+          "detail": "SIGN SABER\nCamera not set up\nChoose your music\n1 of 2\n←\nPrevious\nP\nPamgaea\n2:48\nE\nElectro Cabello\n3:10\nC\nCipher\n3:51\n→\nNext\n\nIllustrative upper body · camera not set up\n\nlifecycle-valid · Normal · 0:12\n\nLocal cache unavailable · chart not saved\n\nEnable sound with the mouse or keyboard before starting.\n\nPlay\n1 of 7\n←\nPrevious\nEnable sound\nMouse or keyboard\nTry level with dataset\nAnnotated poses · no webcam\nWatch synthetic performer\nPlanned motion · no camera\n→\nNext"
+        },
+        {
+          "name": "quota: generation succeeds without cache",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-valid\",\"sourceHash\":\"66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734\",\"difficulty\":\"normal\",\"notes\":13,\"warnings\":[\"cacheUnavailable\"]}"
+        },
+        {
+          "name": "quota: cache failure is retained in chart warnings",
+          "ok": true,
+          "detail": "[\"cacheUnavailable\"]"
+        },
+        {
+          "name": "quota: visible honest cache-fallback message",
+          "ok": true,
+          "detail": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your own audio\nChoose your own audio\n\nMP3, WAV, OGG or M4A · up to 5 minutes · Use mouse or keyboard for this step.\n\n←\nPrevious\nChoose your own audio\n2 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nL\nSELECTED TRACK\nlifecycle-valid\n\n0:12 · 13 notes\n\nLocal cache unavailable · chart not saved\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nWatch synthetic performer\nPlanned motion · no camera\nTry level with dataset\nAnnotated poses · no webcam\n\nEnable sound with the mouse or keyboard before starting.\n\n←\nPrevious\nReady when you are\n1 of 6\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click"
+        }
+      ],
+      "startedAt": "2026-10-24T23:26:58.431Z",
+      "reproduction": "Before load, deny IndexedDB access or make real readwrite transactions throw QuotaExceededError; upload the synthesized WAV and inspect the visible fallback notice.",
+      "screenshots": [
+        "2026-10-25-lifecycle-cache-1440.webp",
+        "2026-10-25-lifecycle-cache-1024.webp"
+      ],
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:27:08.838Z"
+    },
+    {
+      "name": "context",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "menu: actual context-loss extension available",
+          "ok": true
+        },
+        {
+          "name": "menu: useful visible graphics failure or successful recovery",
+          "ok": true,
+          "detail": "{\"before\":{\"state\":\"SELECT\",\"pauseReason\":null,\"status\":\"\",\"error\":null,\"fatal\":\"Graphics context was lost. Reload the game to restore the arena.\",\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":false,\"trackingReady\":false,\"figureAvailable\":false,\"audioReady\":false,\"loading\":false,\"mapReady\":false,\"arrangementReady\":false,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":0,\"stage\":\"\"},\"selection\":null,\"resources\":{\"geometries\":64,\"textures\":13,\"programs\":27,\"contextLost\":true,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":0,\"durationMs\":0,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":false,\"rightPresent\":false,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null},\"after\":{\"state\":\"SELECT\",\"pauseReason\":null,\"status\":\"\",\"error\":null,\"fatal\":\"Graphics context was lost. Reload the game to restore the arena.\",\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":false,\"trackingReady\":false,\"figureAvailable\":false,\"audioReady\":false,\"loading\":false,\"mapReady\":false,\"arrangementReady\":false,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":0,\"stage\":\"\"},\"selection\":null,\"resources\":{\"geometries\":64,\"textures\":13,\"programs\":27,\"contextLost\":true,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":0,\"durationMs\":0,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":false,\"rightPresent\":false,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null},\"text\":\"SIGN SABER\\nCamera not set up\\nMouse / keyboard to browse · Esc to pause\\nSIGN SABER\\n\\nUpper-body rhythm combat\\n\\nThe arena could not start\\n\\nOpen Chrome or Edge with WebGL2 and hardware acceleration enabled.\\n\\nGraphics context was lost. Reload the game to restore the arena.\\n\\nRetry\"}"
+        },
+        {
+          "name": "menu: no zombie scoring/audio run",
+          "ok": true,
+          "detail": "{\"state\":\"SELECT\",\"songTimeMs\":null}"
+        },
+        {
+          "name": "menu: no zombie render callback loop while context remains lost",
+          "ok": true,
+          "detail": "{\"callbacksAfterLoss\":0}"
+        },
+        {
+          "name": "menu: native Retry reload restores the usable song menu",
+          "ok": true
+        },
+        {
+          "name": "play: actual context-loss extension available",
+          "ok": true
+        },
+        {
+          "name": "play: useful visible graphics failure or successful recovery",
+          "ok": true,
+          "detail": "{\"before\":{\"state\":\"PAUSED\",\"pauseReason\":\"fatal\",\"status\":\"Get ready.\",\"error\":null,\"fatal\":\"Graphics context was lost. Reload the game to restore the arena.\",\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":false,\"figureAvailable\":true,\"audioReady\":false,\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":0,\"stage\":\"\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":87,\"textures\":13,\"programs\":31,\"contextLost\":true,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":857.295666666665,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null},\"after\":{\"state\":\"PAUSED\",\"pauseReason\":\"fatal\",\"status\":\"Get ready.\",\"error\":null,\"fatal\":\"Graphics context was lost. Reload the game to restore the arena.\",\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":false,\"figureAvailable\":true,\"audioReady\":false,\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":0,\"stage\":\"\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":87,\"textures\":13,\"programs\":31,\"contextLost\":true,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":857.295666666665,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null},\"text\":\"SIGN SABER\\nCamera not set up\\nMouse / keyboard to browse · Esc to pause\\nSIGN SABER\\n\\nUpper-body rhythm combat\\n\\nThe arena could not start\\n\\nOpen Chrome or Edge with WebGL2 and hardware acceleration enabled.\\n\\nGraphics context was lost. Reload the game to restore the arena.\\n\\nRetry\"}"
+        },
+        {
+          "name": "play: no zombie scoring/audio run",
+          "ok": true,
+          "detail": "{\"state\":\"PAUSED\",\"songTimeMs\":null}"
+        },
+        {
+          "name": "play: no zombie render callback loop while context remains lost",
+          "ok": true,
+          "detail": "{\"callbacksAfterLoss\":0}"
+        },
+        {
+          "name": "play: native Retry reload restores the usable song menu",
+          "ok": true
+        }
+      ],
+      "startedAt": "2026-10-24T23:27:08.839Z",
+      "reproduction": "On the menu and separately during performer play, call the canvas WEBGL_lose_context extension. Check visible failure/recovery, halted audio/scoring and bounded render callbacks.",
+      "screenshots": [
+        "2026-10-25-lifecycle-graphics-error-1440.webp",
+        "2026-10-25-lifecycle-graphics-error-1024.webp"
+      ],
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:27:25.011Z"
+    },
+    {
+      "name": "cycles",
+      "status": "fail",
+      "checks": [
+        {
+          "name": "all 20 complete measured cycles",
+          "ok": true
+        },
+        {
+          "name": "warmed retained resources do not grow",
+          "ok": false,
+          "detail": "[\"Cycle 1: audioNodes grew 9 → 11\",\"Cycle 2: audioNodes grew 9 → 11\",\"Cycle 3: audioNodes grew 9 → 11\",\"Cycle 4: audioNodes grew 9 → 11\",\"Cycle 5: audioNodes grew 9 → 10\",\"Cycle 6: audioNodes grew 9 → 11\",\"Cycle 7: audioNodes grew 9 → 11\",\"Cycle 8: audioNodes grew 9 → 11\",\"Cycle 9: audioNodes grew 9 → 11\",\"Cycle 10: audioNodes grew 9 → 10\",\"Cycle 11: audioNodes grew 9 → 11\",\"Cycle 12: audioNodes grew 9 → 11\",\"Cycle 13: audioNodes grew 9 → 11\",\"Cycle 14: audioNodes grew 9 → 11\",\"Cycle 15: audioNodes grew 9 → 10\",\"Cycle 16: audioNodes grew 9 → 11\",\"Cycle 17: audioNodes grew 9 → 11\",\"Cycle 18: audioNodes grew 9 → 11\",\"Cycle 19: audioNodes grew 9 → 11\",\"Cycle 20: audioNodes grew 9 → 10\"]"
+        },
+        {
+          "name": "no browser console errors during repeated lifecycle",
+          "ok": true,
+          "detail": "[]"
+        }
+      ],
+      "startedAt": "2026-10-24T23:27:25.011Z",
+      "reproduction": "Warm a complete uploaded performer run, return to Songs, collect garbage, then measure all 20 real start/pause/resume/quit cycles with periodic Results/retry; compare the same idle menu boundary.",
+      "baseline": {
+        "geometries": 107,
+        "textures": 13,
+        "programs": 37,
+        "contextLost": false,
+        "runtimeListeners": 13,
+        "observers": 13,
+        "rafCallbacks": 143,
+        "jsEventListeners": 188,
+        "domNodes": 319,
+        "audioNodes": 9,
+        "audioContexts": 3,
+        "audioNodeTypes": {
+          "AudioDestination": 3,
+          "Analyser": 1,
+          "Gain": 4,
+          "DynamicsCompressor": 1
+        },
+        "workers": 2,
+        "workerTargets": [
+          {
+            "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+            "url": ""
+          },
+          {
+            "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+            "url": ""
+          }
+        ],
+        "state": "SELECT",
+        "at": "2026-10-24T23:27:51.677Z"
+      },
+      "warmupSamples": [
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 37,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 131,
+          "jsEventListeners": 188,
+          "domNodes": 319,
+          "audioNodes": 9,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:27:49.378Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 37,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 137,
+          "jsEventListeners": 188,
+          "domNodes": 319,
+          "audioNodes": 9,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:27:50.521Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 37,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 143,
+          "jsEventListeners": 188,
+          "domNodes": 319,
+          "audioNodes": 9,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:27:51.677Z"
+        }
+      ],
+      "cycles": [
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 178,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:27:59.258Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 214,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:28:06.132Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 273,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:28:17.927Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 309,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:28:25.227Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 451,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 10,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 1
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:28:46.886Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 500,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:28:56.353Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 540,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:29:04.568Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 578,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:29:12.331Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 616,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:29:19.490Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 759,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 10,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 1
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:29:40.875Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 797,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:29:47.965Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 834,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:29:54.773Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 871,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:30:01.672Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 911,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:30:08.540Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1067,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 10,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 1
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:30:29.932Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1109,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:30:36.735Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1148,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:30:43.650Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1185,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:30:50.572Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1222,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 11,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 2
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:30:58.167Z"
+        },
+        {
+          "geometries": 107,
+          "textures": 13,
+          "programs": 40,
+          "contextLost": false,
+          "runtimeListeners": 13,
+          "observers": 13,
+          "rafCallbacks": 1340,
+          "jsEventListeners": 188,
+          "domNodes": 323,
+          "audioNodes": 10,
+          "audioContexts": 3,
+          "audioNodeTypes": {
+            "AudioDestination": 3,
+            "Analyser": 1,
+            "Gain": 4,
+            "DynamicsCompressor": 1,
+            "AudioBufferSource": 1
+          },
+          "workers": 2,
+          "workerTargets": [
+            {
+              "id": "8A8F3E7DC03FE0733B24C071AAC602FD",
+              "url": ""
+            },
+            {
+              "id": "D47999F3202CEC8A34F2EB1F95D8087F",
+              "url": ""
+            }
+          ],
+          "state": "SELECT",
+          "at": "2026-10-24T23:31:22.675Z"
+        }
+      ],
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:31:22.693Z"
+    },
+    {
+      "name": "hidden",
+      "status": "fail",
+      "checks": [
+        {
+          "name": "countdown: browser actually hid the game tab",
+          "ok": true,
+          "detail": "{\"state\":\"SELECT\",\"pauseReason\":null,\"status\":\"Choose music when you are ready.\",\"error\":null,\"fatal\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":true,\"figureAvailable\":true,\"audioReady\":true,\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":1,\"stage\":\"ready\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":87,\"textures\":13,\"programs\":31,\"contextLost\":false,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":-961.4626666681561,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null}"
+        },
+        {
+          "name": "countdown: expected hidden-tab semantics",
+          "ok": true,
+          "detail": "{\"state\":\"SELECT\",\"pauseReason\":null,\"status\":\"Choose music when you are ready.\",\"error\":null,\"fatal\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":true,\"figureAvailable\":true,\"audioReady\":true,\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":1,\"stage\":\"ready\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":87,\"textures\":13,\"programs\":31,\"contextLost\":false,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":-961.4626666681561,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null}"
+        },
+        {
+          "name": "countdown: returning alone never auto-starts",
+          "ok": true,
+          "detail": "SELECT"
+        },
+        {
+          "name": "play: browser actually hid the game tab",
+          "ok": true,
+          "detail": "{\"state\":\"PAUSED\",\"pauseReason\":\"manual\",\"status\":\"Get ready.\",\"error\":null,\"fatal\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":true,\"figureAvailable\":true,\"audioReady\":false,\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":1,\"stage\":\"ready\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":87,\"textures\":13,\"programs\":31,\"contextLost\":false,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":376.25866666964794,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":613.3333333333333}"
+        },
+        {
+          "name": "play: expected hidden-tab semantics",
+          "ok": false,
+          "detail": "{\"state\":\"PAUSED\",\"pauseReason\":\"manual\",\"status\":\"Get ready.\",\"error\":null,\"fatal\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":true,\"figureAvailable\":true,\"audioReady\":false,\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":1,\"stage\":\"ready\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":87,\"textures\":13,\"programs\":31,\"contextLost\":false,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":376.25866666964794,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":613.3333333333333}"
+        },
+        {
+          "name": "play: returning alone never auto-starts",
+          "ok": true,
+          "detail": "PAUSED"
+        },
+        {
+          "name": "native Resume works after tab return",
+          "ok": true
+        }
+      ],
+      "startedAt": "2026-10-24T23:31:22.693Z",
+      "reproduction": "Activate another real Chrome tab during the start countdown and separately during play; return to the game tab and inspect cancellation/pause/manual resume.",
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:31:52.739Z"
+    },
+    {
+      "name": "tiers",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "low: requested quality tier boots",
+          "ok": true,
+          "detail": "{\"tier\":\"low\",\"preset\":{\"renderScale\":0.75,\"bloomResolutionScale\":0.25,\"bloomMipLevels\":4,\"bloomIntensity\":0.9,\"chromaticAberration\":\"off\",\"antialiasing\":\"none\",\"trailParticlesPerHand\":96,\"ribbonLayers\":1,\"ribbonCoreWidened\":true,\"ribbonSpineSamples\":32,\"tipSparks\":false,\"beamNoiseOctaves\":0,\"skeleton\":\"joints\",\"maskTaps\":5,\"maskTextures\":1,\"maskTemporalBlend\":false,\"silhouetteHalo\":false,\"handGlowSpots\":true,\"fragmentCap\":128,\"smashGeometry\":\"complete-eight-octant-fallback\",\"fragmentLifetimeScale\":0.7,\"poofSparks\":12,\"aimAssistLine\":\"off\",\"grid\":\"plain-antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":200,\"pylons\":8},\"renderScale\":0.75,\"pixelRatio\":0.75,\"fragmentLifetimeMs\":979.9999999999999,\"bloomEnabled\":true,\"antialiasing\":\"none\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"}]}"
+        },
+        {
+          "name": "low: performer reaches genuine positive results",
+          "ok": true,
+          "detail": "{\"perfect\":12,\"great\":0,\"good\":0,\"miss\":0,\"badcut\":0,\"obstaclesHit\":0,\"obstaclesDodged\":1}"
+        },
+        {
+          "name": "low: no browser console errors",
+          "ok": true,
+          "detail": "[]"
+        },
+        {
+          "name": "medium: requested quality tier boots",
+          "ok": true,
+          "detail": "{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]}"
+        },
+        {
+          "name": "medium: performer reaches genuine positive results",
+          "ok": true,
+          "detail": "{\"perfect\":12,\"great\":0,\"good\":0,\"miss\":0,\"badcut\":0,\"obstaclesHit\":0,\"obstaclesDodged\":1}"
+        },
+        {
+          "name": "medium: no browser console errors",
+          "ok": true,
+          "detail": "[]"
+        },
+        {
+          "name": "high: requested quality tier boots",
+          "ok": true,
+          "detail": "{\"tier\":\"high\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.5,\"bloomMipLevels\":6,\"bloomIntensity\":1.2,\"chromaticAberration\":\"optional-drop\",\"antialiasing\":\"smaa-medium\",\"trailParticlesPerHand\":256,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":2,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":256,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased-glow\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":600,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"smaa-medium\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"smaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]}"
+        },
+        {
+          "name": "high: performer reaches genuine positive results",
+          "ok": true,
+          "detail": "{\"perfect\":12,\"great\":0,\"good\":0,\"miss\":0,\"badcut\":0,\"obstaclesHit\":0,\"obstaclesDodged\":1}"
+        },
+        {
+          "name": "high: no browser console errors",
+          "ok": true,
+          "detail": "[]"
+        }
+      ],
+      "startedAt": "2026-10-24T23:31:52.739Z",
+      "reproduction": "Load fresh low/medium/high fixed-tier pages, upload the same original synthesized WAV, enable sound and complete the planned performer through actual results.",
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:33:07.794Z"
+    }
+  ],
+  "completedAt": "2026-10-24T23:33:08.167Z",
+  "passed": false
+}

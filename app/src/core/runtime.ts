@@ -198,7 +198,6 @@ export class GameRuntime {
     };
     const blur = (): void => {
       native();
-      if (this.machine.state === 'PLAYING') void this.pause('manual');
     };
     const keyboard = (event: KeyboardEvent): void => {
       if (this.graphicsFailed) return;
@@ -1555,6 +1554,7 @@ export class GameRuntime {
           trackingReady: s.trackingReady,
           figureAvailable: s.figureAvailable,
           audioReady: s.audioReady,
+          audio: { contextState: this.context?.state ?? null, activeSfxVoices: this.sfx.activeVoices },
           loading: s.loading,
           mapReady: !!s.map,
           arrangementReady: !!s.arrangement?.ready,

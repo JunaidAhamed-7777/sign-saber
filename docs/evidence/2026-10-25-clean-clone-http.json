@@ -1,0 +1,215 @@
+{
+  "schema": 1,
+  "createdAt": "2026-10-24T20:49:27.918Z",
+  "lane": "clean-clone-http-only",
+  "requests": 29,
+  "failures": [],
+  "records": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 974,
+      "type": "text/html; charset=utf-8",
+      "sha256": "aaefcdff921dbfb80ae0513e5963faf391eb291dedf3bf246948905a9ae9357a"
+    },
+    {
+      "path": "/assets/index-VQiI7aKP.js",
+      "status": 200,
+      "bytes": 1031511,
+      "type": "text/javascript; charset=utf-8",
+      "sha256": "bb7fd6df075be7cef505a0876e9b9893a1f855f0092415b6e84d7c619276d1af"
+    },
+    {
+      "path": "/assets/index-BjCV6Sl6.css",
+      "status": 200,
+      "bytes": 13284,
+      "type": "text/css; charset=utf-8",
+      "sha256": "c8e7a91b35db537fb40faa7987a8351de764fa1c20a08b5cc802ad07295fc594"
+    },
+    {
+      "path": "/assets/tracks/manifest.json",
+      "status": 200,
+      "bytes": 5123,
+      "type": "application/json; charset=utf-8",
+      "sha256": "899b090cfaec019acab595d5c78897b43fc777f02be9bdfbec1c7cd222aae87b"
+    },
+    {
+      "path": "/assets/tracks/pamgaea/audio.mp3",
+      "status": 200,
+      "bytes": 6744939,
+      "type": "audio/mpeg",
+      "sha256": "9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586"
+    },
+    {
+      "path": "/assets/tracks/pamgaea/easy.json",
+      "status": 200,
+      "bytes": 210176,
+      "type": "application/json; charset=utf-8",
+      "sha256": "b123d613f88fc713c1b15e9f4c7a422de19e8bacd057a12098a28637c5e97c46"
+    },
+    {
+      "path": "/assets/tracks/pamgaea/normal.json",
+      "status": 200,
+      "bytes": 231305,
+      "type": "application/json; charset=utf-8",
+      "sha256": "ad7f51be282b859a1ffbface5f9ee6689aea79fc82fb629be0bc274b4c0d0ded"
+    },
+    {
+      "path": "/assets/tracks/pamgaea/hard.json",
+      "status": 200,
+      "bytes": 257108,
+      "type": "application/json; charset=utf-8",
+      "sha256": "229b62f57e5b5089226d6f77efdb262964fb62e435e0e048ea941b713be05e82"
+    },
+    {
+      "path": "/assets/tracks/electro-cabello/audio.mp3",
+      "status": 200,
+      "bytes": 7635233,
+      "type": "audio/mpeg",
+      "sha256": "f304151035c2647de56dbf1995dcc90f3c942c656edfe7516541e7b76e4044ef"
+    },
+    {
+      "path": "/assets/tracks/electro-cabello/easy.json",
+      "status": 200,
+      "bytes": 318419,
+      "type": "application/json; charset=utf-8",
+      "sha256": "69270502d55f0e64bc931bfca3eb2e197cf2eb7db6307ff45b87669fb3acb6b9"
+    },
+    {
+      "path": "/assets/tracks/electro-cabello/normal.json",
+      "status": 200,
+      "bytes": 342749,
+      "type": "application/json; charset=utf-8",
+      "sha256": "15c07bc5069ac5f1c16c8ed0785177b858bbd4be1e73a56557c78cde145097a9"
+    },
+    {
+      "path": "/assets/tracks/electro-cabello/hard.json",
+      "status": 200,
+      "bytes": 382861,
+      "type": "application/json; charset=utf-8",
+      "sha256": "4680e3129de4b286b63e1f0b0e6f3342f86f2fb429120d45b039230b9859c933"
+    },
+    {
+      "path": "/assets/tracks/cipher/audio.mp3",
+      "status": 200,
+      "bytes": 9252699,
+      "type": "audio/mpeg",
+      "sha256": "d3d0614535a61d748e2fd8d5117fc4d781022a7624794802a2462d8af3fdd522"
+    },
+    {
+      "path": "/assets/tracks/cipher/easy.json",
+      "status": 200,
+      "bytes": 238460,
+      "type": "application/json; charset=utf-8",
+      "sha256": "cbe2577397cd7f59e610be356cb5f0a7df650fc720bf459feeea5c6a5feb6530"
+    },
+    {
+      "path": "/assets/tracks/cipher/normal.json",
+      "status": 200,
+      "bytes": 261972,
+      "type": "application/json; charset=utf-8",
+      "sha256": "7933dbf24f35f838cce7b810232985c9eaaad2b261fab5c6e074df0ac74e7727"
+    },
+    {
+      "path": "/assets/tracks/cipher/hard.json",
+      "status": 200,
+      "bytes": 277694,
+      "type": "application/json; charset=utf-8",
+      "sha256": "31538ec8603d72c1a362c0b1f9daa2cfe796695a180c2b79cabeed7f23323b8b"
+    },
+    {
+      "path": "/assets/fixtures/coco-upper-body-trial.json",
+      "status": 200,
+      "bytes": 19988,
+      "type": "application/json; charset=utf-8",
+      "sha256": "a04586b426d0ee9c66e29ee50fa95986eeaa62f45f6a4f48f85277c5144f59fd"
+    },
+    {
+      "path": "/assets/models/manifest.json",
+      "status": 200,
+      "bytes": 4424,
+      "type": "application/json; charset=utf-8",
+      "sha256": "f9bec5dae1dfd9bfda30a8b8e462d381150f2ef2c8e9442cb3ba57d4a9626f49"
+    },
+    {
+      "path": "/assets/models/block_fractured.glb",
+      "status": 200,
+      "bytes": 13232,
+      "type": "model/gltf-binary",
+      "sha256": "451d4f4e58d2a7410269e20ee7d93ec45f3035afbeecb8040a269c47b74d629f"
+    },
+    {
+      "path": "/assets/models/armor.glb",
+      "status": 200,
+      "bytes": 57332,
+      "type": "model/gltf-binary",
+      "sha256": "b4773b272d113383e793d6a29f8bd1ee229faf29721b1021652b82bb86f1c600"
+    },
+    {
+      "path": "/assets/models/beam_ring.glb",
+      "status": 200,
+      "bytes": 45232,
+      "type": "model/gltf-binary",
+      "sha256": "b1e0765d523d6877ddea8e1b70ed9c083007f35b657a413c901c0105504c5c1f"
+    },
+    {
+      "path": "/assets/models/glyphs.glb",
+      "status": 200,
+      "bytes": 10056,
+      "type": "model/gltf-binary",
+      "sha256": "3a22813916981033a71371aa455a2063a30b36e74b8bc88b7bfb49f7207a1d0c"
+    },
+    {
+      "path": "/assets/models/pylon.glb",
+      "status": 200,
+      "bytes": 4256,
+      "type": "model/gltf-binary",
+      "sha256": "4afdb16a007e8651c7feae6f7f67b5fd3806c7c15d7bbd9dc525d512cf63c08d"
+    },
+    {
+      "path": "/assets/models/arena_environment.glb",
+      "status": 200,
+      "bytes": 64380,
+      "type": "model/gltf-binary",
+      "sha256": "2ebfd7cb9645da95bd41b504317a8092b60512539b77539191a7e1979d748045"
+    },
+    {
+      "path": "/assets/fonts/manifest.json",
+      "status": 200,
+      "bytes": 1699,
+      "type": "application/json; charset=utf-8",
+      "sha256": "0512be281f6770ea30464bb397de146d7e0e983e7cadf93c1c4d0e86619baae2"
+    },
+    {
+      "path": "/assets/fonts/orbitron.ttf",
+      "status": 200,
+      "bytes": 38576,
+      "type": "font/ttf",
+      "sha256": "f42db2dd16e642258e35782916eceb1dcdbea06fb958d77ad71dc5963587e8fd"
+    },
+    {
+      "path": "/assets/fonts/orbitron-OFL.txt",
+      "status": 200,
+      "bytes": 4426,
+      "type": "text/plain; charset=utf-8",
+      "sha256": "ab609b0e110d622435ff337cdf233288556e011bbf9bd0550be98846c0630819"
+    },
+    {
+      "path": "/assets/fonts/rajdhani.ttf",
+      "status": 200,
+      "bytes": 384348,
+      "type": "font/ttf",
+      "sha256": "12ff7dcfe4c206e3875ac53b1762eab57de6a2fa7f5a86c26b97b88d6591eac2"
+    },
+    {
+      "path": "/assets/fonts/rajdhani-OFL.txt",
+      "status": 200,
+      "bytes": 4373,
+      "type": "text/plain; charset=utf-8",
+      "sha256": "f62ef357d3a1c3d27edd35a6e1ba350e8a8d13499797964eeadefbf0b3b15d1f"
+    }
+  ],
+  "limitations": [
+    "No browser gameplay, audible sync, live webcam or network-disconnected venue exercise performed."
+  ]
+}

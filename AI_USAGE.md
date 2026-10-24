@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Quality contracts and reproducibility evidence
+
+- An agent implemented and tested immutable tier resolution, then retained exact clean-clone failures/successes. Codex recorded actual browser dataset and compact-menu observations separately from unrun release/performance gates.
+
 ## 2026-10-25 — Input and failure readability
 
 - Parallel agents implemented peripheral gesture/charge feedback and terminal target visuals. The integrator connected fresh hand state and exact chart speed, added dataset lifecycle regressions and verified actual pause/resume/results/retry in the native browser. Static poses still generate no scored gestures.

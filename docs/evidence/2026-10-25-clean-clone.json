@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "recordedAt": "2026-10-24T20:50:03.3680472Z",
+  "lane": "clean-clone-build-and-http",
+  "releaseEvidence": false,
+  "repository": "https://github.com/JunaidAhamed-7777/sign-saber",
+  "commit": "08d7555c09cca40116862fbc75b5b99f9c45b964",
+  "checkout": {
+    "source": "Fresh remote clone in a dedicated temporary directory outside the working repository; fetched and detached at the exact pushed checkpoint.",
+    "cleanBeforeInstall": true,
+    "cleanAfterChecks": true,
+    "packageLockSha256": "66dc1547569b921b18b85ab19b6e22fc3166133573d1f10764aea146b0bc2bb1",
+    "optionalTrackingModelsPresent": false
+  },
+  "runtime": {
+    "os": "Microsoft Windows NT 10.0.26300.0",
+    "architecture": "win-x64",
+    "node": "22.23.4",
+    "npm": "10.9.9",
+    "packageNodeEngine": ">=20.19",
+    "nodeArchiveUrl": "https://nodejs.org/dist/v22.23.4/node-v22.23.4-win-x64.zip",
+    "nodeArchiveSha256": "cbc74b5e0982c9dbb41525fd8fb5dcd32fbee237863f7829072f4639a1ce5f20",
+    "checksumSource": "https://nodejs.org/dist/v22.23.4/SHASUMS256.txt",
+    "checksumCompared": true
+  },
+  "checks": [
+    {
+      "command": "npm ci",
+      "directory": "app",
+      "exit": 0,
+      "addedPackages": 187,
+      "auditedPackages": 188,
+      "reportedVulnerabilities": 0
+    },
+    {
+      "command": "npm run check",
+      "directory": "app",
+      "exit": 0,
+      "typecheckExit": 0,
+      "lintExit": 0,
+      "testExit": 0,
+      "buildExit": 0,
+      "testFilesPassed": 38,
+      "testsPassed": 262,
+      "testsFailed": 0,
+      "warnings": ["Vite reported a minified main chunk larger than its 500 kB warning threshold."]
+    },
+    {
+      "command": "node --test scripts/check-docs.test.mjs",
+      "directory": ".",
+      "exit": 0,
+      "testsPassed": 2,
+      "testsFailed": 0
+    },
+    {
+      "command": "node scripts/check-docs.mjs",
+      "directory": ".",
+      "exit": 0,
+      "markdownFiles": 44,
+      "localLinks": 484,
+      "errors": 0
+    },
+    {
+      "command": "node --test scripts/serve.test.mjs scripts/check-model-assets.test.mjs",
+      "directory": ".",
+      "exit": 0,
+      "testsPassed": 8,
+      "testsFailed": 0,
+      "testsSkipped": 1,
+      "skipReason": "Host does not permit symlink creation; the escaping-symlink test was skipped."
+    },
+    {
+      "command": "Imported checkModelAssets() read-only; no generated report written",
+      "directory": ".",
+      "exit": 0,
+      "glbs": 6,
+      "triangles": 3320,
+      "bytes": 194488,
+      "khronosValidatorRerun": false
+    },
+    {
+      "command": "Diagnostic loopback HTTP audit using createStaticServer({root: 'app/dist'}) and registry SHA256 values",
+      "directory": ".",
+      "exit": 0,
+      "responsesChecked": 29,
+      "responsesWithStatus200AndCsp": 29,
+      "integrityFailures": 0,
+      "report": "2026-10-25-clean-clone-http.json"
+    }
+  ],
+  "retainedFailure": {
+    "commit": "db09f2b627f0919cedf0474933aefe3359e05137",
+    "outcome": "failed",
+    "httpAuditExit": 1,
+    "responsesChecked": 29,
+    "integrityFailures": 1,
+    "path": "/assets/fixtures/coco-upper-body-trial.json",
+    "expectedSha256": "767909efa3d5558419e365129bb4599732392d082d424ce713e71596ca90a6f3",
+    "actualSha256": "a04586b426d0ee9c66e29ee50fa95986eeaa62f45f6a4f48f85277c5144f59fd",
+    "cause": "The original working file had CRLF endings; Git stored LF bytes under its existing attributes. The runtime pin had hashed the original CRLF file. The fix pins canonical LF bytes and adds byte-level regression tests.",
+    "report": "2026-10-25-clean-clone-before-fix-http.json"
+  },
+  "limitations": [
+    "These checks establish clean installation, asserted source checks, a production build and local HTTP asset integrity.",
+    "No browser gameplay, audible synchronization, human or live-webcam trial was performed in this validation.",
+    "No network-disconnected venue exercise, GPU/frame-rate benchmark or P5 release gate is claimed.",
+    "Optional camera model preparation was not run; the dataset bundle was checked without tracking binaries.",
+    "The HTTP audit was a temporary diagnostic script, not a new documented repository command."
+  ]
+}

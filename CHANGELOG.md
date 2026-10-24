@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T02:29:16+05:30 — Canonical cosmetic presets and retained workflow evidence
+
+- Changed: Exported the complete frozen quality-tier registry and pure validated resolution API, with explicit implemented/unsupported features and HDR guards. Retained exact clean-clone Node22 evidence, the original failed checksum report, later actual browser dataset completion/recovery and compact-menu screenshots.
+- Why: Fixed tier requests need an executable source of truth before renderer wiring; evidence must preserve failures and distinguish source checks, dataset playback and live/hardware claims.
+- Validation: Twenty new quality assertions passed, typecheck/lint/format passed; full current check passed 299 assertions/build. Clean remote08d7555 passed npm ci/check262tests and29 HTTP asset/CSP checks. Documentation checks passed with zero local-link errors.
+- Limits: This checkpoint supplies configuration only; renderer consumption follows separately. No boot probe, adaptation, HDR/bloom/AA, disconnected-network, GPU budget or live tracking success is claimed.
+
 ## 2026-10-25T02:28:34+05:30 — Hand HUD and authoritative failure feedback
 
 - Changed: Added peripheral Left/Right availability, semantic gesture colours and beam charge indicators; stale/absent/dataset hands show no fabricated charge. Added terminal-note presentation with exact chart approach speed, glyph retention, once-only Bad Cut deflection/red/dim and renderer-only upward escaped beams. Root lifecycle tests cover freshness and dataset pause/resume/results/keyboard retry.

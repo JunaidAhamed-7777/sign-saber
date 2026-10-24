@@ -702,6 +702,10 @@ export const MENU_COMPACT_MAX_WIDTH_PX = 1099,
 export const HUD_TWEEN_TAU_MS = 90;
 /** Combo counts that trigger the HUD milestone callout. */
 export const HUD_COMBO_MILESTONES = [10, 25, 50, 100] as const;
+/** Half-width (viewport fraction) of the central torso band that judgement pop text is moved out of. */
+export const HUD_POP_TORSO_CLEAR_FRACTION = 0.09;
+/** Smallest broken combo that shows the HUD “Combo ended” note; shorter streaks break silently. */
+export const HUD_COMBO_BREAK_MIN = 5;
 // --- end interface layout and HUD presentation ---
 // --- Rigged upper-body avatar (docs/10 §Avatar; docs/18 §Avatar). Retargeting/presentation only; never scoring. ---
 export const AVATAR_URL = '/assets/models/avatar.glb';

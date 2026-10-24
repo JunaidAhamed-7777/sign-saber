@@ -8,10 +8,12 @@ Implementation and historical specification work are recorded below. Automated, 
 
 ## 2026-10-25T04:50:00+05:30 — Blade ribbons, hand particles and a cleaner shatter
 
-- Changed: `render/blade.ts` adds per-hand blade ribbons (white-hot core plus tinted additive glow) rebuilt into preallocated buffers from the measured `HandCursor.history`, uniformly resampled by arc length, drawn length eased by a critically damped spring (`BLADE_LENGTH_SPRING_RAD_S`), reset on reacquisition and guarded against degenerate tangents. `render/trails.ts` adds tier-sized GPU particles per hand (two-ring orbit, fist knot, point cone; band-driven orbit speed, twinkle off in Calm) that elongate onto the blade spine. The renderer feeds the latest cursors (visual only) and hides trails in results/paused. Shatter pieces start at `SHATTER_PIECE_SCALE`, vanish by `SHATTER_VISIBLE_FRACTION` of the lifetime, use saturated magenta cross-sections and darker rims; the dev preview no longer has a hands toggle.
-- Why: The doc 12 blade/particle look was missing and busy smash runs still filled the near field with pale pieces.
-- Validation: New `tests/renderTrails.test.ts` (4 assertions: monotone growth to the measured length, hilt on the palm, retract/reset, no NaNs on stationary history, tier draw ranges). Typecheck, lint and build pass; full vitest 364/366 — the two failures are arrangement-audio tests timing out under concurrent Blender/Chrome load (20–60 s each), unrelated to rendering. Native Chrome synthetic-performer screenshots (planned motion, no camera) inspected.
-- Limits: Tip sparks, beam-noise cylinder and hit spark bursts are not implemented; no allocation profile or GPU timing was measured.
+## 2026-10-25T04:43:58+05:30 — Judgement pops at the hit position and combo-break note
+
+- Changed: `core/judgementPops.ts` keeps a pooled `MAX_POPS` queue of terminal judgements with world positions (impact point for hits, hit-plane note position for Miss/Bad Cut) and Great/Good timing error; the runtime pushes on `note:hit`/`note:miss`/`note:badcut`, prunes after `POP_LIFETIME_MS` at the UI tick (so Calm pops also expire) and clears outside PLAYING/PAUSED. The HUD projects each pop through `ui/projection.ts` (mirrors the static play camera: `CAM_POS`, `CAM_LOOK_AT`, `CAM_FOV_DEG`, full viewport) into six pooled slots, moving text out of the central `HUD_POP_TORSO_CLEAR_FRACTION` band; the central single judgement was removed. Breaking a combo of at least `HUD_COMBO_BREAK_MIN` briefly tints the ring/count and shows “Combo ended · N” (cleared by the next hit); no scene shake. Removed the interim `judgementSeq` field. Both constants are registered in docs02.
+- Why: Requested positional pops and readable, non-punishing combo-break feedback.
+- Validation: Typecheck, lint, 426/426 tests in 51 files (new queue test; HUD test renders a projected Great with timing), build, prettier and docs checks passed.
+- Limits: Not screenshot-verified in a browser this step; the projection must follow any future camera choreography. The compact pre-roll overlap item was not started.
 
 ## 2026-10-25T04:42:00+05:30 — Hit spark bursts and subtle gameplay camera response
 
@@ -26,6 +28,13 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: record what works and fails through the real camera path.
 - Validation: `npm run check` 367 tests in 48 files and build passed; docs tests 2/2 and docs checker 0 errors. Trial: canvas stream and Chrome fake webcam both reached GPU preview; pose detected on 24/24 photos; median per-photo joint error 0.118 shoulder widths; handedness agreement 369/393 under the new mapping; calibration with the declared-rule photo never framed (one hand); with the measured photo framing became ready but Confirm was not accepted under 2.6–5.5 Hz tracking.
 - Limits: whole-machine CPU was 52–100% busy before and ~100% during lanes from unrelated training/Blender/agent work, so timings are not performance evidence and the play → Results → Retry flow was not reached. Still photos only; not webcam evidence.
+
+## 2026-10-25T04:39:19+05:30 — Results hits by gesture
+
+- Changed: `render/blade.ts` adds per-hand blade ribbons (white-hot core plus tinted additive glow) rebuilt into preallocated buffers from the measured `HandCursor.history`, uniformly resampled by arc length, drawn length eased by a critically damped spring (`BLADE_LENGTH_SPRING_RAD_S`), reset on reacquisition and guarded against degenerate tangents. `render/trails.ts` adds tier-sized GPU particles per hand (two-ring orbit, fist knot, point cone; band-driven orbit speed, twinkle off in Calm) that elongate onto the blade spine. The renderer feeds the latest cursors (visual only) and hides trails in results/paused. Shatter pieces start at `SHATTER_PIECE_SCALE`, vanish by `SHATTER_VISIBLE_FRACTION` of the lifetime, use saturated magenta cross-sections and darker rims; the dev preview no longer has a hands toggle.
+- Why: The doc 12 blade/particle look was missing and busy smash runs still filled the near field with pale pieces.
+- Validation: New `tests/renderTrails.test.ts` (4 assertions: monotone growth to the measured length, hilt on the palm, retract/reset, no NaNs on stationary history, tier draw ranges). Typecheck, lint and build pass; full vitest 364/366 — the two failures are arrangement-audio tests timing out under concurrent Blender/Chrome load (20–60 s each), unrelated to rendering. Native Chrome synthetic-performer screenshots (planned motion, no camera) inspected.
+- Limits: Tip sparks, beam-noise cylinder and hit spark bursts are not implemented; no allocation profile or GPU timing was measured.
 
 ## 2026-10-25T04:39:19+05:30 — Results hits by gesture
 

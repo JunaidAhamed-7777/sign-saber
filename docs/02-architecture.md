@@ -568,6 +568,8 @@ These are **initial, unmeasured design defaults** used by [08](08-beatmap-genera
 | `MENU_COMPACT_MAX_WIDTH_PX` / `MENU_COMPACT_MAX_HEIGHT_PX` | 1099 / 699 — at or below either bound the side rails reflow above/below the figure stage with grouped inline pages; `ui/theme.css` mirrors both values (asserted by `tests/unit/compactBreakpoint.test.mjs`) |
 | `HUD_TWEEN_TAU_MS` | 90 — exponential damping constant for the displayed HUD score; Calm shows the exact value |
 | `HUD_COMBO_MILESTONES` | `[10, 25, 50, 100]` — unbroken combo counts that show the HUD milestone callout |
+| `HUD_POP_TORSO_CLEAR_FRACTION` | 0.09 — half-width of the central viewport band that projected judgement-pop text is moved out of, so the player's torso stays clear |
+| `HUD_COMBO_BREAK_MIN` | 5 — smallest broken combo that shows the brief HUD “Combo ended” note |
 
 Menu defaults are initial unmeasured values; tune with held-out menu fixtures and live standing-distance trials, recording changes with their test results. `DWELL_SELECT_MS` is retired: point-click navigation is CORE rather than an optional dwell mode. Runtime central exports remain a P0 implementation task.
 

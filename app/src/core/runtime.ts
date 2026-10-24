@@ -18,6 +18,8 @@ import { WebcamSource, type CameraSourceKind, type CameraStreamSource } from '..
 import { DatasetCameraSource } from '../tracking/datasetCamera';
 import { PhotoReel } from '../tracking/datasetCameraReel';
 import { JudgementTraceRecorder } from './judgementTrace';
+import { JudgementPopQueue } from './judgementPops';
+import { notePosition } from '../game/liveObjects';
 import { InputPipeline } from '../tracking/pipeline';
 import { DatasetTrial } from '../tracking/datasetTrial';
 import { PerformerTrial } from '../performer/trial';
@@ -87,7 +89,8 @@ export class GameRuntime {
   private stats: SessionStats | null = null;
   private pop = '';
   private popUntil = 0;
-  private popSeq = 0;
+  private readonly pops = new JudgementPopQueue();
+  private readonly popScratch = { x: 0, y: 0, z: 0 };
   private countdownStepMs = START_COUNTDOWN_MS / COUNTDOWN_STEPS;
   private readonly countdownTargets: MenuTarget[] = [];
   private readonly countdownContext: MenuContext = {
@@ -131,6 +134,10 @@ export class GameRuntime {
       this.targets.surface(this.machine.epoch);
       this.pointer.cancel(performance.now());
       display({ state, epoch: this.machine.epoch, pauseReason: this.machine.pauseReason, countdown: null });
+      if (state !== 'PLAYING' && state !== 'PAUSED') {
+        this.pops.clear();
+        display({ pops: [] });
+      }
       this.renderer?.setMode(
         state === 'PLAYING' || (state === 'CALIBRATION' && !!this.session)
           ? 'play'
@@ -144,17 +151,20 @@ export class GameRuntime {
     this.machine.events.on('note:hit', (event) => {
       this.pop = event.judgement;
       this.popUntil = performance.now() + POP_LIFETIME_MS;
-      this.popSeq++;
+      this.pops.push(event.judgement, event.impactPos, performance.now(), event.timingErrorMs);
+      display({ pops: this.pops.list() });
     });
-    this.machine.events.on('note:miss', () => {
+    this.machine.events.on('note:miss', ({ note }) => {
       this.pop = 'miss';
       this.popUntil = performance.now() + POP_LIFETIME_MS;
-      this.popSeq++;
+      this.pops.push('miss', notePosition(note, note.t, 1, this.popScratch), performance.now());
+      display({ pops: this.pops.list() });
     });
-    this.machine.events.on('note:badcut', () => {
+    this.machine.events.on('note:badcut', ({ note }) => {
       this.pop = 'badcut';
       this.popUntil = performance.now() + POP_LIFETIME_MS;
-      this.popSeq++;
+      this.pops.push('badcut', notePosition(note, note.t, 1, this.popScratch), performance.now());
+      display({ pops: this.pops.list() });
     });
     this.machine.events.on('music:event', (event) => {
       if (event.kind === 'drop') this.player?.duck();
@@ -1366,6 +1376,7 @@ export class GameRuntime {
         right = result.hands.find((hand) => hand.hand === 'right'),
         leftPresent = handsFresh && !!left?.present,
         rightPresent = handsFresh && !!right?.present;
+      if (this.pops.prune(now)) display({ pops: this.pops.list() });
       display({
         trackingReady: this.fresh(now),
         figureAvailable: now - this.lastTracking <= INPUT_MAX_AGE_MS && result.body.present,
@@ -1386,7 +1397,6 @@ export class GameRuntime {
           leftCharge: leftPresent ? left!.charge : 0,
           rightCharge: rightPresent ? right!.charge : 0,
           judgement: now < this.popUntil ? this.pop : '',
-          judgementSeq: this.popSeq,
         },
       });
     }

@@ -124,4 +124,4 @@ Code and original authored geometry are [MIT](LICENSE). Music retains CC-BY term
 
 ## Submission
 
-This is a work in progress, not a declared P5 release. Actual event/team/submission details, a public deployment, human trials, complete performance evidence and demo recording are not supplied or complete. No release SHA/tag is asserted. [CHANGELOG.md](CHANGELOG.md) records tested checkpoints and actual limitations; [AI_USAGE.md](AI_USAGE.md) records AI contributions. The [demo protocol](docs/20-demo-and-judging.md) and [release checklist](docs/19-build-plan.md#release-checklist) remain the acceptance standard.
+Track 4 basically lol

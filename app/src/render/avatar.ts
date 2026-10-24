@@ -212,7 +212,8 @@ function holoMaterial(slot: AvatarSlot, shared: AvatarShared, outline: boolean):
     fragmentShader: FRAGMENT,
     vertexColors: slot === 'skin' || slot === 'eye',
     side: outline ? THREE.BackSide : THREE.FrontSide,
-    transparent: outline,
+    // Opaque list so it draws with the body, before the depth-clear sentinel (additive still applies).
+    transparent: false,
     blending: outline ? THREE.AdditiveBlending : THREE.NormalBlending,
     depthWrite: !outline,
     uniforms: {
@@ -312,16 +313,24 @@ export class AvatarFigure {
       this.natural.set(mesh, naturalMaterial(source, slot));
       mesh.material = this.holo.get(mesh)!;
       mesh.frustumCulled = false;
+      mesh.renderOrder = -100;
       if (options.outline !== false && slot !== 'eye' && slot !== 'accent') {
         const hull = new THREE.SkinnedMesh(mesh.geometry, holoMaterial(slot, this.shared, true));
         hull.name = `${mesh.name}_outline`;
         hull.frustumCulled = false;
-        hull.renderOrder = -1;
+        hull.renderOrder = -99;
         mesh.parent!.add(hull);
         hull.bind(mesh.skeleton, mesh.bindMatrix);
         this.outlines.push(hull);
       }
     }
+    // Backdrop rule (docs10 §2): after the avatar draws, clear depth so targets/effects always draw over it.
+    const sentinel = new THREE.Mesh(SENTINEL_GEOMETRY, SENTINEL_MATERIAL);
+    sentinel.name = 'player_avatar_depth_clear';
+    sentinel.frustumCulled = false;
+    sentinel.renderOrder = -98;
+    sentinel.onAfterRender = (renderer) => renderer.clearDepth();
+    this.root.add(sentinel);
     this.root.traverse((object) => object.layers.set(AVATAR_LAYER));
     this.applyPose();
   }
@@ -489,6 +498,15 @@ export class AvatarFigure {
   }
 }
 
+const SENTINEL_GEOMETRY = new THREE.BufferGeometry().setAttribute(
+  'position',
+  new THREE.BufferAttribute(new Float32Array(9), 3),
+);
+const SENTINEL_MATERIAL = new THREE.MeshBasicMaterial({
+  colorWrite: false,
+  depthWrite: false,
+  depthTest: false,
+});
 const scratchL = new THREE.Vector3(),
   scratchR = new THREE.Vector3();
 function ease(current: number, target: number, dtMs: number, tauMs: number): number {

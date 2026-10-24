@@ -14,7 +14,8 @@ scene = bpy.context.scene
 OUT = source.parent / 'asset-sheet'
 OUT.mkdir(exist_ok=True)
 GROUPS = {
-    'block_shell': (['block_shell', 'block_core'], (1.3, -1.6, 1.0), 0.0),
+    'block_slash': (['block_slash'], (0.9, -1.7, 0.5), 0.0),
+    'block_orb': (['block_orb'], (0.6, -1.4, 0.4), 0.0),
     'block_fractured': (['shard_'], (1.6, -2.2, 1.4), 0.55),
     'armor': (['armor_plates'], (1.6, -2.2, 1.3), 0.0),
     'beam_ring': (['beam_ring'], (0.0, -1.6, 0.25), 0.0),

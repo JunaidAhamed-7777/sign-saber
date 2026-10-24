@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-24T22:04:32.217Z",
+  "checkedAt": "2026-10-24T22:50:49.693Z",
   "authoringRoute": "official Blender MCP add-on JSON TCP execute_code; local 127.0.0.1 dedicated instance",
   "blenderVersion": "5.2.2 LTS",
   "shardMode": "seeded 14-cell Voronoi (bmesh bisect_plane + holes_fill); Cell Fracture operator unavailable",
@@ -1062,24 +1062,24 @@
       "khronos": null
     },
     {
-      "id": "block_shell",
+      "id": "block_targets",
       "nodes": [
-        "block_shell",
-        "block_core"
+        "block_slash",
+        "block_orb"
       ],
       "instances": [
         {
-          "name": "block_core",
+          "name": "block_orb",
           "bounds": {
             "min": [
-              -0.15205225348472595,
-              -0.14460881054401398,
-              -0.17000000178813934
+              -0.267987459897995,
+              -0.27000001072883606,
+              -0.267987459897995
             ],
             "max": [
-              0.15205225348472595,
-              0.14460881054401398,
-              0.17000000178813934
+              0.267987459897995,
+              0.27000001072883606,
+              0.267987459897995
             ]
           },
           "origin": [
@@ -1090,17 +1090,17 @@
           "unitScale": true
         },
         {
-          "name": "block_shell",
+          "name": "block_slash",
           "bounds": {
             "min": [
-              -0.5,
-              -0.5,
-              -0.5
+              -0.46637842059135437,
+              -0.46637842059135437,
+              -0.16200000047683716
             ],
             "max": [
-              0.5,
-              0.5,
-              0.5
+              0.46637842059135437,
+              0.46637842059135437,
+              0.16200000047683716
             ]
           },
           "origin": [
@@ -1111,14 +1111,14 @@
           "unitScale": true
         }
       ],
-      "triangles": 128,
-      "bytes": 11116,
-      "sha256": "7a78298e28ccb84ca1deb7287187b50f88d354a1e8516adfc252646fd8adce12",
+      "triangles": 280,
+      "bytes": 21744,
+      "sha256": "e18d9bcc477e20c9f0eb8f6fdd4a858158b64d1e62071f0b0881d06689f9a7ca",
       "khronos": null
     }
   ],
-  "totalTriangles": 5844,
-  "totalBytes": 341428,
-  "sourceBlendSha256": "9d4224d2b516b9ea0a9a8ebedbc6db166ce225e9675752390693365610c266c9",
+  "totalTriangles": 5996,
+  "totalBytes": 352056,
+  "sourceBlendSha256": "90862ae87371e8c79a479924900ac6fcd89f643e480b1716c50160988fc5193b",
   "scope": "Structural buffers/pivots/axis/budgets/hashes only; browser appearance and live gameplay remain separate checks."
 }

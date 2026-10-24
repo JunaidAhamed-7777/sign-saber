@@ -177,7 +177,7 @@ export class ArenaAtmosphere {
           vec2 p = vec2(vWorld.x, vWorld.z + uScroll);
           float minor = gridLine(p, MINOR, 0.4) * 0.22;
           float major = gridLine(p, MAJOR, 0.9);
-          float lines = max(minor, major) * (0.45 + 0.75 * uLow);
+          float lines = max(minor, major) * (0.4 + 0.5 * uLow);
           float guide = 0.0;
           for (int i = 0; i < 4; i++) {
             float d = abs(vWorld.x - LANES[i]);
@@ -186,7 +186,7 @@ export class ArenaAtmosphere {
           float pool = exp(-dot(vWorld.xz - vec2(0.0, -1.4), vWorld.xz - vec2(0.0, -1.4)) * 0.03) * uLow * uGlow;
           float dist = length(vWorld.xz - cameraPosition.xz);
           float horizon = 1.0 - smoothstep(FADE_START, FADE_END, dist);
-          vec3 color = uLine * lines * 0.42 + vec3(0.05, 0.55, 0.65) * guide * 0.5 + vec3(0.08, 0.25, 0.55) * pool * 0.35;
+          vec3 color = (uLine * 0.55 + vec3(0.04, 0.07, 0.14)) * lines * 0.32 + vec3(0.05, 0.55, 0.65) * guide * 0.5 + vec3(0.08, 0.25, 0.55) * pool * 0.35;
           gl_FragColor = vec4(color * horizon, 1.0);
         }`,
     });

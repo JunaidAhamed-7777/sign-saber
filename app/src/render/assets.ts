@@ -3,10 +3,10 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import type { Vec3 } from '../core/types';
-import { ASSET_MODEL_MAX_BYTES } from '../core/constants';
+import { ASSET_MODEL_MAX_BYTES, SLASH_SLAB_DEPTH } from '../core/constants';
 
 export type GeometryAsset =
-  'armor' | 'beam_ring' | 'glyphs' | 'pylon' | 'block_fractured' | 'arena_environment' | 'block_shell';
+  'armor' | 'beam_ring' | 'glyphs' | 'pylon' | 'block_fractured' | 'arena_environment' | 'block_targets';
 export interface ShardAsset {
   geometry: THREE.BufferGeometry;
   offset: Vec3;
@@ -17,10 +17,10 @@ export interface ArenaAssets {
   glyphs: Record<'slash' | 'smash' | 'beam', THREE.BufferGeometry>;
   /** Directional cut chevron pointing +Y; drawn only for notes whose `dir` is not `any`. */
   glyphArrow: THREE.BufferGeometry;
-  /** 1 m bevelled glass shell; per-vertex `aTrim` is 1 on the emissive bevel trims. */
-  blockShell: THREE.BufferGeometry;
-  /** Faceted inner light core of the block, centred at the origin. */
-  blockCore: THREE.BufferGeometry;
+  /** Slash target: 1 m bladed rhombic slab; `aTrim` is 1 on its chamfered rims and cut seam. */
+  slashBody: THREE.BufferGeometry;
+  /** Beam target: faceted orb; `aTrim` is 1 on its equator band. */
+  beamBody: THREE.BufferGeometry;
   /** Pylon with per-vertex `aTrim` = 1 on the recessed strip and lit crown. */
   pylon: THREE.BufferGeometry;
   /** Centroid-local shards; per-vertex `aInner` is 1 on fracture (cross-section) faces. */
@@ -39,7 +39,7 @@ const ASSET_NAMES: readonly GeometryAsset[] = [
   'pylon',
   'block_fractured',
   'arena_environment',
-  'block_shell',
+  'block_targets',
 ];
 
 /** Validate binary framing and ban external resources before GLTFLoader can follow a URI. */
@@ -123,9 +123,26 @@ function chevron(): THREE.BufferGeometry {
     new THREE.BoxGeometry(0.42, 0.13, 0.04).rotateZ(angle).translate(x, 0.02, 0);
   return merge([arm(Math.PI / 4, -0.14), arm(-Math.PI / 4, 0.14)]);
 }
-/** Fallback shell: an unbevelled unit cube; the block shader derives its edge trims procedurally. */
-function fallbackShell(): THREE.BufferGeometry {
-  return tag(new THREE.BoxGeometry(1, 1, 1).toNonIndexed(), 'aTrim', 0);
+/** Fallback slash body: a rhombic prism (unit square rotated 45°), matching the slicer's diamond. */
+function fallbackSlash(): THREE.BufferGeometry {
+  return tag(
+    new THREE.BoxGeometry(Math.SQRT1_2, Math.SQRT1_2, SLASH_SLAB_DEPTH).rotateZ(Math.PI / 4).toNonIndexed(),
+    'aTrim',
+    0,
+  );
+}
+/**
+ * The intact Smash target is the authored fracture itself: every shard is pulled toward its own centroid
+ * by `gap`, so the fracture faces (`aInner`) show as glowing cracks and the later shatter is continuous.
+ */
+export function crackedBody(shards: readonly ShardAsset[], scale: number): THREE.BufferGeometry {
+  const parts = shards.map((shard) => {
+    const part = shard.geometry.clone().scale(scale, scale, scale);
+    return part.translate(shard.offset.x, shard.offset.y, shard.offset.z);
+  });
+  const merged = mergeGeometries(parts, false);
+  for (const part of parts) part.dispose();
+  return merged;
 }
 export function fallbackShards(): ShardAsset[] {
   const result: ShardAsset[] = [];
@@ -164,8 +181,8 @@ function fallbackAssets(): ArenaAssets {
     beamRing: new THREE.TorusGeometry(0.42, 0.03, 8, 48),
     glyphs: { slash: glyph('slash'), smash: glyph('smash'), beam: glyph('beam') },
     glyphArrow: chevron(),
-    blockShell: fallbackShell(),
-    blockCore: new THREE.IcosahedronGeometry(0.17, 0),
+    slashBody: fallbackSlash(),
+    beamBody: tag(new THREE.IcosahedronGeometry(0.27, 1).toNonIndexed(), 'aTrim', 0),
     pylon,
     shards: fallbackShards(),
     shardMode: 'procedural-eight',
@@ -252,8 +269,8 @@ export class AssetRegistry {
       assets.beamRing,
       assets.pylon,
       assets.glyphArrow,
-      assets.blockShell,
-      assets.blockCore,
+      assets.slashBody,
+      assets.beamBody,
       ...Object.values(assets.glyphs),
       ...assets.shards.map((s) => s.geometry),
     ])
@@ -328,11 +345,11 @@ export class AssetRegistry {
               arrow = this.extract(scene, 'glyph_arrow').geometry;
             this.assets.glyphs = glyphs;
             this.assets.glyphArrow = arrow;
-          } else if (name === 'block_shell') {
-            const shell = this.extract(scene, 'block_shell', { trim: true }).geometry,
-              core = this.extract(scene, 'block_core').geometry;
-            this.assets.blockShell = shell;
-            this.assets.blockCore = core;
+          } else if (name === 'block_targets') {
+            const slash = this.extract(scene, 'block_slash', { trim: true }).geometry,
+              beam = this.extract(scene, 'block_orb', { trim: true }).geometry;
+            this.assets.slashBody = slash;
+            this.assets.beamBody = beam;
           } else if (name === 'armor') this.assets.armor = this.extract(scene, 'armor_plates').geometry;
           else if (name === 'beam_ring') this.assets.beamRing = this.extract(scene, 'beam_ring').geometry;
           else this.assets.pylon = this.extract(scene, 'pylon', { trim: true }).geometry;

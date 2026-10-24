@@ -13,8 +13,9 @@
  */
 import * as THREE from 'three';
 import {
-  BLOCK_CORE_GAIN,
   BLOCK_CORE_SPIN_RAD_S,
+  SPAWN_DISTANCE,
+  TARGET_FADE_IN_M,
   BLOCK_FILL_ALPHA,
   BLOCK_NEAR_GLOW_M,
   BLOCK_RIM_GAIN,
@@ -30,7 +31,7 @@ export interface TargetUniforms {
   readonly uTime: THREE.IUniform<number>;
   /** 0..1 smoothed bass energy (0 in Calm). */
   readonly uPulse: THREE.IUniform<number>;
-  /** Core spin rate in rad/s (0 in Calm). */
+  /** Beam orb spin rate in rad/s (0 in Calm). */
   readonly uSpin: THREE.IUniform<number>;
 }
 export function createTargetUniforms(): TargetUniforms {
@@ -49,6 +50,14 @@ const INSTANCE = /* glsl */ `
   vTint = vec3(1.0);
 #endif
 `;
+/** Distance-based approach fade: targets materialise over TARGET_FADE_IN_M after spawning. */
+const FADE = /* glsl */ `
+  vFade = smoothstep(SPAWN_DISTANCE, SPAWN_DISTANCE - TARGET_FADE_IN_M, -instanceModel[3].z);
+`;
+const FADE_DEFINES = {
+  SPAWN_DISTANCE: SPAWN_DISTANCE.toFixed(3),
+  TARGET_FADE_IN_M: TARGET_FADE_IN_M.toFixed(3),
+};
 const OUTPUT = /* glsl */ `
 #include <tonemapping_fragment>
 #include <colorspace_fragment>
@@ -67,14 +76,19 @@ function material(
   });
 }
 
-/** Translucent glass shell: dark tinted fill, fresnel rim and bevel trims that brighten near the hit plane. */
-export function createShellMaterial(uniforms: TargetUniforms): THREE.ShaderMaterial {
+/**
+ * Translucent glass body (Slash slab, Beam orb): dark tinted fill, fresnel rim and authored `aTrim` trims that
+ * brighten restrainedly near the hit plane. `spin` turns the body slowly about Y (the Beam orb; never in Calm).
+ */
+export function createShellMaterial(uniforms: TargetUniforms, spin = false): THREE.ShaderMaterial {
   return material(
     {
-      name: 'target_glass_shell',
+      name: spin ? 'target_beam_orb' : 'target_slash_slab',
       transparent: true,
       depthWrite: true,
       defines: {
+        ...FADE_DEFINES,
+        ...(spin ? { SPIN: '' } : {}),
         NEAR_GLOW_M: BLOCK_NEAR_GLOW_M.toFixed(3),
         FILL_ALPHA: BLOCK_FILL_ALPHA.toFixed(3),
         RIM_GAIN: BLOCK_RIM_GAIN.toFixed(3),
@@ -83,15 +97,22 @@ export function createShellMaterial(uniforms: TargetUniforms): THREE.ShaderMater
       },
       vertexShader: /* glsl */ `
         attribute float aTrim;
-        varying vec3 vTint; varying vec3 vNormalW; varying vec3 vViewW; varying vec3 vLocal;
-        varying float vTrim; varying float vNear;
+        uniform float uTime; uniform float uSpin;
+        varying vec3 vTint; varying vec3 vNormalW; varying vec3 vViewW;
+        varying float vTrim; varying float vNear; varying float vFade;
         #include <fog_pars_vertex>
         void main() {
           ${INSTANCE}
-          vec4 world = instanceModel * vec4(position, 1.0);
-          vNormalW = normalize(mat3(instanceModel) * normal);
+          ${FADE}
+          vec3 p = position; vec3 nrm = normal;
+          #ifdef SPIN
+            float a = uTime * uSpin;
+            mat3 turn = mat3(cos(a), 0.0, -sin(a), 0.0, 1.0, 0.0, sin(a), 0.0, cos(a));
+            p = turn * p; nrm = turn * nrm;
+          #endif
+          vec4 world = instanceModel * vec4(p, 1.0);
+          vNormalW = normalize(mat3(instanceModel) * nrm);
           vViewW = cameraPosition - world.xyz;
-          vLocal = position;
           vTrim = aTrim;
           vNear = 1.0 - smoothstep(0.0, NEAR_GLOW_M, -instanceModel[3].z);
           vec4 mvPosition = viewMatrix * world;
@@ -100,58 +121,18 @@ export function createShellMaterial(uniforms: TargetUniforms): THREE.ShaderMater
         }`,
       fragmentShader: /* glsl */ `
         uniform float uPulse;
-        varying vec3 vTint; varying vec3 vNormalW; varying vec3 vViewW; varying vec3 vLocal;
-        varying float vTrim; varying float vNear;
+        varying vec3 vTint; varying vec3 vNormalW; varying vec3 vViewW;
+        varying float vTrim; varying float vNear; varying float vFade;
         #include <fog_pars_fragment>
         void main() {
           vec3 n = normalize(vNormalW);
           vec3 v = normalize(vViewW);
           float fres = pow(1.0 - clamp(abs(dot(n, v)), 0.0, 1.0), 2.4);
-          // Procedural edge term keeps the unbevelled fallback cube trimmed as well.
-          vec3 faceDist = 1.0 - abs(vLocal) / 0.5;
-          float second = max(min(faceDist.x, faceDist.y), min(max(faceDist.x, faceDist.y), faceDist.z));
-          float trim = max(vTrim, 1.0 - smoothstep(0.0, 0.08, second));
+          float trim = vTrim;
           vec3 fill = vTint * 0.07 + vec3(0.010, 0.014, 0.026);
           vec3 rim = vTint * fres * RIM_GAIN * (1.0 + vNear * 0.6);
           vec3 trims = vTint * trim * (TRIM_GAIN + vNear * TRIM_NEAR_GAIN + uPulse * 0.35);
-          gl_FragColor = vec4(fill + rim + trims, clamp(FILL_ALPHA + fres * 0.45 + trim, 0.0, 1.0));
-          ${OUTPUT}
-        }`,
-    },
-    uniforms,
-  );
-}
-
-/** Opaque faceted light core inside the shell; spins slowly (not in Calm) and brightens near the hit plane. */
-export function createCoreMaterial(uniforms: TargetUniforms): THREE.ShaderMaterial {
-  return material(
-    {
-      name: 'target_core',
-      defines: { NEAR_GLOW_M: BLOCK_NEAR_GLOW_M.toFixed(3), CORE_GAIN: BLOCK_CORE_GAIN.toFixed(3) },
-      vertexShader: /* glsl */ `
-        uniform float uTime; uniform float uSpin;
-        varying vec3 vTint; varying vec3 vNormalW; varying float vNear;
-        #include <fog_pars_vertex>
-        void main() {
-          ${INSTANCE}
-          float a = uTime * uSpin;
-          mat3 spin = mat3(cos(a), 0.0, -sin(a), 0.0, 1.0, 0.0, sin(a), 0.0, cos(a));
-          vec4 world = instanceModel * vec4(spin * position, 1.0);
-          vNormalW = normalize(mat3(instanceModel) * (spin * normal));
-          vNear = 1.0 - smoothstep(0.0, NEAR_GLOW_M, -instanceModel[3].z);
-          vec4 mvPosition = viewMatrix * world;
-          gl_Position = projectionMatrix * mvPosition;
-          #include <fog_vertex>
-        }`,
-      fragmentShader: /* glsl */ `
-        uniform float uPulse;
-        varying vec3 vTint; varying vec3 vNormalW; varying float vNear;
-        #include <fog_pars_fragment>
-        void main() {
-          vec3 n = normalize(vNormalW);
-          float facet = 0.55 + 0.45 * abs(dot(n, normalize(vec3(0.35, 0.8, 0.5))));
-          vec3 hot = mix(vTint, vec3(1.0), 0.3);
-          gl_FragColor = vec4(hot * facet * CORE_GAIN * (0.75 + vNear * 0.9 + uPulse * 0.3), 1.0);
+          gl_FragColor = vec4((fill + rim + trims) * vFade, clamp(FILL_ALPHA + fres * 0.45 + trim, 0.0, 1.0) * vFade);
           ${OUTPUT}
         }`,
     },
@@ -164,23 +145,28 @@ export function createGlyphMaterial(uniforms: TargetUniforms): THREE.ShaderMater
   return material(
     {
       name: 'target_glyph',
-      defines: { FRONT_GAIN: GLYPH_FRONT_GAIN.toFixed(3), EDGE_GAIN: GLYPH_EDGE_GAIN.toFixed(3) },
+      defines: {
+        ...FADE_DEFINES,
+        FRONT_GAIN: GLYPH_FRONT_GAIN.toFixed(3),
+        EDGE_GAIN: GLYPH_EDGE_GAIN.toFixed(3),
+      },
       vertexShader: /* glsl */ `
-        varying vec3 vTint; varying vec3 vNormalW;
+        varying vec3 vTint; varying vec3 vNormalW; varying float vFade;
         #include <fog_pars_vertex>
         void main() {
           ${INSTANCE}
+          ${FADE}
           vNormalW = normalize(mat3(instanceModel) * normal);
           vec4 mvPosition = viewMatrix * instanceModel * vec4(position, 1.0);
           gl_Position = projectionMatrix * mvPosition;
           #include <fog_vertex>
         }`,
       fragmentShader: /* glsl */ `
-        varying vec3 vTint; varying vec3 vNormalW;
+        varying vec3 vTint; varying vec3 vNormalW; varying float vFade;
         #include <fog_pars_fragment>
         void main() {
           float front = smoothstep(0.55, 0.95, normalize(vNormalW).z);
-          gl_FragColor = vec4(vTint * mix(EDGE_GAIN, FRONT_GAIN, front), 1.0);
+          gl_FragColor = vec4(vTint * mix(EDGE_GAIN, FRONT_GAIN, front) * vFade, 1.0);
           ${OUTPUT}
         }`,
     },
@@ -188,18 +174,26 @@ export function createGlyphMaterial(uniforms: TargetUniforms): THREE.ShaderMater
   );
 }
 
-/** Shatter shards: dark glass outer faces with a coloured rim; fracture faces glow from `aInner`. */
+/**
+ * Smash bodies and shatter shards: dark armoured outer faces with a coloured rim; fracture faces (`aInner`)
+ * glow — as cracks on the intact cracked cube, and as hot cross-sections once it shatters.
+ */
 export function createShardMaterial(uniforms: TargetUniforms): THREE.ShaderMaterial {
   return material(
     {
       name: 'target_shard',
-      defines: { INNER_GAIN: SHARD_INNER_GAIN.toFixed(3), RIM_GAIN: BLOCK_RIM_GAIN.toFixed(3) },
+      defines: {
+        ...FADE_DEFINES,
+        INNER_GAIN: SHARD_INNER_GAIN.toFixed(3),
+        RIM_GAIN: BLOCK_RIM_GAIN.toFixed(3),
+      },
       vertexShader: /* glsl */ `
         attribute float aInner;
-        varying vec3 vTint; varying vec3 vNormalW; varying vec3 vViewW; varying float vInner;
+        varying vec3 vTint; varying vec3 vNormalW; varying vec3 vViewW; varying float vInner; varying float vFade;
         #include <fog_pars_vertex>
         void main() {
           ${INSTANCE}
+          ${FADE}
           vec4 world = instanceModel * vec4(position, 1.0);
           vNormalW = normalize(mat3(instanceModel) * normal);
           vViewW = cameraPosition - world.xyz;
@@ -209,14 +203,14 @@ export function createShardMaterial(uniforms: TargetUniforms): THREE.ShaderMater
           #include <fog_vertex>
         }`,
       fragmentShader: /* glsl */ `
-        varying vec3 vTint; varying vec3 vNormalW; varying vec3 vViewW; varying float vInner;
+        varying vec3 vTint; varying vec3 vNormalW; varying vec3 vViewW; varying float vInner; varying float vFade;
         #include <fog_pars_fragment>
         void main() {
           vec3 n = normalize(vNormalW);
           float fres = pow(1.0 - clamp(abs(dot(n, normalize(vViewW))), 0.0, 1.0), 2.0);
           vec3 outer = vTint * (0.16 + fres * RIM_GAIN * 1.4);
           vec3 inner = mix(vTint, vec3(1.0), 0.25) * INNER_GAIN;
-          gl_FragColor = vec4(mix(outer, inner, vInner), 1.0);
+          gl_FragColor = vec4(mix(outer, inner, vInner) * vFade, 1.0);
           ${OUTPUT}
         }`,
     },

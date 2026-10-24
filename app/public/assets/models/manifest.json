@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-24T21:50:31.824294+00:00",
+  "generatedAt": "2026-10-24T22:42:55.068096+00:00",
   "sourceBlend": "assets-src/blender/signsaber_assets.blend",
   "sourceGenerator": "assets-src/blender/generate_assets.py",
   "authoringRoute": "official Blender MCP add-on JSON TCP execute_code; local 127.0.0.1 dedicated instance",
@@ -165,28 +165,30 @@
       "license": "MIT"
     },
     {
-      "id": "block_shell",
-      "path": "/assets/models/block_shell.glb",
+      "id": "block_targets",
+      "path": "/assets/models/block_targets.glb",
       "nodes": [
-        "block_shell",
-        "block_core"
+        "block_slash",
+        "block_orb"
       ],
-      "triangles": 128,
-      "bytes": 11116,
-      "sha256": "7a78298e28ccb84ca1deb7287187b50f88d354a1e8516adfc252646fd8adce12",
+      "triangles": 280,
+      "bytes": 21744,
+      "sha256": "e18d9bcc477e20c9f0eb8f6fdd4a858158b64d1e62071f0b0881d06689f9a7ca",
       "license": "MIT"
     }
   ],
-  "totalTriangles": 5844,
-  "totalGlbBytes": 341428,
+  "totalTriangles": 5996,
+  "totalGlbBytes": 352056,
   "provenance": "Original script-authored geometry. No Poly Haven, Sketchfab, generative asset service or third-party meshes/textures used. MIT repository license.",
-  "sourceBlendSha256": "9d4224d2b516b9ea0a9a8ebedbc6db166ce225e9675752390693365610c266c9",
-  "sourceGeneratorSha256": "ca38c4d3aa21d452e8bb5ab82fdce1bbb08d345ab2f29ebd43fc9d8cce13a63d",
+  "sourceBlendSha256": "90862ae87371e8c79a479924900ac6fcd89f643e480b1716c50160988fc5193b",
+  "sourceGeneratorSha256": "9d0e406b429a433516134ea84d65444dce9755023664f5f144637ed5d365fd01",
   "sharedConstants": {
     "source": "app/src/core/constants.ts",
     "PYLON_SPACING_M": 8.0,
     "PYLON_X": 5.5,
-    "SILHOUETTE_Z": -1.4
+    "SILHOUETTE_Z": -1.4,
+    "SLASH_SLAB_DEPTH": 0.3,
+    "BEAM_ORB_RADIUS": 0.27
   },
   "armorConstruction": {
     "bevelOffsetM": 0.02999,
@@ -197,11 +199,22 @@
     "exportTriangles": 896
   },
   "armorSimplification": "Three-segment bevel at 0.02999m (10 micrometres below half thickness avoids coincident corner seams), 0.015m grooves; budget simplification from 1024 to 896 triangles.",
-  "blockShell": {
-    "bevelM": 0.075,
-    "bevelSegments": 2,
-    "coreRadiusM": 0.17,
-    "trimMask": "Col white on bevel trims, black on glass panels"
+  "blockTargets": {
+    "slash": {
+      "node": "block_slash",
+      "shape": "rhombic slab with chamfered faces and cut seam",
+      "depthM": 0.3,
+      "chamferM": 0.05,
+      "seamM": 0.032
+    },
+    "beam": {
+      "node": "block_orb",
+      "shape": "faceted 12-segment orb with equator band",
+      "radiusM": 0.27,
+      "bandDeg": 7
+    },
+    "smash": "runtime assembly of the authored block_fractured shards with crack gaps (no duplicate geometry)",
+    "trimMask": "Col white on emissive trims/seam/band, black on glass"
   },
   "glyphConstruction": {
     "depthM": 0.04,

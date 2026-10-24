@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:01:41+05:30 — Shortened the full run under machine contention and allowed execution-only resume changes
+
+- Changed: The full COCO + MPII run (local upper-body-coco-mpii-9ep, launched 03:15 at below-normal priority) completed epoch 0 (frozen backbone, 1,442 steps) and was stopped deliberately at its saved epoch-1 boundary checkpoint. Resume now compares a training-contract hash that excludes only execution settings (`cpuThreads`, `dataLoaderWorkers`, `dataLoaderPrefetchFactor`, `checkpointEverySteps`, the default `epochs`, download settings) and records every changed key, the checkpoint's requested epochs/total steps and the new horizon. config.json now uses 2 DataLoader workers and a 5-epoch default.
+- Why: Another process held about 61% of total CPU at above-normal priority and system commit reached 34.8 of 40.1 GB with up to 19,000 pages/s. Frozen steps averaged 865 ms (versus 340 ms uncontended), spawned workers held about 770 MB private memory each, and the epoch-0 validation pass took about 18 minutes while starved. Nine epochs would not finish in the requested three to four hours.
+- Validation: Epoch 0 measured 1,300 s wall, mean training loss 0.009677, 29 ms mean data wait; held-out validation loss 0.004589 and pooled labelled-joint PCK@0.2 0.2379 on 3,776 COCO + MPII people. The boundary checkpoint (step 1,442, SHA-256 b96ff0b7…) was copied before any resume. Unit tests pass 12/12, including the new contract test.
+- Limits: Epoch 0 used the original 9-epoch cosine horizon; the resumed 5-epoch horizon lowers the learning-rate scale from 0.980 to about 0.935 at the boundary. This one discontinuity is recorded rather than hidden. The original manifest records dirtyTree true because report.py was being edited at launch; train.py, upper_body.py and config.json matched b17e703.
+
 ## 2026-10-25T03:19:51+05:30 — Export parity spans both held-out datasets
 
 - Changed: training/export.py selects evenly spaced held-out crops across the requested datasets (previously the first N rows, which were all COCO) and labels non-preflight checkpoints as research checkpoints whose accuracy is reported separately.

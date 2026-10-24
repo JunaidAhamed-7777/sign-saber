@@ -31,6 +31,11 @@ export default tseslint.config(
     },
   },
   {
+    // Node-side .mjs suites read packaged files and print retained diagnostics.
+    files: ['tests/**/*.mjs'],
+    languageOptions: { globals: globals.node },
+  },
+  {
     files: ['**/*.test.ts', 'eslint.config.js', 'vite.config.ts'],
     rules: { 'no-restricted-syntax': 'off' },
   },

@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T03:24:00+05:30 — Synthetic performer and responsive landmark filtering
+
+- Changed: Added `app/src/performer/` (choreography planner, body/hand geometry, TrackingFrame synthesizer) and `tests/performer.test.mjs`, which plays five bundled charts through the real InputPipeline and GameSession at 30 Hz. Raised `ONE_EURO_BETA` from 0.08 to 10 with swing-tracking and stationary-jitter regressions. Registered the performer constants, documented the performer in docs02/05/17 and allowed Node globals in `.mjs` suites.
+- Why: The user asked for trials of whether the game works without opening a camera. Chart-synchronized motion is needed before any dataset-camera trial can show hits; still photos cannot swing. The replay exposed a real defect: the landmark filter lagged a 4.5 m/s swing by ≈0.42 m after 200 ms and reported it below `SLASH_MIN_SPEED`, so genuine slashes only registered by accident.
+- Validation: Every planned note on Pamgaea Easy/Normal, Electro Cabello Normal and Cipher Normal/Hard was hit with zero bad cuts on planned notes, zero wall hits and ≥98% Perfect timing (measured means within ±13 ms per gesture type). Unplanned notes: Pamgaea Normal 2/269, Electro Cabello Normal 23/329, Cipher Hard 56/405. The new filter test fails at the old beta (lag 0.079 widths) and passes at 10. Full `npm run check` passed with 325 assertions.
+- Limits: Logic replay of synthetic landmarks only — no pixels, MediaPipe, webcam, latency or human feel. Live jitter at the new beta still needs consented camera review. The rendered performer for the dataset camera is the next step.
+
 ## 2026-10-25T02:58:00+05:30 — Gapless MP3 normalization and full-band playback decode
 
 - Changed: Added `audio/gapless.ts`, a browser port of the canonical iTunSMPB parser plus an MPEG layer III sample-rate probe. `decodeForPlayback` trims encoder delay/padding only when the decoded length proves the browser ignored the metadata (exact untrimmed count at the decode rate, within `GAPLESS_LENGTH_TOLERANCE_SAMPLES`), never twice. Playback buffers now decode through the live context or an offline `PLAYBACK_DECODE_SR` (44.1 kHz) decoder instead of the 22.05 kHz analysis rate, matching docs15. Registered both constants. Corrected the previous entry's mistyped timestamp (02:45, not 12:20).

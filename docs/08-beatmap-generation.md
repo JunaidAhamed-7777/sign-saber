@@ -3,12 +3,27 @@
 **Dynamic arrangements:** `audio/arrange.ts` selects one continuous source window using measured energy/onset evidence: 10 s raised-cosine amplitude fade-in, 60 s highlight and 10 s fade-out for sources at least 80 s long. It does not claim chorus detection or human judgement of the “best” part. Confident beat alignment is supported; missing confidence remains disclosed. Short sources scale the parts proportionally and report actual duration. One continuous window makes the joins sample-continuous; no unrelated phrases are pasted across a hidden hard cut. Actual derivative float32 WAV/PCM hashes and source/sample/fade bounds are retained in the edit receipt. A fresh chart is generated from that edited audio; old note times are never shifted under it.
 
 
-**Implementation checkpoint (generator v2):** DSP, assignment, validation, upload cancellation and grouped caching are implemented and tested. The three bundled tracks remain disclosed onset-only maps because measured tempo confidence is low. Held-out musical F1, comfort and performance targets are not yet established.
+**Implementation checkpoint (generator v4):** DSP, assignment, validation, upload cancellation and grouped caching are implemented and tested. v3 replaced onset-per-note assignment with salience selection under readability caps, phrase rests, a per-phrase gesture mix and a per-hand recovery budget (§9). v4 adds a fine beat-period search (§5): Electro Cabello (117.0 BPM, confidence 0.496) and Cipher (150.0 BPM, 0.558) now produce confident beat-snapped maps; Pamgaea (94.0 BPM, 0.252) remains a disclosed onset-only map because its strong onsets are mostly syncopated against the beat. Held-out musical F1, comfort and performance targets are not yet established.
 
 The implemented onset path gates raw spectral novelty and local RMS rise before percentile normalization, refines each onset to a supported positive PCM-power derivative within the FFT half-window, and anchors nearby tracked beats to those supported sample-zero-relative onsets. Tempo octave selection retains the BPM prior and refines period from supported long onset spans. Analysis resampling uses a registered windowed-sinc kernel; browser tests exposed unacceptable aliasing from the earlier native AudioBufferSourceNode resampling path.
 
-Sustained mid-band beam candidates reserve real measured onsets, then remove conflicting **assigned notes** using the maximum of beam isolation and charge/gesture-transition spacing. Neighbouring raw onsets do not disqualify an otherwise sustained candidate. This deliberate v2 change permits sparse beams without inventing timestamps; Electro Cabello currently has none under the measured sustain rule. All final chord groups, density and ergonomic constraints pass the shared validator. Canonical decoding honours iTunSMPB gapless trim before analysis; gameplay applies no compensating second offset.
+Sustained mid/high beam candidates reserve real measured onsets and an isolation zone before other notes are chosen (§9.2). All final chord groups, density, on-screen and hand-recovery constraints pass the shared validator. Canonical decoding honours iTunSMPB gapless trim before analysis; gameplay applies no compensating second offset.
 
+**Measured effect of v3/v4 on the bundled charts** (`node scripts/chart-report.mjs`; unplayable = notes the synthetic performer's two hands cannot reach under the game's contact rules):
+
+| Chart | v2 notes (slash/smash/beam) | v2 unplayable | v4 notes (slash/smash/beam) | v4 unplayable |
+| --- | --- | --- | --- | --- |
+| Pamgaea Easy | 133 (76/51/6) | 0 | 89 (45/34/10) | 0 |
+| Pamgaea Normal | 269 (122/140/7) | 2 (0.7%) | 178 (97/69/12) | 0 |
+| Pamgaea Hard | 426 (258/161/7) | 59 (13.8%) | 230 (112/100/18) | 0 |
+| Electro Cabello Easy | 172 (88/84/0) | 0 | 117 (57/51/9) | 0 |
+| Electro Cabello Normal | 329 (9/320/0) | 23 (7.0%) | 176 (104/64/8) | 0 |
+| Electro Cabello Hard | 578 (168/410/0) | 149 (25.8%) | 281 (132/135/14) | 0 |
+| Cipher Easy | 166 (95/60/11) | 0 | 111 (59/41/11) | 0 |
+| Cipher Normal | 310 (112/183/15) | 6 (1.9%) | 195 (98/82/15) | 0 |
+| Cipher Hard | 405 (179/211/15) | 56 (13.8%) | 266 (108/140/18) | 0 |
+
+Average density fell from 0.7–0.9 / 1.3–1.7 / 1.8–3.0 notes per second (Easy/Normal/Hard) to 0.5–0.6 / 0.8–1.1 / 1.2–1.5, and at most 3/4/5 notes share the screen. These are algorithmic and synthetic-performer results, not human comfort or musical-quality evidence.
 
 The generator turns an audio file into a `BeatmapV1` ([09](09-beatmap-format.md)) with no human authoring. Pillar P4 (*the music is the author*) means notes follow musical evidence, density/reach constraints keep them playable, and silence is rejected. Noisy or beatless material may be unsuitable; show uncertainty rather than manufacturing a convincing tempo.
 
@@ -204,6 +219,8 @@ Sub-frame refinement: fit a parabola only when neighbouring scores are defined a
 
 **Octave disambiguation.** Consider `T/2` and `2T` only when BPM remains in range. Compare `ac(T) + TEMPO_HARMONIC_WEIGHT * (ac(2T) + ac(T/2))` using defined interpolation neighbours; compute required support lags before lookup. Switch only when `alternativeSum ≥ winnerSum * TEMPO_OCTAVE_SWITCH_RATIO`; ties choose closest to `BPM_PRIOR`, then the smaller lag.
 
+**Fine period search.** Autocorrelation and span refinement work in whole or interpolated STFT hops (23.2 ms). A period off by a few hundredths of a BPM keeps local beats but makes a song-long grid drift by more than `SNAP_MAX_MS` within a minute, and syncopated onsets bias the span refinement. The final period is therefore searched in steps of `TEMPO_REFINE_STEP` within ±`TEMPO_REFINE_RANGE` of the refined estimate. Each candidate scores the number of supported onsets within ±`SNAP_MAX_MS` of its best rigid-grid phase (`gridAlignment`, a circular two-pointer count). The tolerance makes the maximum a plateau; the plateau's middle is taken, and ties between plateaus keep the one closest to the estimate. On the bundled songs this moved 94.1 → 94.0, 117.2 → 117.0 and 150.8 → 150.0 BPM, matching the publisher's catalog tempi (94/117/150), which the search does not use. A syncopated 117 BPM synthetic click test fails without the search (117.2 BPM, low confidence) and passes with it. The search maximises the same alignment the confidence uses, so it carries a small upward selection bias; the catalog agreement is the independent check for the bundled tracks, not a general accuracy result.
+
 **Confidence.**
 
 ```
@@ -307,85 +324,66 @@ Events are sorted into `BeatmapV1.events`. Guard divisions by zero, clamp finite
 
 ## 9. Note assignment (`assign.ts`)
 
-Input: snapped onsets per band with `strength`, tracked beats, `energy`, per-frame spectral centroid (computed in §2 as `Σ k·mag[n][k] / Σ mag[n][k]`, mapped to Hz), difficulty.
+**Generator v3.** A chart follows the strongest measured accents, not every onset. Earlier versions converted almost every surviving onset into a note, which filled the screen, gave Electro Cabello Normal 320 smashes to 9 slashes and left notes neither hand could reach (synthetic performer: up to 25.8% on Electro Cabello Hard). v3 selects events by salience under hard readability caps, mixes gestures per phrase and budgets each hand's recovery. Every note still carries the timestamp of a real onset; removals never invent or move evidence.
 
-### 9.1 Candidate notes
+Input: snapped (or onset-only) onsets per band, tracked beats, per-frame centroid, linear band power, the normalized energy envelope, difficulty.
 
-Each surviving onset becomes a **candidate** with a provisional type:
+### 9.1 Musical events
 
-| Band | Type | Condition |
-| --- | --- | --- |
-| low | `smash` | always |
-| mid, high | `slash` | default |
-| mid | `beam` | Linear mid-band power stays within `BEAM_SUSTAIN_DB` for ≥ `BEAM_SUSTAIN_MS`; no other assigned note within ±`BEAM_ISOLATION_MS`; last beam ≥ `BEAM_MIN_SPACING_MS[difficulty]` ago |
+Onsets are grouped into anchored `CHORD_WINDOW_MS` events (one broadband transient is one event). Each event keeps:
 
-Compute dB ratios from linear STFT power, not log-compressed flux. Easy converts every `EASY_SMASH_TO_SLASH_EVERY`th smash candidate to slash and uses `BEAM_MIN_SPACING_MS.easy`. Leave enough time to acquire/charge/release a beam; a visible target does not make an instant fist-to-point switch feasible.
+- `primary`: its strongest member (ties prefer low, then mid, then high band);
+- `partner`: the strongest different-band member at a *distinct* instant, the only evidence a two-note chord may use;
+- `salience = primary.strength + 0.25 · secondBand.strength`: multi-band transients read as accents;
+- `sustained`: the most sustained mid/high member. Sustain is the dB variation of that member's own linear band power over `BEAM_SUSTAIN_MS`. A member qualifies when it is ≤ `BEAM_SUSTAIN_DB`, or when it lies within the song's `BEAM_SUSTAIN_PERCENTILE` most sustained mid/high onsets **and** ≤ `BEAM_SUSTAIN_MAX_DB`. The relative rule exists because pumped electronic mixes (Electro Cabello: lowest mid variation 8.2 dB) have no flat 3 dB sustain; the ceiling stops arbitrary transients from becoming beams. A beam keeps the sustained member's own time.
 
-### 9.2 Density cap
+### 9.2 Selection under readability caps
 
-Half-open windows `[t, t+DENSITY_WINDOW_MS)` anchored at each candidate; cap `floor(MAX_DENSITY_PER_S[difficulty] * DENSITY_WINDOW_MS / 1000)` individual notes, including chord members. Remove weakest first, then prefer removing `high`, then `mid`, then stable original index. Strong smashes are preferred but never exempt from a hard cap. Iterate left to right; removal is final. Recheck every window after assignment.
+Walls are planned first (§10). Beams are then reserved: sustained events sorted by how few other events lie within ±`BEAM_ISOLATION_MS` (sparse, held accents first), then salience, at most one per `BEAM_MIN_SPACING_MS[difficulty]`. All remaining events are tried strongest first. A candidate is accepted only if, with it inserted:
 
-### 9.3 Gap rules
-
-Walk candidates in time order:
-
-- If `t − prev.t < MIN_NOTE_GAP_MS[difficulty]` and the notes are not in the same anchored chord → drop the weaker.
-- Chords are anchored to their first onset with `|Δt| < CHORD_WINDOW_MS`, use different bands, and contain at most two notes. Normal/hard only, in opposite-side columns; easy drops the weaker. Near neighbours cannot form an unbounded transitive chord. Recheck the gap between chord groups after replacements.
-
-### 9.4 Column choice (hand alternation and flow)
-
-State: `lastSide ∈ {'left','right'}`, `lastCell`, `lastT`, and per-side last contact/type plus accent counts. Side guides expected ergonomic flow; it does not require the player to hit with that particular hand.
-
-```
-side = opposite(lastSide), or FLOW_RESTART_SIDE after a gap > FLOW_RESTART_GAP_MS
-colsOnSide = side == 'left' ? leftColumns : rightColumns  // derived from the v1 grid
-prefer a column with |col-lastCell.col| ≤ FLOW_MAX_COLUMN_STEP; otherwise inner column
-every FLOW_OUTER_ACCENT_EVERYth note on that side may use its outer column
-  when strength ≥ FLOW_OUTER_ACCENT_MIN_STRENGTH
-if the chosen (col,row) equals a cell used within MIN_SAME_CELL_GAP_MS → pick the other column on the same side; if still same → shift row by ±1
-```
-
-For smash prefer inner columns; for beam prefer outer columns and top row. Grid topology determines these indices. `FLOW_RESTART_SIDE` is only a deterministic default, not an inference about dominant hand. Reject a proposed same-side note if its expected-hand gap is below `FLOW_HAND_MIN_GAP_MS`, or a change of gesture has less than `FLOW_GESTURE_SWITCH_MIN_MS`; try the opposite side once, then drop the weaker conflicting candidate and recheck density/spacing.
-
-### 9.5 Row choice
-
-Spectral centroid `c` (Hz) of the onset frame → row:
-
-| centroid | row |
+| Rule | Bound |
 | --- | --- |
-| Below `CENTROID_ROW_HZ[0]` | bottom |
-| Between the registered boundaries | middle |
-| Above `CENTROID_ROW_HZ[1]` | top |
+| Gap to each neighbouring note group | `MIN_NOTE_GAP_MS[d] / (DENSITY_ENERGY_FLOOR + (1 − DENSITY_ENERGY_FLOOR) · e)`, `e` = energy smoothed over `DENSITY_ENERGY_SMOOTH_MS`, larger of the two notes' local values |
+| Beam neighbours | more than `BEAM_ISOLATION_MS` (+ `CHORD_WINDOW_MS` for a trailing chord partner) on both sides |
+| Sliding density | at most `floor(MAX_DENSITY_PER_S[d] · DENSITY_WINDOW_MS / 1000)` notes in any half-open window; a chord counts two |
+| Simultaneously on screen | at most `MAX_VISIBLE_NOTES[d]` notes in any `APPROACH_MS[d]` span |
+| Two-hand budget | the note two contacts earlier (a chord occupies both hands) is at least the worst-case same-hand gap (§9.4) away |
+| Wall span | Easy: no notes; Normal/Hard: no chord, consecutive notes need the single-hand gap |
+| Chord | only when `partner` exists, salience ≥ `CHORD_MIN_STRENGTH`, ≥ `CHORD_MIN_SPACING_MS[d]` from another chord; never on Easy |
 
-For a full bottom↔top jump with gap <`FLOW_FULL_ROW_JUMP_MIN_GAP_MS`, choose the middle row instead. Easy uses the bottom row no more often than `EASY_LOW_ROW_MIN_GAP_MS`. These are layout/time proxies; calibration and player trials still establish whether the pattern is comfortable. If the available cells cannot satisfy all rules, drop the weaker candidate instead of inventing a new onset.
+A rejected chord is retried as a single note. Greedy salience order means weaker onsets only fill room the strong accents leave; quiet passages thin out through the energy term.
 
-### 9.6 Finalise
+### 9.3 Deliberate rests
 
-Run a final deterministic pass over density, same-cell/chord rules, beam isolation, wall margin and registered flow/hand-recovery proxies. Drop/convert a weaker conflict; after any removal, recompute affected flow state in chronological order until a complete pass makes no changes. Each removal is final, so this terminates. Never move a note onto invented musical evidence. Assign IDs only afterwards; `dir = 'any'`, strength and beam `t` are retained. The [15](15-audio-playback-sync.md) pre-roll gives early notes their complete approach/beam lead. The layout/time guards do not certify a person's physical reach; P2 player trials must verify comfort.
+Walking the selection in time order, a phrase is a run without a note-to-note gap of `PHRASE_REST_MS[d]`. When a phrase would exceed `PHRASE_MAX_MS[d]`, a rest of `PHRASE_REST_MS[d]` is opened after one of its notes in the second half of the phrase, choosing the position that removes the least total salience. Removal is final and only relaxes the other caps.
+
+### 9.4 Gestures and hands
+
+Gesture mix is phrase-local. A non-beam event is smash-eligible when its strongest low-band member has strength ≥ `SMASH_MIN_LOW_STRENGTH`; its low score is `low − 0.5 · max(mid, high)`. Within ±`GESTURE_MIX_WINDOW_MS/2`, the eligible events whose low score ranks inside `max(1, round(SMASH_MAX_SHARE[d] · strikes in window))` become smashes; every other strike is a slash. Strong kicks therefore punch, melodic/high-band accents slash, and a song dominated by low-band onsets still gets slashes.
+
+Each hand plays its own side: left hand columns 0–1, right hand columns 2–3. A contact goes to the hand that has rested longer (ties: `FLOW_RESTART_SIDE`), inside a wall span to the open hand only. A hand may take a note only if
+
+```
+t − previous.t ≥ FLOW_HAND_FOLLOW_MS[kind(previous)] + FLOW_HAND_LEAD_MS[kind(next)]
+                 + (previous.type ≠ next.type ? FLOW_GESTURE_CHANGE_MS : 0)      // kind: beam | strike
+```
+
+otherwise the other hand is tried and the note is dropped if neither fits. Defaults give 620 ms between same-hand strikes, 700 ms with a gesture change and about one second before a beam, matching the time the synthetic performer ([17](17-testing-and-qa.md)) needs to recover, travel, settle outside the judgement window and stroke. A chord needs both hands free, otherwise it becomes a single note. The validator enforces the same function (`handGapMs`).
+
+### 9.5 Cells
+
+- Beam: outer column on its hand's side, top row: an occasional far target.
+- Smash: inner column; bottom row when the onset centroid is below `CENTROID_ROW_HZ[0]`, else middle.
+- Slash: inner column, outer every `FLOW_OUTER_ACCENT_EVERY`th slash on that side when strength ≥ `FLOW_OUTER_ACCENT_MIN_STRENGTH`; top row for high-band evidence or centroid ≥ `CENTROID_ROW_HZ[1]`, else middle.
+- A bottom↔top jump within `FLOW_FULL_ROW_JUMP_MIN_GAP_MS` uses the middle row; Easy uses the bottom row at most once per `EASY_LOW_ROW_MIN_GAP_MS`.
+
+Because each hand is on its own side and same-hand gaps exceed `MIN_SAME_CELL_GAP_MS`, two notes never share a lane at the same moment. IDs are assigned last; `dir = 'any'`. These are layout/time rules checked by an automated performer; standing comfort still needs player trials.
 
 ## 10. Obstacle placement
 
-Candidate slots:
+Walls are planned before notes on the tracked-beat cadence: every `OBSTACLE_PERIOD_BEATS[d]`th tracked beat after `OBSTACLE_INTRO_MS`, at least `max(OBSTACLE_SPACING_MS[d], MIN_OBSTACLE_GAP_MS)` apart (Easy also `EASY_OBSTACLE_MIN_GAP_MS`), fully inside the song. Occupancy is `clamp(OBSTACLE_DURATION_BEATS[d] · beatPeriod, MIN_OBSTACLE_MS, MAX_OBSTACLE_MS)`. Sides alternate, starting with the wall that makes the player lean toward `FLOW_RESTART_SIDE`.
 
-1. A note-free span ≥`OBSTACLE_EMPTY_WINDOW_MS` (breakdown), and
-2. Every `OBSTACLE_PERIOD_BEATS`th tracked beat on normal/hard. Normal also requires at most `OBSTACLE_LOOKAHEAD_MAX_NOTES` in the next `OBSTACLE_LOOKAHEAD_BEATS`; hard may use a busier slot only if covered columns satisfy the complete safety margin below.
-
-For each slot, the wall is placed on the side the body must *leave*: the player leans **away** from the wall, toward the side where the upcoming notes are, so hands and body move together.
-
-```
-notesSide   = side with more notes in [t, t + OBSTACLE_LOOKAHEAD_BEATS * beatPeriod]
-              (ties → alternate from the last wall; first tie uses FLOW_RESTART_SIDE)
-kind        = notesSide == 'right' ? 'wallLeft' : 'wallRight'
-durationMs  = clamp(OBSTACLE_DURATION_BEATS[difficulty] * beatPeriod,
-                    MIN_OBSTACLE_MS, MAX_OBSTACLE_MS)
-reject if any note in covered columns has t within [t − WALL_NOTE_MARGIN_MS, t + durationMs + WALL_NOTE_MARGIN_MS]
-gapMin      = difficulty == 'easy' ? max(MIN_OBSTACLE_GAP_MS, EASY_OBSTACLE_MIN_GAP_MS)
-                                   : MIN_OBSTACLE_GAP_MS
-reject if t − lastObstacle.t < gapMin
-reject if t < OBSTACLE_INTRO_MS or t + durationMs > durationMsOfSong
-```
-
-Easy uses only note-free slots and its registered duration/gap preset. All difficulties clamp occupancy to the same global min/max and reserve the same covered-column note margin. Deduplicate slots that coincide before assigning obstacle IDs.
+During `[t − WALL_NOTE_MARGIN_MS, t + durationMs + WALL_NOTE_MARGIN_MS]` Easy has no notes at all; Normal/Hard notes go only to the open side, played by one hand with the single-hand gap. `assignObstacles` keeps each planned wall only if no note lies in its covered columns during that span, so a wall is never unfair.
 
 ## 11. Output, validation, cache
 
@@ -507,6 +505,9 @@ Synthetic signals are generated in-test at `ANALYSIS_SR`:
 8. **Validation**: every generated map passes `validateBeatmap` with zero errors.
 9. **Obstacle safety**: no note lies in covered columns during `[t − WALL_NOTE_MARGIN_MS, t + durationMs + WALL_NOTE_MARGIN_MS]`.
 10. **Chord rule**: independent simultaneous band onsets at normal make at most two opposite-side notes; easy makes one. Three close onsets cannot form a transitive chord that evades gap/density limits.
+11. **Gesture mix**: a stream of only strong low-band onsets still yields slashes, with smashes bounded by `SMASH_MAX_SHARE`; every packaged chart has ≥30% slashes, 20–60% smashes and 1–12% beams (`tests/unit/chartQuality.test.mjs`).
+12. **Readability**: packaged charts respect `MAX_VISIBLE_NOTES`, per-side `handGapMs`, beam isolation, phrase rests and no shared lane within 400 ms; quiet energy thins notes relative to loud passages.
+13. **Playability oracle**: `tests/performer.test.mjs` replays all nine packaged charts through the real input pipeline and judge; zero unplayable notes are allowed on Easy/Normal and at most 2% on Hard.
 
 Also test non-finite PCM, constant tones, antiphase stereo, truncated bytes, cancellation during STFT, stale results, denied/corrupt cache, phase wraparound, beam/wall overlaps and rapid gesture transitions. Integration tests exercise real browser decode and worker transfer instead of mocking every boundary.
 

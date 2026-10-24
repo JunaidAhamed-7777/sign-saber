@@ -25,6 +25,7 @@ export const strings = Object.freeze({
     'A planned synthetic performer plays this chart through the real scoring path. No camera, no person and no recognition are involved.',
   performerReplay: 'SYNTHETIC PERFORMER · planned motion · no camera',
   performerComplete: 'Synthetic performer run complete. It shows the game logic, not webcam recognition.',
+  performerControls: 'Synthetic performer · mouse/keyboard to pause or quit',
   performerFigure: 'Synthetic performer · planned skeleton · no camera',
   performerResults: 'Synthetic performer results',
   performerMotion: 'Synthetic motion proxy',
@@ -213,7 +214,6 @@ export const strings = Object.freeze({
   legendMove: 'Open palm · move',
   legendClick: 'Point · click',
   legendRearm: 'Open again before the next click',
-  keyboardHint: 'Mouse and keyboard always work',
   bootTagline: 'Upper-body rhythm combat',
   bootLoading: 'Opening the music library',
   bootErrorTitle: 'The arena could not start',
@@ -241,6 +241,11 @@ export const strings = Object.freeze({
   creditsSource: 'Source',
   creditsChanges: 'Changes',
   creditsAttribution: 'Attribution',
+  byGesture: 'Hits by gesture',
+  gestureSlash: 'Slash',
+  gestureSmash: 'Smash',
+  gestureBeam: 'Beam',
+  comboLost: 'Combo ended',
 });
 export function duration(ms: number): string {
   const s = Math.max(0, Math.floor(ms / 1000));

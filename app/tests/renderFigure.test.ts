@@ -45,6 +45,13 @@ vi.mock('three', async () => {
   };
 });
 const renderers: ArenaRenderer[] = [];
+function targetCount(renderer: ArenaRenderer): number {
+  return (['slash', 'smash', 'beam'] as const).reduce(
+    (total, type) =>
+      total + (renderer.scene.getObjectByName(`target_body_${type}`) as THREE.InstancedMesh).count,
+    0,
+  );
+}
 beforeEach(() => {
   vi.stubGlobal('innerWidth', 1280);
   vi.stubGlobal('innerHeight', 720);
@@ -210,9 +217,9 @@ describe('upper-body figure and restrained music response', () => {
       });
     renderer.setMode('play');
     renderer.draw(1000, notes);
-    expect((renderer.scene.getObjectByName('lane_targets') as THREE.InstancedMesh).count).toBe(
-      MAX_LIVE_NOTES,
-    );
+    expect(targetCount(renderer)).toBe(MAX_LIVE_NOTES);
+    // Each gesture has its own silhouette: one cracked Smash body, the rest Beam orbs.
+    expect((renderer.scene.getObjectByName('target_body_smash') as THREE.InstancedMesh).count).toBe(1);
     expect((renderer.scene.getObjectByName('target_glyph_smash') as THREE.InstancedMesh).count).toBe(1);
     expect((renderer.scene.getObjectByName('target_glyph_beam') as THREE.InstancedMesh).count).toBe(
       MAX_LIVE_NOTES - 1,
@@ -238,7 +245,7 @@ describe('upper-body figure and restrained music response', () => {
     Object.freeze(live);
     events.emit('note:badcut', { note: live.note, hand: 'right', gesture: 'open' });
     renderer.draw(1110, notes);
-    const targets = renderer.scene.getObjectByName('lane_targets') as THREE.InstancedMesh,
+    const targets = renderer.scene.getObjectByName('target_body_smash') as THREE.InstancedMesh,
       glyphs = renderer.scene.getObjectByName('target_glyph_smash') as THREE.InstancedMesh,
       armor = renderer.scene.getObjectByName('target_armor') as THREE.InstancedMesh,
       matrix = new THREE.Matrix4();

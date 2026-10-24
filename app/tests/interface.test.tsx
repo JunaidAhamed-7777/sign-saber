@@ -5,6 +5,8 @@ import { coverModel, hashString } from '../src/ui/coverArt';
 import { comboMilestone, multiplierProgress } from '../src/ui/hudModel';
 import { Hud } from '../src/ui/screens/Hud';
 import { Results, rankTone } from '../src/ui/screens/Results';
+import { Paused } from '../src/ui/screens/Paused';
+import { trialCopy } from '../src/ui/trialCopy';
 import { strings } from '../src/ui/strings';
 import { HUD_COMBO_MILESTONES, MULTIPLIER_LADDER } from '../src/core/constants';
 import { useStore } from '../src/state/store';
@@ -103,6 +105,34 @@ describe('HUD presentation helpers', () => {
     expect(renderToStaticMarkup(<Hud />)).not.toContain('class="judgement ');
   });
 });
+describe('pause and trial labelling', () => {
+  it('summarises the run so far beside the frozen figure', () => {
+    useStore.setState({
+      state: 'PAUSED',
+      pauseReason: 'manual',
+      hud: {
+        ...initial.hud,
+        score: 6000,
+        combo: 23,
+        multiplier: 4,
+        accuracy: 1,
+        songTimeMs: 14000,
+        durationMs: 80000,
+      },
+    });
+    const html = renderToStaticMarkup(<Paused runtime={runtime} />);
+    expect(html).toContain('run-so-far');
+    expect(html).toContain('0:14 / 1:20');
+    expect(html).toContain('6,000');
+    expect(html).toContain('23 · ×4');
+    expect(html).toContain('100.0%');
+  });
+  it('never labels the synthetic performer as dataset footage', () => {
+    const performer = trialCopy('performer');
+    for (const value of Object.values(performer)) expect(value.toLowerCase()).not.toContain('dataset');
+    expect(trialCopy('annotations').controls).toBe(strings.datasetControls);
+  });
+});
 describe('results presentation', () => {
   it('shows rank, stats and per-judgement bars that sum to the actual counts', () => {
     const counts = { perfect: 3, great: 2, good: 1, miss: 4, badcut: 0, obstaclesHit: 0, obstaclesDodged: 0 };
@@ -116,6 +146,7 @@ describe('results presentation', () => {
         rank: 'C',
         maxCombo: 4,
         counts,
+        byType: { slash: { hits: 1, total: 4 }, smash: { hits: 0, total: 2 }, beam: { hits: 1, total: 4 } },
         kineticJoules: 1500,
         kcal: 0.1,
         peakComboSongTimeMs: 0,

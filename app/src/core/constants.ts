@@ -145,8 +145,10 @@ export const BPM_MIN = 60,
   BEAT_TIGHTNESS = 100,
   SNAP_GRID = 4,
   SNAP_MAX_MS = 35;
-export const MAX_DENSITY_PER_S = { easy: 1.2, normal: 2.2, hard: 3.5 } as const;
-export const MIN_NOTE_GAP_MS = { easy: 300, normal: 180, hard: 120 } as const;
+export const MAX_DENSITY_PER_S = { easy: 0.75, normal: 1.5, hard: 2.5 } as const;
+export const MIN_NOTE_GAP_MS = { easy: 700, normal: 400, hard: 260 } as const;
+/** Most notes whose hit times fall inside one approach span, i.e. simultaneously on screen. */
+export const MAX_VISIBLE_NOTES = { easy: 3, normal: 4, hard: 5 } as const;
 export const MIN_SAME_CELL_GAP_MS = 400,
   MIN_OBSTACLE_GAP_MS = 3000,
   MIN_OBSTACLE_MS = 600,
@@ -158,7 +160,10 @@ export const DROP_RISE_RATIO = 1.4,
   TEMPO_MIN_CONFIDENCE = 0.35;
 export const BEAM_SUSTAIN_MS = 500,
   BEAM_SUSTAIN_DB = 3;
-export const BEAM_MIN_SPACING_MS = { easy: 8000, normal: 4000, hard: 4000 } as const;
+/** Songs without flat sustains may still offer their most sustained mid/high onsets, within a hard ceiling. */
+export const BEAM_SUSTAIN_PERCENTILE = 10,
+  BEAM_SUSTAIN_MAX_DB = 12;
+export const BEAM_MIN_SPACING_MS = { easy: 12000, normal: 8000, hard: 6000 } as const;
 export const CHORD_WINDOW_MS = 20,
   CENTROID_ROW_HZ = [400, 2500] as const,
   WALL_NOTE_MARGIN_MS = 600;
@@ -170,7 +175,7 @@ export const MIN_TRACK_MS = 5000,
 export const PLAYBACK_DECODE_SR = 44100,
   GAPLESS_LENGTH_TOLERANCE_SAMPLES = 2;
 export const ANALYSIS_CACHE_MAX = 30,
-  GENERATOR_VERSION = 2;
+  GENERATOR_VERSION = 4;
 export const DSP_EPSILON = 1e-12,
   ANALYSIS_PEAK_TARGET = 0.95,
   SILENCE_PEAK_MAX = 1e-4,
@@ -184,6 +189,9 @@ export const ONSET_RAW_RMS_MIN = 0.002,
   TEMPO_DETREND_FRAMES = 16,
   TEMPO_HARMONIC_WEIGHT = 0.5,
   TEMPO_OCTAVE_SWITCH_RATIO = 1.15;
+/** Fine beat-period search around the autocorrelation estimate (fractions of the period). */
+export const TEMPO_REFINE_RANGE = 0.01,
+  TEMPO_REFINE_STEP = 0.0001;
 export const TEMPO_SUPPORT_MIN_STRENGTH = 0.4,
   TEMPO_MIN_SUPPORT_ONSETS = 4,
   BEAT_MIN_PERIOD_FACTOR = 0.5,
@@ -206,21 +214,33 @@ export const BUILD_MAX_DIPS = 2,
   CALM_MIN_GAP_MS = 12000,
   CALM_PERCENTILE = 25;
 export const DENSITY_WINDOW_MS = 4000,
-  EASY_SMASH_TO_SLASH_EVERY = 2,
   FLOW_RESTART_GAP_MS = 1200;
 export const FLOW_RESTART_SIDE = 'right' as const;
-export const FLOW_MAX_COLUMN_STEP = 1,
-  FLOW_OUTER_ACCENT_EVERY = 4,
+/** Quiet sections thin out: the local minimum gap is MIN_NOTE_GAP_MS / (floor + (1 − floor) · energy). */
+export const DENSITY_ENERGY_FLOOR = 0.5,
+  DENSITY_ENERGY_SMOOTH_MS = 2000;
+/** A continuous phrase longer than PHRASE_MAX_MS receives a deliberate note-free rest of PHRASE_REST_MS. */
+export const PHRASE_MAX_MS = { easy: 10000, normal: 14000, hard: 18000 } as const;
+export const PHRASE_REST_MS = { easy: 2000, normal: 1600, hard: 1200 } as const;
+/** Two-hand chords: strong multi-band accents only, never on Easy. */
+export const CHORD_MIN_STRENGTH = 0.85;
+export const CHORD_MIN_SPACING_MS = { easy: Infinity, normal: 6000, hard: 2500 } as const;
+/** Local share of strong low-band hits that become smashes; the rest of the phrase is slashes. */
+export const SMASH_MAX_SHARE = { easy: 0.4, normal: 0.4, hard: 0.45 } as const;
+export const SMASH_MIN_LOW_STRENGTH = 0.5,
+  GESTURE_MIX_WINDOW_MS = 8000;
+/** Per-hand budget: a hand needs FOLLOW after its previous contact plus LEAD before the next one. */
+export const FLOW_HAND_LEAD_MS = { strike: 350, beam: 720 } as const;
+export const FLOW_HAND_FOLLOW_MS = { strike: 270, beam: 160 } as const;
+export const FLOW_GESTURE_CHANGE_MS = 80;
+export const FLOW_OUTER_ACCENT_EVERY = 4,
   FLOW_OUTER_ACCENT_MIN_STRENGTH = 0.7,
   FLOW_FULL_ROW_JUMP_MIN_GAP_MS = 400;
-export const EASY_LOW_ROW_MIN_GAP_MS = 2000,
-  FLOW_HAND_MIN_GAP_MS = 250,
-  FLOW_GESTURE_SWITCH_MIN_MS = 300;
-export const OBSTACLE_EMPTY_WINDOW_MS = 2000,
-  OBSTACLE_INTRO_MS = 8000,
-  OBSTACLE_PERIOD_BEATS = 16,
-  OBSTACLE_LOOKAHEAD_BEATS = 2,
-  OBSTACLE_LOOKAHEAD_MAX_NOTES = 1;
+export const EASY_LOW_ROW_MIN_GAP_MS = 2000;
+export const OBSTACLE_INTRO_MS = 8000;
+export const OBSTACLE_PERIOD_BEATS = { easy: 32, normal: 16, hard: 12 } as const;
+/** Planned wall cadence floor; the validator's MIN_OBSTACLE_GAP_MS remains the hard minimum. */
+export const OBSTACLE_SPACING_MS = { easy: 16000, normal: 10000, hard: 7000 } as const;
 export const OBSTACLE_DURATION_BEATS = { easy: 1.5, normal: 2, hard: 2 } as const;
 export const EASY_OBSTACLE_MIN_GAP_MS = 12000;
 export const GEN_PROGRESS_WEIGHTS = {
@@ -246,7 +266,7 @@ export const ANALYSER_SMOOTH = 0.6,
   ANALYSER_PEAK_FLOOR = 0.15,
   ANALYSER_RMS_GAIN = 3;
 export const SFX_POLYPHONY = 6,
-  SFX_PITCH_JITTER_CENTS = 69;
+  SFX_PITCH_JITTER_CENTS = 35;
 export const SFX_JUDGEMENT_RATE = { perfect: 1.03, great: 1, good: 0.97 } as const;
 export const SFX_STOP_RAMP_S = 0.01,
   MASTER_GAIN_DEFAULT = 0.8,
@@ -337,18 +357,106 @@ export const CHROMA_DROP_OFFSET = 0.004,
   PYLON_SPACING_M = 8,
   PYLON_X = 5.5,
   HIGHLIGHT_RT_SIZE = 768;
-// Original procedural SFX fallback (docs02 registry addition).
-export const SFX_SYNTH_DURATION_S = 0.18,
-  SFX_SYNTH_GAIN = 0.12;
-export const SFX_SYNTH_FREQUENCIES = {
-  slash: 880,
-  smash: 110,
-  beam: 1320,
-  miss: 90,
-  badcut: 180,
-  dodge: 440,
-  count: 660,
+// --- Original synthesized SFX and audio feel (docs02 §Audio; docs15 §6). Recipe internals are authored
+// sound content inside audio/sfxSynth.ts, pinned by assets-src/audio/sfx-receipt.json. ---
+/**
+ * Momentary loudness (BS.1770, 400 ms window, LUFS) each rendered sound is normalized to, before the bus
+ * and master gain. Loudness rather than peak keeps noisy cues consistent across seeds and sample rates.
+ * Keys define `SfxId`.
+ */
+export const SFX_LOUDNESS_LUFS = {
+  slash: -24,
+  smash: -22.5,
+  zap: -23,
+  poof: -26.5,
+  sparkle: -27,
+  glint: -32,
+  badcut: -24,
+  miss: -34,
+  wallWarn: -27,
+  wallHit: -21.5,
+  dodge: -25.5,
+  combo: -21,
+  milestone: -19,
+  comboBreak: -34,
+  drop: -15,
+  count: -27,
+  countGo: -24.5,
+  countNeutral: -31.5,
+  charge: -31.5,
+  resultsHigh: -16,
+  resultsLow: -19,
+  resume: -30,
+  uiHover: -42,
+  uiConfirm: -30,
+  uiBack: -32,
+  uiSelect: -32,
+  uiArm: -36,
+  uiEnable: -24,
 } as const;
+/** No rendered sample exceeds this; a soft knee above SFX_PEAK_KNEE × ceiling shapes rare spikes. */
+export const SFX_PEAK_CEILING_DBFS = -5,
+  SFX_PEAK_KNEE = 0.85;
+/** Calm renders are low-passed and normalized this much quieter (LU). */
+export const SFX_CALM_LOUDNESS_DB = -3,
+  SFX_CALM_LOWPASS_HZ = 4500;
+/** Deterministic synthesis seed (mixed with the sound id) and seed for cosmetic pitch jitter. */
+export const SFX_SEED = 0x5167_5abe;
+/** Pitched cues fold the estimated track tonic into [root, 2·root); menus use a fixed root. */
+export const SFX_DEFAULT_ROOT_HZ = 523.25,
+  SFX_UI_ROOT_HZ = 880;
+/** Combo/milestone transposition (semitones) by ladder/milestone index; pentatonic-safe intervals. */
+export const SFX_COMBO_STEP_SEMITONES = { major: [0, 0, 4, 7], minor: [0, 0, 3, 7] } as const;
+export const SFX_MILESTONE_SEMITONES = { major: [0, 4, 7, 12], minor: [0, 3, 7, 12] } as const;
+/** Cheap tonal-centre estimate for SFX tuning only: FFT size/frames, analysed band and minimum profile correlation. */
+export const SFX_TONIC_FFT = 4096,
+  SFX_TONIC_FRAMES = 40,
+  SFX_TONIC_MIN_HZ = 130,
+  SFX_TONIC_MAX_HZ = 1760,
+  SFX_TONIC_MIN_CORRELATION = 0.5;
+/** Global voice cap across all sounds and per-sound overrides of `SFX_POLYPHONY`. */
+export const SFX_MAX_VOICES = 24;
+export const SFX_VOICE_LIMITS: Partial<Record<keyof typeof SFX_LOUDNESS_LUFS, number>> = {
+  charge: 2,
+  resultsHigh: 1,
+  resultsLow: 1,
+  drop: 2,
+  wallWarn: 3,
+  milestone: 2,
+  combo: 3,
+  uiEnable: 1,
+  uiHover: 2,
+};
+/** Safety limiter on the SFX bus; Web Audio applies spec makeup gain, which the bus trims back out. */
+export const SFX_LIMITER = { thresholdDb: -3, kneeDb: 0, ratio: 20, attackS: 0.001, releaseS: 0.08 } as const;
+/** Spec/Blink compressor pre-delay; future-scheduled cues start this much earlier to compensate. */
+export const SFX_LIMITER_LOOKAHEAD_S = 0.006;
+/** Bounded rendered-buffer cache (LRU entries across voicings). */
+export const SFX_CACHE_MAX_BUFFERS = 96;
+/** An early-arriving hit sounds at its chart time if that is at most this far ahead (cosmetic only). */
+export const SFX_BEAT_SNAP_MS = 40,
+  SFX_LOOKAHEAD_MS = 120,
+  SFX_LATE_SKIP_MS = 20;
+/** Stereo placement: lane/hand pan, wall side pan, beam hand pan. */
+export const SFX_PAN_LANE = 0.45,
+  SFX_PAN_HAND = 0.1,
+  SFX_PAN_WALL = 0.55,
+  SFX_PAN_BEAM = 0.3;
+/** Swing-speed dynamics for gesture hits: dB range and speed ratio (to the gesture minimum) for full level. */
+export const SFX_DYNAMICS_DB = { min: -2, max: 1 } as const,
+  SFX_DYNAMICS_FULL_RATIO = 2.5;
+/** The wall-warning swell peaks this long after it starts, aligned to the wall reaching the player. */
+export const SFX_WALL_WARN_LEAD_S = 0.52;
+/** Charge cue starts above this charge, releases after this drop from its peak and fades over this time. */
+export const SFX_CHARGE_START = 0.05,
+  SFX_CHARGE_CANCEL_DROP = 0.1,
+  SFX_RELEASE_S = 0.04;
+/** Rate limits for repeated feedback, minimum broken combo for the soft break cue, final neutral tick rate. */
+export const SFX_MISS_MIN_GAP_MS = 90,
+  SFX_UI_MIN_GAP_MS = 45,
+  SFX_BREAK_MIN_COMBO = 10,
+  SFX_NEUTRAL_GO_RATE = 1.25;
+// --- end synthesized SFX ---
 // Admission limits and bounded telemetry (implementation registry additions).
 export const VALIDATION_MAX_ERRORS = 32,
   ASSET_TEXT_MAX_CHARS = 512,
@@ -528,16 +636,15 @@ export const QUALITY_TIER_PRESETS = Object.freeze({
 
 // ---- Render polish registry (docs11–13, docs18): targets, post FX, arena response, hands. ----
 // Registered in docs/11, 12 and 13 "Constants required" tables; keep both sides synchronized.
-export const BLOCK_NEAR_GLOW_M = 10,
+export const BLOCK_NEAR_GLOW_M = 8,
   BLOCK_FILL_ALPHA = 0.38,
   BLOCK_RIM_GAIN = 0.9,
-  BLOCK_TRIM_GAIN = 1.3,
-  BLOCK_TRIM_NEAR_GAIN = 1.6,
-  BLOCK_CORE_GAIN = 1.1,
+  BLOCK_TRIM_GAIN = 1.05,
+  BLOCK_TRIM_NEAR_GAIN = 0.75,
   BLOCK_CORE_SPIN_RAD_S = 0.9;
 export const GLYPH_FRONT_GAIN = 1.15,
   GLYPH_EDGE_GAIN = 0.3,
-  SHARD_INNER_GAIN = 2.2,
+  SHARD_INNER_GAIN = 1.25,
   SHARD_FLASH_MS = 80,
   SLICE_CAP_HEAT_MS = 300,
   SLICE_CAP_HEAT_GAIN = 2.5;
@@ -596,3 +703,80 @@ export const HUD_TWEEN_TAU_MS = 90;
 /** Combo counts that trigger the HUD milestone callout. */
 export const HUD_COMBO_MILESTONES = [10, 25, 50, 100] as const;
 // --- end interface layout and HUD presentation ---
+// --- Rigged upper-body avatar (docs/10 §Avatar; docs/18 §Avatar). Retargeting/presentation only; never scoring. ---
+export const AVATAR_URL = '/assets/models/avatar.glb';
+/** Requested figure per fixed tier: the skinned avatar or the line-skeleton fallback. */
+export const AVATAR_TIER_FIGURE = Object.freeze({
+  high: 'avatar',
+  medium: 'avatar',
+  low: 'skeleton',
+} as const);
+/** World-landmark depth → play-space depth gain, and its clamp (play metres). */
+export const AVATAR_DEPTH_GAIN = 0.6,
+  AVATAR_DEPTH_MAX_M = 1.1;
+/** Arm segments may lengthen this much so hands reach tracked wrists. */
+export const AVATAR_STRETCH_MAX = 1.15;
+/** Exponential smoothing time constants (ms): tracked bones, joints easing to neutral, root and scale. */
+export const AVATAR_SMOOTH_MS = 55,
+  AVATAR_MISSING_SMOOTH_MS = 320,
+  AVATAR_ROOT_SMOOTH_MS = 70,
+  AVATAR_SCALE_SMOOTH_MS = 450;
+/** A briefly missing joint holds its last target this long before easing to the neutral pose. */
+export const AVATAR_HOLD_MS = 250;
+/** Joint limits (degrees) relative to the parent bone. */
+export const AVATAR_LIMITS_DEG = Object.freeze({
+  torsoTwist: 45,
+  torsoLean: 60,
+  head: 70,
+  clavicle: 16,
+  wrist: 85,
+  mcpFlex: [-25, 95] as const,
+  pipFlex: [-5, 110] as const,
+  dipFlex: [-5, 85] as const,
+  spread: 22,
+  thumbBase: 50,
+  thumbFlex: [-15, 75] as const,
+});
+/** Finger curl (0 straight … 1 fist) used when no hand landmarks exist. */
+export const AVATAR_RELAXED_CURL = 0.22;
+/** Illustrative idle: periods (s) and amplitudes (model metres / degrees). Static in Calm. */
+export const AVATAR_IDLE = Object.freeze({
+  breathPeriodS: 4.6,
+  swayPeriodS: 7.4,
+  lookPeriodS: 11.3,
+  breathM: 0.006,
+  swayM: 0.012,
+  lookDeg: 6,
+  armSwingM: 0.012,
+  curlRange: 0.12,
+});
+/** Menu placeholder placement on the play plane: avatar scale and hip height (play metres). */
+export const AVATAR_PLACEHOLDER_SCALE = 2.85,
+  AVATAR_PLACEHOLDER_HIP_Y = 0.12;
+/** Holographic material: rim colours (DESIGN cyan→violet), fill, fresnel power and gains. */
+export const AVATAR_RIM_COLOR_A = 0x19f5ff,
+  AVATAR_RIM_COLOR_B = 0xb36bff,
+  AVATAR_FILL_COLOR = 0x070b16,
+  AVATAR_ACCENT_COLOR = 0x19f5ff,
+  AVATAR_RIM_POWER = 2.6,
+  AVATAR_RIM_GAIN = 1.5,
+  AVATAR_ACCENT_GAIN = 2.2,
+  AVATAR_AUDIO_GAIN = 0.9,
+  AVATAR_OUTLINE_M = 0.0045;
+// --- end rigged upper-body avatar ---
+// Target families: Slash rhombic slab, Smash cracked fracture cube, Beam orb (docs11 §2, docs18).
+export const SLASH_SLAB_DEPTH = 0.3,
+  SMASH_CRACK_SCALE = 0.93,
+  TARGET_FADE_IN_M = 10;
+export const TARGET_GLYPH_SCALE = Object.freeze({ slash: 0.42, smash: 0.56, beam: 0.62 } as const);
+export const BEAM_ORB_RADIUS = 0.27,
+  GLYPH_PROUD_M = 0.012;
+export const SHATTER_DEPTH_FRACTION = 0.35,
+  SHATTER_RECEDE_MPS = 2.4;
+// Hands (docs12): blade length spring and particle presence easing.
+export const BLADE_LENGTH_SPRING_RAD_S = 22,
+  HAND_PRESENCE_FADE_MS = 120,
+  TRAIL_PARTICLE_SIZE_MIN_M = 0.012,
+  TRAIL_PARTICLE_SIZE_MAX_M = 0.035;
+export const SHATTER_PIECE_SCALE = 0.8,
+  SHATTER_VISIBLE_FRACTION = 0.6;

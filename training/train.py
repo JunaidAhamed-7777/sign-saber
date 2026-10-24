@@ -28,6 +28,14 @@ def input_fingerprint(records):
         digest.update((relative + ":" + file_hash(DATA / relative) + "\n").encode())
     return {"uniqueImages": len(unique), "imageBytesAggregateSha256": digest.hexdigest()}
 
+# Execution-only settings: they change speed, memory or the CLI default, never the data, model, loss, augmentation or schedule shape.
+EXECUTION_KEYS = frozenset({"cpuThreads", "dataLoaderWorkers", "dataLoaderPrefetchFactor", "checkpointEverySteps", "epochs", "downloadConcurrency", "minFreeDiskBytes"})
+
+def training_contract(config) -> str:
+    """Hash of every configuration value except execution-only settings; resume requires this to match."""
+    contract = {key: value for key, value in config.items() if key not in EXECUTION_KEYS}
+    return hashlib.sha256(json.dumps(contract, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
 def learning_rate_scale(step: int, total_steps: int) -> float:
     """Linear warmup, then cosine decay to the configured floor; a pure function of the optimizer step so resume is exact."""
     warmup = CONFIG["warmupSteps"]
@@ -56,7 +64,7 @@ def mean_pck(evaluation) -> float | None:
     return sum(joint["pck"] * joint["pckSamples"] for joint in joints) / samples if samples else None
 
 def save_checkpoint(path, model, optimizer, epoch, next_batch, global_step, manifest):
-    value = {"version": 1, "model": model.state_dict(), "optimizer": optimizer.state_dict(), "epoch": epoch, "nextBatch": next_batch, "globalStep": global_step, "torchRng": torch.get_rng_state(), "config": CONFIG, "configSha256": manifest["configSha256"], "dataFingerprint": manifest["dataFingerprint"], "kind": manifest["kind"], "epochSummaries": manifest.get("epochSummaries", [])}
+    value = {"version": 1, "model": model.state_dict(), "optimizer": optimizer.state_dict(), "epoch": epoch, "nextBatch": next_batch, "globalStep": global_step, "torchRng": torch.get_rng_state(), "config": CONFIG, "configSha256": manifest["configSha256"], "dataFingerprint": manifest["dataFingerprint"], "kind": manifest["kind"], "epochSummaries": manifest.get("epochSummaries", []), "requestedEpochs": manifest.get("requestedEpochs"), "totalSteps": manifest.get("schedule", {}).get("totalSteps")}
     temporary = path.with_suffix(".tmp")
     torch.save(value, temporary)
     temporary.replace(path)
@@ -137,14 +145,15 @@ def main():
         manifest["epochSummaries"] = []
         if args.resume:
             checkpoint = load_checkpoint(args.resume)
-            if checkpoint["configSha256"] != manifest["configSha256"] or checkpoint["dataFingerprint"] != fingerprint or checkpoint["kind"] != manifest["kind"]:
-                raise ValueError("Resume requires identical configuration, real-image inputs and run kind")
+            if training_contract(checkpoint["config"]) != training_contract(CONFIG) or checkpoint["dataFingerprint"] != fingerprint or checkpoint["kind"] != manifest["kind"]:
+                raise ValueError("Resume requires an identical training contract (configuration apart from execution-only settings), real-image inputs and run kind")
             model.load_state_dict(checkpoint["model"])
             optimizer.load_state_dict(checkpoint["optimizer"])
             torch.set_rng_state(checkpoint["torchRng"])
             epoch, next_batch, step = checkpoint["epoch"], checkpoint["nextBatch"], checkpoint["globalStep"]
             manifest["initialization"]["bodyPoseWeightsPreviouslyTrainedByThisProject"] = True
-            manifest["resumedCheckpoint"] = {"path": str(args.resume), "sha256": file_hash(args.resume), "epoch": epoch, "nextBatch": next_batch, "globalStep": step}
+            changes = {key: {"checkpoint": checkpoint["config"].get(key), "now": CONFIG.get(key)} for key in sorted(set(checkpoint["config"]) | set(CONFIG)) if checkpoint["config"].get(key) != CONFIG.get(key)}
+            manifest["resumedCheckpoint"] = {"path": str(args.resume), "sha256": file_hash(args.resume), "epoch": epoch, "nextBatch": next_batch, "globalStep": step, "checkpointConfigSha256": checkpoint["configSha256"], "executionConfigChanges": changes, "checkpointRequestedEpochs": checkpoint.get("requestedEpochs"), "checkpointTotalSteps": checkpoint.get("totalSteps"), "requestedEpochsNow": args.epochs, "totalStepsNow": total_steps}
             if preflight and step >= args.preflight_steps:
                 raise ValueError("Resume preflight limit must exceed the checkpoint's completed optimizer steps")
             if epoch >= args.epochs:

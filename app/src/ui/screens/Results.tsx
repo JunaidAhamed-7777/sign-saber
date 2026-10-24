@@ -3,9 +3,15 @@ import type { GameRuntime } from '../../core/runtime';
 import { useStore } from '../../state/store';
 import { Button, MenuShell, RailHeading } from '../components/MenuShell';
 import type { MenuPage } from '../components/MenuShell';
+import { GestureIcon } from '../components/GestureIcon';
 import { strings as t } from '../strings';
 import { useTrialCopy } from '../trialCopy';
 const JUDGEMENTS = ['perfect', 'great', 'good', 'miss', 'badcut'] as const;
+const GESTURES = [
+  ['slash', 'open', 'gestureSlash'],
+  ['smash', 'fist', 'gestureSmash'],
+  ['beam', 'point', 'gestureBeam'],
+] as const;
 /** Rank colour follows docs14: SS/S gold, A cyan, B/C text, D muted. */
 export function rankTone(rank: string): 'gold' | 'cyan' | 'text' | 'muted' {
   return rank === 'SS' || rank === 'S' ? 'gold' : rank === 'A' ? 'cyan' : rank === 'D' ? 'muted' : 'text';
@@ -92,6 +98,31 @@ export function Results({ runtime }: { runtime: GameRuntime }) {
       <p className="note">{motionAbout}</p>
     </div>
   );
+  const byGesture = (
+    <dl className="gesture-breakdown" aria-label={t.byGesture}>
+      {GESTURES.map(([type, icon, label], index) => {
+        const { hits, total } = stats.byType[type];
+        return (
+          <div key={type} className={`gesture-row gesture-${icon}`} style={stagger(10 + index)}>
+            <dt>
+              <span className="move-glyph">
+                <GestureIcon name={icon} />
+              </span>
+              {t[label]}
+            </dt>
+            <dd>
+              <span className="bar" aria-hidden="true">
+                <i style={{ transform: `scaleX(${total > 0 ? hits / total : 0})` }} />
+              </span>
+              <span className="count">
+                {hits} / {total}
+              </span>
+            </dd>
+          </div>
+        );
+      })}
+    </dl>
+  );
   const guard = !ready && <p className="note">{replay ? t.startNoAudio : t.startNoTracking}</p>;
   const leftPages: MenuPage[] = [
     {
@@ -110,10 +141,11 @@ export function Results({ runtime }: { runtime: GameRuntime }) {
     },
     {
       id: 'motion',
-      label: motionLabel,
+      label: t.byGesture,
       content: (
         <>
-          <RailHeading eyebrow={t.thisRun} title={motionLabel} />
+          <RailHeading eyebrow={t.thisRun} title={t.byGesture} />
+          {byGesture}
           {motion}
         </>
       ),
@@ -147,6 +179,7 @@ export function Results({ runtime }: { runtime: GameRuntime }) {
       ),
     },
     { id: 'judgements', label: t.judgements, content: bars },
+    { id: 'gestures', label: t.byGesture, content: byGesture },
     { id: 'motion', label: motionLabel, content: motion },
   ];
   return (

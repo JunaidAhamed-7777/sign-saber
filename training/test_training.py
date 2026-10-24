@@ -111,6 +111,14 @@ class UpperBodyTests(unittest.TestCase):
             expected = [batch.tolist() for batch in DataLoader(range(103), batch_size=CONFIG["batchSize"], shuffle=True, generator=torch.Generator().manual_seed(CONFIG["seed"] + epoch))]
             self.assertEqual(epoch_batches(103, epoch), expected)
 
+    def test_resume_contract_ignores_only_execution_settings(self):
+        from train import EXECUTION_KEYS, training_contract
+        changed = {**CONFIG, "cpuThreads": 1, "dataLoaderWorkers": 0, "epochs": 99}
+        self.assertEqual(training_contract(changed), training_contract(CONFIG))
+        for key in ["batchSize", "headLearningRate", "rotationDegrees", "warmupSteps", "bodyKeypoints"]:
+            self.assertNotIn(key, EXECUTION_KEYS)
+            self.assertNotEqual(training_contract({**CONFIG, key: "changed"}), training_contract(CONFIG), key)
+
     def test_actual_rgb_architecture_and_frozen_backbone(self):
         model = UpperBodyNet(pretrained=False)
         model.set_backbone_trainable(False)

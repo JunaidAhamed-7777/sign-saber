@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Release-drill main integration
+
+- Codex normally integrated current main while preserving existing contributors’ chart, rendering and sound work, ran the integrated 480-assertion application check, and kept earlier clean-clone evidence tied to its actual candidate rather than relabelling it as newer code.
+
 ## 2026-10-25 — Release-drill acceptance evidence
 
 - Codex ran actual clean-commit positive and deliberately broken catalog drills, retained all prior failures and documented exact SHAs, results, network assertions and exclusions. It corrected the separate worker-test tab-selection race, verified a later blank page cannot steal the fixture session, and kept Windows profile-cleanup failures explicit without touching unrelated Chrome processes.

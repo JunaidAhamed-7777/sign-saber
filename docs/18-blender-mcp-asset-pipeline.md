@@ -335,6 +335,22 @@ Load the entire required group or select its procedural fallback: a partial shar
 - [ ] `.blend` and GLBs committed; attribution file present if any CC0 icon source was used.
 - [ ] Total asset payload ≤ 1 MB.
 
+## 11. Rigged avatar
+
+**Status: implemented.** `assets-src/blender/generate_avatar.py` authors the upper-body avatar in a dedicated `signsaber_avatar.blend` through the same official MCP bridge (a separate instance via `--port`/`--blend`). This asset is a documented exception to §2: it contains one skin, an armature and `COLOR_0` details, and has its own manifest (`app/public/assets/models/avatar-manifest.json`) and triangle budget (≤ 16,000) outside the six-asset pack total.
+
+| Spec | Value |
+| --- | --- |
+| Scope | Head (brow, eyes, nose, mouth, jaw, ears, hair), neck, torso to a closed hip finish with a rim, arms, hands with thumb + four three-phalanx fingers. **No legs.** |
+| Construction | Signed-distance primitives with smooth unions/subtractions (lofted torso profile, muscle masses, per-finger blend groups), polygonised by surface nets, projected onto the field, collapse-decimated, relaxed and re-projected; accent seams are tubes on surface-projected curves |
+| Axes / units | glTF +Y up, facing +Z, metres, origin at the hip-joint midpoint; A-pose rest (arms 48° from vertical) |
+| Bones | `hips, spine, chest, neck, head`, `shoulder/upper_arm/forearm/hand.L/.R`, `thumb/index/middle/ring/pinky_01–03.L/.R` (43); three.js strips the dot when loading |
+| Weights | Bone heat (suit, hands) with nearest-bone fallback, procedural head/neck blend, rigid hair/eyes, seams copy nearest suit weights; ≤ 4 influences, normalised |
+| Materials | `avatar_suit`, `avatar_skin`, `avatar_accent`, `avatar_eye`, `avatar_hair` (base colour only); `COLOR_0` multiplies in brows, lips and iris/pupil |
+| Anchors | Armature extras `sign_saber_anchors`: rest positions of MediaPipe-equivalent landmarks (nose, eyes, ears, shoulders, elbows, wrists, hips, index/pinky/thumb) used by runtime retargeting |
+
+`render_avatar_preview.py` renders actual Workbench/EEVEE previews; `pose_avatar_preview.py` poses the rig (raised arm, 120° elbow, fist, point, wrist twist, overhead) for deformation checks and always restores the rest pose. Structural checker coverage is pending.
+
 ## Constants required
 
 None beyond `BLOCK_SIZE`, `PYLON_SPACING_M`, `PYLON_X` (proposed in [13](13-rendering-environment-camera-postfx.md)).

@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:58:00+05:30 — Rigged avatar replaces the outline and line figure
+
+- Changed: `render/renderer.ts` loads `avatar.glb` (tier `AVATAR_TIER_FIGURE`; low tier and load failure keep the line skeleton) and drives it from tracking/dataset/synthetic frames, an illustrative idle in the menu placeholder (static in Calm), a frozen pose when paused and the saved pose in results; the mask silhouette and line skeleton hide while the avatar shows. The avatar draws after the arena and before a depth-clear sentinel so all targets/effects render over it, in both the post-FX and direct paths. `MenuShell` `Figure` shows the SVG outline only when the avatar failed or is disabled and reports the placeholder state to the renderer. Fixed side mapping for ears/eyes/hand points in retargeting. Placeholder scale/height retuned.
+- Why: The user asked for a moving person model built on the tracked skeleton instead of the stick outline and thin lines.
+- Validation: typecheck and lint clean; 480/480 tests across 54 files. Embedded browser at 1440×900: menu idle shows the holographic avatar; "Watch synthetic performer" pre-roll and play show it driven by the performer with hands on the cursor rings and open/fist hand shapes, targets drawn over it.
+- Limits: No live webcam exercise; dataset-trial visual check not repeated after the merge; no GPU timing. Holographic material and proportions are a first pass.
+
 ## 2026-10-25T04:50:00+05:30 — Blade ribbons, hand particles and a cleaner shatter
 
 - Changed: `render/blade.ts` adds per-hand blade ribbons (white-hot core plus tinted additive glow) rebuilt into preallocated buffers from the measured `HandCursor.history`, uniformly resampled by arc length, drawn length eased by a critically damped spring (`BLADE_LENGTH_SPRING_RAD_S`), reset on reacquisition and guarded against degenerate tangents. `render/trails.ts` adds tier-sized GPU particles per hand (two-ring orbit, fist knot, point cone; band-driven orbit speed, twinkle off in Calm) that elongate onto the blade spine. The renderer feeds the latest cursors (visual only) and hides trails in results/paused. Shatter pieces start at `SHATTER_PIECE_SCALE`, vanish by `SHATTER_VISIBLE_FRACTION` of the lifetime, use saturated magenta cross-sections and darker rims; the dev preview no longer has a hands toggle.

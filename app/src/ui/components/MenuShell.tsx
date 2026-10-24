@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { ActionSource } from '../menuTargets';
 import type { GameRuntime } from '../../core/runtime';
 import { MENU_COMPACT_MAX_HEIGHT_PX, MENU_COMPACT_MAX_WIDTH_PX } from '../../core/constants';
@@ -275,6 +275,21 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
     runtime.setStage(ref.current);
     return () => runtime.setStage(null);
   }, [runtime]);
+  // The renderer draws the rigged 3D avatar into this stage; the SVG outline is only its load/failure fallback.
+  // Feature-checked so partial runtimes (tests, renderer failure) keep the SVG.
+  const renderer = runtime.renderer;
+  const hasAvatarApi = typeof renderer?.subscribeAvatar === 'function';
+  const avatarStatus = useSyncExternalStore(
+    useCallback(
+      (listener: () => void) => (hasAvatarApi ? renderer!.subscribeAvatar(listener) : () => {}),
+      [renderer, hasAvatarApi],
+    ),
+    () => (hasAvatarApi ? renderer!.avatarStatus : 'failed'),
+    () => 'failed' as const,
+  );
+  useEffect(() => {
+    if (hasAvatarApi) renderer!.setFigurePlaceholder(placeholder);
+  }, [renderer, hasAvatarApi, placeholder]);
   const label =
     state === 'RESULTS'
       ? saved
@@ -299,7 +314,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
                 : strings.placeholder;
   return (
     <div ref={ref} className={`figure-stage ${placeholder ? 'illustration' : ''}`} aria-label={label}>
-      {placeholder && (
+      {placeholder && (avatarStatus === 'failed' || avatarStatus === 'disabled') && (
         <svg viewBox="0 0 360 350" className="person-illustration" aria-hidden="true">
           <defs>
             <linearGradient id="person-color" x1="0" y1="0" x2="1" y2="1">

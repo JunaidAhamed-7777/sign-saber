@@ -208,8 +208,8 @@ export function createShardMaterial(uniforms: TargetUniforms): THREE.ShaderMater
         void main() {
           vec3 n = normalize(vNormalW);
           float fres = pow(1.0 - clamp(abs(dot(n, normalize(vViewW))), 0.0, 1.0), 2.0);
-          vec3 outer = vTint * (0.16 + fres * RIM_GAIN * 1.4);
-          vec3 inner = mix(vTint, vec3(1.0), 0.25) * INNER_GAIN;
+          vec3 outer = vTint * (0.12 + fres * RIM_GAIN * 0.7);
+          vec3 inner = vTint * INNER_GAIN;
           gl_FragColor = vec4(mix(outer, inner, vInner) * vFade, 1.0);
           ${OUTPUT}
         }`,

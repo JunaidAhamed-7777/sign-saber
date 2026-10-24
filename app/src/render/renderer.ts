@@ -13,6 +13,7 @@ import { SlicePool } from './slices';
 import { PoofPool } from './poof';
 import { TerminalNoteVisuals } from './failures';
 import { ArenaAtmosphere } from './environment';
+import { HandTrails } from './trails';
 import { PostFx, supportsHdrTargets } from './postfx';
 import { resolveQuality } from './quality';
 import {
@@ -221,7 +222,9 @@ export class ArenaRenderer {
   private lastDrawAt: number | null = null;
   private hdr = false;
   private previewSerial = 0;
-  private previewHandsEnabled = false;
+  /** Blade ribbons and hand particles (docs12); fed the latest measured cursors. */
+  private readonly trails = new HandTrails(QUALITY_TIER_PRESETS.medium);
+  private latestHands: readonly HandCursor[] = [];
   private post: PostFx | null = null;
   private readonly shatter: ShatterPool;
   private readonly slices: SlicePool;
@@ -518,6 +521,10 @@ export class ArenaRenderer {
     });
     this.atmosphere.applyPreset(this.activeQuality.preset);
     this.scene.add(this.atmosphere.group);
+    this.trails.applyPreset(this.activeQuality.preset);
+    // Same layer as the hand cursors so menu-stage and play projections agree.
+    this.trails.group.traverse((object) => object.layers.set(1));
+    this.scene.add(this.trails.group);
     void this.assets.load().then(() => {
       if (this.disposed) return;
       this.assetPending = true;
@@ -534,6 +541,7 @@ export class ArenaRenderer {
   setMode(mode: 'menu' | 'play' | 'paused' | 'results'): void {
     if (this.mode !== 'play' && this.mode !== 'paused' && this.assetPending) this.applyAssets();
     this.mode = mode;
+    if (mode === 'results') this.trails.hide();
     if (mode === 'results' || mode === 'paused') {
       for (const mesh of this.handMeshes) mesh.visible = false;
       for (const line of this.handLines) line.visible = false;
@@ -598,6 +606,8 @@ export class ArenaRenderer {
     this.camera.updateProjectionMatrix();
     this.atmosphere.applyPreset(this.activeQuality.preset);
     this.atmosphere.setViewport(innerHeight * this.activeQuality.pixelRatio, CAM_FOV_DEG);
+    this.trails.applyPreset(this.activeQuality.preset);
+    this.trails.setViewport(innerHeight * this.activeQuality.pixelRatio, CAM_FOV_DEG);
     this.post?.configure(this.activeQuality);
     this.post?.setSize(innerWidth, innerHeight);
   }
@@ -693,6 +703,7 @@ export class ArenaRenderer {
   }
   hands(hands: readonly HandCursor[]): void {
     if (this.mode === 'paused' || this.mode === 'results') return;
+    this.latestHands = hands;
     for (let i = 0; i < 2; i++) {
       const hand = hands[i];
       const mesh = this.handMeshes[i]!;
@@ -850,6 +861,15 @@ export class ArenaRenderer {
         this.bands,
         this.calm,
         this.mode === 'play' ? (SPAWN_DISTANCE / this.approachMs) * 1000 : 0,
+      );
+    if (this.mode !== 'paused')
+      this.trails.update(
+        this.latestHands,
+        this.mode !== 'results' && this.visible,
+        frameMs,
+        this.bands,
+        this.calm,
+        this.camera.position,
       );
     const rect = this.mode !== 'play' ? this.menuStage?.getBoundingClientRect() : null;
     this.camera.fov = CAM_FOV_DEG;
@@ -1084,10 +1104,6 @@ export class ArenaRenderer {
       combo: 0,
       multiplier: 1,
     });
-  }
-  /** Visual QA preview of synthetic hand trails (development harness only). */
-  previewHands(enabled: boolean): void {
-    this.previewHandsEnabled = enabled;
   }
   get effectOccupancy(): number {
     let count = this.shatter.occupancy + this.slices.occupancy + this.poofs.occupancy;

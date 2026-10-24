@@ -25,6 +25,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: The user asked to replace the flat illustrative outline and thin skeleton lines with a real person model driven by tracked skeletons.
 - Validation: Generated through the dedicated Blender 5.2.2 MCP bridge (port 9877); Workbench previews inspected for front/side/head/hand shape. Exported once; zero unweighted fallback vertices reported.
 - Limits: Work in progress. Not yet consumed by the runtime; deformation poses, structural/Khronos validation and browser rendering are not yet checked.
+## 2026-10-25T03:46:57+05:30 — Initial focus, camera-setup UI test and interface docs
+
+- Changed: Calibration Confirm, Pause Resume (or Songs when resume is blocked) and Results Retry (or Songs) receive initial keyboard focus through a `Button` `autoFocus` option. Added a camera-setup rendering test (checklist from real presence flags, disabled Confirm, Cancel, no `<video>`, desktop and compact). README, docs14 and docs25 now describe the implemented ready page, cut page, HUD details, compact reflow bounds and new UI modules.
+- Why: docs14 asks transitions to move focus to the primary available action; the setup subflow had no rendered-structure test; docs needed to match the shipped interface.
+- Validation: Typecheck, lint and build passed; 335 of 336 assertions passed. The failing assertion is main's `tests/unit/gapless.test.mjs` “never trims a buffer…” timing out at ~5.3–7.8 s against the 5 s limit while the machine CPU was at 100% (parallel training); it also failed in isolation under that load and is unrelated to UI files. Correction: the previous entry (“Ready page with performer action…”) claimed a passing check, but that run had the same two to three audio timeouts. Root docs tests passed 2/2; checker reported 47 files, 517 local links, 0 errors.
+- Limits: Autofocus behaviour was not exercised with a screen reader or real keyboard-only session.
 
 ## 2026-10-25T03:39:48+05:30 — Ready page with performer action and separate cut page
 

@@ -23,6 +23,7 @@ export function Button({
   onAction,
   label,
   describedBy,
+  autoFocus = false,
 }: {
   runtime: GameRuntime;
   id: string;
@@ -36,6 +37,8 @@ export function Button({
   onAction?: (source: ActionSource) => void;
   label?: string;
   describedBy?: string;
+  /** Initial keyboard focus for a screen's primary action (docs14 §Focus management). */
+  autoFocus?: boolean;
 }) {
   const ref = useRef<HTMLButtonElement>(null);
   const action = useRef(onAction);
@@ -75,6 +78,7 @@ export function Button({
       aria-pressed={selected || undefined}
       aria-label={label}
       aria-describedby={describedBy}
+      autoFocus={autoFocus}
       className={classes('btn', primary && 'primary', selected && 'selected', busy && 'busy', className)}
       style={hand ? ({ '--arm': progress } as React.CSSProperties) : undefined}
       onClick={() => runtime.targets.activate(id, 'native')}

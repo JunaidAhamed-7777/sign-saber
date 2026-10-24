@@ -167,8 +167,11 @@ def main():
     parser.add_argument("--roi-jitter", type=float, default=0.15, help="Deterministic perturbed-ROI scale/shift fraction; 0 disables the pass")
     parser.add_argument("--overlays", type=int, default=16)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--limit", type=int, default=0, help="Smoke test only: evenly spaced held-out people per dataset; the report is marked partial")
+    parser.add_argument("--threads", type=int, default=CONFIG["cpuThreads"])
+    parser.add_argument("--workers", type=int, default=CONFIG["dataLoaderWorkers"])
     args = parser.parse_args()
-    torch.set_num_threads(CONFIG["cpuThreads"])
+    torch.set_num_threads(max(1, args.threads))
     output = args.output if args.output.is_absolute() else Path.cwd() / args.output
     if not output.resolve().is_relative_to((ROOT / "runs").resolve()):
         parser.error("Reports stay inside the ignored training/runs folder")
@@ -185,10 +188,12 @@ def main():
     train_rows, _ = load_records(args.datasets, "train")
     validation_rows, validation_info = load_records(args.datasets, "val")
     mean_points = mean_pose(train_rows)
-    loader_arguments = {"batch_size": CONFIG["batchSize"], "shuffle": False, "num_workers": CONFIG["dataLoaderWorkers"]}
+    loader_arguments = {"batch_size": CONFIG["batchSize"], "shuffle": False, "num_workers": max(0, args.workers)}
     passes = {"oracleRoi": {}, "perturbedRoi": {}}
     for dataset in args.datasets:
         subset = [row for row in validation_rows if row["dataset"] == dataset]
+        if args.limit > 0:
+            subset = [subset[int(index)] for index in np.linspace(0, len(subset) - 1, min(args.limit, len(subset)))]
         print(f"Evaluating {dataset}: {len(subset)} held-out people", flush=True)
         passes["oracleRoi"][dataset] = run_pass(models, UpperBodyDataset(subset), loader_arguments, mean_points)
         if args.roi_jitter > 0:
@@ -197,7 +202,7 @@ def main():
     for name, results in passes.items():
         if results:
             results["combined"] = {label: pooled([results[dataset][label] for dataset in args.datasets]) for label in labels}
-    report = {"version": 1, "createdAt": datetime.now(timezone.utc).isoformat(), "models": descriptions, "validationData": validation_info, "roiJitter": args.roi_jitter, "metricDefinition": f"Labelled-joint Euclidean error in source pixels and PCK@{CONFIG['pckShoulderFraction']} of shoulder span (samples with both shoulders labelled), not COCO AP. Oracle ROI = crop derived from ground-truth joints.", "references": {"zero-heatmaps": "Loss of an all-zero heatmap prediction; its coordinates are meaningless and only the loss is a reference.", "mean-pose-in-roi": "Predicts each joint at its mean normalized position inside the oracle training ROI; measures how much the oracle crop alone gives away."}, "passes": passes}
+    report = {"version": 1, "createdAt": datetime.now(timezone.utc).isoformat(), "models": descriptions, "validationData": validation_info, "roiJitter": args.roi_jitter, "partialSmokeTest": args.limit > 0, "limitPerDataset": args.limit or None, "metricDefinition": f"Labelled-joint Euclidean error in source pixels and PCK@{CONFIG['pckShoulderFraction']} of shoulder span (samples with both shoulders labelled), not COCO AP. Oracle ROI = crop derived from ground-truth joints.", "references": {"zero-heatmaps": "Loss of an all-zero heatmap prediction; its coordinates are meaningless and only the loss is a reference.", "mean-pose-in-roi": "Predicts each joint at its mean normalized position inside the oracle training ROI; measures how much the oracle crop alone gives away."}, "passes": passes}
     if args.overlays > 0:
         first = next(iter(models))
         report["overlays"] = {"model": first, "file": f"overlays-{first}.png", "sampleIds": overlays(models[first], validation_rows, args.overlays, output / f"overlays-{first}.png")}
@@ -206,7 +211,7 @@ def main():
     for name, results in passes.items():
         for split, rows in results.items():
             losses = ", ".join(f"{label} {rows[label]['meanHeatmapLoss']:.6f}" for label in labels if rows[label]["meanHeatmapLoss"] is not None)
-            sections.append(f"## {name} — {split}\n\nMean heatmap loss: {losses}\n\nPCK@{CONFIG['pckShoulderFraction']} shoulder span:\n\n{table(rows, labels)}\n")
+            sections.append(f"## {name} - {split}\n\nMean heatmap loss: {losses}\n\nPCK@{CONFIG['pckShoulderFraction']} shoulder span:\n\n{table(rows, labels)}\n")
     (output / "report.md").write_text("\n".join(sections), encoding="utf-8")
     print("\n".join(sections), flush=True)
 

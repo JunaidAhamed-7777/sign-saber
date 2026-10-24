@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T03:18:35+05:30 — Report smoke-test options
+
+- Changed: training/report.py gained `--limit` (evenly spaced held-out people per dataset, marked `partialSmokeTest` in the report), `--threads` and `--workers`, and ASCII section headings.
+- Why: Check the report path cheaply while the long training run uses most of the CPU budget.
+- Validation: A 48-person-per-dataset smoke report over the 60-step timing checkpoint, the earlier three-step COCO preflight and the seeded untrained head completed in 2.5 minutes with two threads and one worker; overlays drew ground-truth joints on the correct body parts. Smoke numbers are not recorded as results.
+- Limits: Smoke reports use partial validation and are never evidence of accuracy.
+
 ## 2026-10-25T03:14:35+05:30 — Training throughput, schedule and augmentation for a full COCO + MPII run
 
 - Changed: training/config.json now uses 6 CPU threads, 3 spawned DataLoader workers (prefetch 2), batch 32 and 9 epochs, with linear warmup (300 steps) then cosine decay to 2% of the head/backbone learning rates, and per-epoch validation. train.py materializes the identical seeded per-epoch order (so resume skips batches without decoding them), records per-step data-wait/learning-rate and per-epoch wall/loss/validation summaries, keeps summaries across resume, accepts checkpoints under a junctioned runs/ folder, and disables only deterministic mode's NaN fill of fresh allocations. upper_body.py adds training-only scale (±25%), rotation (±30°, probability 0.5) and translation (±10%) ROI jitter through one testable crop_input(), fixes the flip label mirror (size − x rather than size − 1 − x), adds standard quarter-cell heatmap decoding, and shares one PoseMetrics accumulator. New report.py writes per-dataset, per-joint held-out reports with untrained, zero-heatmap and mean-pose-in-ROI references, a deterministic perturbed-ROI pass and local overlays.

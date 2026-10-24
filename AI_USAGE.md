@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Worker-policy release-drill regression
+
+- Codex traced a committed-snapshot failure to the worker target's unavailable Fetch domain, corrected request blocking with the supported Network policy and verified the fix using a real worker fetching loopback while an external request is blocked by CDP. Browser-internal targets are excluded; failed game-journey evidence remains retained separately from the passing policy regression.
+
 ## 2026-10-25 — Automated release-drill implementation
 
 - Codex implemented the clean-commit installation and offline synthetic browser harness for issue #3, reused the shared CDP helper, retained actual test/browser failures and fixed the missing favicon exposed by those checks. Pure-helper coverage verifies loopback policy, options, failure reporting, evidence retention and CDP messages. Final committed-snapshot acceptance evidence follows separately.

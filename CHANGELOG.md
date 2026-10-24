@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:24:06+05:30 — Correct worker blocking in the release harness
+
+- Changed: `release-drill.mjs` now applies an ordered CDP Network origin allowlist to app page/worker targets, uses Fetch interception only on page/frame targets, and excludes Chrome's internal `browser_ui` targets. Added `scripts/release-drill.browser.test.mjs`, a real isolated-Chrome regression that resumes a dedicated worker, permits its loopback fetch and verifies an external fetch is blocked by the inspector before network access. Retained the first committed-candidate failure and the previous browser attempt unchanged.
+- Why: The actual `b9b1a85` drill passed clean-clone installation, all 367 application assertions and production builds, then exposed `Fetch.enable` as unavailable on worker targets. The unsupported command left the generator paused in the harness. This was a harness defect, not an application or camera result.
+- Validation: Five pure-helper tests and the real Chrome worker regression passed (6/6 total). The worker returned `local ok` and rejected the explicitly labelled external probe with `blockedReason: inspector`. The earlier browser run had zero console/CSP errors and proved the favicon fix, menu and native sound unlock before the harness defect.
+- Limits: The corrected full synthetic journey and deliberate missing-asset acceptance are pending the next committed-snapshot run. No release, webcam, human or performance gate is declared complete.
+
 ## 2026-10-25T04:11:38+05:30 — Release-drill implementation and retained failures
 
 - Changed: Added `scripts/release-drill.mjs` and pure-helper tests. The drill clones the exact committed SHA, captures install/check/build command logs, serves the prepared build with the existing server, blocks external browser destinations, and observes native-input synthetic playback/results/retry/Songs. It writes dated JSON/Markdown evidence, preserves previous attempts and excludes camera/model preparation. Added a local SVG favicon declaration in `app/index.html` after the browser exposed a missing favicon request.

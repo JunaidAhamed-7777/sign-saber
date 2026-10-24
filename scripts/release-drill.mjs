@@ -15,6 +15,41 @@ const BROWSER_STEP_TIMEOUT_MS = 30_000;
 const PERFORMANCE_TIMEOUT_MS = 150_000;
 const POLL_MS = 200;
 const delay = (ms) => new Promise((done) => setTimeout(done, ms));
+const autoAttach = {
+  autoAttach: true,
+  waitForDebuggerOnStart: true,
+  flatten: true,
+  filter: [
+    { type: "page" },
+    { type: "iframe" },
+    { type: "worker" },
+    { exclude: true },
+  ],
+};
+
+/** Worker targets expose Network, but not Fetch. Block before releasing the debugger pause. */
+export async function prepareTarget(cdp, sessionId, type, origin) {
+  await cdp.send("Runtime.enable", {}, sessionId);
+  await cdp.send("Network.enable", {}, sessionId);
+  // Ordered URLPattern allowlists precede legacy wildcard blocks in CDP.
+  // https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setBlockedURLs
+  await cdp.send(
+    "Network.setBlockedURLs",
+    {
+      urlPatterns: [{ urlPattern: `${origin}/*`, block: false }],
+      urls: ["http://*", "https://*", "ws://*", "wss://*"],
+    },
+    sessionId,
+  );
+  if (type === "page" || type === "iframe") {
+    await cdp.send(
+      "Fetch.enable",
+      { patterns: [{ urlPattern: "*" }] },
+      sessionId,
+    );
+    await cdp.send("Target.setAutoAttach", autoAttach, sessionId);
+  }
+}
 
 export function isLocalRequest(value) {
   try {
@@ -71,7 +106,7 @@ export function reportSummary(report) {
     "",
     `Synthetic performer results: ${report.browser?.results ? JSON.stringify(report.browser.results) : "not reached"}.`,
     "",
-    "The browser uses a dead loopback proxy for non-loopback destinations, plus CDP Fetch interception on the page and attached workers. Local requests remain available; this is an offline venue simulation, not an unplugged-network test.",
+    "The browser uses a dead loopback proxy for non-loopback destinations, plus a CDP Network allowlist on app page/worker targets and Fetch interception on pages. Local requests remain available; this is an offline venue simulation, not an unplugged-network test.",
     "",
     "Camera paths are out of scope. MediaPipe models require network preparation with `npm run models`; this drill never requests a camera. Planned synthetic landmarks exercise the real game scoring path and do not prove webcam recognition, human movement, audible sync or performance targets. Other P5 manual and live-camera gates remain open.",
     "",
@@ -211,18 +246,7 @@ async function browserJourney(clone, temporary, options, report, step) {
     let pageSession;
     const setupSession = async (sessionId, info) => {
       sessions.set(sessionId, info.type);
-      await cdp.send("Runtime.enable", {}, sessionId);
-      await cdp.send("Network.enable", {}, sessionId);
-      await cdp.send(
-        "Fetch.enable",
-        { patterns: [{ urlPattern: "*" }] },
-        sessionId,
-      );
-      await cdp.send(
-        "Target.setAutoAttach",
-        { autoAttach: true, waitForDebuggerOnStart: true, flatten: true },
-        sessionId,
-      );
+      await prepareTarget(cdp, sessionId, info.type, origin);
       if (info.type === "page") {
         await cdp.send("Page.enable", {}, sessionId);
         await cdp.send("Log.enable", {}, sessionId);
@@ -312,11 +336,7 @@ async function browserJourney(clone, temporary, options, report, step) {
         });
       }
     });
-    await cdp.send("Target.setAutoAttach", {
-      autoAttach: true,
-      waitForDebuggerOnStart: true,
-      flatten: true,
-    });
+    await cdp.send("Target.setAutoAttach", autoAttach);
     const { targetId } = await cdp.send("Target.createTarget", {
       url: "about:blank",
     });

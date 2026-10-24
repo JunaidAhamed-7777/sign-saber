@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:25:00+05:30 — Synthetic performer reel for the dataset camera
+
+- Changed: new `tracking/performerReel.ts` renders the skinned avatar (`AvatarFigure.poseFromJoints`, natural variant, no outline) in a plain room from a virtual front camera framed to `PERFORMER_SHOULDER_WIDTH_NORM`, posed each frame from `Choreography`/`performerJoints` on the session song clock (rest pose outside a session; arm and face depth from the rig's proportions), drawn into the dataset-camera canvas. Enabled with `?camera=dataset&reel=performer`; evidence lane `dataset-camera-synthetic-performer` (reels may now declare their lane; the runtime keeps the last lane after the camera stops). `?stats=1` diagnostics expose the current dataset frame image (never for a webcam). Harness lane `performer` (low tier) saves the rendered camera frame. Registered the PERFORMER_REEL_* constants.
+- Why: exercise the real camera → MediaPipe → scoring path with a moving performer.
+- Validation: `npm run check` 424 tests in 50 files and build passed; trial: MediaPipe detected pose and both hands in 100% of rendered frames, handedness 690/690. Calibration was not accepted at 3.5 Hz / 311 ms inference under 82–86% machine load, so no notes were scored through the camera.
+- Limits: synthetic render, not a person or webcam; the avatar's head renders tilted (face error ~0.5 shoulder widths); play-to-results comparison with the logic replay still needs an idle machine.
+
 ## 2026-10-25T04:50:00+05:30 — Blade ribbons, hand particles and a cleaner shatter
 
 ## 2026-10-25T04:47:08+05:30 — Browser check of the synthesized SFX in the performer trial
@@ -28,12 +35,6 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: Hit payoff and kinetic response from docs 11–13, kept restrained per the user's playability request.
 - Validation: Lint, build and 64 render/quality/slicer assertions pass; synthetic-performer trial screenshot in native Chrome inspected (planned motion, no camera).
 - Limits: No frame-safety projection test for the shake, no GPU timing, no flashing review.
-## 2026-10-25T05:25:00+05:30 — Synthetic performer reel for the dataset camera
-
-- Changed: new `tracking/performerReel.ts` renders the skinned avatar (`AvatarFigure.poseFromJoints`, natural variant, no outline) in a plain room from a virtual front camera framed to `PERFORMER_SHOULDER_WIDTH_NORM`, posed each frame from `Choreography`/`performerJoints` on the session song clock (rest pose outside a session; arm and face depth from the rig's proportions), drawn into the dataset-camera canvas. Enabled with `?camera=dataset&reel=performer`; evidence lane `dataset-camera-synthetic-performer` (reels may now declare their lane; the runtime keeps the last lane after the camera stops). `?stats=1` diagnostics expose the current dataset frame image (never for a webcam). Harness lane `performer` (low tier) saves the rendered camera frame. Registered the PERFORMER_REEL_* constants.
-- Why: exercise the real camera → MediaPipe → scoring path with a moving performer.
-- Validation: `npm run check` 424 tests in 50 files and build passed; trial: MediaPipe detected pose and both hands in 100% of rendered frames, handedness 690/690. Calibration was not accepted at 3.5 Hz / 311 ms inference under 82–86% machine load, so no notes were scored through the camera.
-- Limits: synthetic render, not a person or webcam; the avatar's head renders tilted (face error ~0.5 shoulder widths); play-to-results comparison with the logic replay still needs an idle machine.
 
 ## 2026-10-25T04:41:00+05:30 — Dataset camera trial evidence and docs
 

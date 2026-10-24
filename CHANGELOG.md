@@ -21,6 +21,35 @@ Implementation and historical specification work are recorded below. Automated, 
 - Limits: Only iTunSMPB metadata is honoured (the bundled files use it); LAME-header-only gapless files decode as the browser returns them. No audible listening test or latency measurement was made.
 
 ## 2026-10-25T02:45:00+05:30 — Parallel authoring preparation
+## 2026-10-25T03:19:51+05:30 — Export parity spans both held-out datasets
+
+- Changed: training/export.py selects evenly spaced held-out crops across the requested datasets (previously the first N rows, which were all COCO) and labels non-preflight checkpoints as research checkpoints whose accuracy is reported separately.
+- Why: Parity for a COCO + MPII model should exercise MPII crops too; limitation text should match the checkpoint kind.
+- Validation: Smoke export of the 60-step timing checkpoint over 16 crops passed ONNX checker and ONNX Runtime CPU parity (maximum heatmap difference 5.96e-6, zero decoded difference with the refined decoder).
+- Limits: Parity remains numerical equivalence only; the timing checkpoint is not a result.
+
+## 2026-10-25T03:18:35+05:30 — Report smoke-test options
+
+- Changed: training/report.py gained `--limit` (evenly spaced held-out people per dataset, marked `partialSmokeTest` in the report), `--threads` and `--workers`, and ASCII section headings.
+- Why: Check the report path cheaply while the long training run uses most of the CPU budget.
+- Validation: A 48-person-per-dataset smoke report over the 60-step timing checkpoint, the earlier three-step COCO preflight and the seeded untrained head completed in 2.5 minutes with two threads and one worker; overlays drew ground-truth joints on the correct body parts. Smoke numbers are not recorded as results.
+- Limits: Smoke reports use partial validation and are never evidence of accuracy.
+
+## 2026-10-25T03:14:35+05:30 — Training throughput, schedule and augmentation for a full COCO + MPII run
+
+- Changed: training/config.json now uses 6 CPU threads, 3 spawned DataLoader workers (prefetch 2), batch 32 and 9 epochs, with linear warmup (300 steps) then cosine decay to 2% of the head/backbone learning rates, and per-epoch validation. train.py materializes the identical seeded per-epoch order (so resume skips batches without decoding them), records per-step data-wait/learning-rate and per-epoch wall/loss/validation summaries, keeps summaries across resume, accepts checkpoints under a junctioned runs/ folder, and disables only deterministic mode's NaN fill of fresh allocations. upper_body.py adds training-only scale (±25%), rotation (±30°, probability 0.5) and translation (±10%) ROI jitter through one testable crop_input(), fixes the flip label mirror (size − x rather than size − 1 − x), adds standard quarter-cell heatmap decoding, and shares one PoseMetrics accumulator. New report.py writes per-dataset, per-joint held-out reports with untrained, zero-heatmap and mean-pose-in-ROI references, a deterministic perturbed-ROI pass and local overlays.
+- Why: The two-thread batch-8 loop could not finish a multi-dataset run in a few hours. Oracle ROI crops leak framing, so geometric jitter and a perturbed-ROI evaluation make robustness to imperfect localization visible. Evaluation crops stay the exact oracle extent, so checkpoints remain comparable.
+- Validation: Synthetic timing (not accuracy) measured about 30 ms/sample for full fine-tuning and 14 ms/sample with a frozen backbone at batch 32; profiling attributed about 13% of step time to deterministic NaN fill. A labelled 60-step COCO + MPII timing preflight (local run timing-coco-mpii-frozen-60) measured about 340 ms per frozen-backbone batch with 6 ms mean data wait. The refactored evaluate() reproduced that run's stored evaluation exactly. Unit tests pass 11/11, including pixel-follows-label checks across 24 augmentation seeds, exact oracle extent, the refined decoder, the warmup/cosine schedule and permutation equality with the earlier shuffled DataLoader.
+- Limits: Decoding refinement and augmentation change the training/evaluation contract from the earlier preflight; prior preflight numbers must be re-evaluated with the same decoder for comparison. Throughput figures are for this shared, loaded laptop and are not browser or frame-rate measurements.
+
+## 2026-10-25T03:03:45+05:30 — Extracted and decoded MPII research images
+
+- Changed: Extracted the verified local MPII archive with `prepare.py --dataset mpii --extract-mpii-images` (about 4.3 minutes) and added `prepare.py --verify-mpii-images`, which compares extracted count/bytes with the streamed archive audit and fully decodes every indexed image in a bounded process pool. Recorded the result in training/DATASETS.json.
+- Why: A combined COCO + MPII training run needs individually readable MPII images; failures should surface before a multi-hour run, not during it.
+- Validation: 24,984 extracted JPEG files and 12,140,043,353 bytes match the archive audit; all 17,404 indexed unique images (15,727 train / 1,677 validation) exist and decoded with zero failures. Re-preparing MPII reproduced byte-identical indexes (train SHA-256 9e52535d…, validation 4201b8de…).
+- Limits: The archive audit has no per-member hashes, so extracted files are checked by count and total bytes; 7,580 unindexed archive images were counted but not decoded. No MPII optimizer steps were run in this step.
+
+## 2026-10-25T12:20:00+05:30 — Parallel authoring preparation
 
 - Changed: bootstrap.py accepts `--port` and `--blend` for a separate dedicated Blender MCP instance; `scripts/blender-mcp.mjs` honours a validated `BLENDER_MCP_PORT`. CHANGELOG.md and AI_USAGE.md use Git's built-in union merge so parallel branches keep both appended entries.
 - Why: Avatar and arena-asset authoring run concurrently without sharing one scene or bridge port.

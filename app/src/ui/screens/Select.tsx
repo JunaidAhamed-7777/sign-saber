@@ -1,10 +1,60 @@
 import { useShallow } from 'zustand/react/shallow';
 import type { GameRuntime } from '../../core/runtime';
+import type { BundledTrackEntry } from '../../beatmap/types';
 import { MENU_LIBRARY_PAGE_SIZE } from '../../core/constants';
 import { useStore } from '../../state/store';
-import { Button, MenuShell } from '../components/MenuShell';
+import { Button, MenuShell, RailHeading } from '../components/MenuShell';
 import type { MenuPage } from '../components/MenuShell';
+import { CoverArt } from '../components/CoverArt';
 import { duration, strings as t } from '../strings';
+type TrackState = 'idle' | 'selected' | 'loading' | 'failed';
+function SongCard({
+  runtime,
+  track,
+  state,
+}: {
+  runtime: GameRuntime;
+  track: BundledTrackEntry;
+  state: TrackState;
+}) {
+  const tag =
+    state === 'loading'
+      ? t.trackLoadingTag
+      : state === 'failed'
+        ? t.trackFailedTag
+        : state === 'selected'
+          ? t.selected
+          : '';
+  return (
+    <Button
+      runtime={runtime}
+      id={`song:${track.slug}`}
+      selected={state !== 'idle'}
+      busy={state === 'loading'}
+      className={`song-card${state === 'failed' ? ' failed' : ''}`}
+    >
+      <CoverArt track={track} />
+      <span className="song-copy">
+        <strong>{track.title}</strong>
+        <span>{track.artist}</span>
+        <small>
+          {duration(track.durationMs)}
+          <span className="song-meta-tempo">
+            {' · '}
+            {track.bpm !== null ? `${track.bpm} ${t.bpm}` : t.tempoUnclear}
+          </span>
+        </small>
+      </span>
+      {state === 'selected' ? (
+        <span className="song-tag selected" aria-label={tag}>
+          <span aria-hidden="true">✓</span>
+        </span>
+      ) : (
+        tag && <span className={`song-tag ${state}`}>{tag}</span>
+      )}
+    </Button>
+  );
+}
 export function Select({ runtime }: { runtime: GameRuntime }) {
   const s = useStore(
     useShallow((s) => ({
@@ -21,6 +71,9 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
       calibrationReady: s.calibrationReady,
       audioReady: s.audioReady,
       trackingReady: s.trackingReady,
+      figureAvailable: s.figureAvailable,
+      leftPresent: s.hud.leftPresent,
+      rightPresent: s.hud.rightPresent,
       preview: s.preview,
       warnings: s.warnings,
       generation: s.generation,
@@ -30,82 +83,49 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
     })),
   );
   const selected = s.library.find((track) => track.slug === s.selectedSlug);
-  const songs: MenuPage[] = s.library.map((track) => ({
-    id: `song-${track.slug}`,
-    label: track.title,
-    content: (
-      <div className="song-item">
-        <Button runtime={runtime} id={`song:${track.slug}`} selected={s.selectedSlug === track.slug}>
-          <span className={`song-art ${track.role}`} aria-hidden="true">
-            <svg viewBox="0 0 64 64">
-              <path
-                d={
-                  track.role === 'intro'
-                    ? 'M10 40L25 12L38 50L53 24'
-                    : track.role === 'groove'
-                      ? 'M12 15H52V49H12ZM22 24V40M32 24V40M42 24V40'
-                      : 'M32 8L54 32L32 56L10 32ZM32 20L42 32L32 44L22 32Z'
-                }
-              />
-            </svg>
-          </span>
-          <span className="song-copy">
-            <strong>{track.title}</strong>
-            <span>{track.artist}</span>
-            <small>
-              {duration(track.durationMs)}
-              {track.bpm !== null ? ` · ${track.bpm} BPM` : ''}
-            </small>
-          </span>
-          {s.selectedSlug === track.slug && (
-            <span className="selected-mark" aria-label={t.selected}>
-              ✓
-            </span>
-          )}
-        </Button>
-      </div>
-    ),
-  }));
-  const libraryPages: MenuPage[] = [];
-  for (let start = 0; start < songs.length; start += MENU_LIBRARY_PAGE_SIZE)
-    libraryPages.push({
+  const selectionFailed = !!s.selectedSlug && !s.map && !s.loading && !!s.error;
+  const trackState = (slug: string): TrackState =>
+    slug !== s.selectedSlug ? 'idle' : s.loading ? 'loading' : selectionFailed ? 'failed' : 'selected';
+  const cards = s.library.map((track) => (
+    <SongCard key={track.slug} runtime={runtime} track={track} state={trackState(track.slug)} />
+  ));
+  const cardPages: MenuPage[] = [];
+  for (let start = 0; start < cards.length; start += MENU_LIBRARY_PAGE_SIZE)
+    cardPages.push({
       id: `library-${start}`,
       label: t.library,
-      content: (
-        <>
-          <h1>{t.library}</h1>
-          <div className="song-list">
-            {songs.slice(start, start + MENU_LIBRARY_PAGE_SIZE).map((page) => (
-              <div key={page.id}>{page.content}</div>
-            ))}
-          </div>
-        </>
-      ),
+      content: <div className="song-list">{cards.slice(start, start + MENU_LIBRARY_PAGE_SIZE)}</div>,
     });
-  if (s.libraryLoading)
-    libraryPages.unshift({
-      id: 'library-loading',
-      label: t.library,
-      content: <p role="status">{t.loading}</p>,
-    });
+  const statusPages: MenuPage[] = [];
   if (s.libraryError)
-    libraryPages.unshift({
+    statusPages.push({
       id: 'library-error',
       label: t.library,
       content: (
-        <>
-          <p className="error" role="alert">
-            {t.libraryError}
-          </p>
+        <div className="notice danger" role="alert">
+          <p>{t.libraryError}</p>
+          <p className="detail">{s.libraryError}</p>
           <Button runtime={runtime} id="library-retry">
             {t.retry}
           </Button>
-        </>
+        </div>
+      ),
+    });
+  else if (s.libraryLoading)
+    statusPages.push({
+      id: 'library-loading',
+      label: t.library,
+      content: (
+        <p className="notice busy-line" role="status">
+          {t.loading}
+        </p>
       ),
     });
   const upload = (
     <div className="upload-control">
-      <label htmlFor="audio-file">{t.upload}</label>
+      <label htmlFor="audio-file" className="upload-label">
+        {t.upload}
+      </label>
       <input
         type="file"
         accept="audio/*,.mp3,.wav,.ogg,.m4a"
@@ -117,151 +137,218 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
           event.target.value = '';
         }}
       />
-      <p id="audio-file-help" className="subtle">
+      <p id="audio-file-help" className="note native-note">
         {t.uploadFormats} · {t.nativeOnly}
       </p>
     </div>
   );
-  libraryPages.push({ id: 'upload', label: t.upload, content: upload });
-  const generation = (
-    <>
+  const generation = s.generation.active && (
+    <div className="generation">
       <p role="status">
         {t.generating} · {Math.round(s.generation.fraction * 100)}%
       </p>
-      <progress aria-label={t.generating} value={s.generation.fraction} max="1" />
+      <span className="meter" aria-hidden="true">
+        <i style={{ transform: `scaleX(${s.generation.fraction})` }} />
+      </span>
       <Button runtime={runtime} id="cancel-generation">
         {t.stopGeneration}
       </Button>
-    </>
+    </div>
   );
-  if (s.generation.active) libraryPages.push({ id: 'generation', label: t.generating, content: generation });
+  const uploadPage: MenuPage = {
+    id: 'upload',
+    label: t.upload,
+    content: (
+      <>
+        {upload}
+        {generation}
+      </>
+    ),
+  };
+  const libraryPages: MenuPage[] = [...statusPages, ...cardPages, uploadPage].map((page) => ({
+    ...page,
+    content: (
+      <>
+        <RailHeading
+          level={1}
+          eyebrow={t.musicLibrary}
+          title={page.id === 'upload' ? t.yourAudio : t.library}
+        />
+        {page.content}
+      </>
+    ),
+  }));
   const sound = s.audioReady ? (
-    <Button runtime={runtime} id="preview" disabled={!s.map || s.loading}>
+    <Button runtime={runtime} id="preview" disabled={!s.map || s.loading} selected={s.preview}>
       {s.preview ? t.stopPreview : t.preview}
     </Button>
   ) : (
-    <Button runtime={runtime} id="audio" nativeOnly>
-      {t.enableAudio}
+    <Button runtime={runtime} id="audio" nativeOnly className="native">
+      <span>{t.enableAudio}</span>
+      <small>{t.nativeShort}</small>
     </Button>
   );
+  const preparing = !!s.arrangement?.active;
   const start = (
-    <Button runtime={runtime} id="dataset-trial" primary disabled={!s.map || s.loading || !s.audioReady}>
-      {t.datasetTrial}
+    <Button
+      runtime={runtime}
+      id="dataset-trial"
+      primary
+      busy={preparing}
+      disabled={!s.map || s.loading || !s.audioReady}
+      className="hero"
+      describedBy="trial-reason"
+    >
+      <span className="hero-label">{t.datasetTrial}</span>
+      <small>{t.datasetTrialCaption}</small>
     </Button>
   );
   const performer = (
     <Button runtime={runtime} id="performer-trial" disabled={!s.map || s.loading || !s.audioReady}>
-      {t.performerTrial}
+      <span>{t.performerTrial}</span>
+      <small>{t.performerTrialCaption}</small>
     </Button>
   );
-  const trialReason = !s.map ? t.startNoTrack : !s.audioReady ? t.startNoAudio : '';
   const arrange = (
-    <Button runtime={runtime} id="arrange" disabled={!s.map || s.loading || !!s.arrangement?.active}>
+    <Button runtime={runtime} id="arrange" disabled={!s.map || s.loading || preparing} busy={preparing}>
       {t.arrange}
     </Button>
   );
-  const selection = (
-    <div className="selected-track">
-      <h2>{selected?.title ?? s.map?.song.title ?? t.selectTrack}</h2>
-      {s.map && (
-        <p className="subtle">
-          {duration(s.map.song.durationMs)} · {s.map.notes.length} {t.notes}
-        </p>
-      )}
+  const retrySelection = selectionFailed && s.selectedSlug && (
+    <Button
+      runtime={runtime}
+      id="selection-retry"
+      onAction={(source) => void runtime.command(`song:${s.selectedSlug}`, source)}
+    >
+      {t.retryTrack}
+    </Button>
+  );
+  const errorText = s.error || s.camera.error || s.arrangement?.error;
+  const guard = s.loading
+    ? t.trackLoading
+    : !s.map
+      ? s.selectedSlug
+        ? ''
+        : t.startNoTrack
+      : !s.audioReady
+        ? t.startNoAudio
+        : '';
+  const notice = errorText ? (
+    <div className="notice danger" role="alert" id="trial-reason">
+      <p>
+        {selectionFailed && <strong>{t.selectionFailed} </strong>}
+        {errorText}
+      </p>
+      {retrySelection}
+    </div>
+  ) : (
+    <p className={`notice${s.loading ? ' busy-line' : ''}`} role="status" id="trial-reason">
+      {guard}
+    </p>
+  );
+  const title = selected?.title ?? s.map?.song.title ?? t.selectTrack;
+  const coverSource = selected ?? { slug: title, title };
+  const arrangementChip = s.arrangement?.active ? (
+    <span className="chip busy-chip">
+      {t.arrangementPreparing} · {Math.round(s.arrangement.fraction * 100)}%
+    </span>
+  ) : s.arrangement?.ready ? (
+    <span className="chip cyan">
+      {t.arrangementReady} · {duration(s.arrangement.durationMs ?? 0)}
+    </span>
+  ) : null;
+  const trackHeader = (
+    <div className="track-header">
+      {(selected || s.map) && <CoverArt track={coverSource} size="large" />}
+      <div className="track-copy">
+        <span className="eyebrow">{t.selectedTrack}</span>
+        <h2>{title}</h2>
+        {s.map ? (
+          <p className="meta">
+            {duration(s.map.song.durationMs)} · {s.map.notes.length} {t.notes}
+            {selected?.artist ? ` · ${selected.artist}` : ''}
+          </p>
+        ) : selected ? (
+          <p className="meta">{selected.artist}</p>
+        ) : null}
+      </div>
     </div>
   );
-  const difficulties: MenuPage[] = (['easy', 'normal', 'hard'] as const).map((difficulty) => ({
-    id: `difficulty-${difficulty}`,
-    label: t.difficulty,
+  const chips = (s.warnings.includes('lowTempoConfidence') || arrangementChip) && (
+    <div className="chips">
+      {arrangementChip}
+      {s.warnings.includes('lowTempoConfidence') && <span className="chip gold">{t.fallback}</span>}
+    </div>
+  );
+  const difficulties = (['easy', 'normal', 'hard'] as const).map((difficulty) => (
+    <Button
+      key={difficulty}
+      runtime={runtime}
+      id={`difficulty:${difficulty}`}
+      selected={s.difficulty === difficulty}
+      disabled={s.loading}
+    >
+      {t[difficulty]}
+    </Button>
+  ));
+  const difficulty = (
+    <div className="setting difficulty" role="group" aria-labelledby="difficulty-label">
+      <span className="setting-label" id="difficulty-label">
+        {t.difficulty}
+      </span>
+      <div className="segmented">{difficulties}</div>
+    </div>
+  );
+  const readyPage: MenuPage = {
+    id: 'ready',
+    label: t.ready,
     content: (
-      <Button
-        runtime={runtime}
-        id={`difficulty:${difficulty}`}
-        selected={s.difficulty === difficulty}
-        disabled={s.loading}
-      >
-        {t[difficulty]}
-      </Button>
+      <>
+        {trackHeader}
+        {chips}
+        {difficulty}
+        <div className="action-pair">
+          {sound}
+          {arrange}
+        </div>
+        {start}
+        {performer}
+        {notice}
+      </>
     ),
-  }));
-  const errors = s.error || s.camera.error || s.arrangement?.error;
-  const rightPages: MenuPage[] = [
+  };
+  let rightPages: MenuPage[] = [readyPage];
+  const status = (
+    <>
+      <p className="compact-track">
+        <strong>{title}</strong>
+        {s.map && (
+          <span>
+            {' '}
+            · {t[s.difficulty]} · {duration(s.map.song.durationMs)}
+          </span>
+        )}
+      </p>
+      {chips}
+      {notice}
+    </>
+  );
+  let compactPages: MenuPage[] = [
     {
-      id: 'ready',
-      label: t.ready,
+      id: 'play',
+      label: t.playPage,
       content: (
         <>
-          {selection}
           {sound}
           {start}
           {performer}
           {arrange}
-          <p className="guard-reason" role="status">
-            {s.loading ? t.trackLoading : trialReason}
-          </p>
-          {s.arrangement?.active && (
-            <p role="status">
-              {s.arrangement.stage} · {Math.round(s.arrangement.fraction * 100)}%
-            </p>
-          )}
-          {s.arrangement?.ready && (
-            <p className="success" role="status">
-              {t.arrangementReady} · {duration(s.arrangement.durationMs ?? 0)}
-            </p>
-          )}
         </>
       ),
     },
-    {
-      id: 'difficulty',
-      label: t.difficulty,
-      content: (
-        <>
-          <h2>{t.difficulty}</h2>
-          <div className="difficulty-options">
-            {difficulties.map((page) => (
-              <div key={page.id}>{page.content}</div>
-            ))}
-          </div>
-          {s.warnings.includes('lowTempoConfidence') && <p className="subtle">{t.fallback}</p>}
-        </>
-      ),
-    },
+    { id: 'difficulty', label: t.difficulty, content: <>{difficulties}</> },
   ];
-  let compactPages: MenuPage[] = [
-    ...songs,
-    { id: 'ready-sound', label: s.audioReady ? t.preview : t.enableAudio, content: sound },
-    {
-      id: 'ready-start',
-      label: t.datasetTrial,
-      content: (
-        <>
-          {start}
-          <p className="guard-reason">{s.loading ? t.trackLoading : trialReason}</p>
-        </>
-      ),
-    },
-    { id: 'ready-performer', label: t.performerTrial, content: performer },
-    { id: 'arrange', label: t.arrange, content: arrange },
-    { id: 'arrangement-about', label: t.arrange, content: <p>{t.arrangementAbout}</p> },
-    ...difficulties,
-    { id: 'upload', label: t.upload, content: upload },
-  ];
-  if (s.libraryLoading || s.libraryError)
-    compactPages.unshift(
-      ...libraryPages.filter((page) => page.id.startsWith('library-') && page.id !== 'library-0'),
-    );
-  if (errors)
-    compactPages.push({
-      id: 'error',
-      label: t.retry,
-      content: (
-        <p className="error" role="alert">
-          {errors}
-        </p>
-      ),
-    });
-  if (s.generation.active) compactPages.push({ id: 'generation', label: t.generating, content: generation });
+  let compactStatus = status;
   if (s.camera.mode === 'camera-setup') {
     const confirm = (
       <Button runtime={runtime} id="camera-confirm" disabled={!s.calibrationReady} primary>
@@ -278,20 +365,39 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
         {s.hand === 'right' ? t.handRight : t.handLeft}
       </Button>
     );
+    const checks = [
+      [t.checkBody, s.figureAvailable],
+      [t.checkLeft, s.leftPresent],
+      [t.checkRight, s.rightPresent],
+      [t.checkSteady, s.calibrationReady],
+    ] as const;
+    const checklist = (
+      <ul className="checklist" aria-label={t.inFrame}>
+        {checks.map(([label, ok]) => (
+          <li key={label} className={ok ? 'ok' : undefined}>
+            <span className="check-mark" aria-hidden="true">
+              {ok ? '✓' : '○'}
+            </span>
+            {label}
+            <span className="visually-hidden"> · {ok ? t.checkOk : t.checkMissing}</span>
+          </li>
+        ))}
+      </ul>
+    );
     const readiness = (
-      <p className={s.calibrationReady ? 'success' : 'subtle'} role="status">
+      <p className={`notice${s.calibrationReady ? ' success' : ''}`} role="status">
         {s.calibrationReady ? t.framingReady : t.calibrationPending}
       </p>
     );
-    const setupPages: MenuPage[] = [
+    rightPages = [
       {
         id: 'camera-setup',
         label: t.calibrationTitle,
         content: (
           <>
-            <h2>{t.calibrationTitle}</h2>
-            <p>{t.positioning}</p>
-            <p role="status">{s.cameraStage}</p>
+            <RailHeading eyebrow={t.cameraSetup} title={t.calibrationTitle} />
+            {s.cameraStage && <p className="note busy-line">{s.cameraStage}</p>}
+            {checklist}
             {readiness}
             {confirm}
             {cancel}
@@ -303,37 +409,71 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
         label: t.cameraSettings,
         content: (
           <>
+            <RailHeading eyebrow={t.cameraSettings} title={t.menuHand} />
             {hand}
-            <p className="subtle">{t.menuHelp}</p>
-            <p>{t.cameraPrivacy}</p>
+            <p className="note">{t.menuHelp}</p>
+            <p className="note">{t.cameraPrivacy}</p>
           </>
         ),
       },
     ];
-    rightPages.splice(0, rightPages.length, ...setupPages);
     compactPages = [
       {
         id: 'setup-confirm',
         label: t.calibrate,
         content: (
           <>
-            {readiness}
             {confirm}
+            {cancel}
+            {hand}
           </>
         ),
       },
-      { id: 'setup-cancel', label: t.cancel, content: cancel },
-      { id: 'setup-hand', label: t.cameraSettings, content: hand },
-      { id: 'setup-guide', label: t.positioning, content: <p>{t.positioning}</p> },
-      { id: 'setup-status', label: t.cameraSetup, content: <p role="status">{s.cameraStage}</p> },
     ];
+    compactStatus = (
+      <>
+        {checklist}
+        {readiness}
+      </>
+    );
   }
+  if (errorText && s.camera.mode === 'camera-setup')
+    rightPages[0] = {
+      ...rightPages[0]!,
+      content: (
+        <>
+          {rightPages[0]!.content}
+          <div className="notice danger" role="alert">
+            <p>{errorText}</p>
+          </div>
+        </>
+      ),
+    };
+  const leftSetup: MenuPage[] = [
+    {
+      id: 'positioning',
+      label: t.calibrationTitle,
+      content: (
+        <>
+          <RailHeading level={1} eyebrow={t.cameraSetup} title={t.liveCameraMode} />
+          <p className="lead">{t.positioning}</p>
+          <p className="note">{t.cameraPrivacy}</p>
+          <p className="note">{t.safeSpace}</p>
+        </>
+      ),
+    },
+  ];
+  const setupMode = s.camera.mode === 'camera-setup';
   return (
     <MenuShell
       runtime={runtime}
-      leftPages={libraryPages}
+      leftPages={setupMode ? leftSetup : libraryPages}
       rightPages={rightPages}
+      compactTopPages={setupMode ? undefined : [...statusPages, ...cardPages, uploadPage]}
+      compactTop={setupMode ? <p className="compact-summary">{t.positioning}</p> : undefined}
       compactPages={compactPages}
+      compactStatus={compactStatus}
+      ownErrors
     />
   );
 }

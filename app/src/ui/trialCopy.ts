@@ -8,6 +8,7 @@ export function trialCopy(source: 'annotations' | 'performer' | null) {
     source: performer ? strings.performerReplay : strings.datasetSource,
     banner: performer ? strings.performerReplay : strings.datasetReplay,
     preparing: performer ? strings.performerLoading : strings.datasetPreparing,
+    preroll: performer ? strings.performerPreroll : strings.datasetPreroll,
     limitations: performer ? strings.performerLimitations : strings.datasetLimitations,
     figure: performer ? strings.performerFigure : strings.datasetFigure,
     savedFigure: performer ? strings.performerFigure : strings.datasetSavedFigure,

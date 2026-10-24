@@ -602,6 +602,8 @@ Menu defaults are initial unmeasured values; tune with held-out menu fixtures an
 | `DATASET_CAMERA_SWEEP_FIRST_HOLD_MS` | 20000 | `?reel=sweep` calibration-photo hold before cycling every photo by stream time |
 | `DATASET_CAMERA_TRANSITION_GUARD_MS` / `DATASET_CAMERA_TIMELINE_CAPACITY` | 300 / 1024 | Captures this soon after a drawn-photo change are not attributed; bounded draw history |
 | `DATASET_CAMERA_MATCH_SHOULDER_FRACTION` / `DATASET_CAMERA_PCK_SHOULDER_FRACTION` | 0.5 / 0.5 | Dataset-camera evaluation: wrist-to-hand match radius and PCK threshold, in annotated shoulder widths |
+| `PERFORMER_REEL_RENDER_W` / `PERFORMER_REEL_RENDER_H` / `PERFORMER_REEL_CAMERA_DISTANCE_M` | 960 / 540 / 3 | Synthetic performer reel: avatar render size and virtual front-camera distance |
+| `PERFORMER_REEL_IDLE_SONG_MS` / `PERFORMER_REEL_TRUTH_POOL` | −60000 / 128 | Rest-pose sample time outside a session; reused truth objects for evaluation |
 | `JUDGEMENT_TRACE_CAPACITY` | 8192 | Typed judgement-trace events per session; further events are counted as explicit overflow |
 | `ASSET_MODEL_MAX_BYTES` / `MAX_LIVE_OBSTACLES` | 1048576 / 8 | Model admission and pooled wall capacity |
 | `GRAVITY_MPS2` / `GLYPH_FACE_OFFSET_M` | 9.8 / 0.31 | Cosmetic ballistic gravity and block-front glyph plane |

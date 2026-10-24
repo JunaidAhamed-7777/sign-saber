@@ -17,6 +17,7 @@ import { CameraController } from '../tracking/camera';
 import { WebcamSource, type CameraSourceKind, type CameraStreamSource } from '../tracking/cameraSource';
 import { DatasetCameraSource } from '../tracking/datasetCamera';
 import { PhotoReel } from '../tracking/datasetCameraReel';
+import { PerformerReel } from '../tracking/performerReel';
 import { JudgementTraceRecorder } from './judgementTrace';
 import { JudgementPopQueue } from './judgementPops';
 import { notePosition } from '../game/liveObjects';
@@ -769,7 +770,13 @@ export class GameRuntime {
   private cameraSource(kind: CameraSourceKind): CameraStreamSource {
     return kind === 'dataset'
       ? new DatasetCameraSource(
-          new PhotoReel({ mode: this.flags.reel, holdMs: this.flags.reelHoldMs, seed: this.flags.reelSeed }),
+          this.flags.reel === 'performer'
+            ? new PerformerReel(() => useStore.getState().map)
+            : new PhotoReel({
+                mode: this.flags.reel,
+                holdMs: this.flags.reelHoldMs,
+                seed: this.flags.reelSeed,
+              }),
           () => this.reelSongTime(),
         )
       : new WebcamSource();
@@ -1436,7 +1443,8 @@ export class GameRuntime {
           ? 'dataset-static-annotation-trial'
           : this.flags.replay
             ? 'logic-replay'
-            : (this.camera.sourceLane ?? 'live-camera-unverified');
+            : (this.camera.sourceLane ??
+              ((this.camera.sourceEvidence() as { lane?: string } | null)?.lane || 'live-camera-unverified'));
     const calibration = this.pipeline.calibration;
     return {
       schema: 2,
@@ -1512,6 +1520,7 @@ export class GameRuntime {
         };
       },
       evidence: () => this.evidence(),
+      datasetFrame: () => this.camera.datasetFrame(),
     });
     this.listeners.push(() => delete target.__signSaberDiagnostics);
   }

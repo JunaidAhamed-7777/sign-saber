@@ -516,6 +516,12 @@ export const DATASET_CAMERA_MANIFEST_URL = '/dataset-camera/manifest.json',
   DATASET_CAMERA_MATCH_SHOULDER_FRACTION = 0.5,
   DATASET_CAMERA_PCK_SHOULDER_FRACTION = 0.5;
 export const JUDGEMENT_TRACE_CAPACITY = 8192;
+// Synthetic performer reel: rendered avatar in a virtual front camera (docs05 §1.3).
+export const PERFORMER_REEL_RENDER_W = 960,
+  PERFORMER_REEL_RENDER_H = 540,
+  PERFORMER_REEL_CAMERA_DISTANCE_M = 3,
+  PERFORMER_REEL_IDLE_SONG_MS = -60000,
+  PERFORMER_REEL_TRUTH_POOL = 128;
 // ── End dataset-camera / judgement-trace block ──
 
 export const POOF_POOL = 6,

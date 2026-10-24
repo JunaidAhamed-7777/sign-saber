@@ -101,11 +101,11 @@ The browser numeric harness requires Chrome (or `BROWSER_BINARY`) and ffmpeg; it
 
 ## Model research
 
-[Training notes](training/README.md) distinguish downloaded/licensed data, a real RGB training preflight and full training. New weights are not promoted into the game. The brief CPU preflight's validation loss worsened; exporting a numerically matching ONNX file is not proof of accurate tracking. Raw datasets, environments and research checkpoints remain local/ignored.
+[Training notes](training/README.md) distinguish downloaded/licensed data, a real RGB training preflight and full training. New weights are not promoted into the game. A partial COCO + MPII CPU run, stopped at 25% of planned steps, reached held-out PCK@0.2 0.334 on oracle crops. That is not good enough to replace MediaPipe; exporting a numerically matching ONNX file is not proof of accurate tracking. Raw datasets, environments and research checkpoints remain local/ignored.
 
 ## Sources and licenses
 
-Code and original authored geometry are [MIT](LICENSE). Music retains CC-BY terms and fonts retain OFL terms; their notices are packaged separately. The locked runtime uses [Three.js](https://github.com/mrdoob/three.js/blob/dev/LICENSE), [React](https://github.com/facebook/react/blob/main/LICENSE), [Zustand](https://github.com/pmndrs/zustand/blob/main/LICENSE), [Vite](https://github.com/vitejs/vite/blob/main/LICENSE) and [postprocessing](https://github.com/pmndrs/postprocessing/blob/main/LICENSE.md). MediaPipe's project is [Apache-2.0](https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE); model pins/terms are recorded with the model preparation sources. The game uses Web Audio's output clock; procedural fallback SFX are original generated buffers.
+Code and original authored geometry are [MIT](LICENSE). Music retains CC-BY terms and fonts retain OFL terms; their notices are packaged separately. The locked runtime uses [Three.js](https://github.com/mrdoob/three.js/blob/dev/LICENSE), [React](https://github.com/facebook/react/blob/main/LICENSE), [Zustand](https://github.com/pmndrs/zustand/blob/main/LICENSE), [Vite](https://github.com/vitejs/vite/blob/main/LICENSE) and [postprocessing](https://github.com/pmndrs/postprocessing/blob/main/LICENSE.md). MediaPipe's project is [Apache-2.0](https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE); model pins/terms are recorded with the model preparation sources. The game uses Web Audio's output clock. All sound effects are original MIT work synthesized at runtime from code (`app/src/audio/sfxSynth.ts`, receipt in `assets-src/audio/sfx-receipt.json`); no third-party or recorded SFX are used and no SFX dependency was added.
 
 ## Submission
 

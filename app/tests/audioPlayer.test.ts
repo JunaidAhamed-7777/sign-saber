@@ -133,14 +133,15 @@ describe('owned audio lifecycle', () => {
     expect(() => player.preview(buffer, 0, 3000)).toThrow('Enable sound');
     player.dispose();
   });
-  it('caps per-sound voices, retires them explicitly and remains silent before unlock', () => {
+  it('shares the master gain with an SFX bus that is silent before unlock and capped per sound', () => {
     const context = new FakeContext();
-    const bus = new SfxBus(context.asAudioContext());
+    const player = new AudioPlayer(context.asAudioContext());
+    const bus = new SfxBus(context.asAudioContext(), player.master);
     context.state = 'suspended';
-    bus.play('slash');
+    expect(bus.play('slash')).toBeNull();
     expect(context.sources).toHaveLength(0);
     context.state = 'running';
-    for (let index = 0; index < 20; index++) bus.play('slash', 'perfect');
+    for (let index = 0; index < 20; index++) bus.play('slash', { rate: 1.03 });
     expect(bus.activeVoices).toBe(SFX_POLYPHONY);
     expect(context.sources[0]!.stops).toHaveLength(1);
     expect(context.sources[19]!.playbackRate.value).toBe(1.03);
@@ -148,6 +149,7 @@ describe('owned audio lifecycle', () => {
     expect(bus.activeVoices).toBe(0);
     expect(context.sources[19]!.disconnected).toBe(true);
     bus.dispose();
+    player.dispose();
   });
   it('rejects failed, empty and unsafe decoder output instead of returning ready', async () => {
     const failure = {

@@ -28,7 +28,7 @@
     32
   ],
   "cpuThreads": 6,
-  "dataLoaderWorkers": 2,
+  "dataLoaderWorkers": 1,
   "dataLoaderPrefetchFactor": 2,
   "batchSize": 32,
   "epochs": 5,

@@ -98,6 +98,7 @@ import { useStore } from '../src/state/store';
 import { strings } from '../src/ui/strings';
 import { DatasetTrial, validateDatasetTrial } from '../src/tracking/datasetTrial';
 import datasetFixture from '../public/assets/fixtures/coco-upper-body-trial.json';
+import { COUNTDOWN_STEPS, START_COUNTDOWN_MS } from '../src/core/constants';
 
 let now = 0;
 let nextRaf = 0;
@@ -205,15 +206,23 @@ class Context {
     this.sources.push(source);
     return source;
   }
+  /** Only the SFX bus creates buffers here; music comes from the mocked decoder. */
+  readonly sfxBuffers = new WeakSet<object>();
   createBuffer(_channels: number, length: number, sampleRate: number): AudioBuffer {
     const data = new Float32Array(length);
-    return {
+    const created = {
       length,
       duration: length / sampleRate,
       sampleRate,
       numberOfChannels: 1,
       getChannelData: () => data,
     } as unknown as AudioBuffer;
+    this.sfxBuffers.add(created);
+    return created;
+  }
+  /** Music/preview sources, excluding synthesized SFX voices. */
+  get music(): Source[] {
+    return this.sources.filter((source) => !source.buffer || !this.sfxBuffers.has(source.buffer));
   }
 }
 class OfflineContext {
@@ -505,9 +514,9 @@ describe('runtime browser lifecycle (mocked boundaries)', () => {
     expect(Context.instances).toHaveLength(0);
     await runtime!.command('audio');
     expect(Context.instances).toHaveLength(1);
-    expect(Context.instances[0]!.sources).toHaveLength(0);
+    expect(Context.instances[0]!.music).toHaveLength(0);
     await runtime!.command('preview');
-    expect(Context.instances[0]!.sources).toHaveLength(1);
+    expect(Context.instances[0]!.music).toHaveLength(1);
   });
   it('does not let an older failed song request overwrite a newer ready selection', async () => {
     await runtime!.boot();
@@ -632,7 +641,7 @@ describe('runtime browser lifecycle (mocked boundaries)', () => {
     const pausing = runtime!.pause('manual');
     gate.reject(new Error('Audio device suspend failed'));
     await pausing;
-    expect(Context.instances[0]!.sources.every((source) => source.disconnected)).toBe(true);
+    expect(Context.instances[0]!.music.every((source) => source.disconnected)).toBe(true);
     await runtime!.command('resume');
     expect(runtime!.machine.state).toBe('PAUSED');
     expect(useStore.getState().status).toContain('Choose Songs');
@@ -643,7 +652,7 @@ describe('runtime browser lifecycle (mocked boundaries)', () => {
     await runtime!.command('start');
     advance(1500);
     await runtime!.command('confirm');
-    expect(Context.instances[0]!.sources).toHaveLength(1);
+    expect(Context.instances[0]!.music).toHaveLength(1);
     for (let sample = 0; sample < 15; sample++) {
       now += 30;
       const frame = syntheticFrame(sequence++, now);
@@ -654,7 +663,7 @@ describe('runtime browser lifecycle (mocked boundaries)', () => {
     }
     expect(runtime!.machine.state).toBe('CALIBRATION');
     expect(useStore.getState().countdown).toBeNull();
-    expect(Context.instances[0]!.sources.every((source) => source.disconnected)).toBe(true);
+    expect(Context.instances[0]!.music.every((source) => source.disconnected)).toBe(true);
     expect(useStore.getState().status).toContain('Framing');
   });
   it('finishes a synthetic session with actual miss counts and retries with reset results', async () => {
@@ -691,7 +700,7 @@ describe('runtime browser lifecycle (mocked boundaries)', () => {
     expect(context.targets.map((target) => target.id)).toEqual(['back']);
     await runtime!.command('back');
     expect(runtime!.machine.state).toBe('SELECT');
-    expect(Context.instances[0]!.sources.every((source) => source.disconnected)).toBe(true);
+    expect(Context.instances[0]!.music.every((source) => source.disconnected)).toBe(true);
     await play();
     await runtime!.pause('manual');
     await runtime!.command('resume');
@@ -720,6 +729,30 @@ describe('runtime browser lifecycle (mocked boundaries)', () => {
     await flush();
     expect(runtime!.machine.state).toBe('PLAYING');
   });
+  it('confirms the unlock, schedules neutral countdown ticks on the song clock and disconnects SFX on quit', async () => {
+    await prepare();
+    const context = Context.instances[0]!;
+    const sfx = (): Source[] => context.sources.filter((source) => !context.music.includes(source));
+    expect(sfx()).toHaveLength(1);
+    advance(700);
+    await runtime!.command('start');
+    advance(1500);
+    await runtime!.command('confirm');
+    const songStart = context.music[0]!.starts[0]![0]!;
+    const step = START_COUNTDOWN_MS / COUNTDOWN_STEPS / 1000;
+    const ticks = sfx().slice(1);
+    expect(ticks).toHaveLength(COUNTDOWN_STEPS);
+    ticks.forEach((tick, index) =>
+      expect(tick.starts[0]![0]).toBeCloseTo(songStart - (COUNTDOWN_STEPS - index) * step, 6),
+    );
+    expect(sfx()[0]!.disconnected).toBe(true);
+    advance(2100);
+    await flush();
+    expect(runtime!.machine.state).toBe('PLAYING');
+    await runtime!.pause('manual');
+    await runtime!.command('songs');
+    expect(sfx().every((source) => source.disconnected)).toBe(true);
+  });
   it('releases sources through twenty restart/quit cycles without recreating camera resources', async () => {
     await prepare();
     for (let iteration = 0; iteration < 20; iteration++) {
@@ -730,8 +763,8 @@ describe('runtime browser lifecycle (mocked boundaries)', () => {
     }
     expect(Context.instances).toHaveLength(1);
     expect(runtime!.camera.start).toHaveBeenCalledTimes(1);
-    expect(Context.instances[0]!.sources).toHaveLength(20);
-    expect(Context.instances[0]!.sources.every((source) => source.disconnected)).toBe(true);
+    expect(Context.instances[0]!.music).toHaveLength(20);
+    expect(Context.instances[0]!.music.every((source) => source.disconnected)).toBe(true);
     const camera = runtime!.camera;
     runtime!.dispose();
     runtime!.dispose();

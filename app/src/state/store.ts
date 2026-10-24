@@ -3,6 +3,7 @@ import type { BeatmapV1, BundledTrackEntry, Difficulty } from '../beatmap/types'
 import type { CameraSetupState, MenuPointerState } from '../core/menuInput';
 import type { GameState, PauseReason } from '../core/stateMachine';
 import type { SessionStats } from '../core/types';
+import type { JudgementPop } from '../core/judgementPops';
 export interface DisplayState {
   state: GameState;
   epoch: number;
@@ -55,9 +56,9 @@ export interface DisplayState {
     leftCharge: number;
     rightCharge: number;
     judgement: string;
-    /** Increments once per terminal judgement so repeated identical pops retrigger. */
-    judgementSeq: number;
   };
+  /** Recent terminal judgements (≤ MAX_POPS) with world positions; the HUD projects them. */
+  pops: JudgementPop[];
   results: SessionStats | null;
   highlightAt: number | null;
   calm: boolean;
@@ -111,8 +112,8 @@ const initial: DisplayState = {
     leftCharge: 0,
     rightCharge: 0,
     judgement: '',
-    judgementSeq: 0,
   },
+  pops: [],
   results: null,
   highlightAt: null,
   calm: false,

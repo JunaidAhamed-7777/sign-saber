@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Lifecycle integration review (issue #4)
+
+- Codex integrated the current main audio/render implementation without rewriting history, checked the context-loss guards against the new SFX director and reran all application/doc checks. Native CDP retained-resource probes and a repeatable eight-scenario harness remain in progress.
+
 ## 2026-10-25 — Lifecycle recovery fixes (issue #4)
 
 - Codex reproduced cache-warning and WebGL-loss failures in the production app using original synthesized audio and native UI actions, then added scoped recovery behavior, read-only diagnostics and runtime/UI regressions. A separate lifecycle-harness/evidence increment is still in progress; no unrun scenario is represented as passed.

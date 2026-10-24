@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { ANALYSIS_SR, FFT_SIZE, HOP } from '../../src/core/constants';
+import { ANALYSIS_SR, FFT_SIZE, HOP, TEMPO_MIN_CONFIDENCE } from '../../src/core/constants';
+import { gridAlignment } from '../../src/beatmap/dsp/tempo';
 import { FFT } from '../../src/beatmap/dsp/fft';
 import { stft } from '../../src/beatmap/dsp/stft';
 import { analyzeMono, GeneratorError, mapFromAnalysis } from '../../src/beatmap/pipeline';
@@ -64,6 +65,39 @@ describe('canonical signal DSP (synthetic evidence)', () => {
     );
     expect(aligned.length / usable.length).toBeGreaterThanOrEqual(0.98);
     expect(analysis.onsets.every((o) => Number.isFinite(o.t) && o.t >= 0)).toBe(true);
+  });
+  it('refines a long click track whose period is not a whole number of hops to its true tempo', () => {
+    // 117 BPM is 22.08 analysis hops per beat; a hop-quantized period drifts out of phase over 90 s.
+    // Syncopated tones (a dotted-eighth bright hit and a sixteenth-off mid hit) pollute span refinement.
+    const mono = clicks(117, 90);
+    const period = (60 / 117) * ANALYSIS_SR;
+    let beat = 0;
+    for (let onset = period; onset < mono.length; onset += period, beat++) {
+      for (const [offset, hz, gain] of [
+        [0.375, 600, 0.8],
+        [0.75, 3000, 0.9],
+      ] as const) {
+        if (beat % 2 && offset > 0.5) continue;
+        for (let i = 0; i < Math.round(0.005 * ANALYSIS_SR); i++) {
+          const index = Math.round(onset + offset * period) + i;
+          if (index < mono.length)
+            mono[index] =
+              mono[index]! +
+              gain * Math.sin((i * 2 * Math.PI * hz) / ANALYSIS_SR) * Math.exp(-i / (ANALYSIS_SR * 0.001));
+        }
+      }
+    }
+    const analysis = analyzeMono(mono, ANALYSIS_SR, 90000);
+    expect(Math.abs(analysis.bpm - 117)).toBeLessThanOrEqual(0.1);
+    expect(analysis.tempoConfidence).toBeGreaterThanOrEqual(TEMPO_MIN_CONFIDENCE);
+    expect(analysis.warnings).not.toContain('lowTempoConfidence');
+  });
+  it('counts onsets on the best rigid-grid phase, including across the period wrap', () => {
+    const period = 500;
+    const times = [10, 490, 1005, 1495, 2000, 2250];
+    // Phases 10, 490(−10), 5, 495(−5), 0 sit within ±SNAP_MAX_MS of zero; 250 does not.
+    expect(gridAlignment(times, period)).toBe(5);
+    expect(gridAlignment([], period)).toBe(0);
   });
   it('rejects silence, short or oversized timebases and invalid samples', () => {
     const silent = new Float32Array(ANALYSIS_SR * 5);

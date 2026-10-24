@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatorVersion": 3,
+  "generatorVersion": 4,
   "sourceHash": "9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586",
   "canonicalPcmSha256": "5eb6351ed7f6effe372371b5e25d83d50a1ab91f5c72c871e21a62dd1216d668",
   "canonicalDecode": {
@@ -21,9 +21,9 @@
     "explicitTrimApplied": true
   },
   "analysis": {
-    "detectedBpm": 94.1,
+    "detectedBpm": 94,
     "catalogBpm": 94,
-    "tempoConfidence": 0.1590909090909091,
+    "tempoConfidence": 0.25206611570247933,
     "onsets": 1135,
     "beats": 257
   },
@@ -55,5 +55,5 @@
     "humanRhythmAndComfortReviewPending"
   ],
   "checks": "All difficulty maps passed the shared runtime structural, density, beam, wall and ergonomic validator. This is algorithmic validation, not human musical/playability evidence.",
-  "developmentGenerationMs": 8259.4386
+  "developmentGenerationMs": 3852.8388999999997
 }

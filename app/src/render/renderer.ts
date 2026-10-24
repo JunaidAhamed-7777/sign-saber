@@ -13,6 +13,9 @@ import { SlicePool } from './slices';
 import { PoofPool } from './poof';
 import { TerminalNoteVisuals } from './failures';
 import { ArenaAtmosphere } from './environment';
+import { HandTrails } from './trails';
+import { SparkPool } from './sparks';
+import { CameraRig } from './cameraRig';
 import { PostFx, supportsHdrTargets } from './postfx';
 import { resolveQuality } from './quality';
 import {
@@ -67,6 +70,14 @@ import {
   SIL_JOINT_RADIUS_M,
   BLOCK_CORE_SPIN_RAD_S,
   CAM_FAR_M,
+  HIT_SPARKS,
+  POOF_SPARKS,
+  TRAUMA_BADCUT,
+  TRAUMA_DROP,
+  TRAUMA_HIT,
+  TRAUMA_KICK,
+  TRAUMA_OBSTACLE,
+  TRAUMA_PERFECT,
   SLASH_SLAB_DEPTH,
   SMASH_CRACK_SCALE,
   BEAM_ORB_RADIUS,
@@ -221,7 +232,12 @@ export class ArenaRenderer {
   private lastDrawAt: number | null = null;
   private hdr = false;
   private previewSerial = 0;
-  private previewHandsEnabled = false;
+  /** Blade ribbons and hand particles (docs12); fed the latest measured cursors. */
+  private readonly trails = new HandTrails(QUALITY_TIER_PRESETS.medium);
+  private latestHands: readonly HandCursor[] = [];
+  private readonly sparks = new SparkPool();
+  private pointPixels = 1;
+  private readonly rig = new CameraRig();
   private post: PostFx | null = null;
   private readonly shatter: ShatterPool;
   private readonly slices: SlicePool;
@@ -382,6 +398,7 @@ export class ArenaRenderer {
       diamondFaces(SLASH_SLAB_DEPTH),
     );
     this.poofs = new PoofPool(this.scene, this.activeQuality.preset.poofSparks);
+    this.scene.add(this.sparks.points);
     if (this.lowShards) this.rebuildSmashBody(this.lowShards);
     this.fragments.frustumCulled = false;
     this.fragments.name = 'debris_fragments';
@@ -494,6 +511,15 @@ export class ArenaRenderer {
     }
     this.unsubscribe.push(
       events.on('note:hit', (e) => this.impact(e)),
+      events.on('note:hit', (e) =>
+        this.rig.addTrauma(e.judgement === 'perfect' ? TRAUMA_PERFECT : TRAUMA_HIT),
+      ),
+      events.on('note:badcut', () => this.rig.addTrauma(TRAUMA_BADCUT)),
+      events.on('obstacle:hit', () => this.rig.addTrauma(TRAUMA_OBSTACLE)),
+      events.on('music:event', (e) => {
+        if (e.kind === 'kick') this.rig.addTrauma(TRAUMA_KICK * e.intensity);
+        else if (e.kind === 'drop') this.rig.addTrauma(TRAUMA_DROP * e.intensity);
+      }),
       events.on('note:miss', (e) => this.failures.resolve(e.note, 'miss', this.currentTime)),
       events.on('note:badcut', (e) => this.failures.resolve(e.note, 'badcut', this.currentTime)),
       events.on('highlight:capture', () => this.capture()),
@@ -518,6 +544,10 @@ export class ArenaRenderer {
     });
     this.atmosphere.applyPreset(this.activeQuality.preset);
     this.scene.add(this.atmosphere.group);
+    this.trails.applyPreset(this.activeQuality.preset);
+    // Same layer as the hand cursors so menu-stage and play projections agree.
+    this.trails.group.traverse((object) => object.layers.set(1));
+    this.scene.add(this.trails.group);
     void this.assets.load().then(() => {
       if (this.disposed) return;
       this.assetPending = true;
@@ -534,6 +564,7 @@ export class ArenaRenderer {
   setMode(mode: 'menu' | 'play' | 'paused' | 'results'): void {
     if (this.mode !== 'play' && this.mode !== 'paused' && this.assetPending) this.applyAssets();
     this.mode = mode;
+    if (mode === 'results') this.trails.hide();
     if (mode === 'results' || mode === 'paused') {
       for (const mesh of this.handMeshes) mesh.visible = false;
       for (const line of this.handLines) line.visible = false;
@@ -598,6 +629,10 @@ export class ArenaRenderer {
     this.camera.updateProjectionMatrix();
     this.atmosphere.applyPreset(this.activeQuality.preset);
     this.atmosphere.setViewport(innerHeight * this.activeQuality.pixelRatio, CAM_FOV_DEG);
+    this.trails.applyPreset(this.activeQuality.preset);
+    this.trails.setViewport(innerHeight * this.activeQuality.pixelRatio, CAM_FOV_DEG);
+    this.pointPixels =
+      (innerHeight * this.activeQuality.pixelRatio) / (2 * Math.tan((CAM_FOV_DEG * Math.PI) / 360));
     this.post?.configure(this.activeQuality);
     this.post?.setSize(innerWidth, innerHeight);
   }
@@ -693,6 +728,7 @@ export class ArenaRenderer {
   }
   hands(hands: readonly HandCursor[]): void {
     if (this.mode === 'paused' || this.mode === 'results') return;
+    this.latestHands = hands;
     for (let i = 0; i < 2; i++) {
       const hand = hands[i];
       const mesh = this.handMeshes[i]!;
@@ -828,6 +864,13 @@ export class ArenaRenderer {
     this.shatter.update(this.currentTime, play, this.calm);
     this.slices.update(this.currentTime, play, this.calm);
     this.poofs.update(this.currentTime, play, this.calm);
+    // Tier spark count follows the poof preset; Calm halves the spray instead of flashing it.
+    this.sparks.update(
+      this.currentTime,
+      play,
+      Math.round((HIT_SPARKS * this.activeQuality.preset.poofSparks) / POOF_SPARKS / (this.calm ? 2 : 1)),
+      this.pointPixels,
+    );
     for (let hand = 0; hand < 2; hand++) {
       const age = this.currentTime - this.beamBirth[hand]!;
       const line = this.beamLines[hand]!;
@@ -851,8 +894,22 @@ export class ArenaRenderer {
         this.calm,
         this.mode === 'play' ? (SPAWN_DISTANCE / this.approachMs) * 1000 : 0,
       );
+    if (this.mode !== 'paused')
+      this.trails.update(
+        this.latestHands,
+        this.mode !== 'results' && this.visible,
+        frameMs,
+        this.bands,
+        this.calm,
+        this.camera.position,
+      );
     const rect = this.mode !== 'play' ? this.menuStage?.getBoundingClientRect() : null;
-    this.camera.fov = CAM_FOV_DEG;
+    // Gameplay-only camera response around the fixed base pose (menus, pause, results and Calm stay still).
+    this.rig.update(frameMs, this.mode === 'play', this.calm, this.atmosphere.response.low);
+    this.camera.position.set(CAM_POS.x, CAM_POS.y, CAM_POS.z).add(this.rig.offset);
+    this.camera.lookAt(CAM_LOOK_AT.x, CAM_LOOK_AT.y, CAM_LOOK_AT.z);
+    if (this.rig.roll) this.camera.rotateZ(this.rig.roll);
+    this.camera.fov = CAM_FOV_DEG + (rect ? 0 : this.rig.fovDelta);
     this.camera.aspect = innerWidth / innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setScissorTest(false);
@@ -1027,10 +1084,17 @@ export class ArenaRenderer {
           break;
         }
       this.slices.trigger(e, this.currentTime, live?.pos ?? e.impactPos, live?.rotation ?? 0);
+      this.sparks.trigger(e.impactPos, e.cutPlane?.normal ?? null, colors.slash, this.currentTime);
       this.balanceEffects();
       return;
     }
-    if (e.note.type === 'smash') this.shatter.trigger(e, this.currentTime);
+    if (e.note.type === 'smash') {
+      this.shatter.trigger(e, this.currentTime);
+      beamCenter.x = LANE_X[e.note.col];
+      beamCenter.y = LANE_Y[e.note.row];
+      beamCenter.z = e.impactPos.z + BLOCK_SIZE / 2;
+      this.sparks.trigger(beamCenter, null, colors.smash, this.currentTime);
+    }
     const count = 4;
     for (let i = 0; i < count; i++) {
       const slot = this.effects[this.effectIndex++ % this.effects.length]!;
@@ -1084,10 +1148,6 @@ export class ArenaRenderer {
       combo: 0,
       multiplier: 1,
     });
-  }
-  /** Visual QA preview of synthetic hand trails (development harness only). */
-  previewHands(enabled: boolean): void {
-    this.previewHandsEnabled = enabled;
   }
   get effectOccupancy(): number {
     let count = this.shatter.occupancy + this.slices.occupancy + this.poofs.occupancy;
@@ -1178,6 +1238,8 @@ export class ArenaRenderer {
     this.shatter.reset();
     this.slices.reset();
     this.poofs.reset();
+    this.sparks.reset();
+    this.rig.reset();
     this.failures.reset();
     this.renderedNotes = EMPTY_NOTES;
     this.beamBirth[0] = this.beamBirth[1] = -Infinity;

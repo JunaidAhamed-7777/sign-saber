@@ -1,72 +1,71 @@
 {
-  "version": 1,
-  "kind": "real-data-preflight",
-  "status": "preflight_completed_not_production",
-  "startedAt": "2026-10-24T20:00:48.850651+00:00",
-  "device": "cpu",
-  "cpuThreads": 2,
-  "python": "3.12.14",
-  "torch": "2.9.1+cpu",
-  "numpy": "2.2.6",
+  "version": 2,
+  "kind": "full-eligible-dataset-training",
+  "status": "partial_run_stopped_evaluated_not_production",
+  "datasets": [
+    "coco2017",
+    "mpii"
+  ],
+  "trainPeople": 46137,
+  "validationPeople": 3776,
+  "plannedEpochs": 5,
+  "completedEpochs": 1,
+  "completedSteps": 1800,
+  "stepsPlanned": 7210,
+  "batchSize": 32,
+  "fractionOfPlannedSteps": 0.25,
+  "fullDatasetTrainingCompleted": false,
+  "why": "Stopped at step 1800 (epoch 1, batch 358 of 1442) on the user's request to wrap up; the shared laptop was memory-thrashing (up to 41,000 pages/s) and unfrozen steps took 1.2-4.5 s instead of about 0.85 s.",
+  "schedule": "Linear warmup 300 steps then cosine; epoch 0 (frozen backbone) used a 9-epoch horizon (12,978 steps), resumed at step 1442 with a 5-epoch horizon (7,210 steps); learning-rate scale stepped 0.980 -> 0.935 there. Stopped at scale 0.89, i.e. never annealed.",
   "config": {
-    "version": 1,
-    "seed": 20261025,
-    "bodyKeypoints": [
-      "nose",
-      "left_eye",
-      "right_eye",
-      "left_ear",
-      "right_ear",
-      "left_shoulder",
-      "right_shoulder",
-      "left_elbow",
-      "right_elbow",
-      "left_wrist",
-      "right_wrist",
-      "left_hip",
-      "right_hip"
-    ],
     "imageSize": 192,
     "heatmapSize": 48,
-    "heatmapSigma": 2,
-    "cropPadding": 0.15,
-    "minLabeledUpperJoints": 4,
-    "mpiiValidationModulo": 10,
-    "headChannels": [
-      128,
-      64,
-      32
-    ],
-    "cpuThreads": 2,
-    "batchSize": 8,
-    "epochs": 20,
-    "freezeBackboneEpochs": 1,
+    "batchSize": 32,
     "headLearningRate": 0.001,
     "backboneLearningRate": 0.0001,
-    "weightDecay": 0.0001,
-    "occludedJointWeight": 0.5,
+    "freezeBackboneEpochs": 1,
+    "scaleJitter": 0.25,
+    "rotationDegrees": 30,
+    "translationJitter": 0.1,
     "flipProbability": 0.5,
-    "brightnessJitter": 0.15,
-    "contrastJitter": 0.15,
-    "pckShoulderFraction": 0.2,
-    "checkpointEverySteps": 100,
-    "validationEverySteps": 500,
-    "exportAbsoluteTolerance": 0.0001,
-    "downloadConcurrency": 4,
-    "minFreeDiskBytes": 68719476736,
-    "artifactScope": "local-noncommercial-research",
-    "pretrained": "MobileNet_V3_Small_Weights.IMAGENET1K_V1",
-    "pretrainedUrl": "https://download.pytorch.org/models/mobilenet_v3_small-047dcff4.pth"
+    "pckShoulderFraction": 0.2
   },
-  "configSha256": "73468f3838e24bc549f4fb09b4af79161bbab32b1ca5947e206f77cbea8b54d4",
+  "execution": {
+    "cpuThreads": 6,
+    "dataLoaderWorkers": "3 (epoch 0) / 2 (steps 1443-1800); 1 configured now",
+    "device": "cpu",
+    "torch": "2.9.1+cpu"
+  },
+  "wallTime": {
+    "epoch0Seconds": 1300,
+    "runs": [
+      "upper-body-coco-mpii-9ep 03:15-04:00 +05:30",
+      "upper-body-coco-mpii-5ep 04:02-04:38 +05:30"
+    ]
+  },
+  "epoch0": {
+    "epoch": 0,
+    "steps": 1442,
+    "meanTrainingLoss": 0.009677283558542433,
+    "wallSeconds": 1300.1685191999968,
+    "meanStepWallMs": 864.7641846740653,
+    "meanDataWaitMs": 29.329040013869673,
+    "backboneTrainable": false,
+    "endLearningRateScale": 0.9805445834856891,
+    "resumedPartialEpoch": false,
+    "validation": {
+      "meanHeatmapLoss": 0.0045886298175901175,
+      "meanPck": 0.2379049019921338
+    }
+  },
   "dataFingerprint": {
     "train": {
-      "uniqueImages": 8131,
-      "imageBytesAggregateSha256": "b1badb0f151c3a07b0587a1d5fa0b52ca6bb6e2817caf541a84d7b6efec37999"
+      "uniqueImages": 23858,
+      "imageBytesAggregateSha256": "dc24fdc738f0b3c4fc0d49b3e95ce5a2f92e0db0fe41beaf1a41390d5530cebb"
     },
     "validation": {
-      "uniqueImages": 372,
-      "imageBytesAggregateSha256": "c4f426d735e81bc0f483bcb385d654e1a0528f1f99619dfc918f126c8e52bd43"
+      "uniqueImages": 2049,
+      "imageBytesAggregateSha256": "cab30de60eeaffba6d65a355c0e6ed1be4206e32f42fbaa1e108874991f4a2f6"
     },
     "indexSources": [
       {
@@ -75,248 +74,342 @@
         "indexSha256": "6f28d3cf1f56ac137f5fb2dd545d791609593937c37d5d931de04203677fe394"
       },
       {
-        "dataset": "coco2017",
-        "split": "val",
-        "indexSha256": "14534044766b4c112eb9d1d8327c24862950745267f9532e1f954707ebde928e"
-      }
-    ],
-    "selectionSha256": "c53ab16ccc5850f07d0e8c5dc140b7a98ec99e8aa45d2f2e8e2639def309561c"
-  },
-  "trainData": {
-    "sources": [
-      {
-        "dataset": "coco2017",
+        "dataset": "mpii",
         "split": "train",
-        "indexSha256": "6f28d3cf1f56ac137f5fb2dd545d791609593937c37d5d931de04203677fe394"
-      }
-    ],
-    "availableRecords": 20121,
-    "missingRecords": {},
-    "partialData": false,
-    "recordsByDataset": {
-      "coco2017": 20121
-    }
-  },
-  "validationData": {
-    "sources": [
+        "indexSha256": "9e52535d8c1b80323e1a46dcd226d18a3c3f652720fc9816f645138a6e2562d6"
+      },
       {
         "dataset": "coco2017",
         "split": "val",
         "indexSha256": "14534044766b4c112eb9d1d8327c24862950745267f9532e1f954707ebde928e"
+      },
+      {
+        "dataset": "mpii",
+        "split": "val",
+        "indexSha256": "4201b8de84336242721b661c027048bd6be0cecda2fe5e4b6bb399132e46be8b"
       }
     ],
-    "availableRecords": 919,
-    "missingRecords": {},
-    "partialData": false,
-    "recordsByDataset": {
-      "coco2017": 919
-    }
+    "selectionSha256": "8481c295f80bf177331476b7fe47c458e114714787b3fc347c1eda598545f231"
   },
-  "requestedEpochs": 20,
-  "requestedPreflightSteps": 3,
-  "completedEpochs": 0,
-  "completedSteps": 3,
-  "fullDatasetTrainingCompleted": false,
+  "checkpoint": {
+    "localPath": "runs/upper-body-coco-mpii-5ep/step-1800.pt",
+    "sha256": "747884b004d1e2c88dd0191068158c819daa1e09220402f85990780bd8f890f7",
+    "globalStep": 1800
+  },
+  "heldOutEvaluation": {
+    "metric": "Labelled-joint Euclidean error in source pixels and PCK@0.2 of shoulder span (samples with both shoulders labelled), not COCO AP. Oracle ROI = crop derived from ground-truth joints.",
+    "decoder": "argmax + quarter-cell refinement, applied to every model",
+    "oracleRoi": {
+      "coco2017": {
+        "step1800": {
+          "meanHeatmapLoss": 0.004035,
+          "pooledPck": 0.3929,
+          "perJointPck": {
+            "nose": 0.564,
+            "left_eye": 0.608,
+            "right_eye": 0.566,
+            "left_ear": 0.552,
+            "right_ear": 0.44,
+            "left_shoulder": 0.485,
+            "right_shoulder": 0.511,
+            "left_elbow": 0.318,
+            "right_elbow": 0.293,
+            "left_wrist": 0.228,
+            "right_wrist": 0.234,
+            "left_hip": 0.212,
+            "right_hip": 0.228
+          }
+        },
+        "preflight": {
+          "meanHeatmapLoss": 0.020224,
+          "pooledPck": 0.0176,
+          "perJointPck": {
+            "nose": 0.028,
+            "left_eye": 0.009,
+            "right_eye": 0.048,
+            "left_ear": 0.016,
+            "right_ear": 0.008,
+            "left_shoulder": 0.008,
+            "right_shoulder": 0.007,
+            "left_elbow": 0.013,
+            "right_elbow": 0.007,
+            "left_wrist": 0.033,
+            "right_wrist": 0.036,
+            "left_hip": 0.009,
+            "right_hip": 0.018
+          }
+        },
+        "untrained": {
+          "meanHeatmapLoss": 0.017464,
+          "pooledPck": 0.0169,
+          "perJointPck": {
+            "nose": 0.03,
+            "left_eye": 0.016,
+            "right_eye": 0.029,
+            "left_ear": 0.026,
+            "right_ear": 0.012,
+            "left_shoulder": 0.013,
+            "right_shoulder": 0.014,
+            "left_elbow": 0.006,
+            "right_elbow": 0.005,
+            "left_wrist": 0.021,
+            "right_wrist": 0.02,
+            "left_hip": 0.014,
+            "right_hip": 0.023
+          }
+        },
+        "zero-heatmaps": {
+          "meanHeatmapLoss": 0.005454,
+          "pooledPck": null,
+          "perJointPck": {
+            "nose": null,
+            "left_eye": null,
+            "right_eye": null,
+            "left_ear": null,
+            "right_ear": null,
+            "left_shoulder": null,
+            "right_shoulder": null,
+            "left_elbow": null,
+            "right_elbow": null,
+            "left_wrist": null,
+            "right_wrist": null,
+            "left_hip": null,
+            "right_hip": null
+          }
+        },
+        "mean-pose-in-roi": {
+          "meanHeatmapLoss": null,
+          "pooledPck": 0.1415,
+          "perJointPck": {
+            "nose": 0.303,
+            "left_eye": 0.348,
+            "right_eye": 0.332,
+            "left_ear": 0.303,
+            "right_ear": 0.305,
+            "left_shoulder": 0.072,
+            "right_shoulder": 0.068,
+            "left_elbow": 0.029,
+            "right_elbow": 0.034,
+            "left_wrist": 0.025,
+            "right_wrist": 0.021,
+            "left_hip": 0.099,
+            "right_hip": 0.12
+          }
+        }
+      },
+      "mpii": {
+        "step1800": {
+          "meanHeatmapLoss": 0.004204,
+          "pooledPck": 0.3104,
+          "perJointPck": {
+            "nose": null,
+            "left_eye": null,
+            "right_eye": null,
+            "left_ear": null,
+            "right_ear": null,
+            "left_shoulder": 0.457,
+            "right_shoulder": 0.471,
+            "left_elbow": 0.289,
+            "right_elbow": 0.277,
+            "left_wrist": 0.236,
+            "right_wrist": 0.22,
+            "left_hip": 0.273,
+            "right_hip": 0.256
+          }
+        },
+        "preflight": {
+          "meanHeatmapLoss": 0.021615,
+          "pooledPck": 0.0125,
+          "perJointPck": {
+            "nose": null,
+            "left_eye": null,
+            "right_eye": null,
+            "left_ear": null,
+            "right_ear": null,
+            "left_shoulder": 0.014,
+            "right_shoulder": 0.008,
+            "left_elbow": 0.011,
+            "right_elbow": 0.006,
+            "left_wrist": 0.02,
+            "right_wrist": 0.019,
+            "left_hip": 0.01,
+            "right_hip": 0.012
+          }
+        },
+        "untrained": {
+          "meanHeatmapLoss": 0.018274,
+          "pooledPck": 0.0155,
+          "perJointPck": {
+            "nose": null,
+            "left_eye": null,
+            "right_eye": null,
+            "left_ear": null,
+            "right_ear": null,
+            "left_shoulder": 0.014,
+            "right_shoulder": 0.019,
+            "left_elbow": 0.014,
+            "right_elbow": 0.01,
+            "left_wrist": 0.017,
+            "right_wrist": 0.015,
+            "left_hip": 0.018,
+            "right_hip": 0.016
+          }
+        },
+        "zero-heatmaps": {
+          "meanHeatmapLoss": 0.005454,
+          "pooledPck": null,
+          "perJointPck": {
+            "nose": null,
+            "left_eye": null,
+            "right_eye": null,
+            "left_ear": null,
+            "right_ear": null,
+            "left_shoulder": null,
+            "right_shoulder": null,
+            "left_elbow": null,
+            "right_elbow": null,
+            "left_wrist": null,
+            "right_wrist": null,
+            "left_hip": null,
+            "right_hip": null
+          }
+        },
+        "mean-pose-in-roi": {
+          "meanHeatmapLoss": null,
+          "pooledPck": 0.0742,
+          "perJointPck": {
+            "nose": null,
+            "left_eye": null,
+            "right_eye": null,
+            "left_ear": null,
+            "right_ear": null,
+            "left_shoulder": 0.104,
+            "right_shoulder": 0.103,
+            "left_elbow": 0.041,
+            "right_elbow": 0.042,
+            "left_wrist": 0.024,
+            "right_wrist": 0.029,
+            "left_hip": 0.124,
+            "right_hip": 0.127
+          }
+        }
+      },
+      "combined": {
+        "step1800": {
+          "meanHeatmapLoss": 0.004163,
+          "pooledPck": 0.3337,
+          "perJointPck": {
+            "nose": 0.564,
+            "left_eye": 0.608,
+            "right_eye": 0.566,
+            "left_ear": 0.552,
+            "right_ear": 0.44,
+            "left_shoulder": 0.463,
+            "right_shoulder": 0.481,
+            "left_elbow": 0.295,
+            "right_elbow": 0.28,
+            "left_wrist": 0.234,
+            "right_wrist": 0.222,
+            "left_hip": 0.26,
+            "right_hip": 0.25
+          }
+        },
+        "preflight": {
+          "meanHeatmapLoss": 0.021276,
+          "pooledPck": 0.0139,
+          "perJointPck": {
+            "nose": 0.028,
+            "left_eye": 0.009,
+            "right_eye": 0.048,
+            "left_ear": 0.016,
+            "right_ear": 0.008,
+            "left_shoulder": 0.013,
+            "right_shoulder": 0.008,
+            "left_elbow": 0.011,
+            "right_elbow": 0.006,
+            "left_wrist": 0.023,
+            "right_wrist": 0.022,
+            "left_hip": 0.01,
+            "right_hip": 0.013
+          }
+        },
+        "untrained": {
+          "meanHeatmapLoss": 0.018077,
+          "pooledPck": 0.0159,
+          "perJointPck": {
+            "nose": 0.03,
+            "left_eye": 0.016,
+            "right_eye": 0.029,
+            "left_ear": 0.026,
+            "right_ear": 0.012,
+            "left_shoulder": 0.014,
+            "right_shoulder": 0.018,
+            "left_elbow": 0.012,
+            "right_elbow": 0.009,
+            "left_wrist": 0.018,
+            "right_wrist": 0.016,
+            "left_hip": 0.017,
+            "right_hip": 0.018
+          }
+        },
+        "zero-heatmaps": {
+          "meanHeatmapLoss": 0.005454,
+          "pooledPck": null,
+          "perJointPck": {
+            "nose": null,
+            "left_eye": null,
+            "right_eye": null,
+            "left_ear": null,
+            "right_ear": null,
+            "left_shoulder": null,
+            "right_shoulder": null,
+            "left_elbow": null,
+            "right_elbow": null,
+            "left_wrist": null,
+            "right_wrist": null,
+            "left_hip": null,
+            "right_hip": null
+          }
+        },
+        "mean-pose-in-roi": {
+          "meanHeatmapLoss": null,
+          "pooledPck": 0.0932,
+          "perJointPck": {
+            "nose": 0.303,
+            "left_eye": 0.348,
+            "right_eye": 0.332,
+            "left_ear": 0.303,
+            "right_ear": 0.305,
+            "left_shoulder": 0.097,
+            "right_shoulder": 0.095,
+            "left_elbow": 0.038,
+            "right_elbow": 0.04,
+            "left_wrist": 0.024,
+            "right_wrist": 0.027,
+            "left_hip": 0.119,
+            "right_hip": 0.126
+          }
+        }
+      }
+    },
+    "localReport": "runs/upper-body-coco-mpii-5ep/report-step1800/report.md"
+  },
+  "export": {
+    "onnxSha256": "31e0723d00d4d9f0bb87493b266756f160ce3086770d42c2675948214ab42b34",
+    "onnxBytes": 9098497,
+    "opset": 17,
+    "paritySamples": 16,
+    "maxAbsoluteHeatmapError": 1.7881393432617188e-06,
+    "maxAbsoluteDecodedSourcePixelDifference": 0.0,
+    "passed": true,
+    "note": "Numerical parity only, not accuracy"
+  },
+  "verdict": "Not good enough to matter for the game. It learned (pooled PCK@0.2 0.334 vs 0.016 untrained and 0.093 for a mean-pose-in-ROI guess) but wrists/elbows are only 0.22-0.30, it relies on oracle ground-truth crops and has no person detector, tracking, browser runtime or live-camera evaluation. The game keeps MediaPipe.",
   "publication": "local-noncommercial-research-only",
-  "knownLimitations": [
-    "No live-webcam evaluation",
-    "No calibrated landmark visibility head",
-    "Finger landmarks are not supervised by this body model",
-    "A preflight checkpoint is not a production model",
-    "Ground-truth upper-body ROI used; production person localization is a separate requirement"
-  ],
-  "gitHead": "f61b6108d420f5de0328b21bd707480788ca3d11",
-  "dirtyTree": true,
-  "initialization": {
-    "kind": "ImageNet pretrained RGB backbone; newly initialized pose head",
-    "source": "https://download.pytorch.org/models/mobilenet_v3_small-047dcff4.pth",
-    "sha256": "047dcff4addef86ea5bc2eff13c9614dc11f47ab1160d0a71a25e7db994f4e1f",
-    "bodyPoseWeightsPreviouslyTrainedByThisProject": false
-  },
-  "baseline": {
-    "samples": 919,
-    "batches": 115,
-    "meanHeatmapLoss": 0.01747508065208145,
-    "metricDefinition": "Unfiltered labelled-joint Euclidean error in source pixels and PCK@0.2 shoulder span, not COCO AP.",
-    "joints": {
-      "nose": {
-        "labeled": 663,
-        "meanPixelError": 72.05189416922775,
-        "pck": 0.029827315541601257,
-        "pckSamples": 637
-      },
-      "left_eye": {
-        "labeled": 578,
-        "meanPixelError": 77.76977937031782,
-        "pck": 0.016245487364620937,
-        "pckSamples": 554
-      },
-      "right_eye": {
-        "labeled": 581,
-        "meanPixelError": 77.78798656332309,
-        "pck": 0.02857142857142857,
-        "pckSamples": 560
-      },
-      "left_ear": {
-        "labeled": 520,
-        "meanPixelError": 76.55091400146485,
-        "pck": 0.025896414342629483,
-        "pckSamples": 502
-      },
-      "right_ear": {
-        "labeled": 516,
-        "meanPixelError": 80.95806061944296,
-        "pck": 0.01195219123505976,
-        "pckSamples": 502
-      },
-      "left_shoulder": {
-        "labeled": 889,
-        "meanPixelError": 64.02629346815351,
-        "pck": 0.011481056257175661,
-        "pckSamples": 871
-      },
-      "right_shoulder": {
-        "labeled": 893,
-        "meanPixelError": 61.41506311260706,
-        "pck": 0.016073478760045924,
-        "pckSamples": 871
-      },
-      "left_elbow": {
-        "labeled": 746,
-        "meanPixelError": 64.02034305439558,
-        "pck": 0.004166666666666667,
-        "pckSamples": 720
-      },
-      "right_elbow": {
-        "labeled": 757,
-        "meanPixelError": 65.14158957921057,
-        "pck": 0.0027359781121751026,
-        "pckSamples": 731
-      },
-      "left_wrist": {
-        "labeled": 662,
-        "meanPixelError": 65.8933842650353,
-        "pck": 0.01901743264659271,
-        "pckSamples": 631
-      },
-      "right_wrist": {
-        "labeled": 690,
-        "meanPixelError": 68.86844156237616,
-        "pck": 0.019726858877086494,
-        "pckSamples": 659
-      },
-      "left_hip": {
-        "labeled": 828,
-        "meanPixelError": 73.30686814312773,
-        "pck": 0.013819095477386936,
-        "pckSamples": 796
-      },
-      "right_hip": {
-        "labeled": 834,
-        "meanPixelError": 66.64402503875806,
-        "pck": 0.02383939774153074,
-        "pckSamples": 797
-      }
-    },
-    "annotationBreakdown": {
-      "visibleJoints": 8190,
-      "occludedLabeledJoints": 967,
-      "samplesWithoutShoulderNormalization": 48
-    }
-  },
-  "evaluation": {
-    "samples": 919,
-    "batches": 115,
-    "meanHeatmapLoss": 0.020227328121014264,
-    "metricDefinition": "Unfiltered labelled-joint Euclidean error in source pixels and PCK@0.2 shoulder span, not COCO AP.",
-    "joints": {
-      "nose": {
-        "labeled": 663,
-        "meanPixelError": 74.19935014129224,
-        "pck": 0.026687598116169546,
-        "pckSamples": 637
-      },
-      "left_eye": {
-        "labeled": 578,
-        "meanPixelError": 84.89437186429245,
-        "pck": 0.009025270758122744,
-        "pckSamples": 554
-      },
-      "right_eye": {
-        "labeled": 581,
-        "meanPixelError": 79.72245264463703,
-        "pck": 0.048214285714285716,
-        "pckSamples": 560
-      },
-      "left_ear": {
-        "labeled": 520,
-        "meanPixelError": 79.85828723540673,
-        "pck": 0.013944223107569721,
-        "pckSamples": 502
-      },
-      "right_ear": {
-        "labeled": 516,
-        "meanPixelError": 85.70723035354023,
-        "pck": 0.00796812749003984,
-        "pckSamples": 502
-      },
-      "left_shoulder": {
-        "labeled": 889,
-        "meanPixelError": 63.74486322048947,
-        "pck": 0.006888633754305396,
-        "pckSamples": 871
-      },
-      "right_shoulder": {
-        "labeled": 893,
-        "meanPixelError": 69.3545226538168,
-        "pck": 0.0057405281285878304,
-        "pckSamples": 871
-      },
-      "left_elbow": {
-        "labeled": 746,
-        "meanPixelError": 64.00185116110794,
-        "pck": 0.011111111111111112,
-        "pckSamples": 720
-      },
-      "right_elbow": {
-        "labeled": 757,
-        "meanPixelError": 64.19456984848769,
-        "pck": 0.006839945280437756,
-        "pckSamples": 731
-      },
-      "left_wrist": {
-        "labeled": 662,
-        "meanPixelError": 62.56702119130022,
-        "pck": 0.03169572107765452,
-        "pckSamples": 631
-      },
-      "right_wrist": {
-        "labeled": 690,
-        "meanPixelError": 63.47986930626026,
-        "pck": 0.036418816388467376,
-        "pckSamples": 659
-      },
-      "left_hip": {
-        "labeled": 828,
-        "meanPixelError": 70.02050543522489,
-        "pck": 0.008793969849246231,
-        "pckSamples": 796
-      },
-      "right_hip": {
-        "labeled": 834,
-        "meanPixelError": 70.40841036277423,
-        "pck": 0.018820577164366373,
-        "pckSamples": 797
-      }
-    },
-    "annotationBreakdown": {
-      "visibleJoints": 8190,
-      "occludedLabeledJoints": 967,
-      "samplesWithoutShoulderNormalization": 48
-    }
-  },
-  "finishedAt": "2026-10-24T20:01:12.019163+00:00",
-  "localRunDirectory": "runs/coco-cpu-preflight-complete-images-3",
-  "checkpointSha256": "3cb89a31cb7bb111648af6a9daa5928895c3734d5460c53e4e2d7741e213dee5",
-  "promotedToGame": false
+  "promotedToGame": false,
+  "remaining": [
+    "Resume from runs/upper-body-coco-mpii-5ep/step-1800.pt with --epochs 5 on an idle machine (about 1.3 h uncontended)",
+    "Perturbed-ROI evaluation pass (report.py --roi-jitter) not run for this checkpoint",
+    "Detector/ROI recovery, browser inference and live-camera evaluation"
+  ]
 }

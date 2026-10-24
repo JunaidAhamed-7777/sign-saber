@@ -243,6 +243,11 @@ export const strings = Object.freeze({
   creditsSource: 'Source',
   creditsChanges: 'Changes',
   creditsAttribution: 'Attribution',
+  byGesture: 'Hits by gesture',
+  gestureSlash: 'Slash',
+  gestureSmash: 'Smash',
+  gestureBeam: 'Beam',
+  comboLost: 'Combo ended',
 });
 export function duration(ms: number): string {
   const s = Math.max(0, Math.floor(ms / 1000));

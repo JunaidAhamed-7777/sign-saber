@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:02:00+05:30 — wip: a-priori dataset-camera trial and measured calibration photo
+
+- Changed: retained `docs/evidence/2026-10-25-dataset-camera-apriori-trial.json` and its sweep app evidence. The harness now retries camera setup once after an error (as a person would), shares one Chrome profile across lanes (first lane cold GPU program cache), records whole-machine CPU busy fractions and GPU adapters, exports app evidence when calibration framing fails, times the sweep from the accepted setup and saves JPEG screenshots. `prepare-dataset-camera.mjs --calibration-from <sweep evidence>` moves the photo with the best measured two-hand detection to the calibration slot and records the evidence hash plus the declared rule's own choice.
+- Why: the a-priori calibration photo (declared annotation rule) yielded one detected hand in every frame, so the unchanged calibration (both hand slots seen) never became ready in 30 s — the same outcome as a player showing one hand. Cold first GPU inference exceeded the 15 s first-result deadline on the first attempt of each fresh profile; the retry succeeded.
+- Validation: sweep under the new handedness mapping: 442/484 matched hands agree with annotated wrists; pose detected on 21/21 swept photos; median labelled-joint error 0.119 shoulder widths. Background CPU was 66% busy before launch and 99.9% during the lane (other workloads on the machine).
+- Limits: timings are contaminated by unrelated machine load; still photos only; not webcam evidence.
+
 ## 2026-10-25T03:52:00+05:30 — Handedness adapter follows measured COCO wrist evidence
 
 - Changed: `playerHandFromModel` now uses the pinned HandLandmarker label as the anatomical hand for raw, unmirrored input (`HAND_LABEL_MAPPING = 'raw-model-label-v2'`, also part of the calibration identity), replacing the unverified `raw-selfie-swap-v1` swap. Updated `tests/tracking.test.ts` and docs05 §2.3.

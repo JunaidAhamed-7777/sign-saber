@@ -3,7 +3,7 @@
  *
  * Responsibility: one injectable MediaStream source (webcam by default, or the labelled dataset camera),
  * requestVideoFrameCallback capture, 16:9 centre-crop, ImageBitmap resize to INFER_W×INFER_H.
- * Spec: docs/05-tracking-pipeline.md §Camera capture, §1.4 Dataset camera
+ * Spec: docs/05-tracking-pipeline.md §Camera capture, §1.3 Dataset camera
  * Inputs: CameraStreamSource → MediaStream
  * Outputs: ImageBitmap + tCapture per frame
  *

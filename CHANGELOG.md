@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:35:00+05:30 — README quick start
+
+- Changed: Rewrote the README run section as a quick start: requirements, clone/install/run commands, the play flow (pick song, Enable sound, Watch auto-play or Play level, pause), gesture summary, command table and troubleshooting.
+- Why: User asked for how-to-run instructions in the README.
+- Validation: Documentation checks passed.
+- Limits: Camera play is described as a later step; it is paused by the user.
+
 ## 2026-10-25T05:25:00+05:30 — Synthetic performer reel for the dataset camera
 
 - Changed: new `tracking/performerReel.ts` renders the skinned avatar (`AvatarFigure.poseFromJoints`, natural variant, no outline) in a plain room from a virtual front camera framed to `PERFORMER_SHOULDER_WIDTH_NORM`, posed each frame from `Choreography`/`performerJoints` on the session song clock (rest pose outside a session; arm and face depth from the rig's proportions), drawn into the dataset-camera canvas. Enabled with `?camera=dataset&reel=performer`; evidence lane `dataset-camera-synthetic-performer` (reels may now declare their lane; the runtime keeps the last lane after the camera stops). `?stats=1` diagnostics expose the current dataset frame image (never for a webcam). Harness lane `performer` (low tier) saves the rendered camera frame. Registered the PERFORMER_REEL_* constants.

@@ -24,7 +24,7 @@ import type { ActionSource } from '../ui/menuTargets';
 import { strings } from '../ui/strings';
 import { display, useStore } from '../state/store';
 import {
-  ANALYSIS_SR,
+  PLAYBACK_DECODE_SR,
   CALIB_PRESENCE_MS,
   COUNTDOWN_STEPS,
   INPUT_MAX_AGE_MS,
@@ -402,7 +402,9 @@ export class GameRuntime {
     display({ audioReady: true, error: null, status: strings.soundEnabledStatus });
   }
   private getDecoder(): BaseAudioContext {
-    if (!this.decoder) this.decoder = new OfflineAudioContext(1, 1, ANALYSIS_SR);
+    // Decode through the live context when it exists; otherwise a full-band offline decoder.
+    if (this.context) return this.context;
+    if (!this.decoder) this.decoder = new OfflineAudioContext(1, 1, PLAYBACK_DECODE_SR);
     return this.decoder;
   }
   private selectionCurrent(request: number): boolean {

@@ -460,6 +460,8 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `MAX_TRACK_MS` | 300000 (5 min) | Maximum accepted playable duration; companion downloads still pass this app-level limit |
 | `MAX_UPLOAD_BYTES` | 60 × 1024 × 1024 | Larger uploads are rejected before decoding |
 | `MAX_DECODED_PCM_BYTES` | 128 × 1024 × 1024 | Decoded float PCM accepted before analysis/resampling; not a cap on native decoder peak memory |
+| `PLAYBACK_DECODE_SR` | 44100 Hz | Offline playback decode rate before a live `AudioContext` exists; keeps full-band music (analysis still uses `ANALYSIS_SR`) |
+| `GAPLESS_LENGTH_TOLERANCE_SAMPLES` | 2 | Extra output-sample tolerance (plus the resampling ratio) when matching decoded MP3 length to iTunSMPB trimmed/untrimmed counts |
 | `ANALYSIS_CACHE_MAX` | 30 | Complete source-analysis groups kept, including their difficulty maps |
 | `GENERATOR_VERSION` | 2 | Cache key component |
 

@@ -6,7 +6,14 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
-## 2026-10-25T12:20:00+05:30 — Parallel authoring preparation
+## 2026-10-25T02:58:00+05:30 — Gapless MP3 normalization and full-band playback decode
+
+- Changed: Added `audio/gapless.ts`, a browser port of the canonical iTunSMPB parser plus an MPEG layer III sample-rate probe. `decodeForPlayback` trims encoder delay/padding only when the decoded length proves the browser ignored the metadata (exact untrimmed count at the decode rate, within `GAPLESS_LENGTH_TOLERANCE_SAMPLES`), never twice. Playback buffers now decode through the live context or an offline `PLAYBACK_DECODE_SR` (44.1 kHz) decoder instead of the 22.05 kHz analysis rate, matching docs15. Registered both constants. Corrected the previous entry's mistyped timestamp (02:45, not 12:20).
+- Why: In the desktop app's embedded Chromium every bundled song failed selection with a 57.5 ms duration mismatch (Pamgaea decoded 168,568.16 ms = untrimmed 528 + 7,431,319 + 2,009 samples), so the dataset trial could not start. Playback at the analysis rate also discarded everything above 11 kHz.
+- Validation: Seven new assertions compare the parse against `scripts/music-pcm.mjs` for all three tracks, trim at 44.1 and 22.05 kHz, and refuse already-trimmed/unexplained lengths. Full `npm run check` passed. The embedded browser now selects Pamgaea and starts the dataset trial.
+- Limits: Only iTunSMPB metadata is honoured (the bundled files use it); LAME-header-only gapless files decode as the browser returns them. No audible listening test or latency measurement was made.
+
+## 2026-10-25T02:45:00+05:30 — Parallel authoring preparation
 
 - Changed: bootstrap.py accepts `--port` and `--blend` for a separate dedicated Blender MCP instance; `scripts/blender-mcp.mjs` honours a validated `BLENDER_MCP_PORT`. CHANGELOG.md and AI_USAGE.md use Git's built-in union merge so parallel branches keep both appended entries.
 - Why: Avatar and arena-asset authoring run concurrently without sharing one scene or bridge port.

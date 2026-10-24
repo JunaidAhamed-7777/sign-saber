@@ -15,6 +15,7 @@ import {
   MAX_TRACK_MS,
   MAX_DECODED_PCM_BYTES,
 } from '../core/constants';
+import { applyGaplessTrim } from './gapless';
 
 export function validateDecodedAudio(buffer: AudioBuffer): void {
   const durationMs = buffer.duration * 1000;
@@ -43,6 +44,10 @@ export async function decodeForPlayback(bytes: ArrayBuffer, ctx: BaseAudioContex
   } catch {
     throw new Error('This browser could not decode that audio. Try MP3 or WAV.');
   }
+  // Some Chromium builds ignore iTunSMPB; normalize to the same samples the canonical decode uses.
+  buffer = applyGaplessTrim(buffer, new Uint8Array(bytes), (channels, length, rate) =>
+    ctx.createBuffer(channels, length, rate),
+  );
   validateDecodedAudio(buffer);
   return buffer;
 }

@@ -166,6 +166,9 @@ export const MIN_TRACK_MS = 5000,
   MAX_TRACK_MS = 300000,
   MAX_UPLOAD_BYTES = 60 * 1024 * 1024,
   MAX_DECODED_PCM_BYTES = 128 * 1024 * 1024;
+/** Playback decode keeps full-band audio; analysis still resamples to ANALYSIS_SR. */
+export const PLAYBACK_DECODE_SR = 44100,
+  GAPLESS_LENGTH_TOLERANCE_SAMPLES = 2;
 export const ANALYSIS_CACHE_MAX = 30,
   GENERATOR_VERSION = 2;
 export const DSP_EPSILON = 1e-12,

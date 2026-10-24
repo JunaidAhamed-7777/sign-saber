@@ -6,7 +6,7 @@ The development workflow also occasionally includes collaboration with **Devin**
 
 ## 2026-10-25 — Eight-song licensed library (issue #2)
 
-- Codex verified the official CC-BY 4.0 acquisition templates, packaged five unchanged full songs with source/hash receipts, regenerated all 24 maps using the current main generator, and extended integrity, gapless, loader and paging assertions. After the awaited upstream chart branch landed, it integrated generator version 3 normally, regenerated the entire pack, and expanded upstream readability/performer checks and diagnostics to every song. Actual local-browser selection/credits outcomes are recorded separately in the issue's evidence; no music-quality or live-camera proof is inferred.
+- Codex verified the official CC-BY 4.0 acquisition templates, packaged five unchanged full songs with source/hash receipts, regenerated all 24 maps using the current main generator, and extended integrity, gapless, loader and paging assertions. After the awaited upstream chart branch landed, it integrated generator version 3 normally, regenerated the entire pack, and expanded upstream readability/performer checks and diagnostics to every song. Later upstream asset work was preserved with a normal merge and full revalidation. Actual local-browser selection/credits outcomes are recorded separately in the issue's evidence; no music-quality or live-camera proof is inferred.
 
 ## 2026-10-25 — Fixed-tier integration and requested handoff
 

@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:44:12+05:30 — Preserve the later block-asset main integration
+
+- Changed: Normally integrated main 87032d0 into the issue #2 branch before final handoff, preserving the upstream block-model/render changes and resolving the shared changelog overlap. The eight-song acquisition bytes, exact credits, generator version 3, all generated maps and manifest are unchanged.
+- Why: Keep the PR current with main without discarding other contributors' work or expanding music scope.
+- Validation: Full npm run check passed again (typecheck, lint, 50 suites/502 assertions, production build). The existing current-v3 two-viewport/all-eight-song/all-24-map browser evidence still identifies the unchanged music manifest; no new browser/performance result is claimed for unrelated block work. Root documentation checks are rerun before this integration commit.
+- Limits: Existing large-bundle/favicon warnings and all previously stated human/camera/music-quality limits remain unchanged.
+
 ## 2026-10-25T04:39:17+05:30 — Regenerate the eight-song pack with awaited generator v3
 
 - Changed: Main integrated the awaited chart branch immediately after PR #8 opened. Kept the PR draft while normally integrating 93e411e, regenerated all 24 maps/receipts/manifest with upstream generator version 3, and resolved the three generated-receipt conflicts using generator output. Extended upstream chart-readability tests, full synthetic InputPipeline/GameSession replays and the existing chart diagnostic to every song in the eight-track manifest. Updated the music registry/current format version and retained current-v3 browser/diagnostic evidence; original audio bytes/credits remain unchanged.
@@ -40,6 +47,13 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: The user reported the synthetic performer's screen filling with simultaneous blocks and asked for actually playable charts. Measured v2 problems: Electro Cabello Normal had 320 smashes to 9 slashes and no beams; up to 9 notes shared the screen; the performer could not reach 59/149/56 notes on Pamgaea/Electro Cabello/Cipher Hard (13.8%/25.8%/13.8%) and 23 on Electro Cabello Normal.
 - Validation: v3 bundled charts (notes slash/smash/beam): Pamgaea 89 (45/34/10), 178 (97/69/12), 230 (112/100/18); Electro Cabello 116 (52/54/10), 183 (110/62/11), 285 (129/140/16); Cipher 116 (65/42/9), 202 (106/83/13), 267 (120/131/16) for Easy/Normal/Hard; 0.5–0.6/0.9–1.1/1.2–1.5 notes per second; at most 3/4/5 on screen. The performer replay through the real input pipeline and judge hit every note of all nine charts Perfect with zero bad cuts and zero wall hits; unplayable thresholds tightened to 0 on Easy/Normal and 2% on Hard. In-memory 80-second middle cuts of all three songs also produced valid charts with zero unplayable notes. Typecheck, lint and production build passed; `npm run check` ran 373/374 tests green, the remaining `gapless.test.mjs` case timed out at 5 s under parallel host load and passed 7/7 when rerun alone. Prettier on changed sources and both docs checks passed.
 - Limits: Synthetic performer and algorithmic checks only; no human comfort, musical-quality annotation or live webcam play. Tempo confidence is unchanged: all three songs remain onset-only. Hard is now about 1.2–1.5 notes per second, intentionally below controller rhythm games.
+
+## 2026-10-25T04:20:00+05:30 — Three distinct target families and a calmer busy-moment look
+
+- Changed: Per the user's request for gesture-distinct, playable blocks, `block_shell.glb` is replaced by `block_targets.glb` with `block_slash` (a thin bladed rhombic slab, chamfered glowing rims and a horizontal cut seam) and `block_orb` (a faceted 12-segment orb with a glowing equator band, slowly turning except in Calm). Smash targets are now the authored 14-cell Voronoi fracture assembled with crack gaps (`SMASH_CRACK_SCALE`), so their fracture faces glow as cracks and the shatter breaks along the same pieces; the low tier uses its eight-octant set for both. Slash halves are cut from the slab's own rhombic prism (`diamondFaces`, same quad topology and bounded buffers) with a white-hot cap cooling over `SLICE_CAP_HEAT_MS`. All targets fade in over `TARGET_FADE_IN_M` after spawning; glyphs sit just proud of each silhouette with per-family scales; trims, near-plane glow, shard flash and inner glow are restrained; shards and armour debris now recede from the camera (`SHATTER_DEPTH_FRACTION`, `SHATTER_RECEDE_MPS`) and shrink steadily; the shader grid is dimmer and less saturated. Target dimensions are read by the Blender generator from `SLASH_SLAB_DEPTH` and `BEAM_ORB_RADIUS`. The generator writes LF text, records retired ids, and its closed-mesh check now also requires consistent winding.
+- Why: Busy moments read as identical magenta cubes and glare; the user asked for slice/crush/laser targets readable by silhouette and actually playable.
+- Validation: Blender MCP regeneration (dedicated port 9878); asset checks pass (7 GLBs, 5,996 triangles, 352,056 bytes; Khronos not rerun). Typecheck, lint, 366/366 vitest assertions and production build pass. Native Chrome screenshots of the synthetic-performer trial (planned motion, no camera) were inspected at 1440×900 — trial output is visual evidence only.
+- Limits: Blade ribbons/hand particles, hit sparks and camera response are still not implemented; no GPU timing or human readability study was run.
 
 ## 2026-10-25T04:16:00+05:30 — wip: pure avatar retargeting and avatar runtime module
 
@@ -89,6 +103,8 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: The user wants to see whether the game works without a camera; the performer makes the full loop visible and exercises the runtime, renderer and results path with genuine hits.
 - Validation: In the desktop app's embedded Chromium, Pamgaea → Enable sound → Watch synthetic performer built the 80-second cut and played with PERFECT judgements (screenshot during play: score 4,000, combo 18, accuracy 100%). Full `npm run check` passed.
 - Limits: Planned synthetic landmarks only; no pixels, MediaPipe, webcam or human. The skeleton is still the line figure until the avatar branch lands.
+
+## 2026-10-25T03:45:00+05:30 — Blender asset pack v2, glass block materials, HDR post FX and reactive arena
 
 ## 2026-10-25T03:45:00+05:30 — Blender asset pack v2, glass block materials, HDR post FX and reactive arena
 

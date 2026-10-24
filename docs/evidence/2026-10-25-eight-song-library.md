@@ -8,6 +8,8 @@ The current pack passed the complete npm run check: typecheck, lint, 50 suites/5
 
 The earlier generator-v2 checkpoints below are retained as history; current acceptance relies on the v3 outcomes above.
 
+Before final handoff, main's later block-asset changes in 87032d0 were preserved by another normal merge. The music-generation sources/version, all audio/map hashes and exact manifest SHA-256 remained unchanged. The full npm run check passed again (50 suites/502 assertions, typecheck/lint/build). This integration introduces no music or menu contract change; the retained current-v3 browser report verifies the same eight-track manifest.
+
 Issue [#2](https://github.com/JunaidAhamed-7777/sign-saber/issues/2) expands the three-song starter pack to eight full songs. The five additions were fetched unchanged from the official Incompetech catalog on 2026-10-25 local time. Each official track page explicitly supplied the By Attribution 4.0 license template at acquisition; the receipts retain the page/catalog/audio SHA-256, ISRC, original filename, exact attribution and verification timestamp.
 
 - Chipper Doodle v2: catalog 92 BPM; canonical duration 172,173.923 ms; original MP3 6,892,257 bytes.

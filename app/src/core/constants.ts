@@ -545,16 +545,15 @@ export const QUALITY_TIER_PRESETS = Object.freeze({
 
 // ---- Render polish registry (docs11–13, docs18): targets, post FX, arena response, hands. ----
 // Registered in docs/11, 12 and 13 "Constants required" tables; keep both sides synchronized.
-export const BLOCK_NEAR_GLOW_M = 10,
+export const BLOCK_NEAR_GLOW_M = 8,
   BLOCK_FILL_ALPHA = 0.38,
   BLOCK_RIM_GAIN = 0.9,
-  BLOCK_TRIM_GAIN = 1.3,
-  BLOCK_TRIM_NEAR_GAIN = 1.6,
-  BLOCK_CORE_GAIN = 1.1,
+  BLOCK_TRIM_GAIN = 1.05,
+  BLOCK_TRIM_NEAR_GAIN = 0.75,
   BLOCK_CORE_SPIN_RAD_S = 0.9;
 export const GLYPH_FRONT_GAIN = 1.15,
   GLYPH_EDGE_GAIN = 0.3,
-  SHARD_INNER_GAIN = 2.2,
+  SHARD_INNER_GAIN = 1.4,
   SHARD_FLASH_MS = 80,
   SLICE_CAP_HEAT_MS = 300,
   SLICE_CAP_HEAT_GAIN = 2.5;
@@ -674,3 +673,12 @@ export const AVATAR_RIM_COLOR_A = 0x19f5ff,
   AVATAR_AUDIO_GAIN = 0.9,
   AVATAR_OUTLINE_M = 0.0045;
 // --- end rigged upper-body avatar ---
+// Target families: Slash rhombic slab, Smash cracked fracture cube, Beam orb (docs11 §2, docs18).
+export const SLASH_SLAB_DEPTH = 0.3,
+  SMASH_CRACK_SCALE = 0.93,
+  TARGET_FADE_IN_M = 10;
+export const TARGET_GLYPH_SCALE = Object.freeze({ slash: 0.42, smash: 0.56, beam: 0.62 } as const);
+export const BEAM_ORB_RADIUS = 0.27,
+  GLYPH_PROUD_M = 0.012;
+export const SHATTER_DEPTH_FRACTION = 0.35,
+  SHATTER_RECEDE_MPS = 2.4;

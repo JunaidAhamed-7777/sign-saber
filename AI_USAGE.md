@@ -4,6 +4,11 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Showcase README and real demo captures
+
+- Codex rewrote the project README using the requested showcase structure. Parallel agents captured actual production-browser auto-play, independently measured tests/charts/assets/build bytes and reviewed product facts, architecture and current button labels. The integrator reviewed media and kept dataset, synthetic, research and unverified webcam evidence explicit.
+- Added a reproducible headless capture script and compact verification receipts. No mock-ups, AI-generated imagery, invented benchmarks, application changes or training promotion were used. Checks and limitations are recorded in the matching changelog entry.
+
 ## 2026-10-25 — Fixed-tier integration and requested handoff
 
 - An agent connected actual cosmetic tier/contrast consumers and eight integration assertions, with explicit unsupported features. Another refreshed the UI/navigation/roadmap status. Codex froze parallel work on the user's handoff request, preserved a concise implementation/evidence inventory and ran the final checks before committing/pushing all repository changes.

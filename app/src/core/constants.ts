@@ -613,3 +613,64 @@ export const HUD_TWEEN_TAU_MS = 90;
 /** Combo counts that trigger the HUD milestone callout. */
 export const HUD_COMBO_MILESTONES = [10, 25, 50, 100] as const;
 // --- end interface layout and HUD presentation ---
+// --- Rigged upper-body avatar (docs/10 §Avatar; docs/18 §Avatar). Retargeting/presentation only; never scoring. ---
+export const AVATAR_URL = '/assets/models/avatar.glb';
+/** Requested figure per fixed tier: the skinned avatar or the line-skeleton fallback. */
+export const AVATAR_TIER_FIGURE = Object.freeze({
+  high: 'avatar',
+  medium: 'avatar',
+  low: 'skeleton',
+} as const);
+/** World-landmark depth → play-space depth gain, and its clamp (play metres). */
+export const AVATAR_DEPTH_GAIN = 0.6,
+  AVATAR_DEPTH_MAX_M = 1.1;
+/** Arm segments may lengthen this much so hands reach tracked wrists. */
+export const AVATAR_STRETCH_MAX = 1.15;
+/** Exponential smoothing time constants (ms): tracked bones, joints easing to neutral, root and scale. */
+export const AVATAR_SMOOTH_MS = 55,
+  AVATAR_MISSING_SMOOTH_MS = 320,
+  AVATAR_ROOT_SMOOTH_MS = 70,
+  AVATAR_SCALE_SMOOTH_MS = 450;
+/** A briefly missing joint holds its last target this long before easing to the neutral pose. */
+export const AVATAR_HOLD_MS = 250;
+/** Joint limits (degrees) relative to the parent bone. */
+export const AVATAR_LIMITS_DEG = Object.freeze({
+  torsoTwist: 45,
+  torsoLean: 60,
+  head: 70,
+  clavicle: 16,
+  wrist: 85,
+  mcpFlex: [-25, 95] as const,
+  pipFlex: [-5, 110] as const,
+  dipFlex: [-5, 85] as const,
+  spread: 22,
+  thumbBase: 50,
+  thumbFlex: [-15, 75] as const,
+});
+/** Finger curl (0 straight … 1 fist) used when no hand landmarks exist. */
+export const AVATAR_RELAXED_CURL = 0.22;
+/** Illustrative idle: periods (s) and amplitudes (model metres / degrees). Static in Calm. */
+export const AVATAR_IDLE = Object.freeze({
+  breathPeriodS: 4.6,
+  swayPeriodS: 7.4,
+  lookPeriodS: 11.3,
+  breathM: 0.006,
+  swayM: 0.012,
+  lookDeg: 6,
+  armSwingM: 0.012,
+  curlRange: 0.12,
+});
+/** Menu placeholder placement on the play plane: avatar scale and hip height (play metres). */
+export const AVATAR_PLACEHOLDER_SCALE = 2.85,
+  AVATAR_PLACEHOLDER_HIP_Y = 0.12;
+/** Holographic material: rim colours (DESIGN cyan→violet), fill, fresnel power and gains. */
+export const AVATAR_RIM_COLOR_A = 0x19f5ff,
+  AVATAR_RIM_COLOR_B = 0xb36bff,
+  AVATAR_FILL_COLOR = 0x070b16,
+  AVATAR_ACCENT_COLOR = 0x19f5ff,
+  AVATAR_RIM_POWER = 2.6,
+  AVATAR_RIM_GAIN = 1.5,
+  AVATAR_ACCENT_GAIN = 2.2,
+  AVATAR_AUDIO_GAIN = 0.9,
+  AVATAR_OUTLINE_M = 0.0045;
+// --- end rigged upper-body avatar ---

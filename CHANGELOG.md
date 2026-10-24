@@ -67,6 +67,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: The user asked for upgraded Blender models, a richer arena and premium but readable rendering.
 - Validation: Two Blender MCP regenerations on a dedicated instance (port 9878); `node --test scripts/check-model-assets.test.mjs` and `node scripts/check-model-assets.mjs` pass (7 GLBs, 5,844 triangles, 341,428 bytes; Khronos validator not rerun). `npm run typecheck`, `lint`, `build` and `prettier --check` pass; vitest 316/317 pass — the one failure is main's `gapless` test timing out at 5 s under authoring load, unrelated to rendering. Docs checks pass. Native Chrome screenshots at 1440×900 of the menu and dataset trial were inspected.
 - Limits: Blade ribbons, hand particles, hit sparks, camera response and slice-cap heat are not implemented yet. No GPU timing or flashing review was measured. The fracture is not Cell Fracture output.
+## 2026-10-25T04:16:00+05:30 — wip: pure avatar retargeting and avatar runtime module
+
+- Changed: Added `render/avatarRetarget.ts` (play-space targets from MediaPipe pose/hands with mirror mapping, world or limb-foreshortening depth and camera-ray placement; torso/head/clavicle solve, two-bone arm IK with bounded stretch and pronation sharing, hand frames, per-joint finger flexion/spread with limits, hold-then-ease to neutral, slerp smoothing, idle and explicit-joint inputs) and `render/avatar.ts` (GLB loading/validation, holographic skinned shader with outline hull, natural PBR variant, placement, snapshot/restore, `poseFromJoints`). Registered the `AVATAR_*` constants in `core/constants.ts` and docs02, documented the asset/retargeting in docs10 §11 and docs18 §11, and added `pose_avatar_preview.py` deformation renders.
+- Why: Drive the authored person model from tracked, dataset and synthetic skeletons instead of thin lines.
+- Validation: 16 new assertions against the actual exported GLB (rest identity, horizontal raise with hand on wrist, 90°/120° elbows, bounded stretch, fist/point/open recovered from 21-point landmarks, hold-then-ease, head turn and limit, mirroring/handedness, 2D depth, camera-ray placement, leg indices ignored, explicit joints, static Calm idle). Typecheck clean. Blender pose renders show clean fist and raised-arm deformation.
+- Limits: Not yet wired into the renderer or menu; no browser or webcam check.
 
 ## 2026-10-25T03:40:00+05:30 — wip: Blender-authored rigged upper-body avatar source
 

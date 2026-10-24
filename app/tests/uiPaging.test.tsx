@@ -98,6 +98,7 @@ describe('figure-centred paged menu structure', () => {
       'ui:compact:previous',
       'audio',
       'dataset-trial',
+      'performer-trial',
       'arrange',
       'ui:compact:next',
     ]);

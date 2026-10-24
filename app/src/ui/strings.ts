@@ -11,6 +11,18 @@ export const strings = Object.freeze({
   datasetLimitations:
     'Independent labelled still poses; no recorded motion or hand gestures. Trial scores reflect missing gesture input.',
   datasetFigure: 'Annotated dataset pose · skeleton only · no webcam',
+  performerTrial: 'Watch synthetic performer',
+  performerTrialCaption: 'Planned motion · no camera',
+  performerLoading: 'Planning a performance for this chart…',
+  performerPreroll: 'Performer pre-roll',
+  performerLimitations:
+    'A planned synthetic performer plays this chart through the real scoring path. No camera, no person and no recognition are involved.',
+  performerReplay: 'SYNTHETIC PERFORMER · planned motion · no camera',
+  performerComplete: 'Synthetic performer run complete. It shows the game logic, not webcam recognition.',
+  performerFigure: 'Synthetic performer · planned skeleton · no camera',
+  performerResults: 'Synthetic performer results',
+  performerMotion: 'Synthetic motion proxy',
+  performerMotionAbout: 'Computed from planned synthetic landmarks. It is not a player measurement.',
   menuPages: 'Menu pages',
   previous: 'Previous',
   next: 'Next',

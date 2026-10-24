@@ -4,6 +4,7 @@ import { Button, MenuShell, RailHeading } from '../components/MenuShell';
 import type { MenuPage } from '../components/MenuShell';
 import { GestureIcon } from '../components/GestureIcon';
 import { strings as t } from '../strings';
+import { useTrialCopy } from '../trialCopy';
 const moves = [
   ['open', t.open],
   ['fist', t.fist],
@@ -12,6 +13,7 @@ const moves = [
 ] as const;
 export function Calibration({ runtime }: { runtime: GameRuntime }) {
   const replay = useStore((s) => s.replay);
+  const trial = useTrialCopy();
   const ready = useStore((s) => s.calibrationReady && s.trackingReady);
   const countdown = useStore((s) => s.countdown);
   const body = useStore((s) => s.figureAvailable);
@@ -59,7 +61,7 @@ export function Calibration({ runtime }: { runtime: GameRuntime }) {
   );
   const coaching = (
     <p className={`notice${ready && !replay ? ' success' : ''}`} role="status">
-      {replay ? t.datasetLimitations : ready ? t.framingReady : t.calibrationPending}
+      {replay ? trial.limitations : ready ? t.framingReady : t.calibrationPending}
     </p>
   );
   const moveList = (
@@ -82,8 +84,8 @@ export function Calibration({ runtime }: { runtime: GameRuntime }) {
         <>
           <RailHeading
             level={1}
-            eyebrow={replay ? t.datasetPreroll : t.calibrationTitle}
-            title={replay ? t.datasetPreparing : t.calibrationTitle}
+            eyebrow={replay ? trial.preroll : t.calibrationTitle}
+            title={replay ? trial.preparing : t.calibrationTitle}
           />
           {!replay && <p className="lead">{t.positioning}</p>}
           {checklist}
@@ -126,7 +128,7 @@ export function Calibration({ runtime }: { runtime: GameRuntime }) {
       rightPages={rightPages}
       compactTop={
         <div className="compact-summary">
-          <strong>{replay ? t.datasetPreparing : t.calibrationTitle}</strong>
+          <strong>{replay ? trial.preparing : t.calibrationTitle}</strong>
           {checklist}
         </div>
       }

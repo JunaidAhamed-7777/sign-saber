@@ -13,6 +13,7 @@ import { CoverArt } from './ui/components/CoverArt';
 import { GestureIcon } from './ui/components/GestureIcon';
 import type { BundledTrackEntry } from './beatmap/types';
 import { strings as t } from './ui/strings';
+import { useTrialCopy } from './ui/trialCopy';
 function Pointer() {
   const pointer = useStore((s) => s.pointer);
   return pointer?.visible ? (
@@ -26,6 +27,7 @@ function Pointer() {
   ) : null;
 }
 function Status() {
+  const trial = useTrialCopy();
   const replay = useStore((s) => s.replay);
   const camera = useStore((s) => s.camera);
   const ready = useStore((s) => s.trackingReady);
@@ -34,7 +36,7 @@ function Status() {
     <span className={`camera-status ${tone}`} role="status">
       <i aria-hidden="true" />
       {replay
-        ? t.datasetSource
+        ? trial.source
         : camera.calibrationValid
           ? ready
             ? t.cameraReady
@@ -139,6 +141,7 @@ export function App({ runtime }: { runtime: GameRuntime }) {
   const state = useStore((s) => s.state);
   const calm = useStore((s) => s.calm);
   const credits = useStore((s) => s.credits);
+  const trial = useTrialCopy();
   const replay = useStore((s) => s.replay);
   const stats = useStore((s) => s.stats);
   const fatal = useStore((s) => s.fatal);
@@ -162,7 +165,7 @@ export function App({ runtime }: { runtime: GameRuntime }) {
           <span className="replay-mark" aria-hidden="true">
             ◆
           </span>
-          {runtime.flags?.replay ? t.replay : t.datasetReplay}
+          {runtime.flags?.replay ? t.replay : trial.banner}
         </div>
       )}
       {credits ? (

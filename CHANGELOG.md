@@ -19,6 +19,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: Screenshot review showed the right-column status tag squeezing titles and duplicate upload headings.
 - Validation: `npm run check` passed (324 assertions, build); headless Chrome screenshots of a blocked-audio failure, settings pages and credits at 1440×900 and 800×600 were inspected.
 - Limits: Presentation-only; no live camera or hand-navigation verification.
+## 2026-10-25T03:46:00+05:30 — Watchable synthetic performer trial
+
+- Changed: Added `performer/trial.ts` and a **Watch synthetic performer** action. The runtime drives the selected (arranged) chart with planned performer frames through the same tracking consumer, renderer, scoring and results as other sources, calibrates the performer's lean reference once it stands still, shows hand HUD state and exports evidence lane `synthetic-performer-logic-replay`. A source-aware `ui/trialCopy.ts` labels banner, status, setup, figure and results honestly for annotations versus performer.
+- Why: The user wants to see whether the game works without a camera; the performer makes the full loop visible and exercises the runtime, renderer and results path with genuine hits.
+- Validation: In the desktop app's embedded Chromium, Pamgaea → Enable sound → Watch synthetic performer built the 80-second cut and played with PERFECT judgements (screenshot during play: score 4,000, combo 18, accuracy 100%). Full `npm run check` passed.
+- Limits: Planned synthetic landmarks only; no pixels, MediaPipe, webcam or human. The skeleton is still the line figure until the avatar branch lands.
 
 ## 2026-10-25T03:24:55+05:30 — Interface shell, generated covers and compact reflow
 
@@ -26,6 +32,41 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: The user asked to polish the interface into a coherent premium product; compact layouts previously paged 19 single controls over a huge song card and load errors were invisible.
 - Validation: `npm run check` passed (typecheck, lint, 324 assertions in 44 files, production build); prettier check passed. New `tests/interface.test.tsx` covers cover determinism, multiplier/milestone helpers, HUD and results rendering; `tests/unit/compactBreakpoint.test.mjs` keeps the CSS media queries synchronized with the registry; UI paging tests cover compact grouping, error retry and busy cards. Docs checks passed. Headless Chrome screenshots at 1440×900, 1280×720, 1100×700, 1100×620, 1024×640 and 800×600 plus a complete dataset trial (pre-roll, HUD, pause, resume, results) were inspected.
 - Limits: Screenshots are headless SwiftShader renders; no standing-distance, contrast measurement, live-camera setup, real hand navigation or human usability check was performed. The Figure placeholder is untouched for the avatar work.
+
+## 2026-10-25T03:24:00+05:30 — Synthetic performer and responsive landmark filtering
+
+- Changed: Added `app/src/performer/` (choreography planner, body/hand geometry, TrackingFrame synthesizer) and `tests/performer.test.mjs`, which plays five bundled charts through the real InputPipeline and GameSession at 30 Hz. Raised `ONE_EURO_BETA` from 0.08 to 10 with swing-tracking and stationary-jitter regressions. Registered the performer constants, documented the performer in docs02/05/17 and allowed Node globals in `.mjs` suites.
+- Why: The user asked for trials of whether the game works without opening a camera. Chart-synchronized motion is needed before any dataset-camera trial can show hits; still photos cannot swing. The replay exposed a real defect: the landmark filter lagged a 4.5 m/s swing by ≈0.42 m after 200 ms and reported it below `SLASH_MIN_SPEED`, so genuine slashes only registered by accident.
+- Validation: Every planned note on Pamgaea Easy/Normal, Electro Cabello Normal and Cipher Normal/Hard was hit with zero bad cuts on planned notes, zero wall hits and ≥98% Perfect timing (measured means within ±13 ms per gesture type). Unplanned notes: Pamgaea Normal 2/269, Electro Cabello Normal 23/329, Cipher Hard 56/405. The new filter test fails at the old beta (lag 0.079 widths) and passes at 10. Full `npm run check` passed with 325 assertions.
+- Limits: Logic replay of synthetic landmarks only — no pixels, MediaPipe, webcam, latency or human feel. Live jitter at the new beta still needs consented camera review. The rendered performer for the dataset camera is the next step.
+
+## 2026-10-25T03:19:51+05:30 — Export parity spans both held-out datasets
+
+- Changed: training/export.py selects evenly spaced held-out crops across the requested datasets (previously the first N rows, which were all COCO) and labels non-preflight checkpoints as research checkpoints whose accuracy is reported separately.
+- Why: Parity for a COCO + MPII model should exercise MPII crops too; limitation text should match the checkpoint kind.
+- Validation: Smoke export of the 60-step timing checkpoint over 16 crops passed ONNX checker and ONNX Runtime CPU parity (maximum heatmap difference 5.96e-6, zero decoded difference with the refined decoder).
+- Limits: Parity remains numerical equivalence only; the timing checkpoint is not a result.
+
+## 2026-10-25T03:18:35+05:30 — Report smoke-test options
+
+- Changed: training/report.py gained `--limit` (evenly spaced held-out people per dataset, marked `partialSmokeTest` in the report), `--threads` and `--workers`, and ASCII section headings.
+- Why: Check the report path cheaply while the long training run uses most of the CPU budget.
+- Validation: A 48-person-per-dataset smoke report over the 60-step timing checkpoint, the earlier three-step COCO preflight and the seeded untrained head completed in 2.5 minutes with two threads and one worker; overlays drew ground-truth joints on the correct body parts. Smoke numbers are not recorded as results.
+- Limits: Smoke reports use partial validation and are never evidence of accuracy.
+
+## 2026-10-25T03:14:35+05:30 — Training throughput, schedule and augmentation for a full COCO + MPII run
+
+- Changed: training/config.json now uses 6 CPU threads, 3 spawned DataLoader workers (prefetch 2), batch 32 and 9 epochs, with linear warmup (300 steps) then cosine decay to 2% of the head/backbone learning rates, and per-epoch validation. train.py materializes the identical seeded per-epoch order (so resume skips batches without decoding them), records per-step data-wait/learning-rate and per-epoch wall/loss/validation summaries, keeps summaries across resume, accepts checkpoints under a junctioned runs/ folder, and disables only deterministic mode's NaN fill of fresh allocations. upper_body.py adds training-only scale (±25%), rotation (±30°, probability 0.5) and translation (±10%) ROI jitter through one testable crop_input(), fixes the flip label mirror (size − x rather than size − 1 − x), adds standard quarter-cell heatmap decoding, and shares one PoseMetrics accumulator. New report.py writes per-dataset, per-joint held-out reports with untrained, zero-heatmap and mean-pose-in-ROI references, a deterministic perturbed-ROI pass and local overlays.
+- Why: The two-thread batch-8 loop could not finish a multi-dataset run in a few hours. Oracle ROI crops leak framing, so geometric jitter and a perturbed-ROI evaluation make robustness to imperfect localization visible. Evaluation crops stay the exact oracle extent, so checkpoints remain comparable.
+- Validation: Synthetic timing (not accuracy) measured about 30 ms/sample for full fine-tuning and 14 ms/sample with a frozen backbone at batch 32; profiling attributed about 13% of step time to deterministic NaN fill. A labelled 60-step COCO + MPII timing preflight (local run timing-coco-mpii-frozen-60) measured about 340 ms per frozen-backbone batch with 6 ms mean data wait. The refactored evaluate() reproduced that run's stored evaluation exactly. Unit tests pass 11/11, including pixel-follows-label checks across 24 augmentation seeds, exact oracle extent, the refined decoder, the warmup/cosine schedule and permutation equality with the earlier shuffled DataLoader.
+- Limits: Decoding refinement and augmentation change the training/evaluation contract from the earlier preflight; prior preflight numbers must be re-evaluated with the same decoder for comparison. Throughput figures are for this shared, loaded laptop and are not browser or frame-rate measurements.
+
+## 2026-10-25T03:03:45+05:30 — Extracted and decoded MPII research images
+
+- Changed: Extracted the verified local MPII archive with `prepare.py --dataset mpii --extract-mpii-images` (about 4.3 minutes) and added `prepare.py --verify-mpii-images`, which compares extracted count/bytes with the streamed archive audit and fully decodes every indexed image in a bounded process pool. Recorded the result in training/DATASETS.json.
+- Why: A combined COCO + MPII training run needs individually readable MPII images; failures should surface before a multi-hour run, not during it.
+- Validation: 24,984 extracted JPEG files and 12,140,043,353 bytes match the archive audit; all 17,404 indexed unique images (15,727 train / 1,677 validation) exist and decoded with zero failures. Re-preparing MPII reproduced byte-identical indexes (train SHA-256 9e52535d…, validation 4201b8de…).
+- Limits: The archive audit has no per-member hashes, so extracted files are checked by count and total bytes; 7,580 unindexed archive images were counted but not decoded. No MPII optimizer steps were run in this step.
 
 ## 2026-10-25T02:58:00+05:30 — Gapless MP3 normalization and full-band playback decode
 
@@ -35,11 +76,6 @@ Implementation and historical specification work are recorded below. Automated, 
 - Limits: Only iTunSMPB metadata is honoured (the bundled files use it); LAME-header-only gapless files decode as the browser returns them. No audible listening test or latency measurement was made.
 
 ## 2026-10-25T02:45:00+05:30 — Parallel authoring preparation
-
-- Changed: bootstrap.py accepts `--port` and `--blend` for a separate dedicated Blender MCP instance; `scripts/blender-mcp.mjs` honours a validated `BLENDER_MCP_PORT`. CHANGELOG.md and AI_USAGE.md use Git's built-in union merge so parallel branches keep both appended entries.
-- Why: Avatar and arena-asset authoring run concurrently without sharing one scene or bridge port.
-- Validation: Port parsing checked from Node (default 9876, explicit 9877, rejection of 80).
-- Limits: No asset was regenerated by this preparation step.
 
 ## 2026-10-25T02:33:00+05:30 — Fixed-tier consumers and requested implementation handoff
 

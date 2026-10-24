@@ -350,7 +350,7 @@ This is the shared constants registry. `core/constants.ts` now exports these nam
 | `FINGER_EXT_ANGLE_DEG` | 160 | PIP angle ≥ → finger extended |
 | `FINGER_CURL_ANGLE_DEG` | 115 | PIP angle ≤ → finger curled |
 | `ONE_EURO_MIN_CUTOFF` | 1.2 Hz | Position filter |
-| `ONE_EURO_BETA` | 0.08 | Position filter speed coefficient |
+| `ONE_EURO_BETA` | 10 (per image width/s) | Position filter speed coefficient. Raised from 0.08 on 2026-10-25: at 0.08 a 4.5 m/s swing lagged 0.079 image widths (≈0.42 m) after 200 ms and measured below `SLASH_MIN_SPEED`; see the synthetic-performer replay in [17](17-testing-and-qa.md#synthetic-performer) |
 | `ONE_EURO_D_CUTOFF` | 1.0 Hz | Derivative filter |
 | `VEL_WINDOW_FRAMES` | 3 | Central-difference window for velocity |
 | `BLADE_ON_SPEED` | 3.0 m/s | Blade appears (play-plane speed) |
@@ -578,6 +578,28 @@ Menu defaults are initial unmeasured values; tune with held-out menu fixtures an
 | `SFX_SYNTH_FREQUENCIES` | `{ slash: 880, smash: 110, beam: 1320, miss: 90, badcut: 180, dodge: 440, count: 660 }` | Procedural fallback frequencies in Hz; does not claim authored OGG assets |
 
 These are implementation defaults and development-fixture tuning, not held-out quality results. `BodyCalibration` additionally carries a current `identity` string covering camera/crop/player/mapping and `capturedAt` on the main performance timeline; its presence alone never establishes readiness.
+
+### Synthetic performer (labelled trials only)
+
+Used by `performer/*` to plan a performance that satisfies a chart under the game's own contact rules. These never tune gameplay and never count as live evidence ([17](17-testing-and-qa.md#synthetic-performer)).
+
+| Name | Value | Meaning |
+| --- | --- | --- |
+| `PERFORMER_SHOULDER_WIDTH_NORM` | 0.24 | Performer shoulder span in image widths (inside the calibration bounds) |
+| `PERFORMER_SHOULDER_V` | 0.36 | Shoulder-line height in normalized image coordinates |
+| `PERFORMER_REST` | `{ x: 0.75, y: 1.15 }` m | Resting palm position on the play plane (mirrored per hand) |
+| `PERFORMER_SLASH_SPEED` | 4.5 m/s | Constant play-plane speed through a slash |
+| `PERFORMER_SLASH_WINDUP_M` / `PERFORMER_SLASH_FOLLOW_M` | 0.75 / 0.4 m | Slash start distance before, and follow-through after, the block centre |
+| `PERFORMER_SLASH_CONTACT_MS` | 75 | Stroke start before the note so the first eligible contact lands on it |
+| `PERFORMER_SMASH_SPEED` | 3 m/s | Constant fist speed through a smash |
+| `PERFORMER_SMASH_DRAW_M` / `PERFORMER_SMASH_FOLLOW_M` | 0.62 / 0.1 m | Smash draw-back and follow-through distances |
+| `PERFORMER_SMASH_CONTACT_MS` | 55 | Stroke start before the note for a smash |
+| `PERFORMER_SETTLE_MARGIN_MS` | 30 | Settled at the stroke start this long before the judgement window opens |
+| `PERFORMER_TRAVEL_MIN_MS` | 120 | Minimum relaxed travel time between strokes of one hand |
+| `PERFORMER_RECOVER_MS` | 80 | Recovery after a stroke before travelling |
+| `PERFORMER_BEAM_CONFIRM_LEAD_MS` | 60 | Point adoption lead beyond `BEAM_CHARGE_MS` so the charge completes at the note |
+| `PERFORMER_LEAN_SHOULDERS` | 0.9 | Torso shift (shoulder widths) used to clear a wall |
+| `PERFORMER_LEAN_EASE_MS` | 250 | Lean ease in/out duration |
 
 ### Companion service (YouTube)
 

@@ -4,6 +4,7 @@ import type { GameRuntime } from '../../core/runtime';
 import { MENU_COMPACT_MAX_HEIGHT_PX, MENU_COMPACT_MAX_WIDTH_PX } from '../../core/constants';
 import { useStore } from '../../state/store';
 import { strings } from '../strings';
+import { trialCopy } from '../trialCopy';
 const classes = (...names: (string | false | null | undefined)[]): string => names.filter(Boolean).join(' ');
 /**
  * One registered semantic target. Mouse, keyboard and hand activation all resolve through runtime.targets.
@@ -255,6 +256,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
   const highlight = useStore((s) => s.highlightAt);
   const mask = useStore((s) => s.maskAvailable);
   const replay = useStore((s) => s.replay);
+  const trialSource = useStore((s) => s.trialSource);
   const live = available && (replay || camera.calibrationValid || camera.mode === 'camera-setup');
   const saved = state === 'RESULTS' && highlight !== null;
   const frozen = state === 'PAUSED' && !!runtime.renderer?.hasFrozenFigure;
@@ -272,7 +274,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
     state === 'RESULTS'
       ? saved
         ? replay && !runtime.flags?.replay
-          ? strings.datasetSavedFigure
+          ? trialCopy(trialSource).savedFigure
           : strings.savedFigure
         : strings.noHighlight
       : state === 'PAUSED'
@@ -280,7 +282,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
           ? strings.frozenFigure
           : strings.noHighlight
         : replay && available
-          ? strings.datasetFigure
+          ? trialCopy(trialSource).figure
           : camera.mode === 'camera-setup' && available
             ? strings.setupPreview
             : live

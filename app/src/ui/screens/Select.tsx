@@ -217,6 +217,12 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
       <small>{t.datasetTrialCaption}</small>
     </Button>
   );
+  const performer = (
+    <Button runtime={runtime} id="performer-trial" disabled={!s.map || s.loading || !s.audioReady}>
+      <span>{t.performerTrial}</span>
+      <small>{t.performerTrialCaption}</small>
+    </Button>
+  );
   const arrange = (
     <Button runtime={runtime} id="arrange" disabled={!s.map || s.loading || preparing} busy={preparing}>
       {t.arrange}
@@ -320,6 +326,7 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
           {arrange}
         </div>
         {start}
+        {performer}
         {notice}
       </>
     ),
@@ -348,6 +355,7 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
         <>
           {sound}
           {start}
+          {performer}
           {arrange}
         </>
       ),

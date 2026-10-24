@@ -4,6 +4,7 @@ import { useStore } from '../../state/store';
 import { Button, MenuShell, RailHeading } from '../components/MenuShell';
 import type { MenuPage } from '../components/MenuShell';
 import { strings as t } from '../strings';
+import { useTrialCopy } from '../trialCopy';
 const JUDGEMENTS = ['perfect', 'great', 'good', 'miss', 'badcut'] as const;
 /** Rank colour follows docs14: SS/S gold, A cyan, B/C text, D muted. */
 export function rankTone(rank: string): 'gold' | 'cyan' | 'text' | 'muted' {
@@ -20,9 +21,10 @@ export function Results({ runtime }: { runtime: GameRuntime }) {
         ? !!s.map && s.audioReady
         : s.audioReady && (s.replay || (s.trackingReady && s.camera.calibrationValid)),
     );
-  const resultTitle = replay && !runtime.flags?.replay ? t.datasetResults : t.results;
-  const motionLabel = replay ? t.datasetMotion : t.motion;
-  const motionAbout = replay ? t.datasetMotionAbout : t.motionAbout;
+  const trial = useTrialCopy();
+  const resultTitle = replay && !runtime.flags?.replay ? trial.results : t.results;
+  const motionLabel = replay ? trial.motion : t.motion;
+  const motionAbout = replay ? trial.motionAbout : t.motionAbout;
   const songs = (
     <Button runtime={runtime} id="songs">
       {t.songs}

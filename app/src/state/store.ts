@@ -53,6 +53,8 @@ export interface DisplayState {
     leftCharge: number;
     rightCharge: number;
     judgement: string;
+    /** Increments once per terminal judgement so repeated identical pops retrigger. */
+    judgementSeq: number;
   };
   results: SessionStats | null;
   highlightAt: number | null;
@@ -104,6 +106,7 @@ const initial: DisplayState = {
     leftCharge: 0,
     rightCharge: 0,
     judgement: '',
+    judgementSeq: 0,
   },
   results: null,
   highlightAt: null,

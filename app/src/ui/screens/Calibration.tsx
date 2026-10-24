@@ -1,89 +1,137 @@
 import type { GameRuntime } from '../../core/runtime';
 import { useStore } from '../../state/store';
-import { Button, MenuShell } from '../components/MenuShell';
+import { Button, MenuShell, RailHeading } from '../components/MenuShell';
 import type { MenuPage } from '../components/MenuShell';
+import { GestureIcon } from '../components/GestureIcon';
 import { strings as t } from '../strings';
+const moves = [
+  ['open', t.open],
+  ['fist', t.fist],
+  ['point', t.point],
+  ['lean', t.lean],
+] as const;
 export function Calibration({ runtime }: { runtime: GameRuntime }) {
   const replay = useStore((s) => s.replay);
   const ready = useStore((s) => s.calibrationReady && s.trackingReady);
   const countdown = useStore((s) => s.countdown);
+  const body = useStore((s) => s.figureAvailable);
+  const left = useStore((s) => s.hud.leftPresent);
+  const right = useStore((s) => s.hud.rightPresent);
+  const steady = useStore((s) => s.calibrationReady);
   useStore((s) => s.status);
+  const armed = runtime.startArmed;
   const back = (
     <Button runtime={runtime} id="back">
       {t.back}
     </Button>
   );
   const confirm = (
-    <Button runtime={runtime} id="confirm" disabled={!ready} primary>
+    <Button runtime={runtime} id="confirm" disabled={!ready} primary className="hero">
       {t.calibrationConfirm}
     </Button>
   );
   const count = (
-    <p className="countdown" role="status">
-      {countdown === null ? t.preparing : `${t.countdown} ${countdown}`}
+    <div className="countdown" role="status">
+      <span className="eyebrow">{countdown === null ? t.preparing : t.startsIn}</span>
+      <span className="countdown-digit" key={countdown ?? 'preparing'}>
+        {countdown === null ? '·' : countdown}
+      </span>
+    </div>
+  );
+  const checks = [
+    [t.checkBody, body],
+    [t.checkLeft, left],
+    [t.checkRight, right],
+    [t.checkSteady, steady],
+  ] as const;
+  const checklist = replay ? null : (
+    <ul className="checklist" aria-label={t.inFrame}>
+      {checks.map(([label, ok]) => (
+        <li key={label} className={ok ? 'ok' : undefined}>
+          <span className="check-mark" aria-hidden="true">
+            {ok ? '✓' : '○'}
+          </span>
+          {label}
+          <span className="visually-hidden"> · {ok ? t.checkOk : t.checkMissing}</span>
+        </li>
+      ))}
+    </ul>
+  );
+  const coaching = (
+    <p className={`notice${ready && !replay ? ' success' : ''}`} role="status">
+      {replay ? t.datasetLimitations : ready ? t.framingReady : t.calibrationPending}
     </p>
   );
-  const left: MenuPage[] = [
+  const moveList = (
+    <ul className="moves" aria-label={t.moves}>
+      {moves.map(([gesture, label]) => (
+        <li key={gesture} className={`move gesture-${gesture}`}>
+          <span className="move-glyph">
+            <GestureIcon name={gesture} />
+          </span>
+          {label}
+        </li>
+      ))}
+    </ul>
+  );
+  const leftPages: MenuPage[] = [
     {
       id: 'framing',
       label: t.calibrationTitle,
       content: (
         <>
-          <h1>{replay ? t.datasetPreparing : t.calibrationTitle}</h1>
-          <p>{replay ? t.datasetLimitations : t.positioning}</p>
-          <p className={ready ? 'success' : 'subtle'} role="status">
-            {replay ? t.datasetReplay : ready ? t.framingReady : t.calibrationPending}
-          </p>
-          {back}
+          <RailHeading
+            level={1}
+            eyebrow={replay ? t.datasetPreroll : t.calibrationTitle}
+            title={replay ? t.datasetPreparing : t.calibrationTitle}
+          />
+          {!replay && <p className="lead">{t.positioning}</p>}
+          {checklist}
+          {coaching}
         </>
       ),
     },
   ];
-  const right: MenuPage[] = [
+  const rightPages: MenuPage[] = [
     {
       id: 'confirm',
       label: t.calibrationConfirm,
       content: (
         <>
-          <h2>{t.calibrationHint}</h2>
-          {runtime.startArmed ? count : confirm}
+          <RailHeading eyebrow={t.moves} />
+          {moveList}
+          {armed ? count : confirm}
+          {back}
+          <p className="note">{t.safeSpace}</p>
         </>
       ),
     },
   ];
-  const compact: MenuPage[] = runtime.startArmed
-    ? [
-        {
-          id: 'armed',
-          label: t.countdown,
-          content: (
-            <>
-              {count}
-              {back}
-            </>
-          ),
-        },
-      ]
-    : [
-        {
-          id: 'confirm',
-          label: t.calibrationConfirm,
-          content: (
-            <>
-              <p className={ready ? 'success' : 'subtle'}>
-                {replay ? t.datasetReplay : ready ? t.framingReady : t.calibrationPending}
-              </p>
-              {confirm}
-            </>
-          ),
-        },
-        { id: 'back', label: t.back, content: back },
-        { id: 'coaching', label: t.calibrationTitle, content: <p>{t.calibrationHint}</p> },
-        {
-          id: 'positioning',
-          label: t.positioning,
-          content: <p>{replay ? t.datasetLimitations : t.positioning}</p>,
-        },
-      ];
-  return <MenuShell runtime={runtime} leftPages={left} rightPages={right} compactPages={compact} />;
+  const compactPages: MenuPage[] = [
+    {
+      id: armed ? 'armed' : 'confirm',
+      label: armed ? t.countdown : t.calibrationConfirm,
+      content: (
+        <>
+          {armed ? count : confirm}
+          {back}
+        </>
+      ),
+    },
+  ];
+  return (
+    <MenuShell
+      runtime={runtime}
+      leftPages={leftPages}
+      rightPages={rightPages}
+      compactTop={
+        <div className="compact-summary">
+          <strong>{replay ? t.datasetPreparing : t.calibrationTitle}</strong>
+          {checklist}
+        </div>
+      }
+      compactPages={compactPages}
+      compactStatus={coaching}
+    />
+  );
 }

@@ -7,8 +7,11 @@ import { Paused } from './ui/screens/Paused';
 import { Results } from './ui/screens/Results';
 import { Hud } from './ui/screens/Hud';
 import { Boot } from './ui/screens/Boot';
-import { Button, RailPager } from './ui/components/MenuShell';
+import { Button, RailHeading, RailPager, useCompactMenu } from './ui/components/MenuShell';
 import type { MenuPage } from './ui/components/MenuShell';
+import { CoverArt } from './ui/components/CoverArt';
+import { GestureIcon } from './ui/components/GestureIcon';
+import type { BundledTrackEntry } from './beatmap/types';
 import { strings as t } from './ui/strings';
 function Pointer() {
   const pointer = useStore((s) => s.pointer);
@@ -26,9 +29,10 @@ function Status() {
   const replay = useStore((s) => s.replay);
   const camera = useStore((s) => s.camera);
   const ready = useStore((s) => s.trackingReady);
+  const tone = replay ? 'dataset' : camera.calibrationValid ? (ready ? 'active' : 'warning') : 'idle';
   return (
-    <span className={`camera-status ${camera.calibrationValid && ready ? 'active' : ''}`} role="status">
-      <i />
+    <span className={`camera-status ${tone}`} role="status">
+      <i aria-hidden="true" />
       {replay
         ? t.datasetSource
         : camera.calibrationValid
@@ -39,36 +43,96 @@ function Status() {
     </span>
   );
 }
+function CreditCard({ track }: { track: BundledTrackEntry }) {
+  return (
+    <article className="credit-card">
+      <header>
+        <CoverArt track={track} />
+        <div>
+          <h2>{track.title}</h2>
+          <p className="meta">
+            {track.artist} · <span className="chip">{track.rights.license}</span>
+          </p>
+        </div>
+      </header>
+      <dl>
+        <div>
+          <dt>{t.creditsAttribution}</dt>
+          <dd>{track.rights.attribution}</dd>
+        </div>
+        <div>
+          <dt>{t.creditsChanges}</dt>
+          <dd>{track.rights.changes}</dd>
+        </div>
+      </dl>
+      <p className="credit-links">
+        <a href={track.rights.sourceUrl} target="_blank" rel="noreferrer">
+          {t.creditsSource} · {track.artist}
+        </a>
+        <a href={track.rights.licenseUrl} target="_blank" rel="noreferrer">
+          {t.creditsLicense} · {track.rights.license}
+        </a>
+      </p>
+    </article>
+  );
+}
 function Credits({ runtime }: { runtime: GameRuntime }) {
   const library = useStore((s) => s.library);
-  const pages: MenuPage[] = [{ id: 'intro', label: t.credits, content: <p>{t.creditsIntro}</p> }];
-  for (const track of library)
-    pages.push(
-      { id: `${track.slug}-credit`, label: track.title, content: <p>{track.rights.attribution}</p> },
-      { id: `${track.slug}-changes`, label: track.title, content: <p>{track.rights.changes}</p> },
-      {
-        id: `${track.slug}-sources`,
-        label: track.title,
-        content: (
-          <div className="credit-links">
-            <a href={track.rights.sourceUrl} target="_blank" rel="noreferrer">
-              {track.artist}
-            </a>
-            <a href={track.rights.licenseUrl} target="_blank" rel="noreferrer">
-              {track.rights.license}
-            </a>
-          </div>
-        ),
-      },
-    );
+  const compact = useCompactMenu();
+  const pages: MenuPage[] = library.map((track) => ({
+    id: `${track.slug}-credit`,
+    label: track.title,
+    content: <CreditCard track={track} />,
+  }));
   return (
     <main className="credits">
-      <h1>{t.credits}</h1>
-      <RailPager runtime={runtime} id="credits" pages={pages} />
-      <Button runtime={runtime} id="credits">
-        {t.closeCredits}
-      </Button>
+      <header className="credits-header">
+        <RailHeading level={1} eyebrow={t.morePage} title={t.credits} />
+        <Button runtime={runtime} id="credits">
+          {t.closeCredits}
+        </Button>
+      </header>
+      <p className="lead">{t.creditsIntro}</p>
+      {compact ? (
+        <RailPager runtime={runtime} id="credits" pages={pages} />
+      ) : (
+        <div className="credit-grid">
+          {library.map((track) => (
+            <CreditCard key={track.slug} track={track} />
+          ))}
+        </div>
+      )}
     </main>
+  );
+}
+function Legend({ replay }: { replay: boolean }) {
+  if (replay)
+    return (
+      <footer className="app-footer">
+        <p className="legend-dataset">{t.datasetControls}</p>
+        <p className="legend-keys">{t.keyboardHint}</p>
+      </footer>
+    );
+  return (
+    <footer className="app-footer">
+      <p className="visually-hidden">{t.menuHelp}</p>
+      <ul className="legend" aria-hidden="true">
+        <li>
+          <span className="legend-glyph open">
+            <GestureIcon name="open" />
+          </span>
+          {t.legendMove}
+        </li>
+        <li>
+          <span className="legend-glyph point">
+            <GestureIcon name="point" />
+          </span>
+          {t.legendClick}
+        </li>
+        <li className="legend-rearm">{t.legendRearm}</li>
+      </ul>
+      <p className="legend-keys">{t.keyboardHint}</p>
+    </footer>
   );
 }
 export function App({ runtime }: { runtime: GameRuntime }) {
@@ -82,18 +146,25 @@ export function App({ runtime }: { runtime: GameRuntime }) {
     document.documentElement.dataset.motion = calm ? 'calm' : 'standard';
   }, [calm]);
   return (
-    <div className={`application state-${state.toLowerCase()}`}>
+    <div className={`application state-${state.toLowerCase()}${credits ? ' showing-credits' : ''}`}>
       <header className="app-header">
         <a className="wordmark" href="/" aria-label={t.title}>
           <svg viewBox="0 0 32 32" aria-hidden="true">
             <path d="M6 25L24 7M6 16L16 6M16 26L26 16" />
           </svg>
-          {t.title}
+          <span>{t.title}</span>
         </a>
         <Status />
         <span className="input-label">{t.nativeHelp}</span>
       </header>
-      {replay && <div className="replay-label">{runtime.flags?.replay ? t.replay : t.datasetReplay}</div>}
+      {replay && (
+        <div className="replay-label" role="note">
+          <span className="replay-mark" aria-hidden="true">
+            ◆
+          </span>
+          {runtime.flags?.replay ? t.replay : t.datasetReplay}
+        </div>
+      )}
       {credits ? (
         <Credits runtime={runtime} />
       ) : state === 'BOOT' ? (
@@ -111,14 +182,10 @@ export function App({ runtime }: { runtime: GameRuntime }) {
       )}
       {fatal && state !== 'BOOT' && (
         <aside className="renderer-error" role="alert">
-          {t.fatalTitle}. {t.fatalHint}
+          <strong>{t.fatalTitle}.</strong> {t.fatalHint}
         </aside>
       )}
-      {state !== 'PLAYING' && (
-        <footer className="app-footer">
-          <p>{replay ? t.datasetControls : t.menuHelp}</p>
-        </footer>
-      )}
+      {state !== 'PLAYING' && state !== 'BOOT' && <Legend replay={replay} />}
       {stats && state === 'PLAYING' && (
         <aside className="diagnostics">
           <p>{t.diagnosticsLimit}</p>

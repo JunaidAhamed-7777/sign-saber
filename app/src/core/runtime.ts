@@ -79,6 +79,7 @@ export class GameRuntime {
   private stats: SessionStats | null = null;
   private pop = '';
   private popUntil = 0;
+  private popSeq = 0;
   private countdownStepMs = START_COUNTDOWN_MS / COUNTDOWN_STEPS;
   private readonly countdownTargets: MenuTarget[] = [];
   private readonly countdownContext: MenuContext = {
@@ -133,16 +134,19 @@ export class GameRuntime {
     this.machine.events.on('note:hit', (event) => {
       this.pop = event.judgement;
       this.popUntil = performance.now() + POP_LIFETIME_MS;
+      this.popSeq++;
       this.sfx?.play(event.note.type, event.judgement);
     });
     this.machine.events.on('note:miss', () => {
       this.pop = 'miss';
       this.popUntil = performance.now() + POP_LIFETIME_MS;
+      this.popSeq++;
       this.sfx?.play('miss');
     });
     this.machine.events.on('note:badcut', () => {
       this.pop = 'badcut';
       this.popUntil = performance.now() + POP_LIFETIME_MS;
+      this.popSeq++;
       this.sfx?.play('badcut');
     });
     this.machine.events.on('obstacle:hit', () => this.sfx?.play('badcut'));
@@ -1297,6 +1301,7 @@ export class GameRuntime {
           leftCharge: leftPresent ? left!.charge : 0,
           rightCharge: rightPresent ? right!.charge : 0,
           judgement: now < this.popUntil ? this.pop : '',
+          judgementSeq: this.popSeq,
         },
       });
     }

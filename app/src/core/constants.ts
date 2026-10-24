@@ -509,3 +509,12 @@ export const QUALITY_TIER_PRESETS = Object.freeze({
     pylons: 8,
   } as const),
 });
+// --- Interface layout and HUD presentation (docs02 §UI; docs14 §Motion) ---
+/** Viewport bounds at or below which side rails reflow above/below the figure stage. Mirrored in ui/theme.css. */
+export const MENU_COMPACT_MAX_WIDTH_PX = 1099,
+  MENU_COMPACT_MAX_HEIGHT_PX = 699;
+/** Exponential damping constant for displayed HUD score/combo values (docs14 §Motion). */
+export const HUD_TWEEN_TAU_MS = 90;
+/** Combo counts that trigger the HUD milestone callout. */
+export const HUD_COMBO_MILESTONES = [10, 25, 50, 100] as const;
+// --- end interface layout and HUD presentation ---

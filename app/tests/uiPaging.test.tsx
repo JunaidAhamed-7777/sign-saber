@@ -80,7 +80,7 @@ describe('figure-centred paged menu structure', () => {
     expect(html).not.toContain('<video');
     expect(html).toMatch(/data-target="dataset-trial"[^>]*disabled/);
   });
-  it('renders one bounded music choice with reachable paging in compact mode', () => {
+  it('reflows compact rails above and below the figure with grouped full-size pages', () => {
     compact = true;
     useStore.setState({
       state: 'SELECT',
@@ -89,10 +89,66 @@ describe('figure-centred paged menu structure', () => {
     });
     const html = renderToStaticMarkup(<Select runtime={runtime} />),
       ids = targets(html);
-    expect(ids.filter((id) => id.startsWith('song:'))).toHaveLength(1);
-    expect(ids).toEqual([`song:${manifest.tracks[0]!.slug}`, 'ui:compact:previous', 'ui:compact:next']);
-    expect(html).toContain('compact-shell');
-    expect(html).toContain('aria-label="Menu pages"');
+    // All three starter cards share one top row; actions are grouped below the stage, not one per page.
+    expect(ids.filter((id) => id.startsWith('song:'))).toHaveLength(manifest.tracks.length);
+    expect(ids).toEqual([
+      'ui:compact-top:previous',
+      ...manifest.tracks.map((track) => `song:${track.slug}`),
+      'ui:compact-top:next',
+      'ui:compact:previous',
+      'audio',
+      'dataset-trial',
+      'arrange',
+      'ui:compact:next',
+    ]);
+    expect(new Set(ids).size).toBe(ids.length);
+    const top = html.indexOf('compact-top'),
+      stage = html.indexOf('figure-stage'),
+      bottom = html.indexOf('compact-bottom');
+    expect(top).toBeGreaterThan(-1);
+    expect(stage).toBeGreaterThan(top);
+    expect(bottom).toBeGreaterThan(stage);
+    expect(html).toContain('1 of 2');
+    expect(html).toContain('Choose a track to begin.');
+  });
+  it('surfaces the actual song-load error with a retry instead of a generic prompt', () => {
+    useStore.setState({
+      state: 'SELECT',
+      library: manifest.tracks as BundledTrackEntry[],
+      libraryLoading: false,
+      selectedSlug: manifest.tracks[1]!.slug,
+      map: null,
+      loading: false,
+      error: 'Packaged audio duration does not match its chart.',
+    });
+    for (const mode of [false, true]) {
+      compact = mode;
+      const html = renderToStaticMarkup(<Select runtime={runtime} />);
+      expect(html).toContain('role="alert"');
+      expect(html).toContain('This track could not load.');
+      expect(html).toContain('Packaged audio duration does not match its chart.');
+      expect(html).not.toContain('Choose a track to begin.');
+      expect(targets(html)).toContain('selection-retry');
+      expect(html).toMatch(/data-target="dataset-trial"[^>]*disabled/);
+    }
+    compact = false;
+    const html = renderToStaticMarkup(<Select runtime={runtime} />);
+    expect(html).toMatch(/class="btn selected song-card failed"/);
+    expect(html).toContain('Could not load');
+  });
+  it('marks the loading card busy and keeps the generated cover art per track', () => {
+    useStore.setState({
+      state: 'SELECT',
+      library: manifest.tracks as BundledTrackEntry[],
+      libraryLoading: false,
+      selectedSlug: manifest.tracks[0]!.slug,
+      loading: true,
+    });
+    const html = renderToStaticMarkup(<Select runtime={runtime} />);
+    expect(html).toMatch(new RegExp(`data-target="song:${manifest.tracks[0]!.slug}"[^>]*aria-busy="true"`));
+    expect(html.match(/class="cover-art cover-/g)?.length).toBeGreaterThanOrEqual(manifest.tracks.length);
+    expect(html).toContain('Loading selected music');
+    expect(html).not.toContain('<img');
   });
   it('enables the dataset trial with music and sound while camera setup remains absent', () => {
     const map = { song: { title: 'Dataset test', durationMs: 5000 }, notes: [] } as unknown as BeatmapV1;
@@ -105,7 +161,11 @@ describe('figure-centred paged menu structure', () => {
       camera: { state: 'not-set-up', mode: 'browse', calibrationValid: false, error: null },
     });
     const html = renderToStaticMarkup(<Select runtime={runtime} />);
-    expect(html).toMatch(/data-target="dataset-trial"[^>]*class="primary "/);
+    expect(html).toMatch(/data-target="dataset-trial"[^>]*class="btn primary hero"/);
+    // Difficulty is on the first ready page, not hidden behind paging.
+    expect(targets(html)).toEqual(
+      expect.arrayContaining(['difficulty:easy', 'difficulty:normal', 'difficulty:hard']),
+    );
     expect(html).not.toMatch(/data-target="dataset-trial"[^>]*disabled/);
     expect(html).not.toContain('data-target="camera"');
   });
@@ -127,6 +187,7 @@ describe('figure-centred paged menu structure', () => {
     compact = true;
     html = renderToStaticMarkup(<Calibration runtime={runtime} />);
     expect(targets(html)).toEqual(['back']);
+    expect(html).toContain('compact-shell');
   });
   it('labels a real frozen figure even when current tracking is absent', () => {
     frozen = true;
@@ -182,9 +243,17 @@ describe('figure-centred paged menu structure', () => {
       library: manifest.tracks as BundledTrackEntry[],
       map: null as BeatmapV1 | null,
     });
-    const html = renderToStaticMarkup(<App runtime={runtime} />),
+    let html = renderToStaticMarkup(<App runtime={runtime} />),
       ids = targets(html);
-    expect(ids).toEqual(['ui:credits:previous', 'ui:credits:next', 'credits']);
+    expect(ids).toEqual(['credits']);
+    for (const track of manifest.tracks) {
+      expect(html).toContain(track.rights.licenseUrl);
+      expect(html).toContain(track.title);
+    }
+    compact = true;
+    html = renderToStaticMarkup(<App runtime={runtime} />);
+    ids = targets(html);
+    expect(ids).toEqual(['credits', 'ui:credits:previous', 'ui:credits:next']);
     expect(new Set(ids).size).toBe(ids.length);
   });
 });

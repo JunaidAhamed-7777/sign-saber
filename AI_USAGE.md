@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Acquisition reconciliation
+
+- An agent independently verified the completed official MPII archive's bytes, gzip/tar structure and indexed-image coverage, plus the selected COCO inventory. Codex documented acquisition separately from uncompleted training and model quality.
+
 ## 2026-10-25 — Clean-checkout and pause regression fixes
 
 - Parallel clean-clone validation found a real canonical-byte fixture mismatch; browser exercise found the dataset Resume camera dependency. Codex corrected both and added integrity/UI regression assertions, preserving the failed-check evidence and live-camera guards.

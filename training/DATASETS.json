@@ -71,6 +71,15 @@
         "completedEpochs": 0,
         "fullDatasetTrainingCompleted": false,
         "promotedToGame": false
+      },
+      "localInventoryVerification": {
+        "checkedAt": "2026-10-24T20:42:46.031514+00:00",
+        "indexedPhotoPaths": 8503,
+        "actualPhotoPaths": 8503,
+        "matchingReceiptPaths": 8503,
+        "missingPhotos": 0,
+        "extraPhotos": 0,
+        "scope": "Filename inventory only on this check; prior actual-byte fingerprints and receipt checks are in PREFLIGHT_EVIDENCE.json"
       }
     },
     {
@@ -93,7 +102,7 @@
         "annotations": "https://datasets.d2.mpi-inf.mpg.de/andriluka14cvpr/mpii_human_pose_v1_u12_2.zip",
         "images": "https://datasets.d2.mpi-inf.mpg.de/andriluka14cvpr/mpii_human_pose_v1.tar.gz"
       },
-      "status": "archives_acquired_prepare_and_training_pending",
+      "status": "archive_verified_images_unextracted_training_pending",
       "downloaded": false,
       "trained": false,
       "localAnnotations": {
@@ -115,6 +124,52 @@
         "transport": "https:",
         "publisherChecksum": null,
         "note": "SHA records actual acquired bytes; no publisher-provided checksum was found. Local research only."
+      },
+      "archiveDownloaded": true,
+      "individualImageFilesReady": false,
+      "localArchiveVerification": {
+        "verifiedAt": "2026-10-24T20:43:22.342829+00:00",
+        "archiveBytes": 12088943206,
+        "archiveSha256": "6d26fbf89f49a7aeff4aa5f98123763f334693806b98eb15630f57a0b50998ce",
+        "receiptMatch": true,
+        "gzipCrcAndSizeCheck": "passed_full_stream_to_eof",
+        "tarHeaderAndPathCheck": "passed_all_members",
+        "memberCounts": {
+          "directories": 1,
+          "jpegFiles": 24984
+        },
+        "uniqueJpegFiles": 24984,
+        "duplicateFileNames": 0,
+        "uncompressedJpegBytes": 12140043353,
+        "minJpegBytes": 49790,
+        "maxJpegBytes": 1802962,
+        "firstNames": [
+          "images/094426649.jpg",
+          "images/085081267.jpg",
+          "images/059447634.jpg"
+        ],
+        "indexCoverage": {
+          "train": {
+            "indexedPeople": 26016,
+            "indexedUniqueImages": 15727,
+            "missingImagesInArchive": 0,
+            "firstMissingNames": []
+          },
+          "val": {
+            "indexedPeople": 2857,
+            "indexedUniqueImages": 1677,
+            "missingImagesInArchive": 0,
+            "firstMissingNames": []
+          }
+        },
+        "extracted": false,
+        "decodedAllJpegPixels": false,
+        "trainingOptimizerStepsOnMpii": 0,
+        "limitations": [
+          "No publisher checksum was available; independent SHA matches the actual acquisition receipt, not a publisher signature",
+          "Archive headers and gzip CRC verified; JPEG image pixels not individually decoded",
+          "Archive remains local and unextracted; no MPII model training performed"
+        ]
       }
     },
     {
@@ -241,10 +296,7 @@
     "cpu": "AMD Ryzen 9 5900HX, 8 cores/16 threads",
     "ramBytes": 16477028352,
     "diskFreeBytesAtInspection": 334070321152,
-    "gpus": [
-      "AMD Radeon RX6600M",
-      "AMD Radeon integrated graphics"
-    ],
+    "gpus": ["AMD Radeon RX6600M", "AMD Radeon integrated graphics"],
     "cudaAvailable": false,
     "gpuTrainingStatus": "No supported training stack verified. RX6600M absent from inspected official Windows ROCm matrix; do not claim GPU acceleration.",
     "gpuSupportSource": "https://rocm.docs.amd.com/projects/radeon-ryzen/en/latest/docs/compatibility/compatibilityrad/windows/windows_compatibility.html"
@@ -271,5 +323,7 @@
   "statusMeaning": {
     "downloaded": "All images in the explicitly selected eligible image index, not the entire named source benchmark; annotation/archive availability is recorded separately.",
     "trained": "Completed full eligible-dataset training. Bounded real-data preflight steps do not set this flag."
-  }
+  },
+  "acquisitionReconciledAt": "2026-10-24T20:43:22.342829+00:00",
+  "acquisitionStatusDocument": "STATUS.md"
 }

@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T02:18:43+05:30 — Completed MPII archive acquisition and integrity audit
+
+- Changed: Reconciled the exact local COCO photo/receipt inventory and completed MPII official archive acquisition. Recorded archive hash, full tar/gzip CRC/path/type audit and prepared image-name coverage in training/DATASETS.json and training/STATUS.md; updated training setup status.
+- Why: Keep the large-dataset request grounded in acquired source data and verified rights while current implementation prioritizes levels/assets over more tracking work.
+- Validation: Independently rehashed 12,088,943,206 compressed bytes; 24,984 unique JPEG archive members, zero duplicates and all prepared train/validation filenames present. Documentation checks passed.
+- Limits: MPII remains unextracted; individual JPEG decoding and MPII optimizer steps have not run. Full multi-dataset training remains incomplete and no weights were promoted. The three-step COCO preflight's worsened held-out loss is unchanged.
+
 ## 2026-10-25T02:16:36+05:30 — Dataset pause and clean-checkout integrity fixes
 
 - Changed: The dataset trial can resume without camera calibration, while live/fatal guards remain enforced. Pinned fixture text to canonical LF bytes and corrected the runtime SHA to the actual Git blob. Added byte-level tamper/line-ending/load assertions and the paused-UI regression. Registered terminal-feedback constants for the renderer follow-up.

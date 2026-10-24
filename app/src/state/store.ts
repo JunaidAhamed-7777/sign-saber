@@ -60,6 +60,8 @@ export interface DisplayState {
   credits: boolean;
   stats: boolean;
   replay: boolean;
+  /** Which labelled non-camera trial is running, if any. */
+  trialSource: 'annotations' | 'performer' | null;
   fatal: string | null;
 }
 const initial: DisplayState = {
@@ -111,6 +113,7 @@ const initial: DisplayState = {
   credits: false,
   stats: false,
   replay: false,
+  trialSource: null,
   fatal: null,
 };
 export const useStore = create<DisplayState>(() => initial);

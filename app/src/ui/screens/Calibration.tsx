@@ -3,8 +3,10 @@ import { useStore } from '../../state/store';
 import { Button, MenuShell } from '../components/MenuShell';
 import type { MenuPage } from '../components/MenuShell';
 import { strings as t } from '../strings';
+import { useTrialCopy } from '../trialCopy';
 export function Calibration({ runtime }: { runtime: GameRuntime }) {
   const replay = useStore((s) => s.replay);
+  const trial = useTrialCopy();
   const ready = useStore((s) => s.calibrationReady && s.trackingReady);
   const countdown = useStore((s) => s.countdown);
   useStore((s) => s.status);
@@ -29,10 +31,10 @@ export function Calibration({ runtime }: { runtime: GameRuntime }) {
       label: t.calibrationTitle,
       content: (
         <>
-          <h1>{replay ? t.datasetPreparing : t.calibrationTitle}</h1>
-          <p>{replay ? t.datasetLimitations : t.positioning}</p>
+          <h1>{replay ? trial.preparing : t.calibrationTitle}</h1>
+          <p>{replay ? trial.limitations : t.positioning}</p>
           <p className={ready ? 'success' : 'subtle'} role="status">
-            {replay ? t.datasetReplay : ready ? t.framingReady : t.calibrationPending}
+            {replay ? trial.banner : ready ? t.framingReady : t.calibrationPending}
           </p>
           {back}
         </>
@@ -71,7 +73,7 @@ export function Calibration({ runtime }: { runtime: GameRuntime }) {
           content: (
             <>
               <p className={ready ? 'success' : 'subtle'}>
-                {replay ? t.datasetReplay : ready ? t.framingReady : t.calibrationPending}
+                {replay ? trial.banner : ready ? t.framingReady : t.calibrationPending}
               </p>
               {confirm}
             </>
@@ -82,7 +84,7 @@ export function Calibration({ runtime }: { runtime: GameRuntime }) {
         {
           id: 'positioning',
           label: t.positioning,
-          content: <p>{replay ? t.datasetLimitations : t.positioning}</p>,
+          content: <p>{replay ? trial.limitations : t.positioning}</p>,
         },
       ];
   return <MenuShell runtime={runtime} leftPages={left} rightPages={right} compactPages={compact} />;

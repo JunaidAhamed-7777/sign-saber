@@ -3,6 +3,7 @@ import { useStore } from '../../state/store';
 import { Button, MenuShell } from '../components/MenuShell';
 import type { MenuPage } from '../components/MenuShell';
 import { strings as t } from '../strings';
+import { useTrialCopy } from '../trialCopy';
 export function Results({ runtime }: { runtime: GameRuntime }) {
   const stats = useStore((s) => s.results),
     replay = useStore((s) => s.replay),
@@ -11,9 +12,10 @@ export function Results({ runtime }: { runtime: GameRuntime }) {
         ? !!s.map && s.audioReady
         : s.audioReady && (s.replay || (s.trackingReady && s.camera.calibrationValid)),
     );
-  const resultTitle = replay && !runtime.flags?.replay ? t.datasetResults : t.results;
-  const motionLabel = replay ? t.datasetMotion : t.motion;
-  const motionAbout = replay ? t.datasetMotionAbout : t.motionAbout;
+  const trial = useTrialCopy();
+  const resultTitle = replay && !runtime.flags?.replay ? trial.results : t.results;
+  const motionLabel = replay ? trial.motion : t.motion;
+  const motionAbout = replay ? trial.motionAbout : t.motionAbout;
   const songs = (
     <Button runtime={runtime} id="songs">
       {t.songs}

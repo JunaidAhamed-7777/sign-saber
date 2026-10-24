@@ -3,6 +3,7 @@ import type { ActionSource } from '../menuTargets';
 import type { GameRuntime } from '../../core/runtime';
 import { useStore } from '../../state/store';
 import { strings } from '../strings';
+import { trialCopy } from '../trialCopy';
 export function Button({
   runtime,
   id,
@@ -168,6 +169,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
   const highlight = useStore((s) => s.highlightAt);
   const mask = useStore((s) => s.maskAvailable);
   const replay = useStore((s) => s.replay);
+  const trialSource = useStore((s) => s.trialSource);
   const live = available && (replay || camera.calibrationValid || camera.mode === 'camera-setup');
   const saved = state === 'RESULTS' && highlight !== null;
   const frozen = state === 'PAUSED' && !!runtime.renderer?.hasFrozenFigure;
@@ -185,7 +187,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
     state === 'RESULTS'
       ? saved
         ? replay && !runtime.flags?.replay
-          ? strings.datasetSavedFigure
+          ? trialCopy(trialSource).savedFigure
           : strings.savedFigure
         : strings.noHighlight
       : state === 'PAUSED'
@@ -193,7 +195,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
           ? strings.frozenFigure
           : strings.noHighlight
         : replay && available
-          ? strings.datasetFigure
+          ? trialCopy(trialSource).figure
           : camera.mode === 'camera-setup' && available
             ? strings.setupPreview
             : live

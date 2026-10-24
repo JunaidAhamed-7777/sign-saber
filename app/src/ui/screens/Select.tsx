@@ -149,6 +149,11 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
       {t.datasetTrial}
     </Button>
   );
+  const performer = (
+    <Button runtime={runtime} id="performer-trial" disabled={!s.map || s.loading || !s.audioReady}>
+      {t.performerTrial}
+    </Button>
+  );
   const trialReason = !s.map ? t.startNoTrack : !s.audioReady ? t.startNoAudio : '';
   const arrange = (
     <Button runtime={runtime} id="arrange" disabled={!s.map || s.loading || !!s.arrangement?.active}>
@@ -189,6 +194,7 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
           {selection}
           {sound}
           {start}
+          {performer}
           {arrange}
           <p className="guard-reason" role="status">
             {s.loading ? t.trackLoading : trialReason}
@@ -235,6 +241,7 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
         </>
       ),
     },
+    { id: 'ready-performer', label: t.performerTrial, content: performer },
     { id: 'arrange', label: t.arrange, content: arrange },
     { id: 'arrangement-about', label: t.arrange, content: <p>{t.arrangementAbout}</p> },
     ...difficulties,

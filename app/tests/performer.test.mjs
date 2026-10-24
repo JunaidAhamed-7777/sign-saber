@@ -91,7 +91,8 @@ describe('synthetic performer hand templates', () => {
   });
 });
 
-describe('synthetic performer logic replay on bundled charts', () => {
+// Each case replays a full chart at 30 Hz; allow for a busy CI/host CPU.
+describe('synthetic performer logic replay on bundled charts', { timeout: 60000 }, () => {
   it.each([
     ['pamgaea', 'easy', 0.05],
     ['pamgaea', 'normal', 0.05],

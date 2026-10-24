@@ -10,6 +10,7 @@ import { Boot } from './ui/screens/Boot';
 import { Button, RailPager } from './ui/components/MenuShell';
 import type { MenuPage } from './ui/components/MenuShell';
 import { strings as t } from './ui/strings';
+import { useTrialCopy } from './ui/trialCopy';
 function Pointer() {
   const pointer = useStore((s) => s.pointer);
   return pointer?.visible ? (
@@ -24,13 +25,14 @@ function Pointer() {
 }
 function Status() {
   const replay = useStore((s) => s.replay);
+  const trial = useTrialCopy();
   const camera = useStore((s) => s.camera);
   const ready = useStore((s) => s.trackingReady);
   return (
     <span className={`camera-status ${camera.calibrationValid && ready ? 'active' : ''}`} role="status">
       <i />
       {replay
-        ? t.datasetSource
+        ? trial.source
         : camera.calibrationValid
           ? ready
             ? t.cameraReady
@@ -76,6 +78,7 @@ export function App({ runtime }: { runtime: GameRuntime }) {
   const calm = useStore((s) => s.calm);
   const credits = useStore((s) => s.credits);
   const replay = useStore((s) => s.replay);
+  const trial = useTrialCopy();
   const stats = useStore((s) => s.stats);
   const fatal = useStore((s) => s.fatal);
   useEffect(() => {
@@ -93,7 +96,7 @@ export function App({ runtime }: { runtime: GameRuntime }) {
         <Status />
         <span className="input-label">{t.nativeHelp}</span>
       </header>
-      {replay && <div className="replay-label">{runtime.flags?.replay ? t.replay : t.datasetReplay}</div>}
+      {replay && <div className="replay-label">{runtime.flags?.replay ? t.replay : trial.banner}</div>}
       {credits ? (
         <Credits runtime={runtime} />
       ) : state === 'BOOT' ? (
@@ -116,7 +119,7 @@ export function App({ runtime }: { runtime: GameRuntime }) {
       )}
       {state !== 'PLAYING' && (
         <footer className="app-footer">
-          <p>{replay ? t.datasetControls : t.menuHelp}</p>
+          <p>{replay ? trial.controls : t.menuHelp}</p>
         </footer>
       )}
       {stats && state === 'PLAYING' && (

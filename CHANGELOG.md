@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T03:46:00+05:30 — Watchable synthetic performer trial
+
+- Changed: Added `performer/trial.ts` and a **Watch synthetic performer** action. The runtime drives the selected (arranged) chart with planned performer frames through the same tracking consumer, renderer, scoring and results as other sources, calibrates the performer's lean reference once it stands still, shows hand HUD state and exports evidence lane `synthetic-performer-logic-replay`. A source-aware `ui/trialCopy.ts` labels banner, status, setup, figure and results honestly for annotations versus performer.
+- Why: The user wants to see whether the game works without a camera; the performer makes the full loop visible and exercises the runtime, renderer and results path with genuine hits.
+- Validation: In the desktop app's embedded Chromium, Pamgaea → Enable sound → Watch synthetic performer built the 80-second cut and played with PERFECT judgements (screenshot during play: score 4,000, combo 18, accuracy 100%). Full `npm run check` passed.
+- Limits: Planned synthetic landmarks only; no pixels, MediaPipe, webcam or human. The skeleton is still the line figure until the avatar branch lands.
+
 ## 2026-10-25T03:24:00+05:30 — Synthetic performer and responsive landmark filtering
 
 - Changed: Added `app/src/performer/` (choreography planner, body/hand geometry, TrackingFrame synthesizer) and `tests/performer.test.mjs`, which plays five bundled charts through the real InputPipeline and GameSession at 30 Hz. Raised `ONE_EURO_BETA` from 0.08 to 10 with swing-tracking and stationary-jitter regressions. Registered the performer constants, documented the performer in docs02/05/17 and allowed Node globals in `.mjs` suites.

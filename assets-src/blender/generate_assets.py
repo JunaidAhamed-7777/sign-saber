@@ -31,8 +31,11 @@ GLYPH_DEPTH_M = 0.04
 GLYPH_CHAMFER_M = 0.009
 GLYPH_RELIEF_STEP_M = 0.008
 # Block shell: 1 m authored cube (scaled by BLOCK_SIZE at runtime) with emissive bevel trims.
-BLOCK_BEVEL_M = 0.075
-BLOCK_CORE_RADIUS_M = 0.17
+# Target families (1 m authored, scaled by BLOCK_SIZE at runtime). Slash: a thin bladed rhombic slab with a
+# glowing cut seam. Beam: a faceted orb with an equator band. Smash reuses the Voronoi shards (cracked cube).
+SLASH_CHAMFER_M = 0.05
+SLASH_SEAM_M = 0.032
+ORB_BAND_DEG = 7
 CONSTANTS_SOURCE = (ROOT / 'app' / 'src' / 'core' / 'constants.ts').read_text(encoding='utf8')
 def shared_metres(name):
     match = re.search(r'\b' + re.escape(name) + r'\s*=\s*(-?[0-9]+(?:\.[0-9]+)?)\s*[,;]', CONSTANTS_SOURCE)
@@ -42,6 +45,8 @@ def shared_metres(name):
 PYLON_SPACING_M = shared_metres('PYLON_SPACING_M')
 PYLON_X = shared_metres('PYLON_X')
 SILHOUETTE_Z = shared_metres('SILHOUETTE_Z')
+SLASH_SLAB_DEPTH_M = shared_metres('SLASH_SLAB_DEPTH')
+ORB_RADIUS_M = shared_metres('BEAM_ORB_RADIUS')
 old_meshes = set()
 for obj in list(bpy.data.objects):
     if obj.get('sign_saber_owned'):
@@ -72,7 +77,6 @@ def material(name, hexcolor, preview_emission=0.0):
 outer = material('outer', '#808080')
 inner = material('inner', '#FFFFFF', 1.5)
 glass = material('block_glass', '#9FB4CC')
-core_mat = material('block_core', '#FFFFFF', 4)
 cyan = material('arena_neon_cyan', '#19F5FF', 4)
 magenta = material('arena_neon_magenta', '#FF2BD6', 4)
 gold = material('arena_neon_gold', '#FFC32B', 4)
@@ -152,7 +156,7 @@ def set_mask(obj, white):
 
 def closed(obj):
     bm = bmesh.new(); bm.from_mesh(obj.data)
-    ok = all(edge.is_manifold for edge in bm.edges)
+    ok = all(edge.is_manifold and edge.is_contiguous for edge in bm.edges)
     bm.free()
     return ok
 
@@ -441,26 +445,65 @@ if not closed(pylon): raise RuntimeError('Pylon shells are not closed')
 set_mask(pylon, lambda polygon: polygon.material_index == 1)
 groups['pylon']=[pylon]
 
-# ---------------------------------------------------------------- block shell
-bm = bmesh.new()
-bmesh.ops.create_cube(bm, size=1.0)
-trim_faces = set(bmesh.ops.bevel(bm, geom=bm.verts[:] + bm.edges[:], offset=BLOCK_BEVEL_M, offset_type='OFFSET', segments=2,
-                                 profile=.5, affect='EDGES', clamp_overlap=True)['faces'])
-bm.faces.index_update()
-trim_ids = {f.index for f in trim_faces}
-bm.verts.index_update()
-shell_vertices = [tuple(v.co) for v in bm.verts]
-shell_faces = [tuple(v.index for v in f.verts) for f in bm.faces]
-bm.free()
-# bmesh authored in game axes; the block's glass panels stay black in Col, bevels are white trims.
-shell = mesh('block_shell', shell_vertices, shell_faces, (glass,))
-set_mask(shell, lambda polygon: polygon.index in trim_ids)
-bm = bmesh.new()
-bmesh.ops.create_icosphere(bm, subdivisions=1, radius=BLOCK_CORE_RADIUS_M)
-bm.verts.index_update()
-core = mesh('block_core', [tuple(v.co) for v in bm.verts], [tuple(v.index for v in f.verts) for f in bm.faces], (core_mat,))
-bm.free()
-for obj in (shell, core):
+# ---------------------------------------------------------------- target families
+def slab(outline, depth, chamfer):
+    """Closed extrusion with an inset chamfer on both the +Z and -Z faces. Returns (vertices, faces, chamfer_face_ids)."""
+    outline = ccw(dedupe(outline))
+    face_inset = inset(outline, chamfer)
+    n = len(outline)
+    rings = [(face_inset, -depth/2), (outline, -depth/2 + chamfer), (outline, depth/2 - chamfer), (face_inset, depth/2)]
+    vertices = [(x, y, z) for ring, z in rings for x, y in ring]
+    faces = cap(face_inset, 0, -depth/2, False)
+    chamfers = []
+    for r in range(3):
+        for i in range(n):
+            j = (i + 1) % n
+            if r != 1: chamfers.append(len(faces))
+            faces.append((r*n + i, r*n + j, (r+1)*n + j, (r+1)*n + i))
+    faces += cap(face_inset, 3*n, depth/2, True)
+    return vertices, faces, chamfers
+
+# Slash: a thin bladed rhombus (point up/down/left/right) whose chamfered rims and horizontal cut seam glow.
+# Corner radius exceeds the chamfer inset so the inset rim never folds over at the tips.
+rhombus = [(0, .5, .075), (-.5, 0, .075), (0, -.5, .075), (.5, 0, .075)]
+slab_vertices, slab_faces, slab_trims = slab(fillet(rhombus, math.pi/6), SLASH_SLAB_DEPTH_M, SLASH_CHAMFER_M)
+seam = prism_xy([(-.43, -SLASH_SEAM_M/2), (.43, -SLASH_SEAM_M/2), (.43, SLASH_SEAM_M/2), (-.43, SLASH_SEAM_M/2)],
+                -SLASH_SLAB_DEPTH_M/2 - .012, SLASH_SLAB_DEPTH_M/2 + .012)
+seam_start = len(slab_faces)
+slash_vertices, slash_faces = combine([(slab_vertices, slab_faces), seam])
+slash_trim_ids = set(slab_trims) | set(range(seam_start, len(slash_faces)))
+slash_block = mesh('block_slash', slash_vertices, slash_faces, (glass,))
+set_mask(slash_block, lambda polygon: polygon.index in slash_trim_ids)
+
+# Beam: a faceted orb; the thin equator band glows like a powered reticle core.
+latitudes = [60, 30, ORB_BAND_DEG, -ORB_BAND_DEG, -30, -60]
+segments = 12
+orb_vertices = [(0, ORB_RADIUS_M, 0)]
+for lat in latitudes:
+    phi = math.radians(lat)
+    for k in range(segments):
+        theta = k * math.tau / segments
+        orb_vertices.append((ORB_RADIUS_M*math.cos(phi)*math.cos(theta), ORB_RADIUS_M*math.sin(phi), ORB_RADIUS_M*math.cos(phi)*math.sin(theta)))
+orb_vertices.append((0, -ORB_RADIUS_M, 0))
+bottom = len(orb_vertices) - 1
+orb_faces = []
+band_ids = set()
+for k in range(segments):
+    orb_faces.append((0, 1 + (k+1) % segments, 1 + k))
+for ring in range(len(latitudes) - 1):
+    for k in range(segments):
+        a = 1 + ring*segments + k; b = 1 + ring*segments + (k+1) % segments
+        if latitudes[ring] == ORB_BAND_DEG: band_ids.add(len(orb_faces))
+        orb_faces.append((a, b, b + segments, a + segments))
+last = 1 + (len(latitudes) - 1) * segments
+for k in range(segments):
+    orb_faces.append((bottom, last + k, last + (k+1) % segments))
+orb_block = mesh('block_orb', orb_vertices, orb_faces, (glass,))
+bm = bmesh.new(); bm.from_mesh(orb_block.data)
+bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
+bm.to_mesh(orb_block.data); bm.free()
+set_mask(orb_block, lambda polygon: polygon.index in band_ids)
+for obj in (slash_block, orb_block):
     if not closed(obj): raise RuntimeError('Open block mesh: ' + obj.name)
 
 # ---------------------------------------------------------------- arena environment
@@ -640,14 +683,14 @@ halo_vertices, halo_faces = torus_data(19, .16, 64, 3)
 halo = mesh('arena_horizon_ring', [(x, y, z) for x, y, z in halo_vertices], halo_faces, (sky_halo,), (0, 8, -132))
 arena.append(halo)
 groups['arena_environment'] = arena
-groups['block_shell'] = [shell, core]
+groups['block_targets'] = [slash_block, orb_block]
 
 # ---------------------------------------------------------------- validation and export
 def triangles(obj): return sum(len(p.vertices)-2 for p in obj.data.polygons)
-budgets = {'block_fractured':700,'armor':900,'beam_ring':900,'glyphs':1200,'pylon':600,'arena_environment':3000,'block_shell':400}
+budgets = {'block_fractured':700,'armor':900,'beam_ring':900,'glyphs':1200,'pylon':600,'arena_environment':3000,'block_targets':400}
 total = sum(triangles(obj) for objects in groups.values() for obj in objects)
 if total > 6000: raise RuntimeError('Total triangle budget exceeded: '+str(total))
-for obj in shards + groups['glyphs'] + [groups['beam_ring'][0], shell, core]:
+for obj in shards + groups['glyphs'] + [groups['beam_ring'][0], slash_block, orb_block]:
     if not closed(obj): raise RuntimeError('Open closed-contract mesh: ' + obj.name)
 for obj in groups['glyphs']:
     if triangles(obj) > 400: raise RuntimeError(obj.name + ' exceeds 400 triangles: ' + str(triangles(obj)))
@@ -672,7 +715,8 @@ for obj in shards:
     if not all(edge.is_manifold for edge in bm.edges): raise RuntimeError('Open shard mesh: '+obj.name)
     volume += bm.calc_volume(signed=False); bm.free()
 if abs(volume-1) > 0.02: raise RuntimeError('Shard volume invalid: '+str(volume))
-own_ids = {record['id'] for record in records}
+# Ids this generator owns, including retired ones it must not carry forward as foreign entries.
+own_ids = {record['id'] for record in records} | {'block_shell'}
 manifest_path = OUT/'manifest.json'
 # Preserve entries authored by other generators (for example a separately built avatar) in stable order.
 foreign = []
@@ -686,11 +730,12 @@ manifest={'schemaVersion':1,'generatedAt':datetime.now(timezone.utc).isoformat()
 bpy.ops.wm.save_as_mainfile(filepath=str(SOURCE),compress=True)
 manifest['sourceBlendSha256'] = hashlib.sha256(SOURCE.read_bytes()).hexdigest()
 manifest['sourceGeneratorSha256'] = hashlib.sha256((ROOT/manifest['sourceGenerator']).read_bytes()).hexdigest()
-manifest['sharedConstants'] = {'source':'app/src/core/constants.ts','PYLON_SPACING_M':PYLON_SPACING_M,'PYLON_X':PYLON_X,'SILHOUETTE_Z':SILHOUETTE_Z}
+manifest['sharedConstants'] = {'source':'app/src/core/constants.ts','PYLON_SPACING_M':PYLON_SPACING_M,'PYLON_X':PYLON_X,'SILHOUETTE_Z':SILHOUETTE_Z,'SLASH_SLAB_DEPTH':SLASH_SLAB_DEPTH_M,'BEAM_ORB_RADIUS':ORB_RADIUS_M}
 manifest['armorConstruction'] = {'bevelOffsetM':.03-ARMOR_BEVEL_CLEARANCE_M,'bevelClearanceM':ARMOR_BEVEL_CLEARANCE_M,'bevelSegments':3,'grooveDepthM':.015,'preSimplifyTriangles':armor_triangles,'exportTriangles':triangles(armor)}
 manifest['armorSimplification'] = 'Three-segment bevel at 0.02999m (10 micrometres below half thickness avoids coincident corner seams), 0.015m grooves; budget simplification from %s to %s triangles.'%(armor_triangles,triangles(armor))
-manifest['blockShell'] = {'bevelM':BLOCK_BEVEL_M,'bevelSegments':2,'coreRadiusM':BLOCK_CORE_RADIUS_M,'trimMask':'Col white on bevel trims, black on glass panels'}
+manifest['blockTargets'] = {'slash':{'node':'block_slash','shape':'rhombic slab with chamfered faces and cut seam','depthM':SLASH_SLAB_DEPTH_M,'chamferM':SLASH_CHAMFER_M,'seamM':SLASH_SEAM_M},'beam':{'node':'block_orb','shape':'faceted 12-segment orb with equator band','radiusM':ORB_RADIUS_M,'bandDeg':ORB_BAND_DEG},'smash':'runtime assembly of the authored block_fractured shards with crack gaps (no duplicate geometry)','trimMask':'Col white on emissive trims/seam/band, black on glass'}
 manifest['glyphConstruction'] = {'depthM':GLYPH_DEPTH_M,'chamferM':GLYPH_CHAMFER_M,'reliefStepM':GLYPH_RELIEF_STEP_M,'nodes':{g.name:triangles(g) for g in groups['glyphs']}}
-manifest_path.write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf8')
-(OUT/'ASSET_LICENSE.txt').write_text((ROOT/'LICENSE').read_text(encoding='utf8'),encoding='utf8')
+# LF on every platform so the committed text matches Git's canonical bytes.
+manifest_path.write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf8',newline='\n')
+(OUT/'ASSET_LICENSE.txt').write_text((ROOT/'LICENSE').read_text(encoding='utf8'),encoding='utf8',newline='\n')
 print('SIGN_SABER_ASSETS '+json.dumps({'assets':len(records),'triangles':total,'bytes':sum(r['bytes'] for r in records),'shardCount':len(shards),'shardVolumeM3':volume,'perAsset':{r['id']:r['triangles'] for r in records}}))

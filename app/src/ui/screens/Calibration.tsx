@@ -133,7 +133,9 @@ export function Calibration({ runtime }: { runtime: GameRuntime }) {
         </div>
       }
       compactPages={compactPages}
-      compactStatus={coaching}
+      // During an armed labelled-trial pre-roll the figure uses the play projection; keep the bottom row to
+      // the countdown and Back so it does not cover the hips. The source banner remains visible above.
+      compactStatus={replay && armed ? null : coaching}
     />
   );
 }

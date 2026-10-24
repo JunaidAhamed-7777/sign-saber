@@ -287,7 +287,7 @@ describe('camera ownership and cancellation with mocked browser boundaries', () 
     expect(order).toEqual(['observe', 'frame']);
     camera.observeProcessed(5, []);
     expect(source.observeProcessed).toHaveBeenCalledWith(5, []);
-    expect(camera.sourceEvidence()).toEqual({ lane: 'dataset-camera' });
+    expect(camera.sourceEvidence()).toEqual({ active: true, lane: 'dataset-camera' });
     camera.setCaptureVisible(false);
     expect(source.setActive).toHaveBeenLastCalledWith(false);
     source.onFailure?.('Dataset camera — not a webcam: decode broke');
@@ -295,6 +295,7 @@ describe('camera ownership and cancellation with mocked browser boundaries', () 
     expect(source.close).toHaveBeenCalledOnce();
     expect(track.stop).toHaveBeenCalledOnce();
     expect(camera.sourceKind).toBeNull();
+    expect(camera.sourceEvidence()).toEqual({ active: false, lane: 'dataset-camera' });
     camera.stop();
     expect(source.close).toHaveBeenCalledOnce();
   });

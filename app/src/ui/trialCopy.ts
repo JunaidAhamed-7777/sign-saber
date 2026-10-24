@@ -15,7 +15,7 @@ export function trialCopy(source: 'annotations' | 'performer' | null) {
     results: performer ? strings.performerResults : strings.datasetResults,
     motion: performer ? strings.performerMotion : strings.datasetMotion,
     motionAbout: performer ? strings.performerMotionAbout : strings.datasetMotionAbout,
-    controls: strings.datasetControls,
+    controls: performer ? strings.performerControls : strings.datasetControls,
   };
 }
 export function useTrialCopy() {

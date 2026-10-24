@@ -23,6 +23,8 @@ import {
   SHATTER_INHERIT,
   SHATTER_POOL,
   SHARD_FLASH_MS,
+  SHATTER_DEPTH_FRACTION,
+  SHATTER_RECEDE_MPS,
 } from '../core/constants';
 import { createShardMaterial, createTargetUniforms } from './blocks';
 
@@ -105,7 +107,8 @@ export class ShatterPool {
           (1 - 0.3 * Math.min(1, fromImpact));
       slot.velocities[at] = event.impactVel.x * SHATTER_INHERIT + (rx / length) * speed;
       slot.velocities[at + 1] = event.impactVel.y * SHATTER_INHERIT + (ry / length) * speed;
-      slot.velocities[at + 2] = (rz / length) * speed;
+      // Burst sideways and away from the camera; pieces never fly into the player's view.
+      slot.velocities[at + 2] = (rz / length) * speed * SHATTER_DEPTH_FRACTION - SHATTER_RECEDE_MPS;
       slot.rotations[i] = phase;
     }
   }
@@ -119,13 +122,14 @@ export class ShatterPool {
         continue;
       }
       const seconds = age / 1000,
-        fade = 1 - Math.max(0, (age / this.lifetimeMs - 0.7) / 0.3),
+        // Pieces shrink steadily from the burst so the near field clears quickly.
+        fade = 1 - 0.85 * Math.min(1, age / this.lifetimeMs) ** 0.8,
         // White-hot for SHARD_FLASH_MS (never in Calm), then the fracture faces cool over the lifetime.
         flash = calm ? 0 : Math.max(0, 1 - age / SHARD_FLASH_MS);
       this.tint
         .copy(SMASH)
-        .lerp(WHITE, flash)
-        .multiplyScalar((1 + flash * 1.5) * (1 - 0.45 * (age / this.lifetimeMs)));
+        .lerp(WHITE, flash * 0.6)
+        .multiplyScalar((1 + flash * 0.5) * (1 - 0.45 * (age / this.lifetimeMs)));
       for (let i = 0; i < this.meshes.length; i++) {
         this.meshes[i]!.setColorAt(count, this.tint);
         const at = i * 3;

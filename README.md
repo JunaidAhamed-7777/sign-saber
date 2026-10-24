@@ -20,9 +20,9 @@ Open [localhost:5173](http://localhost:5173). The initial menu requests no camer
 
 1. Choose Pamgaea, Electro Cabello or Cipher.
 2. Choose **Enable sound** with mouse/keyboard.
-3. **Try level with dataset** automatically builds the short cut; **Make 80-second cut** also lets you prepare it separately. The engine renders 10 seconds fading in, a 60-second energy/onset-supported highlight and 10 seconds fading out, then generates a fresh chart from the edited WAV. Short admitted files disclose proportionally shorter sections. This is a musical heuristic, not verified chorus detection.
+3. **Try level with dataset** automatically builds the short cut; **Make 80-second cut** (the next right-rail page, Music options) also lets you prepare it separately. The engine renders 10 seconds fading in, a 60-second energy/onset-supported highlight and 10 seconds fading out, then generates a fresh chart from the edited WAV. Short admitted files disclose proportionally shorter sections. This is a musical heuristic, not verified chorus detection.
 4. Choose **Try level with dataset**. A visible banner identifies independent, attributed COCO still annotations. They contain no recorded movement, hand gestures, metric depth or masks; missing gesture input produces real misses. The browser trial reached actual results with 131 Miss and zero invented hits.
-5. Esc/Space pauses. Resume, Retry and Songs use the same guarded lifecycle. Side-rail pages expose difficulty, preview, volume, appearance, credits and optional live-camera controls.
+5. Esc/Space pauses. Resume, Retry and Songs use the same guarded lifecycle. Difficulty and preview sit on the first ready page; further side-rail pages expose the cut, volume, appearance, menu hand, credits and optional live-camera controls. Windows at or below 1099 px wide or 699 px tall reflow the rails above and below the figure instead of covering it.
 
 All three full original songs remain available. The arrangement uses one continuous source window with raised-cosine amplitude fades, avoiding hard joins. It retains exact source/sample/fade bounds and original/new hashes; the old chart is never reused under edited audio. User audio upload is local, bounded and cancellable.
 

@@ -40,6 +40,12 @@ Measured first-load script waterfall (CDP request start → finish, ms from docu
 | After | `three-B_2LwjzK.js` | 18.50 → 67.75 |
 | After | `three-bq-AKiay.js` | 18.58 → 95.75 |
 | After | `three-sRmNNit9.js` | 18.65 → 104.17 |
+## 2026-10-25T03:46:57+05:30 — Initial focus, camera-setup UI test and interface docs
+
+- Changed: Calibration Confirm, Pause Resume (or Songs when resume is blocked) and Results Retry (or Songs) receive initial keyboard focus through a `Button` `autoFocus` option. Added a camera-setup rendering test (checklist from real presence flags, disabled Confirm, Cancel, no `<video>`, desktop and compact). README, docs14 and docs25 now describe the implemented ready page, cut page, HUD details, compact reflow bounds and new UI modules.
+- Why: docs14 asks transitions to move focus to the primary available action; the setup subflow had no rendered-structure test; docs needed to match the shipped interface.
+- Validation: Typecheck, lint and build passed; 335 of 336 assertions passed. The failing assertion is main's `tests/unit/gapless.test.mjs` “never trims a buffer…” timing out at ~5.3–7.8 s against the 5 s limit while the machine CPU was at 100% (parallel training); it also failed in isolation under that load and is unrelated to UI files. Correction: the previous entry (“Ready page with performer action…”) claimed a passing check, but that run had the same two to three audio timeouts. Root docs tests passed 2/2; checker reported 47 files, 517 local links, 0 errors.
+- Limits: Autofocus behaviour was not exercised with a screen reader or real keyboard-only session.
 
 ## 2026-10-25T03:46:00+05:30 — Watchable synthetic performer trial
 
@@ -47,6 +53,13 @@ Measured first-load script waterfall (CDP request start → finish, ms from docu
 - Why: The user wants to see whether the game works without a camera; the performer makes the full loop visible and exercises the runtime, renderer and results path with genuine hits.
 - Validation: In the desktop app's embedded Chromium, Pamgaea → Enable sound → Watch synthetic performer built the 80-second cut and played with PERFECT judgements (screenshot during play: score 4,000, combo 18, accuracy 100%). Full `npm run check` passed.
 - Limits: Planned synthetic landmarks only; no pixels, MediaPipe, webcam or human. The skeleton is still the line figure until the avatar branch lands.
+
+## 2026-10-25T03:45:00+05:30 — Blender asset pack v2, glass block materials, HDR post FX and reactive arena
+
+- Changed: `assets-src/blender/generate_assets.py` now authors a seeded 14-cell Voronoi fracture (bmesh bisect + hole fill, closed convex shards, centroid pivots, volume 1.0 m³), a new `block_shell.glb` (bevelled glass shell whose bevels carry a `Col` trim mask, plus a faceted inner core), chamfered relief glyphs (palm, fist and point with thumb relief, new directional `glyph_arrow`), a beam ring with inward aim chevrons and ticks, a pylon with plinth and lit crown, and a layered arena: octagonal player dais below y=0, lit rail channels and bass cross-channels, two light towers per side with lamp heads and speaker cabinets, speaker stacks between them, two overhead truss arcs, an unfogged distant skyline with window bands and a horizon halo. The manifest generator keeps foreign entries (for example a separately authored avatar) and recomputes totals over all entries. Added `render_asset_sheet.py` and a gameplay-camera `render_preview.py`. Runtime: `render/blocks.ts` adds instanced glass-shell, core, chamfer-shaded glyph and hot-cross-section shard shaders; `render/environment.ts` adds an antialiased shader floor grid with lane guides (replacing GridHelper), horizon glow, tier-sized dust and slew-limited band response (bass → floor/stage, mids → pylons/towers/truss, highs → skyline/dust); `render/postfx.ts` adds a half-float EffectComposer with mipmap bloom (tier intensity/levels/resolution), vignette, ACES tone mapping and SMAA/FXAA by tier, built only when half-float targets are renderable. Shatter shards flash white for `SHARD_FLASH_MS` (not in Calm) and glow on fracture faces. A development-only `render/devFx.ts` preview harness is excluded from production builds. New constants are appended to `core/constants.ts`.
+- Why: The user asked for upgraded Blender models, a richer arena and premium but readable rendering.
+- Validation: Two Blender MCP regenerations on a dedicated instance (port 9878); `node --test scripts/check-model-assets.test.mjs` and `node scripts/check-model-assets.mjs` pass (7 GLBs, 5,844 triangles, 341,428 bytes; Khronos validator not rerun). `npm run typecheck`, `lint`, `build` and `prettier --check` pass; vitest 316/317 pass — the one failure is main's `gapless` test timing out at 5 s under authoring load, unrelated to rendering. Docs checks pass. Native Chrome screenshots at 1440×900 of the menu and dataset trial were inspected.
+- Limits: Blade ribbons, hand particles, hit sparks, camera response and slice-cap heat are not implemented yet. No GPU timing or flashing review was measured. The fracture is not Cell Fracture output.
 
 ## 2026-10-25T03:40:00+05:30 — wip: Blender-authored rigged upper-body avatar source
 

@@ -28,7 +28,7 @@ export function Calibration({ runtime }: { runtime: GameRuntime }) {
     </Button>
   );
   const confirm = (
-    <Button runtime={runtime} id="confirm" disabled={!ready} primary className="hero">
+    <Button runtime={runtime} id="confirm" disabled={!ready} primary className="hero" autoFocus>
       {t.calibrationConfirm}
     </Button>
   );

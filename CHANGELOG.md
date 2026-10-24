@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T02:13:55+05:30 — Distinct bounded beam power-down
+
+- Changed: Added a six-slot whole-target beam power-down/collapse effect with seeded sparks, soft flash and ring; no beam hit emits slash halves, shatter pieces or generic cube debris. Whole effects reserve their sparks in the shared fragment cap and recycle deterministically. Registered effect/arena emission values and updated subsystem docs. Normalized the app README formatting.
+- Why: Preserve the documented contrast between slash, smash and beam while keeping effects bounded and exact across pause/replay.
+- Validation: Full check passed typecheck/lint/257 assertions/build. Seven new effect assertions cover lifetime, deterministic motion, pause/Calm, reuse, disposal and shared capacity; source formatting check passed after README normalization. Documentation checks passed before commit.
+- Limits: Automated render data/geometry tests do not establish GPU frame budgets, flashing safety or human visual quality.
+
 ## 2026-10-25T02:00:32+05:30 — Integrated dataset-first game, shared rails and authored renderer
 
 - Changed: Wired the camera-free menu, native/hand semantic target registry, side-rail/compact paging, sound/preview/upload, automatic 80 s dataset trial, calibration/pause/results recovery and owned head-to-hips figures. Integrated Blender assets/fallbacks, bounded shards, exact capped swing-plane cuts, beam reticles/lines, wall cues and actual music emission with Calm behavior. Updated real npm commands, source formatting protection, runtime/geometry/UI assertions and current docs/status.

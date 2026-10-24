@@ -171,6 +171,19 @@ export class SlicePool {
     for (const slot of this.slots) if (slot.active) count += 2;
     return count;
   }
+  get oldestBirth(): number {
+    let time = Infinity;
+    for (const slot of this.slots) if (slot.active) time = Math.min(time, slot.birth);
+    return time;
+  }
+  releaseOldest(): boolean {
+    let oldest: SliceSlot | null = null;
+    for (const slot of this.slots) if (slot.active && (!oldest || slot.birth < oldest.birth)) oldest = slot;
+    if (!oldest) return false;
+    oldest.active = false;
+    for (const half of oldest.halves) half.mesh.visible = false;
+    return true;
+  }
   reset(): void {
     for (const slot of this.slots) {
       slot.active = false;

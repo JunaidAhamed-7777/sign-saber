@@ -7,6 +7,7 @@ import type { TypedEmitter } from '../utils/emitter';
 import { AssetRegistry } from './assets';
 import { ShatterPool } from './shatter';
 import { SlicePool } from './slices';
+import { PoofPool } from './poof';
 import { beamAimTarget } from '../game/hit';
 import {
   BG_COLOR,
@@ -30,7 +31,6 @@ import {
   SHATTER_BURST_MIN,
   SHATTER_BURST_MAX,
   OBSTACLE_ALPHA,
-  POOF_LIFETIME_MS,
   BEAM_VISUAL_MS,
   GLYPH_FACE_OFFSET_M,
   MAX_LIVE_OBSTACLES,
@@ -39,11 +39,20 @@ import {
   BEAM_AIM_RADIUS,
   ARENA_REACTIVE_GAIN,
   SIL_HEAD_RADIUS_M,
+  ARENA_BASE_EMISSION,
+  LANE_X,
+  LANE_Y,
+  BEAM_HOVER_Y_OFFSET,
+  BEAM_HOVER_Z,
 } from '../core/constants';
 const colors = { slash: 0x19f5ff, smash: 0xff2bd6, beam: 0xffc32b };
 const scratch = new THREE.Object3D();
 const tint = new THREE.Color();
 const aimTarget = { x: 0, y: 0, z: 0 };
+const beamCenter = { x: 0, y: 0, z: 0 };
+const BAND_KEYS = ['low', 'mid', 'high', 'rms'] as const;
+const EMPTY_NOTES: readonly LiveNote[] = Object.freeze([]),
+  EMPTY_OBSTACLES: readonly LiveObstacle[] = Object.freeze([]);
 const connections = [
   [11, 12],
   [11, 13],
@@ -109,6 +118,7 @@ export class ArenaRenderer {
   );
   private readonly shatter: ShatterPool;
   private readonly slices: SlicePool;
+  private readonly poofs: PoofPool;
   private renderedNotes: readonly LiveNote[] = [];
   private environment: THREE.Group | null = null;
   private readonly beamLines: THREE.Line[] = [];
@@ -232,10 +242,12 @@ export class ArenaRenderer {
     this.pylons.instanceMatrix.needsUpdate = true;
     this.shatter = new ShatterPool(this.scene, this.assets.assets.shards);
     this.slices = new SlicePool(this.scene);
+    this.poofs = new PoofPool(this.scene);
     this.blocks.frustumCulled = false;
     this.blocks.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     this.scene.add(this.blocks);
     this.fragments.frustumCulled = false;
+    this.fragments.name = 'debris_fragments';
     this.fragments.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     this.scene.add(this.fragments);
     const edgeGeometry = new THREE.EdgesGeometry(this.cubeGeometry);
@@ -403,7 +415,7 @@ export class ArenaRenderer {
   }
   setMusicBands(bands: BandEnergies): void {
     if (this.mode === 'paused') return;
-    for (const band of ['low', 'mid', 'high', 'rms'] as const)
+    for (const band of BAND_KEYS)
       this.bands[band] = Number.isFinite(bands[band]) ? Math.max(0, Math.min(1, bands[band])) : 0;
   }
   get highlightTimeMs(): number | null {
@@ -526,7 +538,11 @@ export class ArenaRenderer {
       line.geometry.setDrawRange(0, count);
     }
   }
-  draw(time: number, notes: readonly LiveNote[] = [], obstacles: readonly LiveObstacle[] = []): void {
+  draw(
+    time: number,
+    notes: readonly LiveNote[] = EMPTY_NOTES,
+    obstacles: readonly LiveObstacle[] = EMPTY_OBSTACLES,
+  ): void {
     this.renderedNotes = notes;
     if (this.mode !== 'paused') this.currentTime = time;
     let count = 0,
@@ -646,6 +662,7 @@ export class ArenaRenderer {
     if (this.fragments.instanceColor) this.fragments.instanceColor.needsUpdate = true;
     this.shatter.update(this.currentTime, play, this.calm);
     this.slices.update(this.currentTime, play, this.calm);
+    this.poofs.update(this.currentTime, play, this.calm);
     for (let hand = 0; hand < 2; hand++) {
       const age = this.currentTime - this.beamBirth[hand]!;
       const line = this.beamLines[hand]!;
@@ -658,7 +675,9 @@ export class ArenaRenderer {
     this.skeleton.visible = bodyVisible && this.hasPose;
     this.headMarker.visible = bodyVisible && this.headPresent;
     for (const material of this.neonMaterials)
-      material.emissiveIntensity = this.calm ? 0.4 : 0.4 + this.bands.low * ARENA_REACTIVE_GAIN;
+      material.emissiveIntensity = this.calm
+        ? ARENA_BASE_EMISSION
+        : ARENA_BASE_EMISSION + this.bands.low * ARENA_REACTIVE_GAIN;
     const rect = this.mode !== 'play' ? this.menuStage?.getBoundingClientRect() : null;
     this.camera.fov = CAM_FOV_DEG;
     this.camera.aspect = innerWidth / innerHeight;
@@ -690,6 +709,14 @@ export class ArenaRenderer {
     this.renderer.setScissorTest(false);
   }
   private impact(e: GameEvents['note:hit']): void {
+    if (e.note.type === 'beam') {
+      beamCenter.x = LANE_X[e.note.col];
+      beamCenter.y = LANE_Y[e.note.row] + BEAM_HOVER_Y_OFFSET;
+      beamCenter.z = BEAM_HOVER_Z;
+      this.poofs.trigger(e, this.currentTime, beamCenter);
+      this.balanceEffects();
+      return;
+    }
     if (e.note.type === 'slash') {
       let live: LiveNote | null = null;
       for (const note of this.renderedNotes)
@@ -698,11 +725,11 @@ export class ArenaRenderer {
           break;
         }
       this.slices.trigger(e, this.currentTime, live?.pos ?? e.impactPos, live?.rotation ?? 0);
-      this.trimEffects(Math.max(0, MAX_FRAGMENTS - this.shatter.occupancy - this.slices.occupancy));
+      this.balanceEffects();
       return;
     }
     if (e.note.type === 'smash') this.shatter.trigger(e, this.currentTime);
-    const count = e.note.type === 'smash' ? 4 : 6;
+    const count = 4;
     for (let i = 0; i < count; i++) {
       const slot = this.effects[this.effectIndex++ % this.effects.length]!;
       const angle = (i / count) * Math.PI * 2 + e.note.id;
@@ -711,7 +738,7 @@ export class ArenaRenderer {
       Object.assign(slot, {
         active: true,
         birth: this.currentTime,
-        life: e.note.type === 'smash' ? FRAGMENT_LIFETIME_MS : POOF_LIFETIME_MS,
+        life: FRAGMENT_LIFETIME_MS,
         x: e.impactPos.x,
         y: e.impactPos.y,
         z: e.impactPos.z,
@@ -723,18 +750,27 @@ export class ArenaRenderer {
         rotation: this.calm ? 0 : angle,
       });
     }
-    this.trimEffects(Math.max(0, MAX_FRAGMENTS - this.shatter.occupancy - this.slices.occupancy));
+    this.balanceEffects();
   }
-  private trimEffects(capacity: number): void {
-    let count = 0;
+  get effectOccupancy(): number {
+    let count = this.shatter.occupancy + this.slices.occupancy + this.poofs.occupancy;
     for (const effect of this.effects) if (effect.active) count++;
-    while (count > capacity) {
+    return count;
+  }
+  private balanceEffects(): void {
+    while (this.effectOccupancy > MAX_FRAGMENTS) {
       let oldest: Effect | null = null;
       for (const effect of this.effects)
         if (effect.active && (!oldest || effect.birth < oldest.birth)) oldest = effect;
-      if (!oldest) break;
-      oldest.active = false;
-      count--;
+      const shatter = this.shatter.oldestBirth,
+        slice = this.slices.oldestBirth,
+        poof = this.poofs.oldestBirth,
+        birth = Math.min(oldest?.birth ?? Infinity, shatter, slice, poof);
+      if (oldest && oldest.birth === birth) oldest.active = false;
+      else if (shatter === birth) this.shatter.releaseOldest();
+      else if (slice === birth) this.slices.releaseOldest();
+      else if (poof === birth) this.poofs.releaseOldest();
+      else break;
     }
   }
   private fireBeam(event: GameEvents['beam:fire']): void {
@@ -765,7 +801,7 @@ export class ArenaRenderer {
             if (material instanceof THREE.MeshStandardMaterial) {
               if (/rail|ring|strip|grid/.test(object.name)) {
                 material.emissive.copy(material.color);
-                material.emissiveIntensity = 0.4;
+                material.emissiveIntensity = ARENA_BASE_EMISSION;
                 if (!this.neonMaterials.includes(material)) this.neonMaterials.push(material);
               }
             }
@@ -800,6 +836,7 @@ export class ArenaRenderer {
     this.bands.low = this.bands.mid = this.bands.high = this.bands.rms = 0;
     this.shatter.reset();
     this.slices.reset();
+    this.poofs.reset();
     this.beamBirth[0] = this.beamBirth[1] = -Infinity;
   }
   dispose(): void {
@@ -807,6 +844,7 @@ export class ArenaRenderer {
     this.assets.stop();
     this.shatter.dispose();
     this.slices.dispose();
+    this.poofs.dispose();
     this.renderedNotes = [];
     for (const off of this.unsubscribe) off();
     this.unsubscribe = [];

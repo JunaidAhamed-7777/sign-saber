@@ -269,7 +269,7 @@ Allocate geometry, index/attribute buffers, shard uniforms, sprite textures and 
 - [ ] All intact blocks of all three types render in ≤ 3 draw calls regardless of count.
 - [ ] A slash block cut by a vertical swing splits left/right; a horizontal swing splits top/bottom; a diagonal swing produces a visibly diagonal cut — the cap faces the player white-hot and cools to the block colour.
 - [ ] High/medium smash effects show the complete 14-piece body plus armour; the declared low/procedural fallback shows eight complete pieces. Pieces tumble from the impact without unexplained holes or freezes.
-- [ ] A beam target visibly "powers down" (flicker, lights out) before collapsing; it never breaks into pieces.
+- [ ] A beam target visibly powers down monotonically (lights out) before collapsing; it never breaks into pieces.
 - [ ] A bad cut deflects/dims the block and counts exactly once; subsequent despawn produces no additional Miss judgement.
 - [ ] Obstacles are clearly red and translucent; the player can see blocks through them; being inside one triggers the glitch within one frame of `obstacle:hit`.
 - [ ] Slicer unit tests pass (volume conservation and manifold check on 200 random planes).
@@ -278,15 +278,27 @@ Allocate geometry, index/attribute buffers, shard uniforms, sprite textures and 
 
 ## Constants required
 
-This is the rendering destruction sub-registry linked from [02](02-architecture.md#constants). Values are planned defaults to export centrally during P0; the constants module is currently a stub.
+This is the rendering destruction sub-registry linked from [02](02-architecture.md#constants). Implemented values are exported from `app/src/core/constants.ts`; their existence is not GPU or human acceptance evidence.
 
 | Name | Value | Meaning |
 | --- | --- | --- |
 | `SLICE_POOL` | 12 | Half geometries pooled |
 | `SHATTER_POOL` | 18 | Simultaneous shatters |
+| `POOF_POOL` / `POOF_SPARKS` | 6 / 24 | Whole beam effects / sparks per effect |
+| `POOF_LIFETIME_MS` / `POOF_POWERDOWN_MS` | 700 / 150 ms | Inclusive release boundary / power loss |
+| `POOF_FLASH_DELAY_MS` / `POOF_FLASH_MS` / `POOF_RING_MS` | 120 / 100 / 300 ms | Flash start / flash duration / ring duration |
+| `POOF_FLASH_SIZE_M` | 0.7 m | Soft impact sprite size |
+| `POOF_RING_START_M` / `POOF_RING_END_M` | 0.3 / 1.6 m | Expanding ring scale |
+| `POOF_SPARK_SPEED_MIN` / `POOF_SPARK_SPEED_MAX` | 1.5 / 3 m/s | Seeded radial spark speed |
+| `POOF_SPARK_SIZE_M` / `POOF_GRAVITY_SCALE` | 0.03 m / 0.4 | Initial point size / gravity fraction |
+| `POOF_TARGET_SCALE` | 1.6 | Decorative distant beam target scale; aim radius is unchanged |
 | `SLICE_SEPARATION_SPEED` | 1.2 m/s | Along the cut normal |
 | `SLICE_INHERIT` / `SHATTER_INHERIT` | 0.35 / 0.5 | Fraction of `impactVel` inherited |
 | `SHATTER_BURST_MIN` / `MAX` | 2 / 6 m/s | Radial burst |
 | `BADCUT_PUSHBACK_M` / `BADCUT_MS` | 0.8 / 220 | Deflect |
 | `OBSTACLE_ALPHA` | 0.35 | |
 | `SPAWN_FADE_MS` | 250 | |
+
+## Current implementation evidence
+
+The runtime uses complete eight-octant Blender-authored shatters plus armour and tested exact capped cuts. Beam hits use a separate six-slot whole-target power-down/collapse pool, a soft impact sprite, ring and 24 seeded GPU points per effect. Calm suppresses the flash and ring expansion. Each whole effect reserves all its sparks against `MAX_FRAGMENTS`; saturation recycles the oldest whole effect deterministically. `beam:fire` owns only the ray, and no beam hit creates cube debris. Automated lifetime/geometry assertions are separate from unmeasured GPU and visual acceptance gates above.

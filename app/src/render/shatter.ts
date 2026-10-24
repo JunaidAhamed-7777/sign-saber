@@ -139,6 +139,18 @@ export class ShatterPool {
     for (const slot of this.slots) if (slot.active) count += this.shards.length;
     return count;
   }
+  get oldestBirth(): number {
+    let time = Infinity;
+    for (const slot of this.slots) if (slot.active) time = Math.min(time, slot.birth);
+    return time;
+  }
+  releaseOldest(): boolean {
+    let oldest: ShatterSlot | null = null;
+    for (const slot of this.slots) if (slot.active && (!oldest || slot.birth < oldest.birth)) oldest = slot;
+    if (!oldest) return false;
+    oldest.active = false;
+    return true;
+  }
   reset(): void {
     for (const slot of this.slots) slot.active = false;
     for (const mesh of this.meshes) mesh.count = 0;

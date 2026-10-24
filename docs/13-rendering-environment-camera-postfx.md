@@ -248,11 +248,12 @@ Render the mask/skeleton/hands to a `HIGHLIGHT_RT_SIZE` target only when capture
 
 ## Constants required
 
-This is the environment/post-FX rendering sub-registry linked from [02](02-architecture.md#constants). Export these planned defaults centrally during P0; the runtime constants module is currently a stub.
+This is the environment/post-FX rendering sub-registry linked from [02](02-architecture.md#constants). Implemented values are exported centrally from `app/src/core/constants.ts`; remaining post-FX budgets and acceptance criteria require measured evidence.
 
 | Name | Value | Meaning |
 | --- | --- | --- |
 | `FOG_DENSITY` | 0.026 | `FogExp2` density |
+| `ARENA_BASE_EMISSION` / `ARENA_REACTIVE_GAIN` | 0.4 / 2 | Steady arena emission / measured analyser-band gain |
 | `BG_COLOR` | `#05060D` | Background / fog colour |
 | `GRID_LINE_COLOR` | `#1A2BFF` | Base grid colour |
 | `TRAUMA_DECAY_S` | 0.6 | Linear trauma decay |

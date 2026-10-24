@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Beam presentation follow-up
+
+- An agent implemented the separate pooled whole-target beam collapse and bounded shared effect accounting; the integrator registered constants/docs and ran the full 257-assertion check. Numeric render evidence remains separate from human/GPU gates.
+
 ## 2026-10-25 — Integrated dataset-first game
 
 - Codex integrated lifecycle/audio/source ownership and the actual 80 s dataset trial; agents built shared accessible menu pages and the authored/fallback renderer, exact slicer and head-to-hips snapshots. Native browser results, 250 assertions and source checks are recorded separately from unavailable human/performance proof. Original starter music and working history were preserved.

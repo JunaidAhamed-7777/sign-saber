@@ -6,7 +6,7 @@ import { Instrumentation } from './loop';
 import type { TrackingFrame, SessionStats } from './types';
 import type { MenuContext, MenuTarget } from './menuInput';
 import { AudioPlayer, computePrerollMs } from '../audio/player';
-import { SfxBus } from '../audio/sfx';
+import { SfxDirector } from '../audio/sfxDirector';
 import { decodeForPlayback } from '../audio/decode';
 import { arrangeAudio } from '../audio/arrange';
 import type { AudioArrangementEdit } from '../audio/arrange';
@@ -51,7 +51,8 @@ export class GameRuntime {
   readonly renderer: ArenaRenderer | null;
   private context: AudioContext | null = null;
   private player: AudioPlayer | null = null;
-  private sfx: SfxBus | null = null;
+  /** Audio game feel: subscribes to game/menu events itself; see audio/sfxDirector.ts. */
+  private readonly sfx = new SfxDirector(this.machine.events, useStore);
   private decoder: OfflineAudioContext | null = null;
   private buffer: AudioBuffer | null = null;
   private upload: File | null = null;
@@ -137,22 +138,17 @@ export class GameRuntime {
       this.pop = event.judgement;
       this.popUntil = performance.now() + POP_LIFETIME_MS;
       this.popSeq++;
-      this.sfx?.play(event.note.type, event.judgement);
     });
     this.machine.events.on('note:miss', () => {
       this.pop = 'miss';
       this.popUntil = performance.now() + POP_LIFETIME_MS;
       this.popSeq++;
-      this.sfx?.play('miss');
     });
     this.machine.events.on('note:badcut', () => {
       this.pop = 'badcut';
       this.popUntil = performance.now() + POP_LIFETIME_MS;
       this.popSeq++;
-      this.sfx?.play('badcut');
     });
-    this.machine.events.on('obstacle:hit', () => this.sfx?.play('badcut'));
-    this.machine.events.on('obstacle:dodged', () => this.sfx?.play('dodge'));
     this.machine.events.on('music:event', (event) => {
       if (event.kind === 'drop') this.player?.duck();
     });
@@ -386,7 +382,7 @@ export class GameRuntime {
       this.context = new AudioContext();
       this.player = new AudioPlayer(this.context);
       this.player.setVolume(useStore.getState().volume);
-      this.sfx = new SfxBus(this.context, this.player.master);
+      this.sfx.attach(this.context, this.player.master);
       this.context.onstatechange = () => {
         if (this.context?.state === 'running' || this.disposed) return;
         display({ audioReady: false });
@@ -652,10 +648,17 @@ export class GameRuntime {
         epoch: this.machine.epoch,
         onEvent: (name, payload) => this.machine.events.emit(name, payload),
       });
-      this.player!.start(computePrerollMs(map, !state.warnings.includes('lowTempoConfidence')));
+      const at = this.player!.start(computePrerollMs(map, !state.warnings.includes('lowTempoConfidence')));
       this.countdownStepMs = state.warnings.includes('lowTempoConfidence')
         ? START_COUNTDOWN_MS / COUNTDOWN_STEPS
         : 60000 / map.song.bpm;
+      this.sfx.beginSession({
+        map,
+        startAt: at,
+        stepMs: this.countdownStepMs,
+        confidentTempo: !state.warnings.includes('lowTempoConfidence'),
+        music: this.buffer,
+      });
       data.rebase(performance.now());
       this.targets.surface(this.machine.epoch + 1);
       this.pointer.cancel(performance.now());
@@ -721,7 +724,7 @@ export class GameRuntime {
   }
   private stopPreview(): void {
     this.player?.stop();
-    this.sfx?.stop();
+    this.sfx.stop();
     display({ preview: false });
   }
   private resetTrackingState(): void {
@@ -906,7 +909,7 @@ export class GameRuntime {
     this.countdownStepMs = confident ? 60000 / map.song.bpm : START_COUNTDOWN_MS / COUNTDOWN_STEPS;
     try {
       player.prepare(this.buffer!);
-      this.sfx?.stop();
+      this.sfx.stop();
       this.renderer?.setApproachMs(map.approachMs);
       this.session = new GameSession(map, {
         songClock: player.clock,
@@ -915,9 +918,13 @@ export class GameRuntime {
         onEvent: (name, payload) => this.machine.events.emit(name, payload),
       });
       const at = player.start(computePrerollMs(map, confident));
-      if (confident)
-        for (let digit = COUNTDOWN_STEPS; digit > 0; digit--)
-          this.sfx?.play('count', undefined, at - (digit * this.countdownStepMs) / 1000);
+      this.sfx.beginSession({
+        map,
+        startAt: at,
+        stepMs: this.countdownStepMs,
+        confidentTempo: confident,
+        music: this.buffer,
+      });
       this.targets.surface(this.machine.epoch + 1);
       this.pointer.cancel(performance.now());
       this.renderer?.setMode('play');
@@ -940,7 +947,7 @@ export class GameRuntime {
   private cancelArmedStart(status: string): void {
     this.lifecycle++;
     this.player?.stop();
-    this.sfx?.stop();
+    this.sfx.stop();
     this.session = null;
     this.renderer?.reset();
     this.renderer?.setMode('menu');
@@ -967,7 +974,7 @@ export class GameRuntime {
     this.audioRequest++;
     this.selectionRequest++;
     this.player?.stop();
-    this.sfx?.stop();
+    this.sfx.stop();
     this.session = null;
     this.dataset = null;
     display({ replay: !!this.flags.replay, trialSource: null });
@@ -1030,6 +1037,7 @@ export class GameRuntime {
         (!!this.dataset || state.camera.mode === 'camera-setup' || state.camera.calibrationValid);
     this.renderer?.tracking(frame, show);
     this.renderer?.hands(result.hands);
+    if (this.machine.state === 'PLAYING') this.sfx.hands(result.hands);
     if (this.machine.state === 'PLAYING')
       this.session?.consume(
         {
@@ -1046,7 +1054,9 @@ export class GameRuntime {
       const sample = result.menuHands.find((hand) => hand.hand === state.hand);
       if (sample) {
         const activation = this.pointer.update(sample, context, now);
-        if (activation) this.targets.activate(activation.targetId, 'hand', activation);
+        this.sfx.pointer(this.pointer.state);
+        if (activation && this.targets.activate(activation.targetId, 'hand', activation))
+          this.sfx.menuAction(activation.targetId);
       }
     }
   }
@@ -1349,7 +1359,7 @@ export class GameRuntime {
   private failActiveAudio(error: unknown): void {
     this.sessionAudioFailed = true;
     this.player?.stop();
-    this.sfx?.stop();
+    this.sfx.stop();
     display({
       error: `${this.message(error)} Return to Songs to restart safely.`,
       audioReady: false,
@@ -1413,7 +1423,7 @@ export class GameRuntime {
     cancelAnimationFrame(this.animation);
     this.camera.stop();
     this.generator.dispose();
-    this.sfx?.dispose();
+    this.sfx.dispose();
     this.player?.dispose();
     if (this.context) {
       this.context.onstatechange = null;

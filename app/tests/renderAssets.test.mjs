@@ -84,14 +84,26 @@ describe('local authored assets and verified complete fallbacks', () => {
     });
     const assets = registry();
     await assets.load();
-    expect(fetched).toHaveLength(6);
+    expect(fetched).toHaveLength(7);
     expect(fetched.every((url) => url.startsWith('/assets/models/'))).toBe(true);
     expect(
       Object.values(assets.status).every((status) => status.state === 'authored'),
       JSON.stringify(assets.status),
     ).toBe(true);
-    expect(assets.assets.shardMode).toBe('authored-eight');
-    expect(assets.assets.shards).toHaveLength(8);
+    expect(assets.assets.shardMode).toBe('authored-fourteen');
+    expect(assets.assets.shards).toHaveLength(14);
+    // Fracture faces are tagged so the shard shader can light the cross-sections.
+    for (const shard of assets.assets.shards) {
+      const inner = shard.geometry.getAttribute('aInner');
+      expect(inner.count).toBe(shard.geometry.getAttribute('position').count);
+    }
+    expect(
+      assets.assets.shards.some((s) => Array.from(s.geometry.getAttribute('aInner').array).includes(1)),
+    ).toBe(true);
+    const trim = assets.assets.blockShell.getAttribute('aTrim').array;
+    expect(Array.from(trim).includes(1) && Array.from(trim).includes(0)).toBe(true);
+    expect(Array.from(assets.assets.pylon.getAttribute('aTrim').array).includes(1)).toBe(true);
+    expect(assets.assets.glyphArrow.getAttribute('position').count).toBeGreaterThan(0);
     expect(
       assets.assets.shards.reduce(
         (total, shard) => total + Math.abs(signedGeometryVolume(shard.geometry)),

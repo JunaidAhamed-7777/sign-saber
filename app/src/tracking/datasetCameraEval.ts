@@ -3,7 +3,7 @@
  *
  * Responsibility: compare live-pipeline MediaPipe output for dataset-camera frames with the known
  * annotation truth that was on the canvas at capture time. Pure and bounded; no DOM.
- * Spec: docs/05-tracking-pipeline.md §1.4; docs/24-benchmark-and-evidence.md §2 (dataset-camera lane)
+ * Spec: docs/05-tracking-pipeline.md §1.3; docs/24-benchmark-and-evidence.md §2 (dataset-camera lane)
  * Inputs: attributed TrackingFrame (mirrored image space) and processed HandCursor gestures
  * Outputs: per-truth and aggregate detection/error summaries
  *

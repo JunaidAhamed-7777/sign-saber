@@ -394,7 +394,7 @@ export const ARENA_REACTIVE_GAIN = 2,
 export const DATASET_TRIAL_MAX_SAMPLES = 100,
   DATASET_TRIAL_MAX_CATCHUP_FRAMES = 300;
 
-// ── Begin dataset-camera / judgement-trace block (docs02 registry; docs05 §1.4; docs24 §9) ──
+// ── Begin dataset-camera / judgement-trace block (docs02 registry; docs05 §1.3; docs24 §9) ──
 // A labelled canvas MediaStream fed through the unchanged live path. Never webcam evidence.
 export const DATASET_CAMERA_MANIFEST_URL = '/dataset-camera/manifest.json',
   DATASET_CAMERA_MAX_ITEMS = 200,

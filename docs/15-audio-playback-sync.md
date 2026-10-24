@@ -44,7 +44,7 @@ leadMs = max(START_COUNTDOWN_MS, countSpanMs,
              −earliestSpawnMs + SONG_START_LEAD_S · 1000)
 t0 = songClock.scheduleStart(leadMs / 1000) // internally ctx.currentTime + leadS, context seconds
 source.start(t0)                           // schedule ONCE, never again at calib:complete
-click k is scheduled at t0 − k · stepMs / 1000 // confident tempo only; k = COUNTDOWN_STEPS ... 1
+click k is scheduled at t0 − k · stepMs / 1000 // k = COUNTDOWN_STEPS ... 1; pitched only for confident tempo
 
 graphSongTime = (ctx.currentTime − t0) · 1000  // processing position, not yet speaker output
 songTime(now) = fromPerformanceTime(performance.now()) // output-aligned estimate (§2.4)
@@ -52,7 +52,7 @@ songTime(now) = fromPerformanceTime(performance.now()) // output-aligned estimat
 
 `now()` runs negative immediately after scheduling. Run spawning and rendering during this armed pre-roll, even though scoring remains disabled until `PLAYING` begins at audible song time 0 ([04](04-state-machine.md#calibration)). Thus a note at 412 ms with a 2000 ms approach appears at −1588 ms and receives its full travel, rather than materialising partway down the lane. Preparation can exceed the visible final digits for an early note or a slow confident tempo; show a short ready state before those digits.
 
-The DOM shows digit `k` when output-aligned `SongClock.now()` crosses `−k · stepMs`; it uses the same output correlation as gameplay rather than a `ctx.currentTime`-only timer that ignores speaker delay. For confident tempo, clicks use the corresponding context-time schedule and are musical cues. A `lowTempoConfidence` warning selects a neutral visual countdown: do not use the numeric BPM estimate as a detected tempo or schedule a musical metronome. Cache hits preserve the same mode. Countdown cancellation stops/disconnects every scheduled music/click source, invalidates the epoch/anchors and clears pre-roll objects. Ignore stopped-source `onended` callbacks from that epoch so cancellation cannot produce RESULTS or a delayed song start.
+The DOM shows digit `k` when output-aligned `SongClock.now()` crosses `−k · stepMs`; it uses the same output correlation as gameplay rather than a `ctx.currentTime`-only timer that ignores speaker delay. For confident tempo, clicks use the corresponding context-time schedule and are musical cues. A `lowTempoConfidence` warning selects a neutral visual countdown: do not use the numeric BPM estimate as a detected tempo or schedule a musical metronome. Its ticks are the unpitched `countNeutral` cue on the neutral digit grid (§6), which asserts no tempo or key. Cache hits preserve the same mode. Countdown cancellation stops/disconnects every scheduled music/click source, invalidates the epoch/anchors and clears pre-roll objects. Ignore stopped-source `onended` callbacks from that epoch so cancellation cannot produce RESULTS or a delayed song start.
 
 ### 2.2 Pause and resume
 
@@ -123,31 +123,61 @@ Browsers block audio until a user gesture. Rules:
 2. A webcam-recognized point is an app command, not trusted browser user activation; do not claim it can unlock a blocked context or grant camera permission. Reuse an already unlocked context for hand-operated preview/Start. If audio is still blocked, keep the current selection and show the explicit **Enable sound** mouse/key action; request `ctx.resume()` directly from that real event before awaiting unrelated work. On `select:start`, verify the context is running before proceeding. See [browser user activation](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/User_activation).
 3. `visibilitychange` → hidden does *not* suspend the context by itself (that would double-pause); the state machine's `pause:request` does.
 
-## 6. SFX bus (`audio/sfx.ts`)
+## 6. SFX bus and audio feel (`audio/sfx*.ts`)
 
-All SFX are short OGG one-shots in `app/public/assets/sfx/`, decoded once during asset preparation into `AudioBuffer`s before play. Their preparation must not hold the camera-free menu behind an audio-unlock prompt; pending sounds stay silent until the explicit unlock succeeds. Graph: `oneShot → sfxGain(per sound) → sfxBus → master`.
+Every sound is original and synthesized from code: `audio/sfxSynth.ts` renders deterministic PCM from fixed seeds (no recordings, samples or third-party audio; MIT like the code). No SFX files ship; `app/public/assets/sfx/` stays empty. Runtime synthesis was chosen over offline OGG files because buffers are rendered at the live context's own sample rate (no resampling or decode at start), Calm and per-track tonal variants are cheap re-renders, Safari's uneven Ogg Vorbis support is irrelevant, and the buffers the tests measure are exactly the ones that play.
 
-| Sound | File | Trigger | Gain (dB) | Notes |
-| --- | --- | --- | --- | --- |
-| slash | `slash.ogg` | `note:hit` slash | −6 | Whoosh + glassy crack, 250 ms |
-| smash | `smash.ogg` | `note:hit` smash | −4 | Low thud + debris, 400 ms |
-| poof | `poof.ogg` | `note:hit` beam | −6 | Power-down sweep + pop, 350 ms |
-| miss | `miss.ogg` | `note:miss` | −10 | Soft low tick, 120 ms — must not punish |
-| badcut | `badcut.ogg` | `note:badcut`, `obstacle:hit` | −8 | Metallic clang with pitch-down, 300 ms |
-| dodge | `dodge.ogg` | `obstacle:dodged` | −8 | Airy pass-by, 300 ms |
-| combo | `combo.ogg` | `combo:change` when multiplier increases | −6 | Rising chime, 500 ms; pitch +2 semitones per ladder step |
-| drop | `drop.ogg` | `music:event` kind `drop` | −3 | Sub impact + riser tail, 800 ms |
-| count | `count.ogg` | countdown digits | −6 | Short click; the final digit plays `count_go` variant (+5 semitones) |
+| Module | Role |
+| --- | --- |
+| `sfxSynth.ts` | Recipes and DSP (TPT state-variable filters, polyBLEP oscillators, FM bells, grains, Karplus–Strong, small Schroeder room); loudness normalization |
+| `sfxMetrics.ts` | BS.1770 K-weighted momentary loudness, peak, RMS and spectral centroid |
+| `sfxRender.worker.ts` / `sfxBank.ts` | Off-main-thread rendering and tonal analysis; validated, bounded LRU `AudioBuffer` cache with inline fallback |
+| `sfx.ts` | `SfxBus`: voices, stereo placement, polyphony, limiter, scheduling, pause-aware silencing, disposal |
+| `sfxDirector.ts` | Audio game feel: maps game, lifecycle and menu events to cues |
+| `tonic.ts` | Cheap tonal-centre estimate used only to tune pitched cues |
+
+`scripts/render-sfx.mjs` renders 48 kHz WAV files for audition (`--out`), pins SHA-256 hashes and measurements in `assets-src/audio/sfx-receipt.json` (`--receipt`, verified by `tests/sfxSynth.test.ts`) and can cross-check loudness with ffmpeg's `ebur128` filter (`--ffmpeg`). Graph: `source → voice gain → stereo panner → bus input → limiter → bus output → master → destination`.
+
+| Sound | Trigger | LUFS | Design |
+| --- | --- | --- | --- |
+| `slash` | `note:hit` slash | −24 | Noise swish swept up to ≈ 8.4 kHz, bright crackle sizzle, glassy 2.4 kHz ting, light body |
+| `smash` | `note:hit` smash | −22.5 | Driven pitch-enveloped kick 190 → 46 Hz, click, decimated mid crunch, debris grains |
+| `zap` | `beam:fire` | −23 | Detuned saw laser 2.6 kHz → 260 Hz with ring-mod edge, electric crackle, sub punch |
+| `poof` | `note:hit` beam | −26.5 | Pop, noise puff and power-down sweep under the zap |
+| `sparkle` | Perfect layer | −27 | Harmonic FM bell partials (2, 3, 4, 6 × tonic) staggered across the stereo field, glitter |
+| `glint` | Great layer | −32 | Two short tonic partials |
+| `badcut` | `note:badcut` | −24 | Struck-plate partials with a 9 % pitch-down, low-passed: corrective, not an alarm |
+| `miss` | `note:miss`, at most one per `SFX_MISS_MIN_GAP_MS` | −34 | Soft low dud; must not punish |
+| `wallWarn` | `obstacle:spawn`; peaks when the wall arrives | −27 | Rising pink-noise band, accelerating 72 Hz throb, rising saw |
+| `wallHit` | `obstacle:hit` | −21.5 | Driven low impact and a shield buzz a fifth apart |
+| `dodge` | `obstacle:dodged` | −25.5 | Falling band "pass-by" whoosh with a small tonic bell |
+| `combo` | `combo:change`, multiplier increases | −21 | FM bell arpeggio root–fifth–octave, transposed per ladder step |
+| `milestone` | Combo 10/25/50/100, then every 100 | −19 | Power-chord pad, bell arpeggio, glitter, sub |
+| `comboBreak` | Break from ≥ `SFX_BREAK_MIN_COMBO` (not Calm) | −34 | Soft falling filtered saw |
+| `drop` | `music:event` drop, on its chart time | −15 | Sub impact, wide crash and rising shimmer; music ducks |
+| `count` / `countGo` | Confident-tempo countdown | −27 / −24.5 | Tuned woodblock; the final digit an octave up |
+| `countNeutral` | Low-confidence countdown | −31.5 | Unpitched click; final digit at `SFX_NEUTRAL_GO_RATE` |
+| `charge` | Beam charge while pointing | −31.5 | Resonant rising saw/square; a ready ping exactly at `BEAM_CHARGE_MS` |
+| `resume` | `PAUSED → PLAYING` | −30 | Rising noise and glide |
+| `resultsHigh` / `resultsLow` | `RESULTS` entry: SS/S/A vs lower ranks | −16 / −19 | Major chord swell with bells / open-fifth calm close |
+| `uiHover` | New target: mouse hover, keyboard focus-visible, hand pointer | −42 | Short 1.76 kHz blip |
+| `uiConfirm` / `uiBack` / `uiSelect` | Menu action that actually ran | −30 / −32 / −32 | Rising fifth / falling fifth / soft pluck |
+| `uiArm` | Hand pointer enters `armed` | −36 | Soft rising tone |
+| `uiEnable` | Sound unlocked (not on resume) | −24 | Bell triad confirming that output works |
+
+LUFS are BS.1770 momentary (400 ms) levels each render is normalized to (`SFX_LOUDNESS_LUFS`), before the bus and master gain. The in-repo meter agrees with ffmpeg's `ebur128` within 0.1 LU on every render. These are offline measurements; audible balance against each track on real speakers is not yet reviewed.
 
 Playback rules:
 
-1. Each play creates an `AudioBufferSourceNode`, an unavoidable one-shot Web Audio allocation; profile it rather than claiming the browser creates no objects. `playbackRate = 2^(cents/1200) · judgementRate`, with cents limited by `SFX_PITCH_JITTER_CENTS` and `judgementRate = SFX_JUDGEMENT_RATE[judgement]` for note judgements, otherwise 1.
-2. Cap concurrent instances at `SFX_POLYPHONY`; evict the oldest with an `SFX_STOP_RAMP_S` gain ramp. Disconnect source/gain nodes on end and clear references; tests must include repeated song retries.
-3. **Ducking on drop:** when the `drop` sting plays, `musicGain` ramps from 0 dB to −1.5 dB over 30 ms and back over 400 ms (`setTargetAtTime`). The dip makes the impact feel bigger without being audible as a volume change.
-4. SFX scheduling uses the current audio clock as soon as the event resolves. Measure audiovisual onset skew on the target setup; frame scheduling, graph buffering, device output, display latency and late tracking delivery all contribute, so "same frame" is not an end-to-end guarantee. Seed cosmetic pitch jitter in replay capture if stable audiovisual comparisons require it; pitch randomness never affects judgements.
-5. Master/SFX volume sliders map to gain and persist validated finite values, initialized from `MASTER_GAIN_DEFAULT` / `SFX_GAIN_DEFAULT`. Clamp their range and mix with enough headroom to pass peak-output checks; polyphony limits alone do not prevent clipping.
-
-The results screen sting (`RESULTS` entry) is a 2-second `results.ogg` played once on the SFX bus — not in the table above because it is cosmetic and `[POLISH]`.
+1. Each play creates an `AudioBufferSourceNode`, gain and stereo panner, unavoidable one-shot Web Audio allocations. `playbackRate = judgementRate × transposition × jitter`; `SFX_JUDGEMENT_RATE` applies to the gesture sound, ladder/milestone transposition to rewards, and seeded jitter (±`SFX_PITCH_JITTER_CENTS`) only to non-tonal hits. The jitter sequence is reseeded per session so replays are comparable; pitch never affects judgements.
+2. Cap each sound at `SFX_POLYPHONY` (or its `SFX_VOICE_LIMITS` override) and all sounds at `SFX_MAX_VOICES`, stealing the oldest with an `SFX_STOP_RAMP_S` ramp; a not-yet-started stolen voice is cancelled outright. Source/gain/panner nodes disconnect on end, on `stop` (including fading voices, even while the context is suspended) and on dispose. Tests repeat song retries.
+3. Loudness: renders are normalized to `SFX_LOUDNESS_LUFS` (Calm: `SFX_CALM_LOUDNESS_DB` quieter and low-passed at `SFX_CALM_LOWPASS_HZ`) under a soft-knee `SFX_PEAK_CEILING_DBFS` ceiling. Swing speed adds `SFX_DYNAMICS_DB` (full at `SFX_DYNAMICS_FULL_RATIO` × the gesture minimum), so any single cue stays below the bus limiter (`SFX_LIMITER`: hard knee, −3 dB, 20:1), which catches stacked voices. The bus output is trimmed by the compressor's specified automatic makeup gain so baked levels stay calibrated. The music path has no master limiter; music already near full scale plus SFX can still clip at the destination.
+4. Timing: cues with a known chart time are scheduled on the context clock at `startAt + t / 1000 − SFX_LIMITER_LOOKAHEAD_S` (song sample 0 plus chart time, minus the compressor pre-delay): countdown ticks, wall warnings (late spawns start part-way through so the peak still lands on arrival), drop stings (scanned `SFX_LOOKAHEAD_MS` ahead each frame) and hits whose event arrives before the note time by at most `SFX_BEAT_SNAP_MS`. Other capture-time hits sound when the event resolves, so camera/inference delay remains audible; audiovisual skew still needs the [24](24-benchmark-and-evidence.md) measurement. SFX never feed back into scoring.
+5. Pause suspends the shared context. At the boundary, voices already sounding are faded; cues scheduled in the future are kept, because the suspended context clock stays locked to song position. There is no pause sting or resume-countdown tick and Paused-screen menu cues are silent, because the context is suspended; `resume` plays once audio runs again. Quit, back, retry and countdown cancellation stop every voice.
+6. Tuning: `tonic.ts` correlates a chroma vector from `SFX_TONIC_FRAMES` Hann-windowed `SFX_TONIC_FFT` frames of the selected music with Krumhansl–Kessler key profiles (in the worker; the main thread only copies the frames). Pitched gameplay cues (`sparkle`, `glint`, `dodge`, `combo`, `milestone`, `charge`, `resume`) re-render on that tonic folded into `[SFX_DEFAULT_ROOT_HZ, 2 × SFX_DEFAULT_ROOT_HZ)`; the mode chooses the combo/milestone intervals. Correlation below `SFX_TONIC_MIN_CORRELATION`, silence or unreadable buffers keep the default root. Countdown, results and menu cues keep fixed roots (they play without the track). This is a cosmetic heuristic, not verified key detection.
+7. **Ducking on drop:** when the `drop` event fires, `musicGain` dips by `DUCK_DB` over `DUCK_ATTACK_S` and recovers over `DUCK_RELEASE_S` (`AudioPlayer.duck`). No other cue ducks the music.
+8. Volume: the bus feeds the shared master gain, so the master volume buttons scale SFX and music together; `SFX_GAIN_DEFAULT` sets the bus level. Nothing plays before the explicit sound unlock.
+9. Menu cues: a window bubble-phase `click` listener plays the cue for registered `button[data-target]` actions after the action ran (volume ticks at the new level); accepted hand activations call the director directly. Hover cues are rate limited by `SFX_UI_MIN_GAP_MS`; `audio` itself is silent, and `uiEnable` follows the actual unlock.
 
 ## 7. Latency compensation summary
 
@@ -172,7 +202,7 @@ No measurements exist yet. Timing windows (`WINDOW_*`) and the input offset are 
 - [ ] `now()` and `fromPerformanceTime(performance.now())` use the same output-aligned mapping and agree within timestamp precision; a recorded click-track trial checks real audible alignment at start, middle and end. Test nonzero output latency, missing timestamp API, pause boundaries and positive/negative input offsets.
 - [ ] Band energies visibly react to the kick (`low`), vocals (`mid`) and hats (`high`) of the demo tracks; a near-silent intro drives values near 0, a loud chorus near 1 (auto-gain).
 - [ ] No audio plays before a user gesture; the Start button explains why if audio is not yet enabled.
-- [ ] 20 slash hits in 2 seconds do not clip or stutter (polyphony cap, random pitch), and the music ducks imperceptibly on drops.
+- [ ] 20 slash hits in 2 seconds do not clip or stutter (polyphony cap, random pitch, bus limiter), and the music ducks imperceptibly on drops. Voice caps, loudness and peak bounds are unit-tested; audible stacking and the drop duck still need a recorded listening check.
 - [ ] All decoding happens before `CALIBRATION` begins; `PLAYING` never awaits a decode.
 
 ## Constants required

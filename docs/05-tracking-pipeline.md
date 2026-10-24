@@ -210,7 +210,7 @@ filter(x, t):
 
 - `t` is `tCapture` in seconds. Using capture time (not arrival time) keeps `dt` honest when frames are dropped.
 - Filter sets: `handLm[hand]` (21 × 3 → 63 filters each), `poseLm` (33 × 2 — only x,y; `z`/visibility are passed through), and the shoulder-midpoint used by body metrics has its own pair with a lower `BODY_FILTER_BETA` because lean should be calm.
-- Units: filters run in mirrored image space (0..1). `ONE_EURO_BETA` was tuned for that unit; do not filter in play-plane metres.
+- Units: filters run in mirrored image space (0..1), so `ONE_EURO_BETA` is per image width per second; do not filter in play-plane metres. The original 0.08 barely adapted to speed: a 0.84 width/s swing (≈4.5 m/s) still lagged 0.079 widths after 200 ms, so scored speed fell below `SLASH_MIN_SPEED`. At 10 the same swing lags under 0.03 widths while a ±0.003 stationary jitter is still more than halved (`tests/unit/oneEuro.test.ts`). These are numeric/synthetic checks; live jitter and feel still need consented camera review.
 - Reset: when a hand/pose was absent for `HAND_RESET_FRAMES` samples, its filters are re-seeded with the new raw value (no smoothing across a gap).
 - `worldLandmarks` are not filtered (used only for angles, which are then hysteresis-gated in [06]).
 

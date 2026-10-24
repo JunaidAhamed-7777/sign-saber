@@ -20,6 +20,7 @@ import { PhotoReel } from '../tracking/datasetCameraReel';
 import { JudgementTraceRecorder } from './judgementTrace';
 import { InputPipeline } from '../tracking/pipeline';
 import { DatasetTrial } from '../tracking/datasetTrial';
+import { PerformerTrial } from '../performer/trial';
 import { MenuPointerController } from '../gestures/menuPointer';
 import { GameSession } from '../game/session';
 import { ArenaRenderer } from '../render/renderer';
@@ -59,7 +60,8 @@ export class GameRuntime {
   private decoder: OfflineAudioContext | null = null;
   private buffer: AudioBuffer | null = null;
   private upload: File | null = null;
-  private dataset: DatasetTrial | null = null;
+  /** Labelled non-camera trial source: COCO still annotations or the synthetic chart performer. */
+  private dataset: DatasetTrial | PerformerTrial | null = null;
   private arrangementEdit: AudioArrangementEdit | null = null;
   private readonly generator = new GeneratorClient();
   private session: GameSession | null = null;
@@ -84,6 +86,7 @@ export class GameRuntime {
   private stats: SessionStats | null = null;
   private pop = '';
   private popUntil = 0;
+  private popSeq = 0;
   private countdownStepMs = START_COUNTDOWN_MS / COUNTDOWN_STEPS;
   private readonly countdownTargets: MenuTarget[] = [];
   private readonly countdownContext: MenuContext = {
@@ -140,16 +143,19 @@ export class GameRuntime {
     this.machine.events.on('note:hit', (event) => {
       this.pop = event.judgement;
       this.popUntil = performance.now() + POP_LIFETIME_MS;
+      this.popSeq++;
       this.sfx?.play(event.note.type, event.judgement);
     });
     this.machine.events.on('note:miss', () => {
       this.pop = 'miss';
       this.popUntil = performance.now() + POP_LIFETIME_MS;
+      this.popSeq++;
       this.sfx?.play('miss');
     });
     this.machine.events.on('note:badcut', () => {
       this.pop = 'badcut';
       this.popUntil = performance.now() + POP_LIFETIME_MS;
+      this.popSeq++;
       this.sfx?.play('badcut');
     });
     this.machine.events.on('obstacle:hit', () => this.sfx?.play('badcut'));
@@ -312,7 +318,10 @@ export class GameRuntime {
           await this.begin(false);
           break;
         case 'dataset-trial':
-          await this.beginDataset(false);
+          await this.beginDataset(false, 'annotations');
+          break;
+        case 'performer-trial':
+          await this.beginDataset(false, 'performer');
           break;
         case 'arrange':
           await this.makeArrangement();
@@ -333,7 +342,11 @@ export class GameRuntime {
           this.songs();
           break;
         case 'retry':
-          if (this.dataset) await this.beginDataset(true);
+          if (this.dataset)
+            await this.beginDataset(
+              true,
+              this.dataset instanceof PerformerTrial ? 'performer' : 'annotations',
+            );
           else await this.begin(true);
           break;
         case 'calm': {
@@ -570,7 +583,7 @@ export class GameRuntime {
         });
     }
   }
-  private async beginDataset(retry: boolean): Promise<void> {
+  private async beginDataset(retry: boolean, source: 'annotations' | 'performer'): Promise<void> {
     const state = useStore.getState();
     if (
       this.transitionBusy ||
@@ -587,17 +600,23 @@ export class GameRuntime {
       const originalHash = state.map.song.sourceHash;
       await this.makeArrangement();
       if (this.arrangementEdit?.sourceAudioSha256 === originalHash && useStore.getState().arrangement?.ready)
-        await this.beginDataset(false);
+        await this.beginDataset(false, source);
       return;
     }
     const request = ++this.selectionRequest;
     this.transitionBusy = true;
-    display({ loading: true, error: null, status: strings.datasetLoading });
+    display({
+      loading: true,
+      error: null,
+      status: source === 'performer' ? strings.performerLoading : strings.datasetLoading,
+    });
     try {
       const data =
-        retry && this.dataset
-          ? new DatasetTrial(this.dataset.fixture, performance.now())
-          : await DatasetTrial.load(performance.now());
+        source === 'performer'
+          ? new PerformerTrial(state.map, performance.now())
+          : retry && this.dataset instanceof DatasetTrial
+            ? new DatasetTrial(this.dataset.fixture, performance.now())
+            : await DatasetTrial.load(performance.now());
       if (
         this.disposed ||
         request !== this.selectionRequest ||
@@ -625,18 +644,21 @@ export class GameRuntime {
       this.dataset = data;
       display({
         replay: true,
+        trialSource: source,
         loading: false,
         results: null,
         highlightAt: null,
         cameraSource: null,
         camera: { state: 'not-set-up', mode: 'browse', calibrationValid: false, error: null },
-        status: strings.datasetLimitations,
+        status: source === 'performer' ? strings.performerLimitations : strings.datasetLimitations,
       });
       this.machine.transition(retry ? 'results:retry' : 'select:start', { ready: true });
       this.player!.prepare(this.buffer!);
       const map = useStore.getState().map!;
       this.renderer.setApproachMs(map.approachMs);
-      this.trace.reset(`dataset-static-annotation-trial epoch ${this.machine.epoch}`);
+      this.trace.reset(
+        `${source === 'performer' ? 'synthetic-performer-logic-replay' : 'dataset-static-annotation-trial'} epoch ${this.machine.epoch}`,
+      );
       this.session = new GameSession(map, {
         songClock: this.player!.clock,
         epoch: this.machine.epoch,
@@ -972,7 +994,7 @@ export class GameRuntime {
     if (this.machine.state !== 'CALIBRATION') return;
     this.cancelArmedStart(strings.chooseWhenReady);
     this.dataset = null;
-    display({ replay: !!this.flags.replay });
+    display({ replay: !!this.flags.replay, trialSource: null });
     this.machine.transition('calib:back');
   }
   private songs(): void {
@@ -989,7 +1011,7 @@ export class GameRuntime {
     this.sfx?.stop();
     this.session = null;
     this.dataset = null;
-    display({ replay: !!this.flags.replay });
+    display({ replay: !!this.flags.replay, trialSource: null });
     this.stats = null;
     this.resumeAt = Infinity;
     this.transitionBusy = false;
@@ -1237,6 +1259,13 @@ export class GameRuntime {
           (frame, arrival, changed) => {
             if (changed) this.pipeline.reset();
             this.tracking(frame, arrival, 'replay');
+            // The performer stands still before its first stroke; calibrate its lean reference once.
+            if (
+              this.dataset instanceof PerformerTrial &&
+              !this.pipeline.calibration &&
+              this.pipeline.result.calibrationReady
+            )
+              this.pipeline.calibrate('synthetic-performer');
           },
         );
       } catch (error) {
@@ -1276,7 +1305,15 @@ export class GameRuntime {
       if (this.session.needsTrackingPause) void this.pause('tracking');
       else if (this.session.finished && this.stats) {
         this.machine.transition('song:ended', { ready: true });
-        display({ results: this.stats, status: this.dataset ? strings.datasetComplete : strings.results });
+        display({
+          results: this.stats,
+          status:
+            this.dataset instanceof PerformerTrial
+              ? strings.performerComplete
+              : this.dataset
+                ? strings.datasetComplete
+                : strings.results,
+        });
       }
     }
     state = this.machine.state;
@@ -1312,7 +1349,10 @@ export class GameRuntime {
       this.lastUi = now;
       const displayState = useStore.getState(),
         result = this.pipeline.result,
-        handsFresh = !this.dataset && now >= this.lastTracking && now - this.lastTracking <= INPUT_MAX_AGE_MS,
+        handsFresh =
+          (!this.dataset || this.dataset instanceof PerformerTrial) &&
+          now >= this.lastTracking &&
+          now - this.lastTracking <= INPUT_MAX_AGE_MS,
         left = result.hands.find((hand) => hand.hand === 'left'),
         right = result.hands.find((hand) => hand.hand === 'right'),
         leftPresent = handsFresh && !!left?.present,
@@ -1337,6 +1377,7 @@ export class GameRuntime {
           leftCharge: leftPresent ? left!.charge : 0,
           rightCharge: rightPresent ? right!.charge : 0,
           judgement: now < this.popUntil ? this.pop : '',
+          judgementSeq: this.popSeq,
         },
       });
     }
@@ -1369,11 +1410,14 @@ export class GameRuntime {
     setTimeout(() => URL.revokeObjectURL(url), 0);
   }
   async evidence(): Promise<Record<string, unknown>> {
-    const lane = this.dataset
-      ? 'dataset-static-annotation-trial'
-      : this.flags.replay
-        ? 'logic-replay'
-        : (this.camera.sourceLane ?? 'live-camera-unverified');
+    const lane =
+      this.dataset instanceof PerformerTrial
+        ? 'synthetic-performer-logic-replay'
+        : this.dataset
+          ? 'dataset-static-annotation-trial'
+          : this.flags.replay
+            ? 'logic-replay'
+            : (this.camera.sourceLane ?? 'live-camera-unverified');
     const calibration = this.pipeline.calibration;
     return {
       schema: 2,
@@ -1397,9 +1441,14 @@ export class GameRuntime {
           }
         : null,
       flags: this.flags,
-      datasetTrial: this.dataset
-        ? { temporalRecording: false, handGestures: false, depth: false, annotationOnly: true }
-        : null,
+      datasetTrial:
+        this.dataset instanceof DatasetTrial
+          ? { temporalRecording: false, handGestures: false, depth: false, annotationOnly: true }
+          : null,
+      performerTrial:
+        this.dataset instanceof PerformerTrial
+          ? { synthetic: true, camera: false, plannedUnplayableNotes: this.dataset.unplayable }
+          : null,
       datasetCamera: this.camera.sourceEvidence(),
       arrangement: this.arrangementEdit,
       limitations: [

@@ -88,6 +88,44 @@ def make_heatmaps(points: np.ndarray):
         weights[joint] = 1.0 if visibility == 2 else CONFIG["occludedJointWeight"]
     return targets, weights
 
+def crop_input(image: Image.Image, original: np.ndarray, roi: np.ndarray, rng: random.Random | None = None):
+    """Crop a square ROI to the network input and map labels with the same continuous-coordinate transform.
+
+    Without an rng this is the exact oracle ROI crop used for evaluation and export parity. With an rng it applies
+    the training augmentation: flip, scale/rotation/translation jitter and brightness/contrast jitter.
+    """
+    left, top, width, height = roi.tolist()
+    size = CONFIG["imageSize"]
+    points = original.copy()
+    if rng is None:
+        image = image.transform((size, size), Image.Transform.EXTENT, (left, top, left + width, top + height), resample=Image.Resampling.BILINEAR)
+        points[:, 0] = (points[:, 0] - left) / width * size
+        points[:, 1] = (points[:, 1] - top) / height * size
+        return image, points
+    flip = rng.random() < CONFIG["flipProbability"]
+    # Geometric jitter makes the head robust to imperfect (non-oracle) ROIs; joints pushed outside the crop get zero weight.
+    scale = 1 + rng.uniform(-CONFIG["scaleJitter"], CONFIG["scaleJitter"])
+    angle = math.radians(rng.uniform(-CONFIG["rotationDegrees"], CONFIG["rotationDegrees"])) if rng.random() < CONFIG["rotationProbability"] else 0.0
+    center_x = left + width / 2 + rng.uniform(-CONFIG["translationJitter"], CONFIG["translationJitter"]) * width
+    center_y = top + height / 2 + rng.uniform(-CONFIG["translationJitter"], CONFIG["translationJitter"]) * height
+    source_per_output = width * scale / size
+    cosine, sine, half = math.cos(angle), math.sin(angle), size / 2
+    # PIL AFFINE maps each continuous output coordinate to its continuous source coordinate (the inverse of the label mapping below).
+    inverse = (source_per_output * cosine, source_per_output * sine, center_x - source_per_output * (cosine + sine) * half, -source_per_output * sine, source_per_output * cosine, center_y - source_per_output * (cosine - sine) * half)
+    image = image.transform((size, size), Image.Transform.AFFINE, inverse, resample=Image.Resampling.BILINEAR)
+    dx, dy = points[:, 0] - center_x, points[:, 1] - center_y
+    points[:, 0] = half + (cosine * dx - sine * dy) / source_per_output
+    points[:, 1] = half + (sine * dx + cosine * dy) / source_per_output
+    if flip:
+        image = image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+        # Pixel i becomes size - 1 - i, so continuous coordinates mirror to size - x (the earlier size - 1 - x was off by one pixel).
+        points[:, 0] = size - points[:, 0]
+        for a, b in FLIP_PAIRS:
+            points[[a, b]] = points[[b, a]]
+    image = ImageEnhance.Brightness(image).enhance(1 + rng.uniform(-CONFIG["brightnessJitter"], CONFIG["brightnessJitter"]))
+    image = ImageEnhance.Contrast(image).enhance(1 + rng.uniform(-CONFIG["contrastJitter"], CONFIG["contrastJitter"]))
+    return image, points
+
 class UpperBodyDataset(Dataset):
     def __init__(self, records, augment: bool = False):
         self.records, self.augment, self.epoch = records, augment, 0
@@ -100,22 +138,11 @@ class UpperBodyDataset(Dataset):
         with Image.open(path) as raw:
             image = raw.convert("RGB")
         roi = upper_body_roi(original, row["bbox"], image.width, image.height, row.get("headBox"))
-        left, top, width, height = roi.tolist()
-        size = CONFIG["imageSize"]
-        image = image.transform((size, size), Image.Transform.EXTENT, (left, top, left + width, top + height), resample=Image.Resampling.BILINEAR)
-        points = original.copy()
-        points[:, 0] = (points[:, 0] - left) / width * size
-        points[:, 1] = (points[:, 1] - top) / height * size
+        rng = None
         if self.augment:
-            seed = int.from_bytes(hashlib.sha256(f"{CONFIG['seed']}:{self.epoch}:{row['sampleId']}".encode()).digest()[:8], "big")
-            rng = random.Random(seed)
-            if rng.random() < CONFIG["flipProbability"]:
-                image = image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
-                points[:, 0] = size - 1 - points[:, 0]
-                for a, b in FLIP_PAIRS:
-                    points[[a, b]] = points[[b, a]]
-            image = ImageEnhance.Brightness(image).enhance(1 + rng.uniform(-CONFIG["brightnessJitter"], CONFIG["brightnessJitter"]))
-            image = ImageEnhance.Contrast(image).enhance(1 + rng.uniform(-CONFIG["contrastJitter"], CONFIG["contrastJitter"]))
+            rng = random.Random(int.from_bytes(hashlib.sha256(f"{CONFIG['seed']}:{self.epoch}:{row['sampleId']}".encode()).digest()[:8], "big"))
+        image, points = crop_input(image, original, roi, rng)
+        size = CONFIG["imageSize"]
         heatmap_points = points.copy()
         heatmap_points[:, :2] *= CONFIG["heatmapSize"] / size
         targets, weights = make_heatmaps(heatmap_points)
@@ -164,39 +191,62 @@ def decode_heatmaps(heatmaps, rois):
         raise ValueError("Unexpected upper-body heatmap topology")
     batch, joints, height, width = heatmaps.shape
     values, indices = heatmaps.reshape(batch, joints, -1).max(dim=-1)
-    x = (indices % width).to(torch.float32) / width * rois[:, None, 2] + rois[:, None, 0]
-    y = (indices // width).to(torch.float32) / height * rois[:, None, 3] + rois[:, None, 1]
+    column, row = indices % width, indices // width
+    # Standard quarter-cell refinement toward the larger neighbour reduces argmax quantization.
+    flat = heatmaps.reshape(batch, joints, -1)
+    def neighbour_delta(offset_index, valid):
+        safe = torch.where(valid, offset_index, indices)
+        return flat.gather(-1, safe.unsqueeze(-1)).squeeze(-1)
+    inner_x = (column > 0) & (column < width - 1)
+    inner_y = (row > 0) & (row < height - 1)
+    shift_x = torch.sign(neighbour_delta(indices + 1, inner_x) - neighbour_delta(indices - 1, inner_x)) * inner_x
+    shift_y = torch.sign(neighbour_delta(indices + width, inner_y) - neighbour_delta(indices - width, inner_y)) * inner_y
+    x = (column.to(torch.float32) + 0.25 * shift_x) / width * rois[:, None, 2] + rois[:, None, 0]
+    y = (row.to(torch.float32) + 0.25 * shift_y) / height * rois[:, None, 3] + rois[:, None, 1]
     return torch.stack([x, y], dim=-1), values
+
+class PoseMetrics:
+    """Accumulates labelled-joint error/PCK (and optionally heatmap loss) with one shared definition."""
+    def __init__(self):
+        self.counts = np.zeros(len(KEYPOINTS), dtype=np.int64)
+        self.errors = np.zeros(len(KEYPOINTS), dtype=np.float64)
+        self.pck_hits = np.zeros(len(KEYPOINTS), dtype=np.int64)
+        self.pck_counts = np.zeros(len(KEYPOINTS), dtype=np.int64)
+        self.visible = Counter()
+        self.loss_sum, self.loss_batches, self.batches, self.samples = 0.0, 0, 0, 0
+    def add(self, predicted, ground, loss: float | None = None):
+        self.batches += 1
+        if loss is not None:
+            self.loss_sum += loss
+            self.loss_batches += 1
+        if predicted is None:
+            self.samples += len(ground)
+            return
+        distance = (predicted - ground[:, :, :2]).square().sum(dim=-1).sqrt().numpy()
+        present = ground[:, :, 2].numpy() > 0
+        self.counts += present.sum(axis=0)
+        self.errors += (distance * present).sum(axis=0)
+        for sample in range(len(ground)):
+            self.samples += 1
+            labels = ground[sample, :, 2].numpy()
+            self.visible["visibleJoints"] += int((labels == 2).sum())
+            self.visible["occludedLabeledJoints"] += int((labels == 1).sum())
+            if ground[sample, 5, 2] > 0 and ground[sample, 6, 2] > 0:
+                shoulder = float((ground[sample, 5, :2] - ground[sample, 6, :2]).square().sum().sqrt())
+                if shoulder > np.finfo(np.float32).eps:
+                    self.pck_counts += present[sample]
+                    self.pck_hits += (distance[sample] <= shoulder * CONFIG["pckShoulderFraction"]) & present[sample]
+            else:
+                self.visible["samplesWithoutShoulderNormalization"] += 1
+    def result(self):
+        return {"samples": self.samples, "batches": self.batches, "meanHeatmapLoss": self.loss_sum / self.loss_batches if self.loss_batches else None, "metricDefinition": f"Unfiltered labelled-joint Euclidean error in source pixels and PCK@{CONFIG['pckShoulderFraction']} shoulder span, not COCO AP.", "joints": {name: {"labeled": int(self.counts[j]), "meanPixelError": float(self.errors[j] / self.counts[j]) if self.counts[j] else None, "pck": float(self.pck_hits[j] / self.pck_counts[j]) if self.pck_counts[j] else None, "pckSamples": int(self.pck_counts[j])} for j, name in enumerate(KEYPOINTS)}, "annotationBreakdown": dict(self.visible)}
 
 @torch.inference_mode()
 def evaluate(model, loader):
     model.eval()
-    counts = np.zeros(len(KEYPOINTS), dtype=np.int64)
-    errors = np.zeros(len(KEYPOINTS), dtype=np.float64)
-    pck_hits = np.zeros(len(KEYPOINTS), dtype=np.int64)
-    pck_counts = np.zeros(len(KEYPOINTS), dtype=np.int64)
-    visible = Counter()
-    loss_sum, batches, samples = 0.0, 0, 0
+    metrics = PoseMetrics()
     for batch in loader:
         heatmaps = model(batch["image"])
-        loss_sum += masked_heatmap_loss(heatmaps, batch["target"], batch["weights"]).item()
-        batches += 1
         predicted, _ = decode_heatmaps(heatmaps, batch["roi"])
-        ground = batch["groundTruth"]
-        distance = (predicted - ground[:, :, :2]).square().sum(dim=-1).sqrt().numpy()
-        present = ground[:, :, 2].numpy() > 0
-        counts += present.sum(axis=0)
-        errors += (distance * present).sum(axis=0)
-        for sample in range(len(ground)):
-            samples += 1
-            labels = ground[sample, :, 2].numpy()
-            visible["visibleJoints"] += int((labels == 2).sum())
-            visible["occludedLabeledJoints"] += int((labels == 1).sum())
-            if ground[sample, 5, 2] > 0 and ground[sample, 6, 2] > 0:
-                shoulder = float((ground[sample, 5, :2] - ground[sample, 6, :2]).square().sum().sqrt())
-                if shoulder > np.finfo(np.float32).eps:
-                    pck_counts += present[sample]
-                    pck_hits += (distance[sample] <= shoulder * CONFIG["pckShoulderFraction"]) & present[sample]
-            else:
-                visible["samplesWithoutShoulderNormalization"] += 1
-    return {"samples": samples, "batches": batches, "meanHeatmapLoss": loss_sum / max(1, batches), "metricDefinition": f"Unfiltered labelled-joint Euclidean error in source pixels and PCK@{CONFIG['pckShoulderFraction']} shoulder span, not COCO AP.", "joints": {name: {"labeled": int(counts[j]), "meanPixelError": float(errors[j] / counts[j]) if counts[j] else None, "pck": float(pck_hits[j] / pck_counts[j]) if pck_counts[j] else None, "pckSamples": int(pck_counts[j])} for j, name in enumerate(KEYPOINTS)}, "annotationBreakdown": dict(visible)}
+        metrics.add(predicted, batch["groundTruth"], masked_heatmap_loss(heatmaps, batch["target"], batch["weights"]).item())
+    return metrics.result()

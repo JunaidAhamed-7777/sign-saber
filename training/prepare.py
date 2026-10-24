@@ -172,11 +172,66 @@ def extract_mpii_images() -> None:
                 raise ValueError("Unsafe image archive path")
             archive.extract(member, target, filter="data")
 
+def decode_image(relative: str):
+    """Fully decode one local JPEG; returns its size or the decoder's error text."""
+    from PIL import Image
+    try:
+        with Image.open(DATA / relative) as image:
+            image.load()
+            return relative, image.size, None
+    except Exception as error:  # Reported per file; verification fails if any image cannot decode.
+        return relative, None, f"{type(error).__name__}: {error}"
+
+def verify_mpii_images(workers: int) -> dict:
+    """Compare extracted files with the archive verification and decode every indexed MPII image."""
+    from concurrent.futures import ProcessPoolExecutor
+    from datetime import datetime, timezone
+    folder = DATA / "mpii"
+    archive = json.loads((folder / "archive-verification.json").read_text(encoding="utf-8"))
+    files = sorted((folder / "images").glob("*.jpg"))
+    total_bytes = sum(path.stat().st_size for path in files)
+    indexed = {}
+    for split in ["train", "val"]:
+        with (folder / f"{split}.jsonl").open(encoding="utf-8") as source:
+            indexed[split] = sorted({json.loads(line)["image"] for line in source})
+    unique = sorted(set(indexed["train"]) | set(indexed["val"]))
+    sizes, failures = Counter(), []
+    with ProcessPoolExecutor(max_workers=workers) as pool:
+        for relative, size, error in pool.map(decode_image, unique, chunksize=64):
+            if error:
+                failures.append({"image": relative, "error": error})
+            else:
+                sizes[f"{size[0]}x{size[1]}"] += 1
+    report = {
+        "verifiedAt": datetime.now(timezone.utc).isoformat(),
+        "extractedJpegFiles": len(files),
+        "archiveJpegFiles": archive["uniqueJpegFiles"],
+        "extractedJpegBytes": total_bytes,
+        "archiveJpegBytes": archive["uncompressedJpegBytes"],
+        "indexedUniqueImages": {split: len(names) for split, names in indexed.items()},
+        "missingIndexedImages": sum(not (DATA / name).is_file() for name in unique),
+        "decodedIndexedImages": len(unique) - len(failures),
+        "decodeFailures": failures[:20],
+        "decodeFailureCount": len(failures),
+        "mostCommonSizes": dict(sizes.most_common(5)),
+        "scope": "Count/byte totals against the streamed archive check, plus full PIL decode of every indexed train/validation image. Unindexed archive images are counted, not decoded.",
+    }
+    report["passed"] = report["extractedJpegFiles"] == report["archiveJpegFiles"] and total_bytes == report["archiveJpegBytes"] and report["missingIndexedImages"] == 0 and not failures
+    (folder / "extraction-verification.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    if not report["passed"]:
+        raise ValueError(f"MPII extraction verification failed: {json.dumps(report)[:2000]}")
+    return report
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", choices=["all", "coco2017", "mpii"], default="all")
     parser.add_argument("--extract-mpii-images", action="store_true")
+    parser.add_argument("--verify-mpii-images", action="store_true", help="Check extracted MPII counts/bytes and fully decode every indexed image, then exit")
+    parser.add_argument("--workers", type=int, default=4, help="Decode processes for --verify-mpii-images")
     args = parser.parse_args()
+    if args.verify_mpii_images:
+        print(json.dumps(verify_mpii_images(max(1, args.workers)), indent=2))
+        return
     if args.extract_mpii_images:
         extract_mpii_images()
     summaries = {}

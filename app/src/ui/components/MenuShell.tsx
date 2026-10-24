@@ -1,8 +1,15 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import type { ActionSource } from '../menuTargets';
 import type { GameRuntime } from '../../core/runtime';
+import { MENU_COMPACT_MAX_HEIGHT_PX, MENU_COMPACT_MAX_WIDTH_PX } from '../../core/constants';
 import { useStore } from '../../state/store';
 import { strings } from '../strings';
+import { trialCopy } from '../trialCopy';
+const classes = (...names: (string | false | null | undefined)[]): string => names.filter(Boolean).join(' ');
+/**
+ * One registered semantic target. Mouse, keyboard and hand activation all resolve through runtime.targets.
+ * The hand pointer's hover/armed/confirming/latched phase is mirrored onto the targeted button only.
+ */
 export function Button({
   runtime,
   id,
@@ -11,8 +18,11 @@ export function Button({
   nativeOnly = false,
   selected = false,
   primary = false,
+  busy = false,
+  className,
   onAction,
   label,
+  describedBy,
 }: {
   runtime: GameRuntime;
   id: string;
@@ -21,8 +31,11 @@ export function Button({
   nativeOnly?: boolean;
   selected?: boolean;
   primary?: boolean;
+  busy?: boolean;
+  className?: string | undefined;
   onAction?: (source: ActionSource) => void;
   label?: string;
+  describedBy?: string;
 }) {
   const ref = useRef<HTMLButtonElement>(null);
   const action = useRef(onAction);
@@ -42,17 +55,28 @@ export function Button({
       observer.disconnect();
       off();
     };
-  }, [runtime, id, disabled, nativeOnly]);
+  }, [runtime, id, disabled, nativeOnly, busy]);
+  const hand = useStore((s) =>
+    s.pointer?.visible && s.pointer.targetId === id && s.pointer.phase !== 'idle' ? s.pointer.phase : null,
+  );
+  // Quantized so the targeted button re-renders at most ten times per arming interval.
+  const progress = useStore((s) =>
+    s.pointer?.visible && s.pointer.targetId === id ? Math.round(s.pointer.progress * 10) / 10 : 0,
+  );
   return (
     <button
       ref={ref}
       type="button"
       data-target={id}
       data-native-only={nativeOnly}
+      data-hand={hand ?? undefined}
       disabled={disabled}
+      aria-busy={busy || undefined}
       aria-pressed={selected || undefined}
       aria-label={label}
-      className={`${primary ? 'primary ' : ''}${selected ? 'selected' : ''}`}
+      aria-describedby={describedBy}
+      className={classes('btn', primary && 'primary', selected && 'selected', busy && 'busy', className)}
+      style={hand ? ({ '--arm': progress } as React.CSSProperties) : undefined}
       onClick={() => runtime.targets.activate(id, 'native')}
     >
       {children}
@@ -64,16 +88,24 @@ export interface MenuPage {
   label: string;
   content: ReactNode;
 }
+/**
+ * Bounded pages with large Previous/Next targets. `rail` stacks navigation under the page;
+ * `inline` flanks a horizontal page with the navigation for layouts above/below the figure.
+ */
 export function RailPager({
   runtime,
   id,
   pages,
   showStatus = false,
+  statusErrors = true,
+  variant = 'rail',
 }: {
   runtime: GameRuntime;
   id: string;
   pages: readonly MenuPage[];
   showStatus?: boolean;
+  statusErrors?: boolean;
+  variant?: 'rail' | 'inline';
 }) {
   const [selected, setSelected] = useState('');
   const index = Math.max(
@@ -96,49 +128,87 @@ export function RailPager({
     }
   }, [runtime, pages, index]);
   if (!page) return null;
+  const paged = pages.length > 1;
+  const previousButton = paged && (
+    <Button
+      runtime={runtime}
+      id={`ui:${id}:previous`}
+      onAction={previous}
+      disabled={index === 0}
+      className="page-button"
+      label={`${strings.previous}: ${pages[index - 1]?.label ?? strings.firstPage}`}
+    >
+      <span className="page-arrow" aria-hidden="true">
+        ←
+      </span>
+      <span>{strings.previous}</span>
+    </Button>
+  );
+  const nextButton = paged && (
+    <Button
+      runtime={runtime}
+      id={`ui:${id}:next`}
+      onAction={next}
+      disabled={index + 1 === pages.length}
+      className="page-button"
+      label={`${strings.next}: ${pages[index + 1]?.label ?? strings.lastPage}`}
+    >
+      <span className="page-arrow" aria-hidden="true">
+        →
+      </span>
+      <span>{strings.next}</span>
+    </Button>
+  );
+  const position = paged && (
+    <span className="page-position" role="status">
+      <span className="page-label">{page.label}</span>
+      <small>
+        {index + 1} {strings.pageOf} {pages.length}
+      </small>
+      <span className="page-dots" aria-hidden="true">
+        {pages.map((entry) => (
+          <i key={entry.id} className={entry.id === page.id ? 'current' : undefined} />
+        ))}
+      </span>
+    </span>
+  );
+  if (variant === 'inline')
+    return (
+      <div className={classes('rail-pager', 'inline-pager', paged && 'paged')}>
+        {position}
+        <div className="inline-row">
+          {previousButton}
+          <div className="rail-page" key={page.id} aria-label={page.label}>
+            {page.content}
+          </div>
+          {nextButton}
+        </div>
+        {showStatus && <StatusMessage errors={statusErrors} />}
+      </div>
+    );
   return (
     <div className="rail-pager">
       <div className="rail-page" key={page.id} aria-label={page.label}>
         {page.content}
-        {showStatus && <StatusMessage />}
+        {showStatus && <StatusMessage errors={statusErrors} />}
       </div>
-      {pages.length > 1 && (
+      {paged && (
         <nav className="page-navigation" aria-label={strings.menuPages}>
-          <Button
-            runtime={runtime}
-            id={`ui:${id}:previous`}
-            onAction={previous}
-            disabled={index === 0}
-            label={`${strings.previous}: ${pages[index - 1]?.label ?? strings.firstPage}`}
-          >
-            ←<span>{strings.previous}</span>
-          </Button>
-          <span className="page-position" role="status">
-            {page.label}
-            <small>
-              {index + 1} / {pages.length}
-            </small>
-          </span>
-          <Button
-            runtime={runtime}
-            id={`ui:${id}:next`}
-            onAction={next}
-            disabled={index + 1 === pages.length}
-            label={`${strings.next}: ${pages[index + 1]?.label ?? strings.lastPage}`}
-          >
-            <span>{strings.next}</span>→
-          </Button>
+          {previousButton}
+          {position}
+          {nextButton}
         </nav>
       )}
     </div>
   );
 }
-export function StatusMessage() {
+/** Transient runtime status plus, unless a screen presents errors itself, the current actionable error. */
+export function StatusMessage({ errors = true }: { errors?: boolean }) {
   const status = useStore((state) => state.status);
   const error = useStore((state) => state.error || state.camera.error || state.arrangement?.error);
-  if (error)
+  if (error && errors)
     return (
-      <p className="error status-message" role="alert">
+      <p className="notice danger status-message" role="alert">
         {error}
       </p>
     );
@@ -148,17 +218,35 @@ export function StatusMessage() {
     </p>
   ) : null;
 }
-function useCompactMenu(): boolean {
-  const [compact, setCompact] = useState(
-    () => window.matchMedia('(max-width: 1099px), (max-height: 619px)').matches,
-  );
+/** Rails stay beside the figure only when the viewport can hold them with full-size targets. */
+const COMPACT_QUERY = `(max-width: ${MENU_COMPACT_MAX_WIDTH_PX}px), (max-height: ${MENU_COMPACT_MAX_HEIGHT_PX}px)`;
+export function useCompactMenu(): boolean {
+  const [compact, setCompact] = useState(() => window.matchMedia(COMPACT_QUERY).matches);
   useEffect(() => {
-    const query = window.matchMedia('(max-width: 1099px), (max-height: 619px)');
+    const query = window.matchMedia(COMPACT_QUERY);
     const update = () => setCompact(query.matches);
     query.addEventListener('change', update);
     return () => query.removeEventListener('change', update);
   }, []);
   return compact;
+}
+/** Small uppercase rail heading with an optional display title. */
+export function RailHeading({
+  eyebrow,
+  title,
+  level = 2,
+}: {
+  eyebrow: string;
+  title?: ReactNode;
+  level?: 1 | 2;
+}) {
+  const Title = level === 1 ? 'h1' : 'h2';
+  return (
+    <header className="rail-heading">
+      <span className="eyebrow">{eyebrow}</span>
+      {title !== undefined && <Title>{title}</Title>}
+    </header>
+  );
 }
 export function Figure({ runtime }: { runtime: GameRuntime }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -168,6 +256,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
   const highlight = useStore((s) => s.highlightAt);
   const mask = useStore((s) => s.maskAvailable);
   const replay = useStore((s) => s.replay);
+  const trialSource = useStore((s) => s.trialSource);
   const datasetCamera = useStore((s) => s.cameraSource === 'dataset');
   const live = available && (replay || camera.calibrationValid || camera.mode === 'camera-setup');
   const saved = state === 'RESULTS' && highlight !== null;
@@ -186,7 +275,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
     state === 'RESULTS'
       ? saved
         ? replay && !runtime.flags?.replay
-          ? strings.datasetSavedFigure
+          ? trialCopy(trialSource).savedFigure
           : strings.savedFigure
         : strings.noHighlight
       : state === 'PAUSED'
@@ -194,7 +283,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
           ? strings.frozenFigure
           : strings.noHighlight
         : replay && available
-          ? strings.datasetFigure
+          ? trialCopy(trialSource).figure
           : camera.mode === 'camera-setup' && available
             ? strings.setupPreview
             : live
@@ -241,22 +330,8 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
     </div>
   );
 }
-export function MenuShell({
-  runtime,
-  left,
-  right,
-  leftPages,
-  rightPages,
-  compactPages,
-}: {
-  runtime: GameRuntime;
-  left?: ReactNode;
-  right?: ReactNode;
-  leftPages?: readonly MenuPage[];
-  rightPages?: readonly MenuPage[];
-  compactPages?: readonly MenuPage[];
-}) {
-  const compact = useCompactMenu();
+/** Secondary pages shared by SELECT, PAUSED and RESULTS. Each page keeps at most three primary targets. */
+function useSettingsPages(runtime: GameRuntime, enabled: boolean): MenuPage[] {
   const state = useStore((s) => s.state);
   const calm = useStore((s) => s.calm);
   const volume = useStore((s) => s.volume);
@@ -266,156 +341,195 @@ export function MenuShell({
   const canStartLive = useStore(
     (s) => !!s.map && s.audioReady && s.camera.calibrationValid && s.trackingReady && !s.loading && !s.fatal,
   );
-  useStore((s) => s.status);
-  useStore((s) => s.countdown);
-  const armed = runtime.startArmed || runtime.resumeArmed;
-  const utilityActions: MenuPage[] = [
+  if (!enabled) return [];
+  const percent = Math.round(volume * 100);
+  const visuals = calm ? strings.visualsCalm : strings.visualsStandard;
+  const pages: MenuPage[] = [
     {
-      id: 'settings-calm',
-      label: strings.settings,
+      id: 'settings-sound',
+      label: strings.soundVisualsPage,
       content: (
-        <Button runtime={runtime} id="calm" selected={calm}>
-          {calm ? strings.calm : strings.standard}
-        </Button>
-      ),
-    },
-    {
-      id: 'settings-hand',
-      label: strings.settings,
-      content: (
-        <Button runtime={runtime} id="hand">
-          {hand === 'left' ? strings.handLeft : strings.handRight}
-        </Button>
-      ),
-    },
-    {
-      id: 'settings-volume-down',
-      label: strings.soundSettings,
-      content: (
-        <Button runtime={runtime} id="volume-down" disabled={volume <= 0}>
-          {strings.volumeDown} · {Math.round(volume * 100)}%
-        </Button>
-      ),
-    },
-    {
-      id: 'settings-volume-up',
-      label: strings.soundSettings,
-      content: (
-        <Button runtime={runtime} id="volume-up" disabled={volume >= 1}>
-          {strings.volumeUp} · {Math.round(volume * 100)}%
-        </Button>
-      ),
-    },
-    {
-      id: 'settings-camera-off',
-      label: strings.cameraSettings,
-      content: (
-        <Button runtime={runtime} id="camera-off" disabled={!camera.calibrationValid}>
-          {strings.cameraOff}
-        </Button>
-      ),
-    },
-    {
-      id: 'settings-credits',
-      label: strings.credits,
-      content: (
-        <Button runtime={runtime} id="credits">
-          {strings.credits}
-        </Button>
+        <>
+          <RailHeading eyebrow={strings.settings} title={strings.soundVisualsPage} />
+          <div className="setting">
+            <span className="setting-label" id="setting-volume">
+              {strings.volume}
+            </span>
+            <div className="stepper" role="group" aria-labelledby="setting-volume">
+              <Button runtime={runtime} id="volume-down" disabled={volume <= 0} label={strings.volumeDown}>
+                <span aria-hidden="true">−</span>
+              </Button>
+              <output className="stepper-value">{percent}%</output>
+              <Button runtime={runtime} id="volume-up" disabled={volume >= 1} label={strings.volumeUp}>
+                <span aria-hidden="true">+</span>
+              </Button>
+            </div>
+          </div>
+          <div className="setting">
+            <span className="setting-label">{strings.visuals}</span>
+            <Button
+              runtime={runtime}
+              id="calm"
+              className={calm ? 'toggle-on' : undefined}
+              label={`${strings.visuals}: ${visuals}`}
+            >
+              {calm ? strings.calm : strings.standard}
+            </Button>
+          </div>
+          <div className="setting">
+            <span className="setting-label">{strings.menuHand}</span>
+            <Button
+              runtime={runtime}
+              id="hand"
+              label={`${strings.menuHand}: ${hand === 'left' ? strings.handLeft : strings.handRight}`}
+            >
+              {hand === 'left' ? strings.handLeft : strings.handRight}
+            </Button>
+          </div>
+        </>
       ),
     },
   ];
   if (state === 'SELECT')
-    utilityActions.unshift(
-      {
-        id: 'settings-camera-setup',
-        label: strings.cameraSettings,
-        content: (
+    pages.push({
+      id: 'settings-camera',
+      label: strings.cameraPage,
+      content: (
+        <>
+          <RailHeading eyebrow={strings.settings} title={strings.cameraPage} />
           <Button
             runtime={runtime}
             id="camera"
             nativeOnly={!camera.calibrationValid}
             disabled={camera.state === 'setting-up'}
+            busy={camera.state === 'setting-up'}
           >
             {camera.calibrationValid ? strings.cameraReconfigure : strings.cameraSetup}
           </Button>
-        ),
-      },
-      {
-        id: 'settings-dataset-camera',
-        label: strings.cameraSettings,
-        content: (
-          <>
-            <Button runtime={runtime} id="camera-dataset" nativeOnly disabled={camera.state === 'setting-up'}>
-              {strings.datasetCameraUse}
-            </Button>
-            <p className="subtle">{strings.datasetCameraAbout}</p>
-          </>
-        ),
-      },
-      {
-        id: 'settings-live-play',
-        label: strings.liveCameraMode,
-        content: (
-          <>
-            <Button runtime={runtime} id="start" disabled={!canStartLive}>
-              {strings.start}
-            </Button>
-            {!canStartLive && <p className="subtle">{strings.startRequirements}</p>}
-          </>
-        ),
-      },
-    );
-  if (diagnostics)
-    utilityActions.push({
-      id: 'settings-diagnostics',
-      label: strings.diagnostics,
-      content: (
-        <>
-          <p className="subtle">{strings.diagnosticsLimit}</p>
-          <Button runtime={runtime} id="evidence">
-            {strings.exportEvidence}
+          {!camera.calibrationValid && <p className="note native-note">{strings.nativeCamera}</p>}
+          <Button runtime={runtime} id="start" disabled={!canStartLive}>
+            {strings.start}
+          </Button>
+          {!canStartLive && <p className="note">{strings.startRequirements}</p>}
+          <Button runtime={runtime} id="camera-off" disabled={!camera.calibrationValid}>
+            {strings.cameraOff}
           </Button>
         </>
       ),
     });
-  const utilities = !armed && state !== 'CALIBRATION';
+  if (state === 'SELECT')
+    pages.push({
+      id: 'settings-dataset-camera',
+      label: strings.datasetCameraUse,
+      content: (
+        <>
+          <RailHeading eyebrow={strings.settings} title={strings.datasetCameraUse} />
+          <Button runtime={runtime} id="camera-dataset" nativeOnly disabled={camera.state === 'setting-up'}>
+            {strings.datasetCameraUse}
+          </Button>
+          <p className="note">{strings.datasetCameraAbout}</p>
+        </>
+      ),
+    });
+  pages.push({
+    id: 'settings-more',
+    label: strings.morePage,
+    content: (
+      <>
+        <RailHeading eyebrow={strings.settings} title={strings.morePage} />
+        <Button runtime={runtime} id="credits">
+          {strings.credits}
+        </Button>
+        {state !== 'SELECT' && (
+          <Button runtime={runtime} id="camera-off" disabled={!camera.calibrationValid}>
+            {strings.cameraOff}
+          </Button>
+        )}
+        {diagnostics && (
+          <>
+            <Button runtime={runtime} id="evidence">
+              {strings.exportEvidence}
+            </Button>
+            <p className="note">{strings.diagnosticsLimit}</p>
+          </>
+        )}
+      </>
+    ),
+  });
+  return pages;
+}
+/**
+ * Shared frame: left rail, protected figure stage, right rail. Compact viewports reflow the rails above and
+ * below the stage (never over it) with full-size targets and inline paging.
+ */
+export function MenuShell({
+  runtime,
+  left,
+  right,
+  leftPages,
+  rightPages,
+  compactPages,
+  compactTop,
+  compactTopPages,
+  compactStatus,
+  ownErrors = false,
+}: {
+  runtime: GameRuntime;
+  left?: ReactNode;
+  right?: ReactNode;
+  leftPages?: readonly MenuPage[];
+  rightPages?: readonly MenuPage[];
+  /** Grouped bottom-row pages for compact layouts; defaults to the right rail pages. */
+  compactPages?: readonly MenuPage[];
+  /** Non-interactive compact summary above the figure. */
+  compactTop?: ReactNode | undefined;
+  /** Interactive compact pages above the figure (for example song cards). */
+  compactTopPages?: readonly MenuPage[] | undefined;
+  /** Persistent compact status line above the bottom row. */
+  compactStatus?: ReactNode;
+  /** The screen renders its own error notice; the shell then shows only transient status. */
+  ownErrors?: boolean;
+}) {
+  const compact = useCompactMenu();
+  const state = useStore((s) => s.state);
+  const mode = useStore((s) => s.camera.mode);
+  useStore((s) => s.status);
+  useStore((s) => s.countdown);
+  const armed = runtime.startArmed || runtime.resumeArmed;
+  const settings = useSettingsPages(runtime, !armed && state !== 'CALIBRATION');
   const leftContent = leftPages ?? [{ id: 'left', label: strings.library, content: left }];
   const rightContent = rightPages ?? [{ id: 'right', label: strings.ready, content: right }];
-  const rightWithUtilities = [...rightContent];
-  if (utilities)
-    for (let index = 0; index < utilityActions.length; index += 3)
-      rightWithUtilities.push({
-        id: `settings-${index}`,
-        label: strings.settings,
-        content: (
-          <>
-            <h2>{strings.settings}</h2>
-            {utilityActions.slice(index, index + 3).map((page) => (
-              <div key={page.id}>{page.content}</div>
-            ))}
-          </>
-        ),
-      });
-  const compactContent = [
-    ...(compactPages ?? [...leftContent, ...rightContent]),
-    ...(utilities ? utilityActions : []),
-  ];
-  if (compact)
+  if (compact) {
+    const bottom = [...(compactPages ?? rightContent), ...settings];
     return (
       <main className="menu-shell compact-shell">
+        <section className="rail compact-top">
+          {compactTop ?? (
+            <RailPager
+              key={`${state}:top`}
+              runtime={runtime}
+              id="compact-top"
+              pages={compactTopPages ?? leftContent}
+              variant="inline"
+            />
+          )}
+        </section>
         <Figure runtime={runtime} />
-        <section className="rail compact-rail">
+        <section className="rail compact-bottom">
+          {compactStatus && <div className="compact-status">{compactStatus}</div>}
           <RailPager
-            key={`${state}:${camera.mode}:${armed}`}
+            key={`${state}:${mode}:${armed}`}
             runtime={runtime}
             id="compact"
-            pages={compactContent}
+            pages={bottom}
             showStatus
+            statusErrors={!ownErrors}
+            variant="inline"
           />
         </section>
       </main>
     );
+  }
   return (
     <main className="menu-shell">
       <section className="rail left-rail">
@@ -423,7 +537,14 @@ export function MenuShell({
       </section>
       <Figure runtime={runtime} />
       <section className="rail right-rail">
-        <RailPager runtime={runtime} id="right" pages={rightWithUtilities} showStatus />
+        <RailPager
+          key={`${state}:${mode}:${armed}`}
+          runtime={runtime}
+          id="right"
+          pages={[...rightContent, ...settings]}
+          showStatus
+          statusErrors={!ownErrors}
+        />
       </section>
     </main>
   );

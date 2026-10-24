@@ -26,16 +26,19 @@ function Status() {
   const replay = useStore((s) => s.replay);
   const camera = useStore((s) => s.camera);
   const ready = useStore((s) => s.trackingReady);
+  const datasetCamera = useStore((s) => s.cameraSource === 'dataset');
   return (
     <span className={`camera-status ${camera.calibrationValid && ready ? 'active' : ''}`} role="status">
       <i />
       {replay
         ? t.datasetSource
-        : camera.calibrationValid
-          ? ready
-            ? t.cameraReady
-            : t.lostFigure
-          : t.cameraNotReady}
+        : datasetCamera
+          ? t.datasetCamera
+          : camera.calibrationValid
+            ? ready
+              ? t.cameraReady
+              : t.lostFigure
+            : t.cameraNotReady}
     </span>
   );
 }
@@ -78,6 +81,7 @@ export function App({ runtime }: { runtime: GameRuntime }) {
   const replay = useStore((s) => s.replay);
   const stats = useStore((s) => s.stats);
   const fatal = useStore((s) => s.fatal);
+  const datasetCamera = useStore((s) => s.cameraSource === 'dataset');
   useEffect(() => {
     document.documentElement.dataset.motion = calm ? 'calm' : 'standard';
   }, [calm]);
@@ -94,6 +98,7 @@ export function App({ runtime }: { runtime: GameRuntime }) {
         <span className="input-label">{t.nativeHelp}</span>
       </header>
       {replay && <div className="replay-label">{runtime.flags?.replay ? t.replay : t.datasetReplay}</div>}
+      {datasetCamera && !replay && <div className="replay-label">{t.datasetCameraBanner}</div>}
       {credits ? (
         <Credits runtime={runtime} />
       ) : state === 'BOOT' ? (

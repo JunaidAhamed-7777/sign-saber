@@ -17,6 +17,8 @@ export interface DisplayState {
   error: string | null;
   status: string;
   camera: CameraSetupState;
+  /** Kind of the running camera stream source; null when no camera stream is set up. */
+  cameraSource: 'webcam' | 'dataset' | null;
   cameraStage: string;
   calibrationReady: boolean;
   trackingReady: boolean;
@@ -76,6 +78,7 @@ const initial: DisplayState = {
   error: null,
   status: '',
   camera: { state: 'not-set-up', mode: 'browse', calibrationValid: false, error: null },
+  cameraSource: null,
   cameraStage: '',
   calibrationReady: false,
   trackingReady: false,

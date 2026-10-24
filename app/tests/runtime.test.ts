@@ -55,6 +55,7 @@ vi.mock('../src/tracking/camera', () => ({
     generation = 0;
     onFrame: ((frame: TrackingFrame) => void) | null = null;
     onStatus: ((message: string) => void) | null = null;
+    source: { kind: string; lane: string; close: () => void } | null = null;
     client = { pauseCapture: vi.fn(), start: vi.fn() };
     start = vi.fn(
       async (
@@ -62,16 +63,28 @@ vi.mock('../src/tracking/camera', () => ({
         onFrame: (frame: TrackingFrame) => void,
         _onError: (message: string) => void,
         onStatus: (message: string) => void,
+        source: { kind: string; lane: string; close: () => void },
       ) => {
         this.identity = `synthetic-camera-${++this.generation}`;
         this.onFrame = onFrame;
         this.onStatus = onStatus;
+        this.source = source;
         await mocks.cameraStart();
       },
     );
     stop = vi.fn(() => {
       this.identity = '';
+      this.source?.close();
+      this.source = null;
     });
+    get sourceKind() {
+      return this.source?.kind ?? null;
+    }
+    get sourceLane() {
+      return this.source?.lane ?? null;
+    }
+    observeProcessed = vi.fn();
+    sourceEvidence = vi.fn(() => null);
     setCaptureVisible = vi.fn();
     constructor() {
       mocks.cameras.push(this as unknown as Record<string, unknown>);
@@ -81,6 +94,7 @@ vi.mock('../src/tracking/camera', () => ({
 
 import { GameRuntime } from '../src/core/runtime';
 import { useStore } from '../src/state/store';
+import { strings } from '../src/ui/strings';
 import { DatasetTrial, validateDatasetTrial } from '../src/tracking/datasetTrial';
 import datasetFixture from '../public/assets/fixtures/coco-upper-body-trial.json';
 
@@ -493,6 +507,35 @@ describe('runtime browser lifecycle (mocked boundaries)', () => {
       camera: { state: 'not-set-up', calibrationValid: false },
     });
     expect(Context.instances).toHaveLength(0);
+  });
+  it('routes the labelled dataset camera through the same setup, judgement trace and evidence lane', async () => {
+    await prepare();
+    const firstCamera = runtime!.camera as unknown as { source: { kind: string } };
+    expect(firstCamera.source.kind).toBe('webcam');
+    expect(useStore.getState().cameraSource).toBe('webcam');
+    await runtime!.command('camera-off');
+    expect(useStore.getState().cameraSource).toBeNull();
+    await runtime!.command('camera-dataset', 'hand');
+    expect(useStore.getState().status).toBe(strings.nativeCamera);
+    await runtime!.command('camera-dataset');
+    const camera = runtime!.camera as unknown as {
+      source: { kind: string; lane: string; close: () => void };
+    };
+    expect(camera.source).toMatchObject({ kind: 'dataset', lane: 'dataset-camera' });
+    expect(useStore.getState()).toMatchObject({ cameraSource: 'dataset', camera: { mode: 'camera-setup' } });
+    advance(700);
+    await runtime!.command('camera-confirm');
+    expect(useStore.getState().camera.calibrationValid).toBe(true);
+    expect(useStore.getState().status).toContain(strings.datasetCamera);
+    await play();
+    const evidence = await runtime!.evidence();
+    expect(evidence).toMatchObject({ lane: 'dataset-camera', cameraSource: 'dataset' });
+    const trace = evidence.judgementTrace as { count: number; sha256: string; label: string };
+    expect(trace.label).toContain('dataset-camera');
+    expect(trace.sha256).toMatch(/^[0-9a-f]{64}$/);
+    expect(runtime!.trace.attached).toBe(true);
+    runtime!.dispose();
+    expect(runtime!.trace.attached).toBe(false);
   });
   it('pauses on fresh empty tracking frames rather than confusing inference freshness with player presence', async () => {
     await prepare();

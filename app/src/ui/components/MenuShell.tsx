@@ -168,6 +168,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
   const highlight = useStore((s) => s.highlightAt);
   const mask = useStore((s) => s.maskAvailable);
   const replay = useStore((s) => s.replay);
+  const datasetCamera = useStore((s) => s.cameraSource === 'dataset');
   const live = available && (replay || camera.calibrationValid || camera.mode === 'camera-setup');
   const saved = state === 'RESULTS' && highlight !== null;
   const frozen = state === 'PAUSED' && !!runtime.renderer?.hasFrozenFigure;
@@ -233,6 +234,7 @@ export function Figure({ runtime }: { runtime: GameRuntime }) {
       {state !== 'PLAYING' && (
         <p className="figure-caption">
           {label}
+          {datasetCamera && !placeholder ? ` · ${strings.datasetCamera}` : ''}
           {saved ? ` · ${Math.max(0, highlight! / 1000).toFixed(1)} s` : ''}
         </p>
       )}
@@ -337,6 +339,18 @@ export function MenuShell({
           >
             {camera.calibrationValid ? strings.cameraReconfigure : strings.cameraSetup}
           </Button>
+        ),
+      },
+      {
+        id: 'settings-dataset-camera',
+        label: strings.cameraSettings,
+        content: (
+          <>
+            <Button runtime={runtime} id="camera-dataset" nativeOnly disabled={camera.state === 'setting-up'}>
+              {strings.datasetCameraUse}
+            </Button>
+            <p className="subtle">{strings.datasetCameraAbout}</p>
+          </>
         ),
       },
       {

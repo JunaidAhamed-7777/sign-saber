@@ -568,6 +568,12 @@ Menu defaults are initial unmeasured values; tune with held-out menu fixtures an
 | `DATASET_TRIAL_HZ` / `DATASET_TRIAL_HOLD_MS` / `DATASET_TRIAL_CROP_FRACTION` | 30 / 10000 / 0.8 | Simulated delivery of independent still annotations; no recorded motion/fingers/depth |
 | `DATASET_TRIAL_MAX_SAMPLES` / `DATASET_TRIAL_MAX_CATCHUP_FRAMES` | 100 / 300 | Bounded fixture admission and catch-up; oversized clock jumps stop the trial instead of fabricating continuity |
 | `DATASET_TRIAL_URL` / `DATASET_TRIAL_SHA256` | Local fixture path/hash in central exports | Exact attributed fixture integrity pins, not tunable motion evidence |
+| `DATASET_CAMERA_MANIFEST_URL` / `DATASET_CAMERA_MAX_ITEMS` / `DATASET_CAMERA_MAX_FILE_BYTES` | `/dataset-camera/manifest.json` / 200 / 4 × 1024 × 1024 | Local ignored dataset-camera reel admission (prepared by `scripts/prepare-dataset-camera.mjs`; per-photo SHA-256 checked) |
+| `DATASET_CAMERA_HOLD_MS` / `DATASET_CAMERA_HOLD_MIN_MS` / `DATASET_CAMERA_HOLD_MAX_MS` | 5000 / 1000 / 60000 | Photo hold per reel step and `?reelHold=` bounds |
+| `DATASET_CAMERA_SWEEP_FIRST_HOLD_MS` | 20000 | `?reel=sweep` calibration-photo hold before cycling every photo by stream time |
+| `DATASET_CAMERA_TRANSITION_GUARD_MS` / `DATASET_CAMERA_TIMELINE_CAPACITY` | 300 / 1024 | Captures this soon after a drawn-photo change are not attributed; bounded draw history |
+| `DATASET_CAMERA_MATCH_SHOULDER_FRACTION` / `DATASET_CAMERA_PCK_SHOULDER_FRACTION` | 0.5 / 0.5 | Dataset-camera evaluation: wrist-to-hand match radius and PCK threshold, in annotated shoulder widths |
+| `JUDGEMENT_TRACE_CAPACITY` | 8192 | Typed judgement-trace events per session; further events are counted as explicit overflow |
 | `ASSET_MODEL_MAX_BYTES` / `MAX_LIVE_OBSTACLES` | 1048576 / 8 | Model admission and pooled wall capacity |
 | `GRAVITY_MPS2` / `GLYPH_FACE_OFFSET_M` | 9.8 / 0.31 | Cosmetic ballistic gravity and block-front glyph plane |
 | `ARENA_REACTIVE_GAIN` / `SIL_HEAD_RADIUS_M` | 2 / 0.11 | Actual audio-energy emission gain / nose-anchored head marker |

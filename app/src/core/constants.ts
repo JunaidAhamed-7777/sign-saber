@@ -55,7 +55,7 @@ export const GESTURE_CONFIRM_FRAMES = 3,
   FINGER_EXT_ANGLE_DEG = 160,
   FINGER_CURL_ANGLE_DEG = 115;
 export const ONE_EURO_MIN_CUTOFF = 1.2,
-  ONE_EURO_BETA = 0.08,
+  ONE_EURO_BETA = 10,
   ONE_EURO_D_CUTOFF = 1,
   VEL_WINDOW_FRAMES = 3;
 export const BLADE_ON_SPEED = 3,
@@ -394,6 +394,22 @@ export const ARENA_REACTIVE_GAIN = 2,
 export const DATASET_TRIAL_MAX_SAMPLES = 100,
   DATASET_TRIAL_MAX_CATCHUP_FRAMES = 300;
 
+// ── Begin dataset-camera / judgement-trace block (docs02 registry; docs05 §1.4; docs24 §9) ──
+// A labelled canvas MediaStream fed through the unchanged live path. Never webcam evidence.
+export const DATASET_CAMERA_MANIFEST_URL = '/dataset-camera/manifest.json',
+  DATASET_CAMERA_MAX_ITEMS = 200,
+  DATASET_CAMERA_MAX_FILE_BYTES = 4 * 1024 * 1024,
+  DATASET_CAMERA_HOLD_MS = 5000,
+  DATASET_CAMERA_HOLD_MIN_MS = 1000,
+  DATASET_CAMERA_HOLD_MAX_MS = 60000,
+  DATASET_CAMERA_SWEEP_FIRST_HOLD_MS = 20000,
+  DATASET_CAMERA_TRANSITION_GUARD_MS = 300,
+  DATASET_CAMERA_TIMELINE_CAPACITY = 1024,
+  DATASET_CAMERA_MATCH_SHOULDER_FRACTION = 0.5,
+  DATASET_CAMERA_PCK_SHOULDER_FRACTION = 0.5;
+export const JUDGEMENT_TRACE_CAPACITY = 8192;
+// ── End dataset-camera / judgement-trace block ──
+
 export const POOF_POOL = 6,
   POOF_SPARKS = 24,
   POOF_POWERDOWN_MS = 150,
@@ -553,3 +569,30 @@ export const DUST_BOX_W_M = 12,
   DUST_SIZE_MIN_M = 0.02,
   DUST_SIZE_MAX_M = 0.05,
   DUST_ALPHA = 0.25;
+// --- Synthetic performer: labelled trial input only, never live-camera evidence (docs/17) ---
+export const PERFORMER_SHOULDER_WIDTH_NORM = 0.24,
+  PERFORMER_SHOULDER_V = 0.36,
+  PERFORMER_REST = { x: 0.75, y: 1.15 } as const,
+  PERFORMER_SLASH_SPEED = 4.5,
+  PERFORMER_SLASH_WINDUP_M = 0.75,
+  PERFORMER_SLASH_FOLLOW_M = 0.4,
+  PERFORMER_SLASH_CONTACT_MS = 75,
+  PERFORMER_SMASH_SPEED = 3,
+  PERFORMER_SMASH_DRAW_M = 0.62,
+  PERFORMER_SMASH_FOLLOW_M = 0.1,
+  PERFORMER_SMASH_CONTACT_MS = 55,
+  PERFORMER_SETTLE_MARGIN_MS = 30,
+  PERFORMER_TRAVEL_MIN_MS = 120,
+  PERFORMER_RECOVER_MS = 80,
+  PERFORMER_BEAM_CONFIRM_LEAD_MS = 60,
+  PERFORMER_LEAN_SHOULDERS = 0.9,
+  PERFORMER_LEAN_EASE_MS = 250;
+// --- Interface layout and HUD presentation (docs02 §UI; docs14 §Motion) ---
+/** Viewport bounds at or below which side rails reflow above/below the figure stage. Mirrored in ui/theme.css. */
+export const MENU_COMPACT_MAX_WIDTH_PX = 1099,
+  MENU_COMPACT_MAX_HEIGHT_PX = 699;
+/** Exponential damping constant for displayed HUD score/combo values (docs14 §Motion). */
+export const HUD_TWEEN_TAU_MS = 90;
+/** Combo counts that trigger the HUD milestone callout. */
+export const HUD_COMBO_MILESTONES = [10, 25, 50, 100] as const;
+// --- end interface layout and HUD presentation ---

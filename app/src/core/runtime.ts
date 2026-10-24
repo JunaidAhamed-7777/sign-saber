@@ -14,8 +14,13 @@ import { loadBundledLibrary, loadBundledMap, loadBundledAudioBytes } from '../be
 import type { Difficulty } from '../beatmap/types';
 import { GeneratorClient } from '../beatmap/generatorClient';
 import { CameraController } from '../tracking/camera';
+import { WebcamSource, type CameraSourceKind, type CameraStreamSource } from '../tracking/cameraSource';
+import { DatasetCameraSource } from '../tracking/datasetCamera';
+import { PhotoReel } from '../tracking/datasetCameraReel';
+import { JudgementTraceRecorder } from './judgementTrace';
 import { InputPipeline } from '../tracking/pipeline';
 import { DatasetTrial } from '../tracking/datasetTrial';
+import { PerformerTrial } from '../performer/trial';
 import { MenuPointerController } from '../gestures/menuPointer';
 import { GameSession } from '../game/session';
 import { ArenaRenderer } from '../render/renderer';
@@ -45,6 +50,7 @@ export class GameRuntime {
   readonly pipeline = new InputPipeline();
   readonly camera = new CameraController();
   readonly instrumentation = new Instrumentation();
+  readonly trace = new JudgementTraceRecorder();
   readonly flags = readFlags(location.search, import.meta.env.DEV);
   readonly video = document.createElement('video');
   readonly renderer: ArenaRenderer | null;
@@ -54,7 +60,8 @@ export class GameRuntime {
   private decoder: OfflineAudioContext | null = null;
   private buffer: AudioBuffer | null = null;
   private upload: File | null = null;
-  private dataset: DatasetTrial | null = null;
+  /** Labelled non-camera trial source: COCO still annotations or the synthetic chart performer. */
+  private dataset: DatasetTrial | PerformerTrial | null = null;
   private arrangementEdit: AudioArrangementEdit | null = null;
   private readonly generator = new GeneratorClient();
   private session: GameSession | null = null;
@@ -79,6 +86,7 @@ export class GameRuntime {
   private stats: SessionStats | null = null;
   private pop = '';
   private popUntil = 0;
+  private popSeq = 0;
   private countdownStepMs = START_COUNTDOWN_MS / COUNTDOWN_STEPS;
   private readonly countdownTargets: MenuTarget[] = [];
   private readonly countdownContext: MenuContext = {
@@ -115,6 +123,8 @@ export class GameRuntime {
       stats: this.flags.stats,
       replay: !!this.flags.replay,
     });
+    this.trace.attach(this.machine.events);
+    if (this.flags.stats) this.exposeDiagnostics();
     this.machine.events.on('state:change', () => {
       const state = this.machine.state;
       this.targets.surface(this.machine.epoch);
@@ -133,16 +143,19 @@ export class GameRuntime {
     this.machine.events.on('note:hit', (event) => {
       this.pop = event.judgement;
       this.popUntil = performance.now() + POP_LIFETIME_MS;
+      this.popSeq++;
       this.sfx?.play(event.note.type, event.judgement);
     });
     this.machine.events.on('note:miss', () => {
       this.pop = 'miss';
       this.popUntil = performance.now() + POP_LIFETIME_MS;
+      this.popSeq++;
       this.sfx?.play('miss');
     });
     this.machine.events.on('note:badcut', () => {
       this.pop = 'badcut';
       this.popUntil = performance.now() + POP_LIFETIME_MS;
+      this.popSeq++;
       this.sfx?.play('badcut');
     });
     this.machine.events.on('obstacle:hit', () => this.sfx?.play('badcut'));
@@ -280,8 +293,9 @@ export class GameRuntime {
           await this.boot();
           break;
         case 'camera':
+        case 'camera-dataset':
           if (this.machine.state === 'SELECT' && (source === 'native' || !!this.camera.identity))
-            await this.setup();
+            await this.setup(id === 'camera-dataset' ? 'dataset' : this.flags.camera);
           else display({ status: strings.nativeCamera });
           break;
         case 'camera-confirm':
@@ -304,7 +318,10 @@ export class GameRuntime {
           await this.begin(false);
           break;
         case 'dataset-trial':
-          await this.beginDataset(false);
+          await this.beginDataset(false, 'annotations');
+          break;
+        case 'performer-trial':
+          await this.beginDataset(false, 'performer');
           break;
         case 'arrange':
           await this.makeArrangement();
@@ -325,7 +342,11 @@ export class GameRuntime {
           this.songs();
           break;
         case 'retry':
-          if (this.dataset) await this.beginDataset(true);
+          if (this.dataset)
+            await this.beginDataset(
+              true,
+              this.dataset instanceof PerformerTrial ? 'performer' : 'annotations',
+            );
           else await this.begin(true);
           break;
         case 'calm': {
@@ -361,7 +382,7 @@ export class GameRuntime {
           this.volume(0.1);
           break;
         case 'evidence':
-          this.exportEvidence();
+          await this.exportEvidence();
           break;
       }
     } catch (error) {
@@ -562,7 +583,7 @@ export class GameRuntime {
         });
     }
   }
-  private async beginDataset(retry: boolean): Promise<void> {
+  private async beginDataset(retry: boolean, source: 'annotations' | 'performer'): Promise<void> {
     const state = useStore.getState();
     if (
       this.transitionBusy ||
@@ -579,17 +600,23 @@ export class GameRuntime {
       const originalHash = state.map.song.sourceHash;
       await this.makeArrangement();
       if (this.arrangementEdit?.sourceAudioSha256 === originalHash && useStore.getState().arrangement?.ready)
-        await this.beginDataset(false);
+        await this.beginDataset(false, source);
       return;
     }
     const request = ++this.selectionRequest;
     this.transitionBusy = true;
-    display({ loading: true, error: null, status: strings.datasetLoading });
+    display({
+      loading: true,
+      error: null,
+      status: source === 'performer' ? strings.performerLoading : strings.datasetLoading,
+    });
     try {
       const data =
-        retry && this.dataset
-          ? new DatasetTrial(this.dataset.fixture, performance.now())
-          : await DatasetTrial.load(performance.now());
+        source === 'performer'
+          ? new PerformerTrial(state.map, performance.now())
+          : retry && this.dataset instanceof DatasetTrial
+            ? new DatasetTrial(this.dataset.fixture, performance.now())
+            : await DatasetTrial.load(performance.now());
       if (
         this.disposed ||
         request !== this.selectionRequest ||
@@ -617,16 +644,19 @@ export class GameRuntime {
       this.dataset = data;
       display({
         replay: true,
+        trialSource: source,
         loading: false,
         results: null,
         highlightAt: null,
+        cameraSource: null,
         camera: { state: 'not-set-up', mode: 'browse', calibrationValid: false, error: null },
-        status: strings.datasetLimitations,
+        status: source === 'performer' ? strings.performerLimitations : strings.datasetLimitations,
       });
       this.machine.transition(retry ? 'results:retry' : 'select:start', { ready: true });
       this.player!.prepare(this.buffer!);
       const map = useStore.getState().map!;
       this.renderer.setApproachMs(map.approachMs);
+      this.trace.reset(`dataset-static-annotation-trial epoch ${this.machine.epoch}`);
       this.session = new GameSession(map, {
         songClock: this.player!.clock,
         epoch: this.machine.epoch,
@@ -709,7 +739,30 @@ export class GameRuntime {
     this.readySince = this.freshSince = Infinity;
     this.pointer.setHand(useStore.getState().hand, performance.now());
   }
-  private async setup(): Promise<void> {
+  /** Heard song time for a song-synchronized dataset reel; null outside an armed/active session. */
+  private reelSongTime(): number | null {
+    const state = this.machine.state;
+    if (
+      !this.session ||
+      !this.player ||
+      (state !== 'CALIBRATION' && state !== 'PLAYING' && state !== 'PAUSED')
+    )
+      return null;
+    const time = this.player.clock.now();
+    return Number.isFinite(time) ? time : null;
+  }
+  private cameraSource(kind: CameraSourceKind): CameraStreamSource {
+    return kind === 'dataset'
+      ? new DatasetCameraSource(
+          new PhotoReel({ mode: this.flags.reel, holdMs: this.flags.reelHoldMs, seed: this.flags.reelSeed }),
+          () => this.reelSongTime(),
+        )
+      : new WebcamSource();
+  }
+  private cameraLabel(message: string): string {
+    return this.camera.sourceKind === 'dataset' ? `${message} · ${strings.datasetCamera}` : message;
+  }
+  private async setup(kind: CameraSourceKind = this.flags.camera): Promise<void> {
     if (this.machine.state !== 'SELECT' || useStore.getState().camera.state === 'setting-up') return;
     const request = ++this.setupRequest;
     this.stopPreview();
@@ -720,6 +773,7 @@ export class GameRuntime {
     display({
       camera: { state: 'setting-up', mode: 'camera-setup', calibrationValid: false, error: null },
       cameraStage: strings.calibrationPending,
+      cameraSource: kind,
       error: null,
       figureAvailable: false,
     });
@@ -735,6 +789,7 @@ export class GameRuntime {
         (message) => {
           if (request === this.setupRequest && !this.disposed) display({ cameraStage: message });
         },
+        this.cameraSource(kind),
       );
     } catch (error) {
       if (request === this.setupRequest && !this.disposed) this.cameraFailure(this.message(error));
@@ -754,7 +809,7 @@ export class GameRuntime {
     display({
       camera: { state: 'ready', mode: 'browse', calibrationValid: true, error: null },
       error: null,
-      status: strings.cameraReady,
+      status: this.cameraLabel(strings.cameraReady),
     });
   }
   private cancelSetup(): void {
@@ -767,6 +822,7 @@ export class GameRuntime {
     this.machine.transition('camera:cancel');
     display({
       camera: { state: 'not-set-up', mode: 'browse', calibrationValid: false, error: null },
+      cameraSource: null,
       figureAvailable: false,
       trackingReady: false,
       calibrationReady: false,
@@ -786,6 +842,7 @@ export class GameRuntime {
     this.renderer?.hideTracking();
     display({
       camera: { state: 'not-set-up', mode: 'browse', calibrationValid: false, error: null },
+      cameraSource: null,
       figureAvailable: false,
       trackingReady: false,
       calibrationReady: false,
@@ -794,6 +851,7 @@ export class GameRuntime {
   }
   private cameraFailure(message: string): void {
     this.setupRequest++;
+    display({ cameraSource: null });
     if (this.machine.state === 'PLAYING') void this.pause('fatal');
     else if (this.machine.state === 'CALIBRATION') this.back();
     this.camera.stop();
@@ -888,6 +946,7 @@ export class GameRuntime {
       player.prepare(this.buffer!);
       this.sfx?.stop();
       this.renderer?.setApproachMs(map.approachMs);
+      this.trace.reset(`${this.camera.sourceLane ?? 'live-camera-unverified'} epoch ${this.machine.epoch}`);
       this.session = new GameSession(map, {
         songClock: player.clock,
         epoch: this.machine.epoch,
@@ -933,7 +992,7 @@ export class GameRuntime {
     if (this.machine.state !== 'CALIBRATION') return;
     this.cancelArmedStart(strings.chooseWhenReady);
     this.dataset = null;
-    display({ replay: !!this.flags.replay });
+    display({ replay: !!this.flags.replay, trialSource: null });
     this.machine.transition('calib:back');
   }
   private songs(): void {
@@ -950,7 +1009,7 @@ export class GameRuntime {
     this.sfx?.stop();
     this.session = null;
     this.dataset = null;
-    display({ replay: !!this.flags.replay });
+    display({ replay: !!this.flags.replay, trialSource: null });
     this.stats = null;
     this.resumeAt = Infinity;
     this.transitionBusy = false;
@@ -995,6 +1054,7 @@ export class GameRuntime {
     this.lastTracking = frame.tCapture;
     if (result.body.present || result.hands.some((hand) => hand.present)) this.lastPresence = frame.tCapture;
     if (source === 'live') {
+      this.camera.observeProcessed(frame.tCapture, result.hands);
       this.instrumentation.inferenceMs.add(frame.inferenceMs);
       this.instrumentation.inputAgeMs.add(now - frame.tCapture);
     }
@@ -1197,6 +1257,13 @@ export class GameRuntime {
           (frame, arrival, changed) => {
             if (changed) this.pipeline.reset();
             this.tracking(frame, arrival, 'replay');
+            // The performer stands still before its first stroke; calibrate its lean reference once.
+            if (
+              this.dataset instanceof PerformerTrial &&
+              !this.pipeline.calibration &&
+              this.pipeline.result.calibrationReady
+            )
+              this.pipeline.calibrate('synthetic-performer');
           },
         );
       } catch (error) {
@@ -1236,7 +1303,15 @@ export class GameRuntime {
       if (this.session.needsTrackingPause) void this.pause('tracking');
       else if (this.session.finished && this.stats) {
         this.machine.transition('song:ended', { ready: true });
-        display({ results: this.stats, status: this.dataset ? strings.datasetComplete : strings.results });
+        display({
+          results: this.stats,
+          status:
+            this.dataset instanceof PerformerTrial
+              ? strings.performerComplete
+              : this.dataset
+                ? strings.datasetComplete
+                : strings.results,
+        });
       }
     }
     state = this.machine.state;
@@ -1272,7 +1347,10 @@ export class GameRuntime {
       this.lastUi = now;
       const displayState = useStore.getState(),
         result = this.pipeline.result,
-        handsFresh = !this.dataset && now >= this.lastTracking && now - this.lastTracking <= INPUT_MAX_AGE_MS,
+        handsFresh =
+          (!this.dataset || this.dataset instanceof PerformerTrial) &&
+          now >= this.lastTracking &&
+          now - this.lastTracking <= INPUT_MAX_AGE_MS,
         left = result.hands.find((hand) => hand.hand === 'left'),
         right = result.hands.find((hand) => hand.hand === 'right'),
         leftPresent = handsFresh && !!left?.present,
@@ -1297,6 +1375,7 @@ export class GameRuntime {
           leftCharge: leftPresent ? left!.charge : 0,
           rightCharge: rightPresent ? right!.charge : 0,
           judgement: now < this.popUntil ? this.pop : '',
+          judgementSeq: this.popSeq,
         },
       });
     }
@@ -1317,32 +1396,8 @@ export class GameRuntime {
       countdown: null,
     });
   }
-  exportEvidence(): void {
-    const content = {
-      schema: 1,
-      lane: this.dataset
-        ? 'dataset-static-annotation-trial'
-        : this.flags.replay
-          ? 'logic-replay'
-          : 'live-camera-unverified',
-      createdAt: new Date().toISOString(),
-      releaseEvidence: false,
-      userAgent: navigator.userAgent,
-      viewport: { width: innerWidth, height: innerHeight, dpr: devicePixelRatio },
-      camera: { ...this.camera.settings, deviceId: undefined, groupId: undefined },
-      tracking: this.camera.stats,
-      flags: this.flags,
-      datasetTrial: this.dataset
-        ? { temporalRecording: false, handGestures: false, depth: false, annotationOnly: true }
-        : null,
-      arrangement: this.arrangementEdit,
-      limitations: [
-        'No consented human/hardware acceptance recorded',
-        'GPU and motion-to-photon timing unavailable',
-      ],
-      samples: this.instrumentation.export(),
-      session: this.session?.diagnostics,
-    };
+  async exportEvidence(): Promise<void> {
+    const content = await this.evidence();
     const url = URL.createObjectURL(
         new Blob([JSON.stringify(content, null, 2)], { type: 'application/json' }),
       ),
@@ -1351,6 +1406,93 @@ export class GameRuntime {
     link.download = 'sign-saber-diagnostics.json';
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 0);
+  }
+  async evidence(): Promise<Record<string, unknown>> {
+    const lane =
+      this.dataset instanceof PerformerTrial
+        ? 'synthetic-performer-logic-replay'
+        : this.dataset
+          ? 'dataset-static-annotation-trial'
+          : this.flags.replay
+            ? 'logic-replay'
+            : (this.camera.sourceLane ?? 'live-camera-unverified');
+    const calibration = this.pipeline.calibration;
+    return {
+      schema: 2,
+      lane,
+      createdAt: new Date().toISOString(),
+      releaseEvidence: false,
+      userAgent: navigator.userAgent,
+      viewport: { width: innerWidth, height: innerHeight, dpr: devicePixelRatio },
+      state: this.machine.state,
+      pauseReason: this.machine.pauseReason,
+      cameraSource: this.camera.sourceKind,
+      camera: { ...this.camera.settings, deviceId: undefined, groupId: undefined },
+      tracking: { ...this.camera.stats },
+      calibration: calibration
+        ? {
+            centerX: calibration.centerX,
+            shoulderWidthNorm: calibration.shoulderWidthNorm,
+            headY: calibration.headY,
+            physicalScale: calibration.physicalScale,
+            matchesCurrentCamera: calibration.identity === this.camera.identity,
+          }
+        : null,
+      flags: this.flags,
+      datasetTrial:
+        this.dataset instanceof DatasetTrial
+          ? { temporalRecording: false, handGestures: false, depth: false, annotationOnly: true }
+          : null,
+      performerTrial:
+        this.dataset instanceof PerformerTrial
+          ? { synthetic: true, camera: false, plannedUnplayableNotes: this.dataset.unplayable }
+          : null,
+      datasetCamera: this.camera.sourceEvidence(),
+      arrangement: this.arrangementEdit,
+      limitations: [
+        'No consented human/hardware acceptance recorded',
+        'GPU and motion-to-photon timing unavailable',
+        ...(this.camera.sourceKind === 'dataset'
+          ? ['Dataset camera: still photos through the live camera path; not a webcam, no motion or gestures']
+          : []),
+      ],
+      results: this.stats,
+      judgementTrace: await this.trace.export(),
+      samples: this.instrumentation.export(),
+      session: this.session?.diagnostics,
+    };
+  }
+  /** Read-only automation/diagnostics snapshot, only with `?stats=1`. Actions still use the real UI. */
+  private exposeDiagnostics(): void {
+    const target = window as unknown as Record<string, unknown>;
+    target.__signSaberDiagnostics = Object.freeze({
+      snapshot: () => {
+        const s = useStore.getState();
+        return {
+          state: s.state,
+          pauseReason: s.pauseReason,
+          status: s.status,
+          error: s.error,
+          camera: s.camera,
+          cameraSource: s.cameraSource,
+          cameraStage: s.cameraStage,
+          calibrationReady: s.calibrationReady,
+          trackingReady: s.trackingReady,
+          figureAvailable: s.figureAvailable,
+          audioReady: s.audioReady,
+          loading: s.loading,
+          mapReady: !!s.map,
+          arrangementReady: !!s.arrangement?.ready,
+          countdown: s.countdown,
+          hud: s.hud,
+          results: s.results,
+          tracking: { ...this.camera.stats },
+          songTimeMs: this.player?.clock.now() ?? null,
+        };
+      },
+      evidence: () => this.evidence(),
+    });
+    this.listeners.push(() => delete target.__signSaberDiagnostics);
   }
   private message(error: unknown): string {
     return error instanceof Error ? error.message : String(error);
@@ -1365,6 +1507,7 @@ export class GameRuntime {
     this.bootRequest++;
     cancelAnimationFrame(this.animation);
     this.camera.stop();
+    this.trace.dispose();
     this.generator.dispose();
     this.sfx?.dispose();
     this.player?.dispose();

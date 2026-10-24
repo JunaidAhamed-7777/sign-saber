@@ -11,9 +11,11 @@ const bytesOf = (slug) =>
 
 /** Minimal AudioBuffer stand-in whose samples equal their index, so trims are observable. */
 function fakeBuffer(length, sampleRate, channels = 2) {
-  const data = Array.from({ length: channels }, (_, c) =>
-    Float32Array.from({ length }, (_, i) => i + c * 0.5),
-  );
+  const data = Array.from({ length: channels }, (_, c) => {
+    const samples = new Float32Array(length);
+    for (let i = 0; i < length; i++) samples[i] = i + c * 0.5;
+    return samples;
+  });
   return {
     length,
     sampleRate,

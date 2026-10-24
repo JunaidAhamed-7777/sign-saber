@@ -1,13 +1,14 @@
 import type { GameRuntime } from '../../core/runtime';
 import { useStore } from '../../state/store';
-import { Button, MenuShell } from '../components/MenuShell';
+import { Button, MenuShell, RailHeading } from '../components/MenuShell';
 import type { MenuPage } from '../components/MenuShell';
 import { strings as t } from '../strings';
 export function Paused({ runtime }: { runtime: GameRuntime }) {
   const reason = useStore((s) => s.pauseReason),
     ready = useStore((s) => runtime.datasetTrialActive || (s.trackingReady && s.camera.calibrationValid)),
     countdown = useStore((s) => s.countdown),
-    error = useStore((s) => s.error);
+    error = useStore((s) => s.error),
+    title = useStore((s) => s.map?.song.title ?? null);
   useStore((s) => s.status);
   const message =
     reason === 'tracking'
@@ -19,8 +20,10 @@ export function Paused({ runtime }: { runtime: GameRuntime }) {
           : reason === 'fatal'
             ? t.pauseFatal
             : t.pauseManual;
+  const warning = reason === 'tracking' || reason === 'audio' || reason === 'fatal';
+  const blocked = !ready && reason !== 'fatal' && !runtime.datasetTrialActive;
   const resume = (
-    <Button runtime={runtime} id="resume" disabled={!ready || reason === 'fatal'} primary>
+    <Button runtime={runtime} id="resume" disabled={!ready || reason === 'fatal'} primary className="hero">
       {t.resume}
     </Button>
   );
@@ -30,80 +33,77 @@ export function Paused({ runtime }: { runtime: GameRuntime }) {
     </Button>
   );
   const count = (
-    <p className="countdown" role="status">
-      {t.countdown}
-      {countdown !== null ? ` ${countdown}` : ''}
+    <div className="countdown" role="status">
+      <span className="eyebrow">{t.resumesIn}</span>
+      <span className="countdown-digit" key={countdown ?? 'pending'}>
+        {countdown ?? '·'}
+      </span>
+    </div>
+  );
+  const errorNotice = error && (
+    <div className="notice danger" role="alert">
+      <p>{error}</p>
+    </div>
+  );
+  const reasonNotice = (
+    <p className={`notice reason${warning ? ' danger' : ''}`} role="status">
+      {message}
     </p>
   );
-  const left: MenuPage[] = [
+  const leftPages: MenuPage[] = [
     {
       id: 'pause-reason',
       label: t.paused,
       content: (
         <>
-          <h1>{t.paused}</h1>
-          <p role="status">{message}</p>
-          <p>{t.safeSpace}</p>
-          {error && (
-            <p className="error" role="alert">
-              {error}
-            </p>
-          )}
+          <RailHeading level={1} eyebrow={title ?? t.paused} title={t.paused} />
+          {reasonNotice}
+          <p className="note">{t.safeSpace}</p>
+          {errorNotice}
         </>
       ),
     },
   ];
-  const right: MenuPage[] = [
+  const rightPages: MenuPage[] = [
     {
       id: 'pause-actions',
       label: t.resume,
       content: (
         <>
-          <h2>{t.ready}</h2>
+          <RailHeading eyebrow={t.ready} />
+          {runtime.resumeArmed ? count : resume}
+          {songs}
+          {blocked && <p className="note">{t.resumeRequirements}</p>}
+        </>
+      ),
+    },
+  ];
+  const compactPages: MenuPage[] = [
+    {
+      id: runtime.resumeArmed ? 'resuming' : 'resume',
+      label: t.resume,
+      content: (
+        <>
           {runtime.resumeArmed ? count : resume}
           {songs}
         </>
       ),
     },
   ];
-  const compact: MenuPage[] = runtime.resumeArmed
-    ? [
-        {
-          id: 'resuming',
-          label: t.resume,
-          content: (
-            <>
-              {count}
-              {songs}
-            </>
-          ),
-        },
-      ]
-    : [
-        {
-          id: 'resume',
-          label: t.resume,
-          content: (
-            <>
-              {resume}
-              <p>{message}</p>
-            </>
-          ),
-        },
-        { id: 'songs', label: t.quit, content: songs },
-        ...(error
-          ? [
-              {
-                id: 'error',
-                label: t.paused,
-                content: (
-                  <p className="error" role="alert">
-                    {error}
-                  </p>
-                ),
-              },
-            ]
-          : []),
-      ];
-  return <MenuShell runtime={runtime} leftPages={left} rightPages={right} compactPages={compact} />;
+  return (
+    <MenuShell
+      runtime={runtime}
+      leftPages={leftPages}
+      rightPages={rightPages}
+      compactTop={
+        <div className="compact-summary">
+          <strong>{t.paused}</strong>
+          {reasonNotice}
+        </div>
+      }
+      compactPages={compactPages}
+      compactStatus={errorNotice || (blocked ? <p className="note">{t.resumeRequirements}</p> : null)}
+      ownErrors
+    />
+  );
 }

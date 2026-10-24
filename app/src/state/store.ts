@@ -17,6 +17,8 @@ export interface DisplayState {
   error: string | null;
   status: string;
   camera: CameraSetupState;
+  /** Kind of the running camera stream source; null when no camera stream is set up. */
+  cameraSource: 'webcam' | 'dataset' | null;
   cameraStage: string;
   calibrationReady: boolean;
   trackingReady: boolean;
@@ -53,6 +55,8 @@ export interface DisplayState {
     leftCharge: number;
     rightCharge: number;
     judgement: string;
+    /** Increments once per terminal judgement so repeated identical pops retrigger. */
+    judgementSeq: number;
   };
   results: SessionStats | null;
   highlightAt: number | null;
@@ -60,6 +64,8 @@ export interface DisplayState {
   credits: boolean;
   stats: boolean;
   replay: boolean;
+  /** Which labelled non-camera trial is running, if any. */
+  trialSource: 'annotations' | 'performer' | null;
   fatal: string | null;
 }
 const initial: DisplayState = {
@@ -76,6 +82,7 @@ const initial: DisplayState = {
   error: null,
   status: '',
   camera: { state: 'not-set-up', mode: 'browse', calibrationValid: false, error: null },
+  cameraSource: null,
   cameraStage: '',
   calibrationReady: false,
   trackingReady: false,
@@ -104,6 +111,7 @@ const initial: DisplayState = {
     leftCharge: 0,
     rightCharge: 0,
     judgement: '',
+    judgementSeq: 0,
   },
   results: null,
   highlightAt: null,
@@ -111,6 +119,7 @@ const initial: DisplayState = {
   credits: false,
   stats: false,
   replay: false,
+  trialSource: null,
   fatal: null,
 };
 export const useStore = create<DisplayState>(() => initial);

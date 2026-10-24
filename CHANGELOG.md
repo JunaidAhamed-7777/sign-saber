@@ -12,6 +12,89 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: The user asked for upgraded Blender models, a richer arena and premium but readable rendering.
 - Validation: Two Blender MCP regenerations on a dedicated instance (port 9878); `node --test scripts/check-model-assets.test.mjs` and `node scripts/check-model-assets.mjs` pass (7 GLBs, 5,844 triangles, 341,428 bytes; Khronos validator not rerun). `npm run typecheck`, `lint`, `build` and `prettier --check` pass; vitest 316/317 pass — the one failure is main's `gapless` test timing out at 5 s under authoring load, unrelated to rendering. Docs checks pass. Native Chrome screenshots at 1440×900 of the menu and dataset trial were inspected.
 - Limits: Blade ribbons, hand particles, hit sparks, camera response and slice-cap heat are not implemented yet. No GPU timing or flashing review was measured. The fracture is not Cell Fracture output.
+## 2026-10-25T03:46:00+05:30 — Watchable synthetic performer trial
+
+- Changed: Added `performer/trial.ts` and a **Watch synthetic performer** action. The runtime drives the selected (arranged) chart with planned performer frames through the same tracking consumer, renderer, scoring and results as other sources, calibrates the performer's lean reference once it stands still, shows hand HUD state and exports evidence lane `synthetic-performer-logic-replay`. A source-aware `ui/trialCopy.ts` labels banner, status, setup, figure and results honestly for annotations versus performer.
+- Why: The user wants to see whether the game works without a camera; the performer makes the full loop visible and exercises the runtime, renderer and results path with genuine hits.
+- Validation: In the desktop app's embedded Chromium, Pamgaea → Enable sound → Watch synthetic performer built the 80-second cut and played with PERFECT judgements (screenshot during play: score 4,000, combo 18, accuracy 100%). Full `npm run check` passed.
+- Limits: Planned synthetic landmarks only; no pixels, MediaPipe, webcam or human. The skeleton is still the line figure until the avatar branch lands.
+
+## 2026-10-25T03:40:00+05:30 — wip: Blender-authored rigged upper-body avatar source
+
+- Changed: Added `assets-src/blender/generate_avatar.py` (signed-distance primitives polygonised by surface nets, projected/relaxed, decimated; standard-named armature; bone-heat suit/hand weights, procedural head weights; vertex-colour face details; landmark anchors in armature extras), `render_avatar_preview.py`, the dedicated `signsaber_avatar.blend`, and the exported skinned `avatar.glb` with `avatar-manifest.json` (15,134 triangles, 507,252 bytes). Head, neck, torso to a closed hip finish, arms and five-digit hands only; no legs.
+- Why: The user asked to replace the flat illustrative outline and thin skeleton lines with a real person model driven by tracked skeletons.
+- Validation: Generated through the dedicated Blender 5.2.2 MCP bridge (port 9877); Workbench previews inspected for front/side/head/hand shape. Exported once; zero unweighted fallback vertices reported.
+- Limits: Work in progress. Not yet consumed by the runtime; deformation poses, structural/Khronos validation and browser rendering are not yet checked.
+
+## 2026-10-25T03:39:48+05:30 — Ready page with performer action and separate cut page
+
+- Changed: After merging main's synthetic performer trial, the ready page pairs Enable sound/Preview with “Watch synthetic performer” (captioned, busy while a cut is prepared) above the primary dataset action; “Make 80-second cut” moved to its own Music options page with the arrangement explanation and status chip, and to a separate compact page. Side-rail pagers show position and dots only (the page heading names the page; the label remains for assistive technology). Narrow rails tighten the action pair so the ready page fits 1100×700 without scrolling.
+- Why: Adding the performer button overflowed the ready page at 1280×720; the trial already prepares its own cut.
+- Validation: `npm run check` passed (typecheck, lint, all assertions, build); compact ids in `uiPaging.test.tsx` updated. Measured rail pages without overflow at 1280×720 and 1100×700 in headless Chrome and inspected 1440×900/800×600 screenshots.
+- Limits: Presentation-only; performer behaviour itself is main's work and was not re-verified here.
+
+## 2026-10-25T03:34:38+05:30 — Opaque boot splash and arrangement source card
+
+- Changed: BOOT is now an opaque void splash (hidden header, unwrapped wordmark, indeterminate bar); `index.html` shows a static pre-boot mark until React mounts and its description no longer claims full-body play. After an 80-second cut is prepared (which clears the bundled selection), the source song card is marked “Arrangement ready” and the ready header keeps the source cover/artist.
+- Why: Screenshots showed a blank page before mount, a translucent boot overlay over the arena and no visible selection after a dataset trial returned to Songs.
+- Validation: `npm run check` passed on rerun (two arrangement/gapless tests timed out once under parallel-agent CPU load, then all 324 passed); headless Chrome boot (held manifest), compact settings/calibration/HUD (1024×640, 800×600) and 1920×1080 HUD/return-to-songs screenshots were inspected.
+- Limits: Presentation-only; no live camera or hand-navigation verification.
+
+## 2026-10-25T03:34:00+05:30 — wip: dataset camera source, photo reel and judgement trace
+
+- Changed: `tracking/camera.ts` now takes an injectable `CameraStreamSource` (`tracking/cameraSource.ts`): the default `WebcamSource` keeps the previous `getUserMedia` behaviour; `DatasetCameraSource` (`tracking/datasetCamera.ts`) streams a real `canvas.captureStream(CAM_REQ_FPS)` whose frames come from a pluggable `DatasetReel`. From the stream onward nothing changes (same video element, rVFC, ImageBitmap crop, worker, MediaPipe, calibration, judgement). `PhotoReel` (`tracking/datasetCameraReel.ts`) draws locally prepared, hash-pinned COCO CC-BY crops (bounded to current + one prefetched bitmap, closed on replacement) either synchronized to heard song time (`song`) or cycling by stream time (`?reel=sweep`). `DatasetCameraEvaluator` attributes captures to the drawn photo via a bounded draw timeline and reports per-photo pose/hand detection, MediaPipe-vs-annotation joint error normalized by shoulder width, wrist-handedness agreement and processed gestures. Enabled by `?camera=dataset` or the new SELECT Settings action **Use dataset camera**; labelled "Dataset camera — not a webcam" in statuses, header, banner and figure caption; evidence lane `dataset-camera`. New `core/judgementTrace.ts` `JudgementTraceRecorder` (typed bounded columns, emission order, explicit overflow/repeat counts, idempotent attach/detach, async SHA-256 excluding delivery timestamps) is attached by the runtime and exported with diagnostics (schema 2, now also calibration/results). `?stats=1` exposes a read-only `__signSaberDiagnostics` snapshot for automation. New `scripts/prepare-dataset-camera.mjs` (declared selection rules, ZIP-member reader, ffmpeg crop, manifest/attribution into ignored `app/public/dataset-camera/`), `scripts/cdp-client.mjs` and `scripts/dataset-camera-trial.mjs` (CDP-driven in-app, sweep and Chrome fake-webcam Y4M lanes). Registered the new constants in docs02.
+- Why: the existing dataset trial bypasses the camera and MediaPipe; this lets dataset input exercise the real live path, and supplies the docs24 judgement-trace checksum.
+- Validation: `npm run check` (typecheck, lint, 342 tests in 44 files, build) and prettier passed; `node --test scripts/prepare-dataset-camera.test.mjs` 5/5. Exploratory headless/headful sweep runs reached GPU preview through the canvas stream on all 24 photos (results to be recorded with the trial evidence).
+- Limits: still photos are not a webcam, a person, motion or swings; no gameplay hit is expected. Reel pixels are local only. Work in progress: trial evidence, docs and handedness findings follow.
+
+## 2026-10-25T03:28:35+05:30 — Song card status line, upload heading and live-start label
+
+- Changed: Loading/failed status now replaces the song card's meta line (no title truncation); the selected card shows a compact check badge. The upload page uses its own heading with a visually hidden input label, the live camera action reads “Start live play”, and the decorative keyboard glyph was removed from native-only notes.
+- Why: Screenshot review showed the right-column status tag squeezing titles and duplicate upload headings.
+- Validation: `npm run check` passed (324 assertions, build); headless Chrome screenshots of a blocked-audio failure, settings pages and credits at 1440×900 and 800×600 were inspected.
+- Limits: Presentation-only; no live camera or hand-navigation verification.
+
+## 2026-10-25T03:24:55+05:30 — Interface shell, generated covers and compact reflow
+
+- Changed: Rebuilt the shared menu presentation in `app/src/ui/**` and `App.tsx`: token-derived panel rails, status pill, gesture legend with original SVG icons, distinct hover/focus/hand-armed/pressed/selected/disabled/busy button states, procedural per-track cover art (`ui/coverArt.ts`, no external images), difficulty on the first ready page, explicit native-only Enable sound, grouped Settings pages (sound/visuals, camera/live play, credits/diagnostics) and a three-card credits view. Song-load failures now show the actual error, a failed card state and a Retry track action instead of only “Choose a track to begin.” Compact viewports (≤1099 px wide or ≤699 px tall, registered as `MENU_COMPACT_MAX_WIDTH_PX`/`MENU_COMPACT_MAX_HEIGHT_PX`) reflow rails above/below the figure with grouped full-size pages instead of one control per page. Calibration shows a joint/hand checklist (live) or source-labelled pre-roll, move legend and large countdown; Pause shows reason/countdown; Results shows rank reveal, stats and per-judgement bars; HUD has edge score/combo/accuracy, multiplier ring, milestone callout, keyed judgement pop and a styled progress bar. Runtime adds only a `judgementSeq` display counter so repeated identical pops retrigger.
+- Why: The user asked to polish the interface into a coherent premium product; compact layouts previously paged 19 single controls over a huge song card and load errors were invisible.
+- Validation: `npm run check` passed (typecheck, lint, 324 assertions in 44 files, production build); prettier check passed. New `tests/interface.test.tsx` covers cover determinism, multiplier/milestone helpers, HUD and results rendering; `tests/unit/compactBreakpoint.test.mjs` keeps the CSS media queries synchronized with the registry; UI paging tests cover compact grouping, error retry and busy cards. Docs checks passed. Headless Chrome screenshots at 1440×900, 1280×720, 1100×700, 1100×620, 1024×640 and 800×600 plus a complete dataset trial (pre-roll, HUD, pause, resume, results) were inspected.
+- Limits: Screenshots are headless SwiftShader renders; no standing-distance, contrast measurement, live-camera setup, real hand navigation or human usability check was performed. The Figure placeholder is untouched for the avatar work.
+
+## 2026-10-25T03:24:00+05:30 — Synthetic performer and responsive landmark filtering
+
+- Changed: Added `app/src/performer/` (choreography planner, body/hand geometry, TrackingFrame synthesizer) and `tests/performer.test.mjs`, which plays five bundled charts through the real InputPipeline and GameSession at 30 Hz. Raised `ONE_EURO_BETA` from 0.08 to 10 with swing-tracking and stationary-jitter regressions. Registered the performer constants, documented the performer in docs02/05/17 and allowed Node globals in `.mjs` suites.
+- Why: The user asked for trials of whether the game works without opening a camera. Chart-synchronized motion is needed before any dataset-camera trial can show hits; still photos cannot swing. The replay exposed a real defect: the landmark filter lagged a 4.5 m/s swing by ≈0.42 m after 200 ms and reported it below `SLASH_MIN_SPEED`, so genuine slashes only registered by accident.
+- Validation: Every planned note on Pamgaea Easy/Normal, Electro Cabello Normal and Cipher Normal/Hard was hit with zero bad cuts on planned notes, zero wall hits and ≥98% Perfect timing (measured means within ±13 ms per gesture type). Unplanned notes: Pamgaea Normal 2/269, Electro Cabello Normal 23/329, Cipher Hard 56/405. The new filter test fails at the old beta (lag 0.079 widths) and passes at 10. Full `npm run check` passed with 325 assertions.
+- Limits: Logic replay of synthetic landmarks only — no pixels, MediaPipe, webcam, latency or human feel. Live jitter at the new beta still needs consented camera review. The rendered performer for the dataset camera is the next step.
+
+## 2026-10-25T03:19:51+05:30 — Export parity spans both held-out datasets
+
+- Changed: training/export.py selects evenly spaced held-out crops across the requested datasets (previously the first N rows, which were all COCO) and labels non-preflight checkpoints as research checkpoints whose accuracy is reported separately.
+- Why: Parity for a COCO + MPII model should exercise MPII crops too; limitation text should match the checkpoint kind.
+- Validation: Smoke export of the 60-step timing checkpoint over 16 crops passed ONNX checker and ONNX Runtime CPU parity (maximum heatmap difference 5.96e-6, zero decoded difference with the refined decoder).
+- Limits: Parity remains numerical equivalence only; the timing checkpoint is not a result.
+
+## 2026-10-25T03:18:35+05:30 — Report smoke-test options
+
+- Changed: training/report.py gained `--limit` (evenly spaced held-out people per dataset, marked `partialSmokeTest` in the report), `--threads` and `--workers`, and ASCII section headings.
+- Why: Check the report path cheaply while the long training run uses most of the CPU budget.
+- Validation: A 48-person-per-dataset smoke report over the 60-step timing checkpoint, the earlier three-step COCO preflight and the seeded untrained head completed in 2.5 minutes with two threads and one worker; overlays drew ground-truth joints on the correct body parts. Smoke numbers are not recorded as results.
+- Limits: Smoke reports use partial validation and are never evidence of accuracy.
+
+## 2026-10-25T03:14:35+05:30 — Training throughput, schedule and augmentation for a full COCO + MPII run
+
+- Changed: training/config.json now uses 6 CPU threads, 3 spawned DataLoader workers (prefetch 2), batch 32 and 9 epochs, with linear warmup (300 steps) then cosine decay to 2% of the head/backbone learning rates, and per-epoch validation. train.py materializes the identical seeded per-epoch order (so resume skips batches without decoding them), records per-step data-wait/learning-rate and per-epoch wall/loss/validation summaries, keeps summaries across resume, accepts checkpoints under a junctioned runs/ folder, and disables only deterministic mode's NaN fill of fresh allocations. upper_body.py adds training-only scale (±25%), rotation (±30°, probability 0.5) and translation (±10%) ROI jitter through one testable crop_input(), fixes the flip label mirror (size − x rather than size − 1 − x), adds standard quarter-cell heatmap decoding, and shares one PoseMetrics accumulator. New report.py writes per-dataset, per-joint held-out reports with untrained, zero-heatmap and mean-pose-in-ROI references, a deterministic perturbed-ROI pass and local overlays.
+- Why: The two-thread batch-8 loop could not finish a multi-dataset run in a few hours. Oracle ROI crops leak framing, so geometric jitter and a perturbed-ROI evaluation make robustness to imperfect localization visible. Evaluation crops stay the exact oracle extent, so checkpoints remain comparable.
+- Validation: Synthetic timing (not accuracy) measured about 30 ms/sample for full fine-tuning and 14 ms/sample with a frozen backbone at batch 32; profiling attributed about 13% of step time to deterministic NaN fill. A labelled 60-step COCO + MPII timing preflight (local run timing-coco-mpii-frozen-60) measured about 340 ms per frozen-backbone batch with 6 ms mean data wait. The refactored evaluate() reproduced that run's stored evaluation exactly. Unit tests pass 11/11, including pixel-follows-label checks across 24 augmentation seeds, exact oracle extent, the refined decoder, the warmup/cosine schedule and permutation equality with the earlier shuffled DataLoader.
+- Limits: Decoding refinement and augmentation change the training/evaluation contract from the earlier preflight; prior preflight numbers must be re-evaluated with the same decoder for comparison. Throughput figures are for this shared, loaded laptop and are not browser or frame-rate measurements.
+
+## 2026-10-25T03:03:45+05:30 — Extracted and decoded MPII research images
+
+- Changed: Extracted the verified local MPII archive with `prepare.py --dataset mpii --extract-mpii-images` (about 4.3 minutes) and added `prepare.py --verify-mpii-images`, which compares extracted count/bytes with the streamed archive audit and fully decodes every indexed image in a bounded process pool. Recorded the result in training/DATASETS.json.
+- Why: A combined COCO + MPII training run needs individually readable MPII images; failures should surface before a multi-hour run, not during it.
+- Validation: 24,984 extracted JPEG files and 12,140,043,353 bytes match the archive audit; all 17,404 indexed unique images (15,727 train / 1,677 validation) exist and decoded with zero failures. Re-preparing MPII reproduced byte-identical indexes (train SHA-256 9e52535d…, validation 4201b8de…).
+- Limits: The archive audit has no per-member hashes, so extracted files are checked by count and total bytes; 7,580 unindexed archive images were counted but not decoded. No MPII optimizer steps were run in this step.
 
 ## 2026-10-25T02:58:00+05:30 — Gapless MP3 normalization and full-band playback decode
 
@@ -21,11 +104,6 @@ Implementation and historical specification work are recorded below. Automated, 
 - Limits: Only iTunSMPB metadata is honoured (the bundled files use it); LAME-header-only gapless files decode as the browser returns them. No audible listening test or latency measurement was made.
 
 ## 2026-10-25T02:45:00+05:30 — Parallel authoring preparation
-
-- Changed: bootstrap.py accepts `--port` and `--blend` for a separate dedicated Blender MCP instance; `scripts/blender-mcp.mjs` honours a validated `BLENDER_MCP_PORT`. CHANGELOG.md and AI_USAGE.md use Git's built-in union merge so parallel branches keep both appended entries.
-- Why: Avatar and arena-asset authoring run concurrently without sharing one scene or bridge port.
-- Validation: Port parsing checked from Node (default 9876, explicit 9877, rejection of 80).
-- Limits: No asset was regenerated by this preparation step.
 
 ## 2026-10-25T02:33:00+05:30 — Fixed-tier consumers and requested implementation handoff
 

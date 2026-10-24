@@ -34,3 +34,31 @@ it('attenuates a seeded stationary jitter fixture without changing its mean subs
   expect(outputEnergy).toBeLessThan(rawEnergy);
   expect(outputSum / 270).toBeCloseTo(0.5, 2);
 });
+it('follows a fast swing closely enough for capture-time speed thresholds', () => {
+  // 0.84 image widths/s ≈ 4.5 m/s on the play plane at 30 Hz; a slow-adapting filter would
+  // report well under SLASH_MIN_SPEED and lag the stroke by several frames.
+  const filter = new OneEuroFilter();
+  const speed = 0.84;
+  for (let i = 0; i <= 15; i++) filter.filter(0.3, i / 30);
+  let value = 0.3;
+  for (let i = 1; i <= 6; i++) value = filter.filter(0.3 + (speed * i) / 30, (15 + i) / 30);
+  const raw = 0.3 + (speed * 6) / 30;
+  expect(raw - value).toBeLessThan(0.03);
+  expect(raw - value).toBeGreaterThan(0);
+});
+it('still damps realistic stationary landmark jitter', () => {
+  const filter = new OneEuroFilter();
+  let seed = 7;
+  let rawEnergy = 0;
+  let outputEnergy = 0;
+  for (let i = 0; i < 300; i++) {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    const raw = 0.5 + (seed / 2 ** 32 - 0.5) * 0.006;
+    const value = filter.filter(raw, i / 30);
+    if (i >= 30) {
+      rawEnergy += (raw - 0.5) ** 2;
+      outputEnergy += (value - 0.5) ** 2;
+    }
+  }
+  expect(outputEnergy).toBeLessThan(rawEnergy * 0.5);
+});

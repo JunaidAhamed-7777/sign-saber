@@ -28,7 +28,9 @@ def main():
     if checkpoint["configSha256"] != file_hash(ROOT / "config.json"):
         raise ValueError("Export configuration differs from checkpoint")
     rows, info = load_records(args.datasets, "val", allow_partial=True)
-    crops = UpperBodyDataset(rows[:args.samples])
+    # Evenly spaced held-out crops so every requested dataset is represented in the parity check.
+    rows = [rows[int(index)] for index in np.linspace(0, len(rows) - 1, min(args.samples, len(rows)))]
+    crops = UpperBodyDataset(rows)
     images = torch.stack([crops[index]["image"] for index in range(len(crops))])
     rois = torch.stack([crops[index]["roi"] for index in range(len(crops))])
     model = UpperBodyNet(pretrained=False)
@@ -51,7 +53,7 @@ def main():
     reference_points, _ = decode_heatmaps(reference, rois)
     actual_points, _ = decode_heatmaps(torch.from_numpy(actual), rois)
     pixel_error = float((reference_points - actual_points).abs().max())
-    report = {"version": 1, "createdAt": datetime.now(timezone.utc).isoformat(), "checkpointSha256": file_hash(args.checkpoint), "onnxSha256": file_hash(target), "onnxBytes": target.stat().st_size, "opset": 17, "kind": checkpoint["kind"], "optimizerSteps": checkpoint["globalStep"], "keypoints": KEYPOINTS, "input": {"name": "image", "dtype": "float32", "shape": ["batch", 3, CONFIG["imageSize"], CONFIG["imageSize"]], "normalization": "RGB / 255, ImageNet mean/std; upper-body square ROI"}, "output": {"name": "heatmaps", "shape": ["batch", len(KEYPOINTS), CONFIG["heatmapSize"], CONFIG["heatmapSize"]]}, "parity": {"provider": "CPUExecutionProvider", "samples": len(crops), "sampleIds": [row["sampleId"] for row in rows[:args.samples]], "validationData": info, "maxAbsoluteHeatmapError": error, "allowedAbsoluteHeatmapError": tolerance, "maxAbsoluteDecodedSourcePixelDifference": pixel_error, "passed": bool(np.isfinite(actual).all() and error <= tolerance and pixel_error == 0)}, "publication": "local-noncommercial-research-only", "promotedToGame": False, "limitations": ["Numerical parity is not pose accuracy", "No browser inference or live-camera evidence", "Preflight checkpoint is not a production pose model", "ROI supplied from ground-truth annotations during this parity check; production person localization remains a separate requirement"]}
+    report = {"version": 1, "createdAt": datetime.now(timezone.utc).isoformat(), "checkpointSha256": file_hash(args.checkpoint), "onnxSha256": file_hash(target), "onnxBytes": target.stat().st_size, "opset": 17, "kind": checkpoint["kind"], "optimizerSteps": checkpoint["globalStep"], "keypoints": KEYPOINTS, "input": {"name": "image", "dtype": "float32", "shape": ["batch", 3, CONFIG["imageSize"], CONFIG["imageSize"]], "normalization": "RGB / 255, ImageNet mean/std; upper-body square ROI"}, "output": {"name": "heatmaps", "shape": ["batch", len(KEYPOINTS), CONFIG["heatmapSize"], CONFIG["heatmapSize"]]}, "parity": {"provider": "CPUExecutionProvider", "samples": len(crops), "sampleIds": [row["sampleId"] for row in rows], "validationData": info, "maxAbsoluteHeatmapError": error, "allowedAbsoluteHeatmapError": tolerance, "maxAbsoluteDecodedSourcePixelDifference": pixel_error, "passed": bool(np.isfinite(actual).all() and error <= tolerance and pixel_error == 0)}, "publication": "local-noncommercial-research-only", "promotedToGame": False, "limitations": ["Numerical parity is not pose accuracy", "No browser inference or live-camera evidence", "Preflight checkpoint is not a production pose model" if checkpoint["kind"] == "real-data-preflight" else "Research checkpoint; held-out accuracy is reported separately and it is not promoted to the game", "ROI supplied from ground-truth annotations during this parity check; production person localization remains a separate requirement"]}
     write_json(output_dir / "export.json", report)
     print(json.dumps(report, indent=2, allow_nan=False))
     if not report["parity"]["passed"]:

@@ -1,8 +1,8 @@
 # 08 — Beatmap Generation
 
-The generator turns an audio file into a `BeatmapV1` ([09](09-beatmap-format.md)) with no human authoring. It is the embodiment of pillar P4 (*the music is the author*): every note sits on a validated onset that is aligned to a tracked beat grid, and silence or noise produces nothing.
+The generator turns an audio file into a `BeatmapV1` ([09](09-beatmap-format.md)) with no human authoring. Pillar P4 (*the music is the author*) means notes follow musical evidence, density/reach constraints keep them playable, and silence is rejected. Noisy or beatless material may be unsuitable; show uncertainty rather than manufacturing a convincing tempo.
 
-It is implemented entirely in TypeScript, runs in a dedicated Web Worker (`beatmap/generator.worker.ts`), and is deterministic: the same bytes, difficulty and `GENERATOR_VERSION` always yield byte-identical JSON.
+**Status: planned implementation.** The TypeScript DSP runs in `beatmap/generator.worker.ts`. Identical canonical PCM, metadata, difficulty and `GENERATOR_VERSION` must yield identical output. Browser-native lossy decode/resampling can vary across engines, so byte-identical maps from MP3 bytes on every browser are not promised. Cross-runtime regression tests use canonical PCM; evaluation hashes both source audio and PCM. [24](24-benchmark-and-evidence.md) defines the proof protocol.
 
 ```
 audio bytes ──► decode ──► mono @ ANALYSIS_SR ──► STFT ──► band flux ──► onsets
@@ -38,6 +38,8 @@ All constants (`ANALYSIS_SR`, `FFT_SIZE`, `HOP`, `BAND_EDGES_HZ`, `ONSET_DELTA`,
 - Frame rate of the analysis: `FRAME_HZ = ANALYSIS_SR / HOP = 43.07 frames/s`; one frame = `HOP_MS = 23.22 ms`.
 - Frame index ↔ time: `tMs(n) = n · HOP_MS` (the window is centred by padding `FFT_SIZE/2` zeros at the start so frame `n` is centred on sample `n·HOP`).
 
+**Registry policy:** [02 §Constants](02-architecture.md#constants) supplies a named initial default for every tunable used below. These are proposed design values, not measurements; P2 calibrates them on development fixtures, commits any changed defaults with `GENERATOR_VERSION`, then freezes them before held-out evaluation. Implementation exports the registered names from `core/constants.ts`; subsystem literals and an extra tuning registry are forbidden. `FRAME_HZ`, `HOP_MS`, bin ranges, loop bounds and seconds↔milliseconds conversions are derived. FFT radix, Hann coefficients, the v1 grid topology, two-member chord limit and one-decimal BPM representation are structural algorithm/schema choices rather than adjustable knobs. In the pseudocode, `ε = DSP_EPSILON`.
+
 ## 1. Decode, mono mix, resample
 
 Decoding needs an `AudioContext`, which is unavailable in workers in some browsers, so stage 1 runs on the **main thread** in `audio/decode.ts` and the result (a single `Float32Array`) is transferred to the worker.
@@ -58,11 +60,12 @@ async function prepareForAnalysis(bytes: ArrayBuffer): Promise<{ mono: Float32Ar
 
 Rules:
 
-1. The mono signal MUST be peak-normalised to 0.95 before analysis (`gain = 0.95 / max|x|`); if `max|x| < 1e-4` the file is **silent** → return the empty-map failure (§14).
-2. Files shorter than 5 s → failure `tooShort`.
+0. Reject files above `MAX_UPLOAD_BYTES` before decoding. After native decode, reject duration above `MAX_TRACK_MS` or `length * numberOfChannels * Float32Array.BYTES_PER_ELEMENT > MAX_DECODED_PCM_BYTES`; release the result before analysis/resampling. These planned defaults are five minutes and 128 MiB. Native decode allocates first, so this is not a hard guarantee on decoder peak memory; catch resource failures, use trustworthy metadata for early rejection where available, and keep SELECT recoverable. Compressed bytes alone do not bound PCM.
+1. Stage 1 returns raw resampled mono. At worker startup, preserve its RMS envelope at `ENERGY_HOP_MS` before normalising to `ANALYSIS_PEAK_TARGET` (`gain = ANALYSIS_PEAK_TARGET / max|x|`). If `max|x| < SILENCE_PEAK_MAX`, fail as silent (§14). The raw envelope supplies the local `ONSET_RAW_RMS_MIN` gate; it must not be measured after normalisation has amplified noise. Playback PCM is never modified by analysis gain.
+2. Files shorter than `MIN_TRACK_MS` → failure `tooShort`.
 3. `sourceHash` is SHA-256 of the *original* bytes (`crypto.subtle.digest`), computed on the main thread before decode, so the cache lookup (§11) happens before any DSP.
 
-Cost: decode is browser-native (≈ 0.3–0.8 s for a 3-minute MP3); the offline render ≈ 0.1 s.
+Planning estimates, not measurements: decode 0.3–0.8 s and offline resampling about 0.1 s for a three-minute MP3. Measure them separately from DSP. [`decodeAudioData`](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/decodeAudioData) consumes complete encoded data and resamples to the context rate. Keep playback PCM separate from analysis transfers and retain bytes until hashing completes. Test antiphase stereo, whose mono mix may cancel; reject or warn rather than fabricate notes.
 
 ## 2. STFT
 
@@ -102,7 +105,7 @@ export class FFT {
 }
 ```
 
-Unit test: a pure sine at bin `k` MUST produce `|X[k]| ≈ n/2` and `< 1 %` of that anywhere else; FFT of an impulse MUST be flat.
+Unit test on the unwindowed FFT: a real sine at bin `k` has conjugate peaks at `k` and `n-k`, each about `n/2`, with <1% leakage elsewhere. The retained one-sided spectrum contains only `k`. An impulse is flat. Hann-windowed tests account for expected spreading.
 
 ### 2.2 Framing and log-magnitude (`dsp/stft.ts`)
 
@@ -114,12 +117,12 @@ frames   = floor((len(padded) − N) / H) + 1
 for n in 0..frames−1:
   re = padded[n·H .. n·H+N] · window ; im = 0
   fft(re, im)
-  for k in 0..N/2:  mag[n][k] = log(1 + 10 · sqrt(re[k]² + im[k]²))
+  for k in 0..N/2:  mag[n][k] = log(1 + STFT_LOG_GAIN · sqrt(re[k]² + im[k]²))
 ```
 
 - Only bins `0..N/2` (1025) are kept; bin `k` is centred at `k · ANALYSIS_SR / N = k · 10.77 Hz`.
-- `mag` is a single `Float32Array(frames · 1025)` to avoid per-frame allocations.
-- Log compression `log(1 + 10|X|)` tames the dynamic range so quiet hi-hats contribute to flux in the high band without being drowned by the kick.
+- `mag` is a single `Float32Array(frames * (FFT_SIZE/2 + 1))`; the current one-sided bin count is derived, never hard-coded separately.
+- Log compression `log(1 + STFT_LOG_GAIN · |X|)` tames dynamic range so quiet hi-hats can contribute alongside the kick.
 
 Cost: 3 minutes → ≈ 7 750 frames × (2048-point FFT ≈ 25 k flops) ≈ 0.2 G flop ≈ 150–300 ms in JS.
 
@@ -132,34 +135,37 @@ for b in {low, mid, high}:
   for n in 1..frames−1:
     SF_b[n] = Σ_{k ∈ bins(b)} max(0, mag[n][k] − mag[n−1][k])      // half-wave rectified
   SF_b[0] = 0
-  p95_b   = percentile(SF_b, 95)                                   // via copy + sort, once per band
-  SF_b   /= max(p95_b, ε)                                          // normalise; values > 1 are allowed
+  scale_b = percentile(SF_b, FLUX_NORM_PERCENTILE)                  // copy + sort, once per band
+  SF_b   /= max(scale_b, ε)                                        // normalise; values > 1 are allowed
 sum[n]  = SF_low[n] + SF_mid[n] + SF_high[n]                       // "onset envelope" used by tempo + beats
 ```
 
-Half-wave rectification means only energy *increases* count; a note decaying produces no flux. Normalising per band makes thresholds genre-independent (a quiet acoustic track and a loud EDM track produce comparable flux scales).
+Half-wave rectification counts energy increases. Per-band normalisation makes relative scales more comparable; it does not prove a peak is musical. Normalised noise can cross drum thresholds. Evaluate noise, hum and quiet-intro negatives explicitly.
 
 ## 4. Onset peak picking (`dsp/peaks.ts`)
 
 Applied to each band separately, producing `Onset { t, strength, band }`.
 
 ```
-W_PRE = 10 frames (232 ms), W_POST = 3 frames (70 ms), W_MAX = 3 frames
-MIN_GAP = round(ONSET_MIN_GAP_MS / HOP_MS)   // 80 ms → 3 frames
+W_PRE = ONSET_MEAN_PRE_FRAMES, W_POST = ONSET_MEAN_POST_FRAMES
+W_MAX = ONSET_MAX_RADIUS_FRAMES
+MIN_GAP = ceil(ONSET_MIN_GAP_MS / HOP_MS)    // never round a minimum downward
 
-for n in W_PRE .. frames − W_POST − 1:
+for n in max(W_PRE, W_MAX) .. frames − max(W_POST, W_MAX) − 1:
   isLocalMax = SF[n] ≥ SF[m] for all m in [n−W_MAX, n+W_MAX]
   mean       = avg(SF[n−W_PRE .. n+W_POST])
-  passes     = isLocalMax && SF[n] ≥ mean + ONSET_DELTA && SF[n] ≥ ONSET_MIN_STRENGTH
-  if passes && (n − lastOnsetFrame) ≥ MIN_GAP:
-     strength = clamp(SF[n], 0, 1)        // SF already normalised by p95
+  rawRms     = rawEnergy[min(rawEnergy.length - 1, floor(tMs(n) / ENERGY_HOP_MS))]
+  passes     = isLocalMax && SF[n] ≥ mean + ONSET_DELTA
+               && SF[n] ≥ ONSET_MIN_STRENGTH && rawRms ≥ ONSET_RAW_RMS_MIN
+  if passes && (lastOnsetFrame is unset || (n − lastOnsetFrame) ≥ MIN_GAP):
+     strength = clamp(SF[n], 0, 1)        // SF uses FLUX_NORM_PERCENTILE
      emit { t: tMs(n), strength, band }
      lastOnsetFrame = n
-  else if passes && SF[n] > SF[lastOnsetFrame]:
+  else if passes && lastOnsetFrame is set && SF[n] > SF[lastOnsetFrame]:
      replace the last onset with this one   // keep the stronger of two onsets closer than MIN_GAP
 ```
 
-Rationale for the asymmetric window (10 before, 3 after): an onset is a rise relative to the recent *past*; a symmetric window would suppress the first onset of a loud section. `ONSET_MIN_STRENGTH` (0.25 of the 95th percentile) is the "not random noise" gate: breathing-level fluctuations in a quiet intro never pass.
+The asymmetric window compares an onset to recent history. `ONSET_MIN_STRENGTH` is relative; `ONSET_RAW_RMS_MIN` rejects weak local evidence before gain. Neither proves musicality. The temporal-support/confidence gate in §5 is also required, and noise/ambient fixtures must pass the independent quality evaluation. Never lower thresholds silently to make every file appear successful.
 
 Output: `onsetsByBand: Record<Band, Onset[]>` and `allOnsets` merged and sorted by `t`.
 
@@ -168,7 +174,7 @@ Output: `onsetsByBand: Record<Band, Onset[]>` and `allOnsets` merged and sorted 
 Input: `sum[n]` (the summed onset envelope), locally normalised first to remove slow dynamics:
 
 ```
-env[n] = max(0, sum[n] − movingAverage(sum, 16 frames)[n])
+env[n] = max(0, sum[n] − movingAverage(sum, TEMPO_DETREND_FRAMES)[n])
 ```
 
 Autocorrelation over the lag range corresponding to `BPM_MIN..BPM_MAX`:
@@ -176,35 +182,41 @@ Autocorrelation over the lag range corresponding to `BPM_MIN..BPM_MAX`:
 ```
 lagMin = round(60 · FRAME_HZ / BPM_MAX)     // 200 BPM → 12.9 frames
 lagMax = round(60 · FRAME_HZ / BPM_MIN)     //  60 BPM → 43.1 frames
-for L in lagMin..lagMax:
+for L in floor(lagMin/2)..ceil(2*lagMax):   // include harmonic support lags
   ac[L] = Σ_n env[n] · env[n+L]  /  (frames − L)
+for L in lagMin..lagMax:                  // tempo candidates remain in range
   bpm(L) = 60 · FRAME_HZ / L
-  prior(L) = exp( −0.5 · ( log2(bpm(L) / BPM_PRIOR) / 0.9 )² )     // log-Gaussian, σ = 0.9 octaves
+  prior(L) = exp( −0.5 · ( log2(bpm(L) / BPM_PRIOR) / TEMPO_PRIOR_SIGMA_OCT )² )
   score[L] = ac[L] · prior(L)
 ```
 
-Sub-frame refinement: fit a parabola through `score[L−1], score[L], score[L+1]` at the arg-max and use the fractional peak `L*`. Candidate period `T = L* frames`, `bpm = 60 · FRAME_HZ / L*`.
+Sub-frame refinement: fit a parabola only when neighbouring scores are defined and the denominator is non-degenerate; otherwise keep the integer winner. Clamp the refined candidate to `BPM_MIN..BPM_MAX`. Candidate period `T = L* frames`, `bpm = 60 · FRAME_HZ / L*`.
 
-**Octave disambiguation.** Compute `score` for `T/2` and `2T` (interpolated). Choose the candidate whose *harmonic sum* `ac(T) + 0.5·ac(2T) + 0.5·ac(T/2)` is highest, but only switch away from the prior-weighted winner if the alternative's harmonic sum exceeds it by ≥ 15 %. Ties resolve toward the candidate closest to `BPM_PRIOR`.
+**Octave disambiguation.** Consider `T/2` and `2T` only when BPM remains in range. Compare `ac(T) + TEMPO_HARMONIC_WEIGHT * (ac(2T) + ac(T/2))` using defined interpolation neighbours; compute required support lags before lookup. Switch only when `alternativeSum ≥ winnerSum * TEMPO_OCTAVE_SWITCH_RATIO`; ties choose closest to `BPM_PRIOR`, then the smaller lag.
 
 **Confidence.**
 
 ```
-confidence = (score[L*] − median(score)) / (max(score) − median(score) + ε)   // 0..1, peakiness
+support = onsets whose strength ≥ TEMPO_SUPPORT_MIN_STRENGTH,
+          merged into anchored CHORD_WINDOW_MS groups for distinct event times
+peakContrast = clamp((score[L*] − median(score)) / (score[L*] + ε), 0, 1)
+alignmentSupport = fraction of support close to the best-phase beat grid
+confidence = support.length < TEMPO_MIN_SUPPORT_ONSETS ? 0 : min(peakContrast, alignmentSupport)
 ```
 
-plus a secondary check: fraction of onsets within ±`SNAP_MAX_MS` of *some* multiple of `T` from the best phase (computed cheaply after §6). `tempoConfidence < 0.35` → low-confidence path (§14).
+Calculate alignment support within ±`SNAP_MAX_MS` after §6, excluding silence. Zero/degenerate envelopes or too few strong onsets yield zero confidence. `(best-median)/(max-median)` would be approximately one whenever best equals max and cannot establish confidence. Calibrate the replacement score on development clips, then freeze it before held-out tests. `tempoConfidence < TEMPO_MIN_CONFIDENCE` takes §14's fallback. This score is not a statistical probability.
 
 Unit test (§16): a synthetic click track at 128 BPM MUST yield 128 ± 1.
 
 ## 6. Beat tracking (`dsp/beats.ts`)
 
-Ellis (2007) dynamic programming over the onset envelope `O[n] = env[n]` with target period `T` (frames, fractional allowed; the search uses integer lags).
+[Ellis (2007)](https://www.ee.columbia.edu/~dpwe/pubs/Ellis07-beattrack.pdf) dynamic programming over `O[n] = env[n]` with target period `T` (fractional frames; the search uses integer lags).
 
 ```
 tightness = BEAT_TIGHTNESS                         // 100
-lo = round(0.5 · T), hi = round(2 · T)
-C[n]   = −∞ for n < lo ; C[n] = O[n] for n in 0..lo−1 (no predecessor)
+lo = max(1, round(BEAT_MIN_PERIOD_FACTOR · T))
+hi = max(lo, round(BEAT_MAX_PERIOD_FACTOR · T))
+C[n]   = −∞ for all n ; C[n] = O[n] for n in 0..lo−1 (no predecessor)
 P[n]   = −1                                        // backpointer
 
 for n in lo .. frames−1:
@@ -231,9 +243,9 @@ beats.reverse()
 Post-processing:
 
 1. Convert to ms: `beatMs = tMs(n)`.
-2. Trim leading beats before the first onset − 1 beat period, and trailing beats after the last onset + 1 period (the DP extends into silence; those "beats" would spawn nothing anyway but would mislead the HUD pulse).
+2. Trim beats before `firstOnset - BEAT_EDGE_PAD_PERIODS * period` and after `lastOnset + BEAT_EDGE_PAD_PERIODS * period`; a DP extension into silence must not produce a misleading pulse.
 3. `intervals = diff(beatMs)`; `bpm = round(60000 / median(intervals), 1)`.
-4. `beatOffsetMs`: phase-align a perfect grid of period `60000/bpm` to the tracked beats by minimising `Σ |beat_i − (offset + k_i · period)|` (one-dimensional, solve as the median of `beat_i mod period`), then reduce into `[0, period)`.
+4. `beatOffsetMs`: fit a phase in `[0, 60000/bpm)` using circular distance. Deterministically search candidate beat phases, with ties to the smallest phase. A linear median of modulo phases fails across zero. This offset is a grid phase, not necessarily the first tracked beat.
 5. `analysis.beats` keeps the *tracked* beats (not the grid), so tempo drift in live recordings is visible.
 
 Complexity: `frames × (hi − lo)` ≈ 7 750 × 32 ≈ 250 k inner iterations → < 10 ms.
@@ -250,7 +262,7 @@ for onset in allOnsets:
   d = |onset.t − g|
   if d ≤ SNAP_MAX_MS:
      onset.t = g; onset.snapped = true; keep
-  else if onset.strength ≥ 0.8:
+  else if onset.strength ≥ UNSNAPPED_MIN_STRENGTH:
      keep as-is; onset.snapped = false          // strong syncopation (e.g. a real off-grid hit) is musical, keep it
   else:
      drop                                        // weak + off-grid = noise
@@ -258,7 +270,7 @@ for onset in allOnsets:
 
 Two onsets that snap to the same grid line in the same band are merged (max strength). After snapping, onsets closer than `ONSET_MIN_GAP_MS` across bands are *kept* (they become chords in §9) — the gap rule in §4 is per band.
 
-Definition of **valid beat** used in the acceptance tests: an onset that survives §7. The ratio `valid / detected` is reported in the generator summary for tuning.
+Internally, a **validated onset** survives §7. Report `valid / detected` as a diagnostic, never beat accuracy: the generator can agree with its own incorrect grid. External accuracy uses independent annotations (§15 and [24](24-benchmark-and-evidence.md)).
 
 ## 8. Energy envelope and sections (`dsp/energy.ts`)
 
@@ -267,20 +279,21 @@ Definition of **valid beat** used in the acceptance tests: an onset that survive
 ```
 hopSamples = ANALYSIS_SR · ENERGY_HOP_MS / 1000          // 2205
 for i: rms[i] = sqrt( mean( mono[i·hop .. (i+1)·hop]² ) )
-energy = rms / percentile(rms, 98)   clamped to 0..1       // → BeatmapV1.analysis.energy
-smooth = movingAverage(energy, 40)                          // 4 s window for section logic
+energy = rms / max(percentile(rms, ENERGY_NORM_PERCENTILE), ε) clamped to 0..1
+smoothFrames = max(1, ceil(SECTION_SMOOTH_MS / ENERGY_HOP_MS))
+smooth = movingAverage(energy, smoothFrames)  // → section logic
 ```
 
 ### 8.2 Events
 
 | Event | Rule |
 | --- | --- |
-| `kick` | Every low-band onset with `strength ≥ 0.6` → `{ t, kind: 'kick', intensity: strength }`. Rate-limited to one per beat period/2. |
-| `drop` | At time `t`, `smooth[t] ≥ DROP_RISE_RATIO · mean(smooth over [t − DROP_MIN_BUILD_MS, t − 1000 ms])` **and** `smooth[t] ≥ 0.6` **and** the preceding window never exceeded `smooth[t] / DROP_RISE_RATIO`. Snap `t` to the nearest tracked beat. Minimum 16 s between drops. `intensity = clamp((smooth[t] − windowMean) / windowMean, 0, 1)`. |
-| `build` | Start of any 8 s window in which `smooth` rises monotonically (allowing ≤ 2 dips of < 0.03) by ≥ 0.25 total, and the window ends in a `drop` within 4 s. `intensity = rise`. |
-| `calm` | Start of any ≥ 6 s window with `smooth ≤ percentile(smooth, 25)`, snapped to the nearest beat. Min 12 s apart. `intensity = 1 − smooth / p25`. |
+| `kick` | Low-band onset `strength ≥ KICK_MIN_STRENGTH`; minimum `KICK_MIN_GAP_BEATS * beatPeriod` between events. Intensity is onset strength. |
+| `drop` | `smooth[t] ≥ DROP_RISE_RATIO * windowMean` and `smooth[t] ≥ DROP_MIN_ENERGY`; baseline is `[t-DROP_MIN_BUILD_MS, t-DROP_BASELINE_END_MS]` and its maximum must not exceed `smooth[t]/DROP_RISE_RATIO`. Require a complete baseline, snap to nearest tracked beat, and keep ≥`DROP_MIN_GAP_MS` between events. Intensity is `clamp((smooth[t]-windowMean)/max(windowMean,ε),0,1)`. |
+| `build` | A `BUILD_WINDOW_MS` span rises by ≥`BUILD_MIN_RISE`; at most `BUILD_MAX_DIPS` adjacent-sample decreases, each <`BUILD_MAX_DIP_DEPTH`. Its end is followed by a drop within `BUILD_DROP_LOOKAHEAD_MS`. Emit at the window start; intensity is total rise, clamped to `[0,1]`. |
+| `calm` | A ≥`CALM_WINDOW_MS` span stays below `percentile(smooth,CALM_PERCENTILE)`. Emit at its start, snap to nearest tracked beat and keep ≥`CALM_MIN_GAP_MS` separation. Intensity is `clamp(1-smooth/max(calmCeiling,ε),0,1)`. |
 
-Events are sorted and emitted into `BeatmapV1.events`.
+Events are sorted into `BeatmapV1.events`. Guard divisions by zero, clamp finite intensities, and deduplicate overlapping section candidates. A near-zero baseline must not turn silence into a drop. These are heuristic visual cues, not verified structure annotations.
 
 ## 9. Note assignment (`assign.ts`)
 
@@ -294,34 +307,35 @@ Each surviving onset becomes a **candidate** with a provisional type:
 | --- | --- | --- |
 | low | `smash` | always |
 | mid, high | `slash` | default |
-| mid | `beam` | *sustained*: band energy in the mid bins stays within 3 dB of its value at onset for ≥ 500 ms **and** no other onset in any band within ±`BEAM_ISOLATION_MS` **and** last beam ≥ 4000 ms ago |
+| mid | `beam` | Linear mid-band power stays within `BEAM_SUSTAIN_DB` for ≥ `BEAM_SUSTAIN_MS`; no other onset within ±`BEAM_ISOLATION_MS`; last beam ≥ `BEAM_MIN_SPACING_MS[difficulty]` ago |
 
-Easy difficulty converts every other `smash` to `slash` (smash requires more deliberate motion) and keeps at most one beam per 8 s.
+Compute dB ratios from linear STFT power, not log-compressed flux. Easy converts every `EASY_SMASH_TO_SLASH_EVERY`th smash candidate to slash and uses `BEAM_MIN_SPACING_MS.easy`. Leave enough time to acquire/charge/release a beam; a visible target does not make an instant fist-to-point switch feasible.
 
 ### 9.2 Density cap
 
-Sliding 4-second window; cap `MAX_DENSITY_PER_S[difficulty] · 4`. When a window is over cap, remove the weakest candidates first (by `strength`, then prefer removing `high` band, then `mid`, never `smash` with `strength ≥ 0.8`) until the cap holds. Iterate windows left to right; a removal is final.
+Half-open windows `[t, t+DENSITY_WINDOW_MS)` anchored at each candidate; cap `floor(MAX_DENSITY_PER_S[difficulty] * DENSITY_WINDOW_MS / 1000)` individual notes, including chord members. Remove weakest first, then prefer removing `high`, then `mid`, then stable original index. Strong smashes are preferred but never exempt from a hard cap. Iterate left to right; removal is final. Recheck every window after assignment.
 
 ### 9.3 Gap rules
 
 Walk candidates in time order:
 
-- If `t − prev.t < MIN_NOTE_GAP_MS[difficulty]` and both are not in a chord (`|Δt| ≥ 20 ms`) → drop the weaker.
-- Chords (`|Δt| < 20 ms`, different bands) are allowed only on normal/hard, at most 2 notes, and they MUST take different columns on opposite sides (one in cols 0–1, one in cols 2–3). On easy the weaker is dropped.
+- If `t − prev.t < MIN_NOTE_GAP_MS[difficulty]` and the notes are not in the same anchored chord → drop the weaker.
+- Chords are anchored to their first onset with `|Δt| < CHORD_WINDOW_MS`, use different bands, and contain at most two notes. Normal/hard only, in opposite-side columns; easy drops the weaker. Near neighbours cannot form an unbounded transitive chord. Recheck the gap between chord groups after replacements.
 
 ### 9.4 Column choice (hand alternation and flow)
 
-State: `lastSide ∈ {L, R}`, `lastCell`, `lastT`.
+State: `lastSide ∈ {'left','right'}`, `lastCell`, `lastT`, and per-side last contact/type plus accent counts. Side guides expected ergonomic flow; it does not require the player to hit with that particular hand.
 
 ```
-side = opposite(lastSide) unless (t − lastT) > 1200 ms, in which case side = R (natural dominant-hand start)
-colsOnSide = side == L ? [0,1] : [2,3]
-prefer the column within 1 of lastCell.col (ergonomic flow); otherwise the inner column (1 or 2)
-every 4th note on the same side may jump to the outer column if strength ≥ 0.7 (accent)
+side = opposite(lastSide), or FLOW_RESTART_SIDE after a gap > FLOW_RESTART_GAP_MS
+colsOnSide = side == 'left' ? leftColumns : rightColumns  // derived from the v1 grid
+prefer a column with |col-lastCell.col| ≤ FLOW_MAX_COLUMN_STEP; otherwise inner column
+every FLOW_OUTER_ACCENT_EVERYth note on that side may use its outer column
+  when strength ≥ FLOW_OUTER_ACCENT_MIN_STRENGTH
 if the chosen (col,row) equals a cell used within MIN_SAME_CELL_GAP_MS → pick the other column on the same side; if still same → shift row by ±1
 ```
 
-For `smash` notes prefer the inner columns (1,2) — punches travel less laterally. For `beam` notes prefer the outer columns (0,3) and row 2 — the target reads as distant and high.
+For smash prefer inner columns; for beam prefer outer columns and top row. Grid topology determines these indices. `FLOW_RESTART_SIDE` is only a deterministic default, not an inference about dominant hand. Reject a proposed same-side note if its expected-hand gap is below `FLOW_HAND_MIN_GAP_MS`, or a change of gesture has less than `FLOW_GESTURE_SWITCH_MIN_MS`; try the opposite side once, then drop the weaker conflicting candidate and recheck density/spacing.
 
 ### 9.5 Row choice
 
@@ -329,35 +343,39 @@ Spectral centroid `c` (Hz) of the onset frame → row:
 
 | centroid | row |
 | --- | --- |
-| `< 400 Hz` | 0 (bottom) |
-| `400–2500 Hz` | 1 |
-| `> 2500 Hz` | 2 (top) |
+| Below `CENTROID_ROW_HZ[0]` | bottom |
+| Between the registered boundaries | middle |
+| Above `CENTROID_ROW_HZ[1]` | top |
 
-Then flow correction: if `|row − lastCell.row| == 2` and `t − lastT < 400 ms` → move to row 1 (no bottom→top jumps in under 400 ms). On easy, row 0 is used at most once per 2 s (bending down is tiring).
+For a full bottom↔top jump with gap <`FLOW_FULL_ROW_JUMP_MIN_GAP_MS`, choose the middle row instead. Easy uses the bottom row no more often than `EASY_LOW_ROW_MIN_GAP_MS`. These are layout/time proxies; calibration and player trials still establish whether the pattern is comfortable. If the available cells cannot satisfy all rules, drop the weaker candidate instead of inventing a new onset.
 
 ### 9.6 Finalise
 
-Assign ascending `id`s, `dir = 'any'`, `strength` copied. Beam notes get `t` unchanged (the spawner handles lead time).
+Run a final deterministic pass over density, same-cell/chord rules, beam isolation, wall margin and registered flow/hand-recovery proxies. Drop/convert a weaker conflict; after any removal, recompute affected flow state in chronological order until a complete pass makes no changes. Each removal is final, so this terminates. Never move a note onto invented musical evidence. Assign IDs only afterwards; `dir = 'any'`, strength and beam `t` are retained. The [15](15-audio-playback-sync.md) pre-roll gives early notes their complete approach/beam lead. The layout/time guards do not certify a person's physical reach; P2 player trials must verify comfort.
 
 ## 10. Obstacle placement
 
 Candidate slots:
 
-1. Any window ≥ 2000 ms with no notes (breakdowns), and
-2. On normal/hard, every 16th tracked beat (bars 4, 8, 12 …) if the next 2 beats contain ≤ 1 note.
+1. A note-free span ≥`OBSTACLE_EMPTY_WINDOW_MS` (breakdown), and
+2. Every `OBSTACLE_PERIOD_BEATS`th tracked beat on normal/hard. Normal also requires at most `OBSTACLE_LOOKAHEAD_MAX_NOTES` in the next `OBSTACLE_LOOKAHEAD_BEATS`; hard may use a busier slot only if covered columns satisfy the complete safety margin below.
 
 For each slot, the wall is placed on the side the body must *leave*: the player leans **away** from the wall, toward the side where the upcoming notes are, so hands and body move together.
 
 ```
-notesSide   = side with more notes in [t, t + 2 beats]   (ties → alternate from the last wall)
-kind        = notesSide == R ? 'wallLeft' : 'wallRight'   // wall on the empty side; lean toward the notes
-durationMs  = clamp(2 · beatPeriod, MIN_OBSTACLE_MS, MAX_OBSTACLE_MS)
-reject if any note in the covered columns has t within [t − 600, t + durationMs + 600]
-reject if t − lastObstacle.t < MIN_OBSTACLE_GAP_MS
-reject if t < 8000 (no walls in the first 8 s)
+notesSide   = side with more notes in [t, t + OBSTACLE_LOOKAHEAD_BEATS * beatPeriod]
+              (ties → alternate from the last wall; first tie uses FLOW_RESTART_SIDE)
+kind        = notesSide == 'right' ? 'wallLeft' : 'wallRight'
+durationMs  = clamp(OBSTACLE_DURATION_BEATS[difficulty] * beatPeriod,
+                    MIN_OBSTACLE_MS, MAX_OBSTACLE_MS)
+reject if any note in covered columns has t within [t − WALL_NOTE_MARGIN_MS, t + durationMs + WALL_NOTE_MARGIN_MS]
+gapMin      = difficulty == 'easy' ? max(MIN_OBSTACLE_GAP_MS, EASY_OBSTACLE_MIN_GAP_MS)
+                                   : MIN_OBSTACLE_GAP_MS
+reject if t − lastObstacle.t < gapMin
+reject if t < OBSTACLE_INTRO_MS or t + durationMs > durationMsOfSong
 ```
 
-Easy: only rule-1 slots, duration 1.5 beats, and at most one wall per 12 s. Hard: also allow walls during note sections when the covered columns are empty for the duration.
+Easy uses only note-free slots and its registered duration/gap preset. All difficulties clamp occupancy to the same global min/max and reserve the same covered-column note margin. Deduplicate slots that coincide before assigning obstacle IDs.
 
 ## 11. Output, validation, cache
 
@@ -372,11 +390,14 @@ const map: BeatmapV1 = {
 const errors = validateBeatmap(map);
 if (errors.length) {
   // The generator MUST produce valid maps; an error here is a generator bug.
-  // Repair pass: drop offending notes/obstacles named in errors, re-validate once; if still failing → fail the job.
+  // Development: fail with actionable paths; this is a generator bug.
+  // A separately specified removal-only release repair may re-validate once,
+  // retaining original failures and a visible warning. Never fabricate valid
+  // timestamps, schemas, hashes or non-finite values into apparent success.
 }
 ```
 
-Cache (`beatmap/cache.ts`): IndexedDB database `sign-saber`, object store `beatmaps`, key `${sourceHash}:${difficulty}:${GENERATOR_VERSION}`, value `{ map, createdAt }`. Also store `${sourceHash}:analysis` with the shared stage-2–8 intermediate (`onsets`, `beats`, `energy`, `events`, `centroids`) so switching difficulty re-runs only §9–10 (< 50 ms). Eviction: keep the 30 most recent by `createdAt`.
+Cache (`beatmap/cache.ts`): IndexedDB `sign-saber`, store `beatmaps`, map key `${sourceHash}:${difficulty}:${GENERATOR_VERSION}`, value `{ map, warnings, createdAt }`. Analysis key `${sourceHash}:analysis:${GENERATOR_VERSION}` stores stage-2–8 intermediates, so difficulty changes rerun assignment only. Preserve confidence/fallback warnings on cache hits rather than relabelling uncertain audio as a confident map. Evict complete source-analysis groups, retaining `ANALYSIS_CACHE_MAX` recent groups and their maps. Verify schema/version/hash on reads; discard corrupt entries. Quota/private-mode failures return the validated map with a cache warning, not a fabricated success or failed song. Reassignment timing is measured in [24](24-benchmark-and-evidence.md).
 
 Title/artist: from ID3 tags if the main thread extracted them (simple ID3v2 TIT2/TPE1 parse), else from the filename, else `"Untitled"`.
 
@@ -385,7 +406,7 @@ Title/artist: from ID3 tags if the main thread extracted them (simple ID3v2 TIT2
 ```ts
 // main → worker
 type GenRequest =
-  | { type: 'analyze', jobId: string, mono: Float32Array /* transferred */, sr: number, durationMs: number, meta: { title: string; artist: string; sourceHash: string; source: BeatmapV1['song']['source'] } }
+  | { type: 'analyze', jobId: string, difficulty: Difficulty, mono: Float32Array /* transferred */, sr: number, durationMs: number, meta: { title: string; artist: string; sourceHash: string; source: BeatmapV1['song']['source'] } }
   | { type: 'assign',  jobId: string, sourceHash: string, difficulty: Difficulty }   // reuse cached analysis held in worker memory
   | { type: 'cancel',  jobId: string };
 
@@ -394,12 +415,12 @@ type GenResponse =
   | { type: 'progress', jobId: string, stage: 'stft' | 'flux' | 'onsets' | 'tempo' | 'beats' | 'energy' | 'assign' | 'validate', fraction: number /* 0..1 overall */ }
   | { type: 'analysis', jobId: string, summary: { bpm: number; tempoConfidence: number; onsetCount: number; validOnsetCount: number; beatCount: number } }
   | { type: 'done', jobId: string, map: BeatmapV1, warnings: string[] }
-  | { type: 'error', jobId: string, code: 'silent' | 'tooShort' | 'decode' | 'invalid' | 'cancelled', message: string };
+  | { type: 'error', jobId: string, code: 'silent' | 'tooShort' | 'tooLarge' | 'unsuitable' | 'decode' | 'invalid' | 'cancelled', message: string };
 ```
 
-Progress weights: stft 0.45, flux 0.05, onsets 0.05, tempo 0.10, beats 0.05, energy 0.05, assign 0.20, validate 0.05. The STFT loop posts progress every 500 frames. The worker checks a `cancelled` flag between stages and every 500 STFT frames.
+`GEN_PROGRESS_WEIGHTS` supplies stage fractions that sum to one; each stage reports only completed work. Process chunks for at most `GEN_WORK_CHUNK_MS` of worker CPU before yielding to a task boundary so cancel messages can execute. Checking a flag inside uninterrupted synchronous work cannot receive a new message. Alternatively terminate/recreate the worker. Job IDs are generation-scoped; ignore stale results/progress, allow one terminal response or client rejection per job, and cancel superseded assignments. Missing in-memory analysis explicitly reloads/recomputes it. Exceeding a chunk budget because one FFT took longer is recorded, not hidden as a proven cancellation guarantee.
 
-The main-thread client (`beatmap/generatorClient.ts`) wraps this in `generate(file, difficulty): Promise<BeatmapV1>` with `onProgress`, and performs: hash → cache lookup → decode → `analyze` → `done`. Difficulty switch in Song Select → `assign` only.
+The main-thread client (`beatmap/generatorClient.ts`) wraps this in `generate(file, difficulty): Promise<BeatmapV1>` and exposes progress, analysis summary and warnings through explicit callbacks/state updates. Cache hits replay the same summary/warnings; returning just the map must not erase an uncertainty badge. Flow: hash → cache lookup → decode → `analyze` → `done`. Difficulty switch uses `assign` after confirming the worker owns the matching analysis.
 
 ## 13. Determinism and performance
 
@@ -408,9 +429,9 @@ Determinism rules:
 - No `Math.random`, no `Date.now()` in any stage. Tie-breaks are by index order.
 - Floating-point reductions use the same loop order every time (no SIMD/WASM paths that could reorder).
 - `GENERATOR_VERSION` is bumped whenever any threshold or rule changes.
-- Unit test: generating the same fixture twice MUST produce `JSON.stringify`-identical maps.
+- Unit test: identical canonical PCM, metadata and difficulty produce `JSON.stringify`-identical maps with stable ordering and tie-breaks. Evaluate native MP3 decode separately; do not promise cross-engine bit identity.
 
-Cost estimate for a 3-minute track (7 750 frames):
+Unverified planning estimate for a three-minute track (about 7,750 frames), to be measured with [24](24-benchmark-and-evidence.md):
 
 | Stage | Estimate |
 | --- | --- |
@@ -423,24 +444,24 @@ Cost estimate for a 3-minute track (7 750 frames):
 | Energy + sections | 10 ms |
 | Assign + obstacles | 10 ms |
 | Validate + IndexedDB write | 20 ms |
-| **Total** | **≈ 0.7–1.4 s**, well under the 4 s target |
+| **Total** | **≈ 0.7–1.4 s**, to be measured against the target |
 
-Memory peak: `mag` = 7 750 × 1025 × 4 B ≈ 32 MB. Acceptable; free it after §3 by keeping only the three band-flux arrays and the per-frame centroid.
+Spectrogram allocation: `mag` = 7,750 × 1,025 × 4 B ≈ 32 MB, **not total pipeline peak memory**. Release it after extracting flux, centroids and linear band-power envelopes needed for beam sustain checks. The encoded bytes, decoded playback PCM, mono analysis, resampling buffers and worker copies add to peak memory; measure and bound them separately before calling it acceptable.
 
 ## 14. Failure handling
 
 | Condition | Behaviour |
 | --- | --- |
-| Silent (`max|x| < 1e-4`) or < 5 s | `error: silent` / `tooShort`; Song Select shows "No audio detected" / "Track too short (min 5 s)". |
+| Peak below `SILENCE_PEAK_MAX` or duration below `MIN_TRACK_MS` | `error: silent` / `tooShort`; show the actual configured duration limit in recovery text. |
 | `decodeAudioData` rejects | `error: decode`; "Unsupported or corrupt audio file". |
-| `tempoConfidence < 0.35` | **Onset-only mode**: skip §6–7 snapping; `bpm` from the best autocorrelation peak anyway (for pulses) with `warnings: ['lowTempoConfidence']`; notes placed on raw onsets with `strength ≥ 0.4`; no `drop` events; Song Select shows a badge "Free rhythm — beats not detected". |
-| Zero valid onsets after §7 but tempo confident | Lower `ONSET_MIN_STRENGTH` by 0.05 once and redo §4–7 (quiet masters); warn `lowOnsetDensity`. |
-| Validation errors after repair | `error: invalid` with the first three messages; this is a generator bug and MUST be logged with the `sourceHash` for reproduction. |
-| Worker crash | Client rejects; UI offers retry; a second failure falls back to the bundled tracks list. |
+| `tempoConfidence < TEMPO_MIN_CONFIDENCE` | **Onset-only mode**: no snapping/drop events, `warnings: ['lowTempoConfidence']`; use raw onsets with `strength ≥ FREE_RHYTHM_MIN_STRENGTH`, raw-RMS admission and density/flow caps. If fewer than `TEMPO_MIN_SUPPORT_ONSETS` distinct supported events remain, reject as unsuitable. Otherwise show "Free rhythm — beats not detected" and suppress precise BPM/metronome claims. Passing these heuristics does not prove musicality; noise/ambient tests remain real P2 gates, not a claim of universal noise detection. |
+| Zero valid onsets | Return `lowOnsetDensity`/unsuitable-track feedback and keep Start disabled; never lower thresholds silently to force notes. |
+| Validation errors | `error: invalid` with actionable paths and `sourceHash`; retain originals for any explicitly specified removal-only repair and show its warning. |
+| Worker crash | Reject the job; offer at most `GEN_MAX_RETRIES` user-requested retry, then return to bundled selection. Never loop automatic retries or replace the current song silently. |
 
 ## 15. Tuning methodology
 
-Five CC0/CC-BY test clips (60–90 s each, committed under `app/tests/fixtures/audio/` as OGG, with hand-tapped beat annotations `*.beats.json` recorded by tapping along in a small dev page three times and taking the median):
+Build a licensed corpus; **none of these audio fixtures or annotations is committed yet**. Begin with five CC0/CC-BY development clips (60–90 s each) under `app/tests/fixtures/audio/`, as OGG and canonical PCM WAV, with `*.beats.json` annotations. Annotate by listening and waveform inspection with a second reviewer; taps alone include human latency. Keep licences, method and disagreements. Add at least one held-out rhythmic clip per genre that is never used for tuning.
 
 | Clip | Genre | Challenge |
 | --- | --- | --- |
@@ -448,9 +469,9 @@ Five CC0/CC-BY test clips (60–90 s each, committed under `app/tests/fixtures/a
 | `rock-140` | Live-drummed rock, ~140 BPM | Tempo drift, snare vs kick separation |
 | `hiphop-90` | Hip-hop, 90 BPM | Octave ambiguity (90 vs 180), sparse hats |
 | `acoustic-110` | Acoustic guitar + voice | Weak onsets, no kick → mostly slash |
-| `ambient` | Beatless pad | Must produce ≤ 3 notes per minute or go to onset-only mode |
+| `ambient` | Beatless pad | ≤ 3 notes/minute or an unsuitable-track rejection; a warning cannot excuse dense random notes |
 
-Metrics (reported by `npm run beatmaps -- --eval`):
+Planned metrics for `npm run beatmaps -- --eval` after implementation (today `npm run beatmaps` is a deliberate TODO failure):
 
 | Metric | Target |
 | --- | --- |
@@ -458,33 +479,36 @@ Metrics (reported by `npm run beatmaps -- --eval`):
 | BPM error | ≤ 2 BPM (octave errors counted as failures) |
 | Note-on-beat ratio: fraction of notes within ±`SNAP_MAX_MS` of a sixteenth grid line from the tapped beats | ≥ 0.90 |
 | Notes per second at normal | within `[0.6, MAX_DENSITY_PER_S.normal]` on rhythmic clips |
-| Ambient clip | ≤ 3 notes/min or `lowTempoConfidence` warning |
+| Ambient clip | ≤ 3 notes/min or rejected as unsuitable |
 
-Tuning order: `ONSET_DELTA` and `ONSET_MIN_STRENGTH` first (precision of onsets), then `BEAT_TIGHTNESS` (lower = follows drift more), then the prior σ, then assignment rules. Each change bumps `GENERATOR_VERSION`.
+Use one-to-one beat matching, report each clip and half/double-tempo failures, freeze tuning before held-out evaluation, and derive the reference grid from annotations rather than predictions. [24](24-benchmark-and-evidence.md) defines statistics and artifacts. Tuning order: onset precision first, then `BEAT_TIGHTNESS`, prior width and assignment. Every output-changing rule/threshold increments `GENERATOR_VERSION`; test fixtures are never silently changed to make a failing version pass.
 
 ## 16. Unit tests (`app/tests/unit/dsp.test.ts`, `assign.test.ts`)
 
 Synthetic signals are generated in-test at `ANALYSIS_SR`:
 
-1. **FFT correctness**: sine at bin 100 → peak at bin 100 within 1 %; impulse → flat magnitude.
-2. **Click track 128 BPM**, 30 s, 5 ms clicks: tempo = 128 ± 1; tracked beats within ±`HOP_MS` of true clicks (F ≥ 0.98); every click yields exactly one `low` onset.
+1. **FFT correctness**: unwindowed real sine at bin 100 has conjugate peaks at 100 and `N-100`, correct retained amplitude and negligible leakage; impulse is flat.
+2. **Click track 128 BPM**, 30 s, 5 ms clicks: tempo = 128 ± 1; tracked beats within ±`HOP_MS` of true clicks (F ≥ 0.98). Merge coincident broadband evidence before assignment so one click does not become three notes; a frequency band is not an instrument label.
 3. **Click track 90 BPM with hats at 180**: tempo resolves to 90 (octave test).
-4. **White noise** at −6 dBFS, 30 s: zero notes after §7 (or `lowTempoConfidence` with ≤ 2 notes).
+4. **White noise**, hum and quiet-intro noise with fixed seeds: reject as unsuitable or return the explicitly bounded sparse outcome. A low-confidence warning cannot excuse dense noise notes.
 5. **Silence**: `error: silent`.
 6. **Determinism**: two runs on clip 2 are byte-identical.
-7. **Density cap**: a 400 ms-spaced click track at hard MUST produce ≤ `MAX_DENSITY_PER_S.hard × 4` notes per 4 s window, and ≤ `.easy × 4` at easy.
+7. **Density cap**: an over-dense fixture never exceeds `floor(MAX_DENSITY_PER_S[difficulty] * DENSITY_WINDOW_MS / 1000)` notes in any registered window, including strong smashes/chords.
 8. **Validation**: every generated map passes `validateBeatmap` with zero errors.
-9. **Obstacle safety**: no note lies in a wall's covered columns during `[t − 600, t + durationMs + 600]`.
-10. **Chord rule**: two simultaneous band onsets at normal produce two notes on opposite sides; at easy produce one.
+9. **Obstacle safety**: no note lies in covered columns during `[t − WALL_NOTE_MARGIN_MS, t + durationMs + WALL_NOTE_MARGIN_MS]`.
+10. **Chord rule**: independent simultaneous band onsets at normal make at most two opposite-side notes; easy makes one. Three close onsets cannot form a transitive chord that evades gap/density limits.
+
+Also test non-finite PCM, constant tones, antiphase stereo, truncated bytes, cancellation during STFT, stale results, denied/corrupt cache, phase wraparound, beam/wall overlaps and rapid gesture transitions. Integration tests exercise real browser decode and worker transfer instead of mocking every boundary.
 
 ## Acceptance criteria
 
-- [ ] Generating a bundled 3-minute track at normal completes in < 4 s on the demo laptop including decode, and in < 1.5 s excluding decode.
+- [ ] Generation timing meets [24 §6](24-benchmark-and-evidence.md#6-initial-acceptance-targets), including cold decode and declared repetitions.
 - [ ] All 10 unit tests pass; the five-clip evaluation meets the §15 targets for the four rhythmic clips.
-- [ ] Repeated generation is byte-identical; changing difficulty re-uses cached analysis (< 100 ms).
+- [ ] Repeated canonical-PCM generation is byte-identical; difficulty changes reuse versioned analysis and meet the [24](24-benchmark-and-evidence.md) timing target.
 - [ ] Silence, noise, and a 3-second file produce the documented errors/warnings and never a map with notes on silence.
-- [ ] Every emitted map passes `validateBeatmap`; every note is on a snapped grid line or is a strength ≥ 0.8 syncopation.
+- [ ] Every map passes complete validation/playability constraints; each note comes from snapped evidence, retained strong syncopation or the labelled onset-only fallback.
 - [ ] Song Select shows BPM, note count and any warning badge from the `analysis` summary before Start is enabled.
+- [ ] Every referenced tunable has its planned named default in [02](02-architecture.md#constants) and an implementation export; P2 records development-fixture tuning before freezing the held-out run.
 
 ## Constants required
 

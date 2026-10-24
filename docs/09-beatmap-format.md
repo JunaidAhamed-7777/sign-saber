@@ -1,6 +1,6 @@
 # 09 — Beatmap Format (`BeatmapV1`)
 
-A beatmap is a JSON document produced by the generator ([08](08-beatmap-generation.md)), cached in IndexedDB, bundled for demo tracks under `app/public/assets/tracks/<slug>/<difficulty>.json`, and consumed by the spawner ([07](07-hit-detection-and-scoring.md)). It is deliberately small, flat and human-readable so a map can be patched by hand in a pinch.
+A beatmap is JSON produced by [08](08-beatmap-generation.md), cached in IndexedDB, bundled under `app/public/assets/tracks/<slug>/<difficulty>.json`, and consumed by the [spawner](07-hit-detection-and-scoring.md). The format is planned; `beatmap/types.ts` and `validate.ts` are still stubs. Human edits must pass the same validator and carry an accurate provenance record; do not describe a hand-patched demo chart as untouched generator output.
 
 ## TypeScript definition
 
@@ -21,7 +21,7 @@ export interface BeatmapV1 {
     artist: string;
     durationMs: number;
     bpm: number;                   // tracked tempo, 1 decimal
-    beatOffsetMs: number;          // time of the first tracked beat
+    beatOffsetMs: number;          // periodic grid phase in [0, 60000/bpm), not first tracked beat
     sourceHash: string;            // SHA-256 hex of the audio file bytes
     source: 'bundled' | 'upload' | 'youtube';
     audioUrl?: string;             // bundled tracks only; uploads keep the File in memory
@@ -39,7 +39,7 @@ export interface BeatmapV1 {
 }
 
 export interface Note {
-  id: number;                      // unique within the map, ascending
+  id: number;                      // unique ascending non-negative integer within notes
   t: number;                       // hit time (ms, song time)
   type: NoteType;
   col: 0 | 1 | 2 | 3;              // left → right from the player's point of view
@@ -72,7 +72,7 @@ export interface Onset {
 
 ### `song.bpm`, `song.beatOffsetMs`
 
-The beat grid is `beatOffsetMs + k * 60000 / bpm`. It is used by the HUD metronome pulse, the environment grid pulse, the calibration countdown, and by the generator for snapping. `analysis.beats` is the actual tracked beat list (which may drift from a perfect grid); gameplay uses `notes[].t`, never the grid.
+The nominal grid is `beatOffsetMs + k * 60000 / bpm`; the offset is a phase modulo one period, not necessarily the first tracked beat. This grid can drive countdown and metronome cues for a confident tempo. Generator snapping interpolates **tracked** `analysis.beats`, which may drift; gameplay uses `notes[].t`, never an inferred grid. On the low-confidence path, keep the required numeric BPM as an internal estimate, suppress a precise BPM claim/pulse, and preserve the warning alongside the cached map. `analysis` is diagnostic; absence of useful analysis arrays must not change scoring.
 
 ### `approachMs`
 
@@ -83,6 +83,8 @@ The beat grid is `beatOffsetMs + k * 60000 / bpm`. It is used by the HUD metrono
 | hard | 1600 | 30.0 m/s |
 
 Spawn time for a note is `t - approachMs`. Beam notes ignore `approachMs` for travel (they hover at `BEAM_HOVER_Z`) but appear at `t - BEAM_LEAD_MS`.
+
+Negative spawn times are valid. [15](15-audio-playback-sync.md) schedules pre-roll so early notes receive their full approach; truncating approach at song time zero would make the example below unfair.
 
 ### `notes[].col`, `notes[].row`
 
@@ -105,29 +107,37 @@ Grid cell → play-plane position, from the constants table: `x = LANE_X[col]`, 
 
 ## Validation rules (`validateBeatmap`)
 
-The validator MUST check all of the following and return a list of `{ path, message }` errors; a map with any error is not playable.
+Accept `unknown`, validate structure before dereferencing, and return bounded `{ path, message }` errors. Never cast parsed JSON directly to `BeatmapV1`. Malformed shapes, oversized arrays and non-finite numbers fail before expensive pairwise work. Use indexed/two-pointer checks rather than quadratic scans for density/spacing. A map with an error is not playable.
 
-1. `version === 1`; `generatorVersion` is a positive integer.
-2. `song.durationMs > 1000`; `40 ≤ song.bpm ≤ 240`; `0 ≤ beatOffsetMs < 60000 / bpm`.
-3. `notes`, `obstacles`, `events` sorted ascending by `t`; all `t` within `[0, durationMs]`.
-4. Note ids unique and ascending; `col ∈ 0..3`, `row ∈ 0..2`; `strength ∈ [0,1]`.
+1. `version === 1`; `generatorVersion` positive integer; required objects/arrays present; difficulty, note type, direction, wall kind, event kind and onset band are supported enum values. Core v1 accepts `dir: 'any'` and left/right walls; directional/duck maps remain unsupported until their versioned feature ships.
+2. All numeric fields finite; `MIN_TRACK_MS ≤ song.durationMs ≤ MAX_TRACK_MS`; `40 ≤ song.bpm ≤ 240`; `0 ≤ beatOffsetMs < 60000 / bpm`; `approachMs` equals the registered difficulty preset. Audio admission separately checks `MAX_DECODED_PCM_BYTES`; map metadata cannot prove its audio buffer is small.
+3. `notes`, `obstacles`, `events` sorted by `t`, with deterministic tie order; times within `[0, durationMs]`. An obstacle must finish within the song.
+4. Note IDs unique non-negative ascending integers; obstacle IDs independently unique/ascending. `col`/`row` are integers in range; strengths/intensities lie in `[0,1]`.
 5. No two notes share `(t, col, row)`; two notes in the same cell are ≥ `MIN_SAME_CELL_GAP_MS` apart.
-6. Consecutive notes are ≥ `MIN_NOTE_GAP_MS[difficulty]` apart (the generator may emit chords; notes with `|Δt| < 20` count as one note for this rule).
+6. Consecutive anchored note groups are ≥ `MIN_NOTE_GAP_MS[difficulty]` apart. A chord has at most two members within `CHORD_WINDOW_MS` of its first member, different bands/evidence where available and opposite-side columns; no easy chords or transitive chains. Do not infer band membership solely from note type.
 7. Beam notes have no other notes within ± `BEAM_ISOLATION_MS`.
-8. No note has `t` inside an obstacle's `[t, t + durationMs]` in a column the obstacle covers.
+8. No note in covered columns occurs within `[obstacle.t - WALL_NOTE_MARGIN_MS, obstacle.t + durationMs + WALL_NOTE_MARGIN_MS]`.
 9. Obstacles are ≥ `MIN_OBSTACLE_GAP_MS` apart; `durationMs ∈ [MIN_OBSTACLE_MS, MAX_OBSTACLE_MS]`.
-10. Note density over any sliding 4-second window ≤ `MAX_DENSITY_PER_S[difficulty] * 4`.
+10. Count every note, including chord members, in each candidate-anchored half-open `[t, t + DENSITY_WINDOW_MS)` window; count ≤ `floor(MAX_DENSITY_PER_S[difficulty] * DENSITY_WINDOW_MS / 1000)`. The initial window is four seconds; changing it updates generation and validation together.
+11. `sourceHash` is 64 lowercase hexadecimal SHA-256 characters; metadata strings have bounded lengths and render as text. Source is one of the declared values. Bundled `audioUrl` resolves only to the expected local track asset path; reject arbitrary URLs/path traversal. Upload/companion maps do not persist executable or remote resource references.
+12. `analysis.beats` and onsets are sorted, finite and inside the song. Energy values lie in `[0,1]`, with length bounded by the duration and `ENERGY_HOP_MS`; empty diagnostics are allowed for a hand-authored fixture. Unknown generator versions are not silently treated as locally generated proof.
+13. At least one note exists for a playable map. Silence/unsuitable audio produces an error/disabled Start, not an empty successful level.
+14. Simulated approach/active windows fit the logical note/obstacle capacities. Cosmetic pool exhaustion is allowed to reduce effects, never gameplay objects. Reject unsupported concurrency before PLAYING.
+15. The final assignment passes the ergonomic checks in [08 §9](08-beatmap-generation.md#9-note-assignment-assignts), including beam/gesture transition space and wall safety. Imported maps receive the same checks; density alone does not establish playability.
 
-## Example (abridged)
+## Example (synthetic validation fixture)
+
+This is a complete schema example with intentionally synthetic metadata/hash, not a claim that a licensed track or generated map is committed. It should pass after the validator is implemented; include it in its tests.
 
 ```json
 {
   "version": 1,
   "generatorVersion": 1,
   "song": {
-    "title": "Neon Drift", "artist": "CC0 Demo", "durationMs": 182340,
-    "bpm": 128.0, "beatOffsetMs": 412, "sourceHash": "9f2c…", "source": "bundled",
-    "audioUrl": "/assets/tracks/neon-drift/audio.mp3"
+    "title": "Synthetic validator fixture", "artist": "Sign Saber tests", "durationMs": 182340,
+    "bpm": 128.0, "beatOffsetMs": 412,
+    "sourceHash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "source": "upload"
   },
   "difficulty": "normal",
   "approachMs": 2000,
@@ -150,7 +160,7 @@ The validator MUST check all of the following and return a list of `{ path, mess
 
 ## Bundled tracks
 
-Each bundled track lives in `app/public/assets/tracks/<slug>/` with `audio.mp3` (CC0 / CC-BY licensed, attribution in that folder's `README.md`), `easy.json`, `normal.json`, `hard.json`, and `cover.webp` (512×512). Bundled maps are generated by `npm run beatmaps` (runs the same generator in Node via `scripts/generate-beatmaps.mjs`) and committed, so the demo never depends on live generation.
+Each planned track folder contains licensed audio, attribution/edits, three difficulty JSON files and an optional 512×512 cover. No tracks/maps are committed yet. `npm run beatmaps` is currently a TODO failure; implement it in P2 using the same DSP/assignment code and canonical decoded input, then commit valid maps plus source/PCM/map hashes. Node does not provide browser `AudioContext`; the build must explicitly supply PCM (for example, a licensed canonical WAV or a documented ffmpeg preprocessing step), not assume browser decode works in Node. Bundled playback must not depend on live generation.
 
 Three bundled tracks are required for the demo ([20](20-demo-and-judging.md)):
 

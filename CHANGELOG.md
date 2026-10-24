@@ -2,7 +2,7 @@
 
 Record each meaningful project change, newest first. Update this file in the same commit as the change. Use a real timestamp with timezone, for example `YYYY-MM-DDTHH:MM:SS+05:30`.
 
-## Event build log
+## Development log
 
 No gameplay implementation has been recorded yet. Documentation and scaffold maintenance are recorded below; passing stub checks is not evidence of a playable game. Add entries using this shape:
 
@@ -14,6 +14,13 @@ No gameplay implementation has been recorded yet. Documentation and scaffold mai
 - Validation: <commands or manual checks actually run, with results>
 - Limitations: <known issues or "None identified in these checks">
 ```
+
+## 2026-10-24T23:51:07+05:30 — Complete music, timing, QA and evidence contracts
+
+- Changed: Completed DSP/format/QA/risk/companion review (docs08/09/17/21/23), including corrected tempo confidence/support, harmonic bounds, minimum-gap rounding, silence checks, deterministic ergonomic assignment, cache versions, cancellation, unknown-input validation and safe optional-service lifecycle. Registered remaining DSP/flow defaults in docs02 and aligned generator/validator density windows. Reconciled precharged beams, negative-time early-note pre-roll, neutral low-confidence countdown, async resume, live accuracy refresh and replay/debug keys across runtime/UI. Added explicit companion health/status payloads. All numbered specifications have now been reviewed and updated, with primary API sources where needed.
+- Why: Make the complete build reproducible and the judge demonstration credible: the musical/physical experience, runtime contracts, performance protocol and failure recovery must agree.
+- Validation: Final documentation check passed: 37 Markdown files, 392 local links/fragments, zero errors. Two checker regression tests passed; code fences are balanced and the complete JSON example parses. `git diff --check` passed. `npm run check` passed after the scaffold header changes (zero Vitest tests). Verified `npm run beatmaps` still exits 1 as its documented placeholder and `npm run server` exits without a listener. Three agents completed independent subsystem and integration reviews.
+- Limitations: Gameplay, browser/WebGL/MediaPipe compatibility, Blender exports, model download integrity, musical holdout quality, comfort/accessibility and benchmark targets remain unverified until implementation. No measured performance, raw evidence bundle or playable release was fabricated. The roadmap starts at P0.
 
 ## 2026-10-24T23:46:26+05:30 — Remove inherited kickoff instructions from source stubs
 

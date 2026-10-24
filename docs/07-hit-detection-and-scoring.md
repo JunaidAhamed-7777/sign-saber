@@ -178,16 +178,16 @@ The plane contains the swing direction and the lane direction, so a horizontal s
 
 ## 8. Beam resolution
 
-Runs on a newly accepted sample after note contacts, per hand with `present`, confident stable pointing, `charge ≥ 1` and capture-song time beyond `chargeLockUntil`.
+Runs on a newly accepted sample after note contacts, per hand with `present`, confident stable pointing, `charge ≥ 1` and capture-song time beyond `chargeLockUntil`. Full charge can wait; appearing early is not permission to fire.
 
 1. **Aim projection.** Aim at the target's **screen-aligned footprint on the play plane**, not its raw distant world x/y. For baseline camera `C = CAM_POS` and fixed beam hover centre `B`, compute `aimTarget = C + (B − C) · ((0 − C.z) / (B.z − C.z))`. Compare measured `tip.xy` to `aimTarget.xy`. This is the camera ray through the fingertip, not a parallel `−z` ray. `pointDir` remains cosmetic.
-2. **Candidates.** Unresolved beam notes that have appeared and whose fixed projected footprint is within `BEAM_AIM_RADIUS` of the fingertip. Use the unbobbing centre and baseline camera, so cosmetic bob/shake does not change aiming. Renderer reticles use this same projection.
-3. **Priority.** If several qualify (only possible across isolated beams, rare), pick the one with the smallest `|songTimeAtCapture − t|`.
-4. **Fire.** If a candidate exists: `timingErrorMs` per §3; apply the same scaled windows. Outside `WINDOW_GOOD_MS · WINDOW_SCALE`, the shot is a whiff: `beam:fire` has `note: null` (line/flash, nothing pops), charge resets, no penalty. Otherwise emit `beam:fire { hand, from: tip, to: note.pos, note }` then `note:hit` with judgement. Apply the late-result policy before any render-time escape finalizes the target.
-5. If no candidate exists, nothing fires; charge stays at 1 (held). The HUD shows "aim" state. The player can hold a charged point and sweep to the target; it fires on the first frame the target is under the fingertip.
-6. After any fire: reset the owning cursor's charge and set `chargeLockUntil = songTimeAtCapture + BEAM_REFIRE_LOCK_MS`. `beam:fire` starts the line/flash; `note:hit` alone starts the target destruction, exactly once. A whiff's `to` is the projected candidate's world centre and its `note` is explicitly `null`.
+2. **Candidates.** Unresolved beam notes that have appeared, whose fixed projected footprint is within `BEAM_AIM_RADIUS`, **and whose capture-time error is inside `WINDOW_GOOD_MS · WINDOW_SCALE`**. Use the unbobbing centre and baseline camera. Renderer reticles share this projection and distinguish charging, ready/waiting and eligible states.
+3. **Priority.** Pick the candidate with the smallest absolute timing error including `inputOffsetMs`, then note `t`/`id`. If both hands target it, resolve the deterministic winner once; the other hand retains its charge and does not emit a duplicate shot.
+4. **Fire.** Recheck the candidate is unresolved, emit `beam:fire { hand, from: tip, to: note.pos, note }`, then exactly one `note:hit` using §6's judgement. `beam:fire` starts the line/flash; `note:hit` alone starts destruction. Apply the late-result policy before any render-time escape finalizes gameplay.
+5. **Wait.** With no eligible aimed candidate, do not fire, reset charge or start lockout. Keep full charge while a visible target is too early or no target is aimed. A precharged point held over the target fires on the first eligible input sample; aiming later can improve the timing judgement. Expired targets follow the normal miss deadline, never a repeating auto-whiff cycle.
+6. **Reset only after a committed shot.** Set charge to 0 and `chargeLockUntil = songTimeAtCapture + BEAM_REFIRE_LOCK_MS`. The nullable `beam:fire.note` contract is defensive: if an already committed shot loses its target before authoritative resolution, render a line/whiff with `note: null` and no `note:hit`/points. Normal synchronous play checks target state before commitment and does not manufacture this event for early aiming or a losing second hand.
 
-Early fire protection (step 4) exists because `BEAM_LEAD_MS` (1600) > `WINDOW_GOOD_MS` (200): the target is visible well before it is "hittable", teaching the player to time the shot.
+The target appears before it becomes eligible so the player can aim and charge comfortably. `BEAM_LEAD_MS` is preparation time; it is not an automatic-fire window. No new click/release/manual-fire action is required.
 
 ## 9. Obstacles vs body (`game/hit.ts`, obstacle section)
 
@@ -275,6 +275,7 @@ Arithmetic example under the assumed masses and efficiency: a 4 m/s proxy peak y
 | `inputOffsetMs` moves a contact outside the zone | Ignored contact; no bad cut |
 | Pause during a live note | `songTime` frozen; nothing is judged; resume continues exactly |
 | Beam charged with no target for a long time | Held at 1; the HUD pulses; no timeout |
+| Beam already charged when an early target appears | Hold charge; fire only once an aimed sample is inside the scaled timing window |
 | Note pool exhausted | Pause with map-capacity fault; no fabricated player miss |
 
 ## 14. Unit tests (`tests/unit/judge.test.ts`, `hit.test.ts`, `score.test.ts`)
@@ -287,7 +288,9 @@ Arithmetic example under the assumed masses and efficiency: a 4 m/s proxy peak y
 | Swept palm | A 0.6 m step across a 0.6 m block in one frame registers contact; a parallel pass 0.3 m away does not |
 | Blade sweep | A blade of 1.2 m rotating 40° between frames across a block registers |
 | Gesture gating | `open` at 2.4 m/s on slash → nothing; at 2.6 → hit; `fist` at 2.6 on slash → bad cut |
-| Beam | Charge 1 + target under tip inside window → hit; outside window → whiff with `note: null`; lockout prevents re-fire within 150 ms |
+| Beam | Full charge + aimed eligible sample → one hit; early target → charge held, no shot/lockout; actual fire applies `BEAM_REFIRE_LOCK_MS` |
+| Precharged beam | Aim from `t − BEAM_LEAD_MS`: no repeated whiffs, first eligible sample fires once; two aimed hands cannot destroy the same target twice |
+| Defensive beam whiff | Inject target invalidation after a shot is committed: nullable event renders a whiff, with zero hit events/points; ordinary early aim never takes this route |
 | Obstacles | `wallLeft` with `lean='right'` → dodged; `lean='center'` for one frame after grace → hit once; absent body → no hit |
 | Combo ladder | combos 4,5,14,15,29,30 → multipliers 1,2,2,4,4,8 |
 | maxScore | hand-computed for a 40-note, 2-obstacle map |
@@ -305,6 +308,7 @@ Arithmetic example under the assumed masses and efficiency: a 4 m/s proxy peak y
 - [ ] No hit is registered outside `WINDOW_GOOD_MS · WINDOW_SCALE`; no block is destroyed twice; no bad cut without a committed gesture.
 - [ ] Fast slashes (> 8 m/s play-plane) never tunnel through blocks (verified with the debug overlay drawing swept segments).
 - [ ] Walls are dodgeable by leaning with hysteresis: no flicker between hit/dodged; grace period hides tracking latency.
+- [ ] A player can precharge and hold over an early visible beam target through eligibility without wasting the charge. Input replay proves exactly one hit and no earlier automatic whiffs; targeting late is judged with the normal scaled windows.
 - [ ] `maxScore` ceiling, unmultiplied accuracy and rank agree with hand calculations on short/long maps, early walls, ties, misses and bad cuts.
 - [ ] All unit tests in §14 pass; `game/` has no DOM or `three` imports.
 

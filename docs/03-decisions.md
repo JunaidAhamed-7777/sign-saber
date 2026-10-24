@@ -70,7 +70,7 @@ Each record states a planned decision, its alternatives and the consequence we a
 
 ## ADR-006 — Contact-based hits with timing judgement derived from note depth
 
-**Decision.** Score a unique captured contact using `heardSong(tCapture) + inputOffsetMs - note.t`, bucketed into Perfect/Great/Good. Contact is tested against the note's capture-time geometry with bounded swept input, then one terminal outcome is emitted. Late samples/miss finalization, deterministic arbitration and beam-specific timing are defined in [07](07-hit-detection-and-scoring.md). Render-predicted positions never create score.
+**Decision.** Score a unique captured contact using `songClock.fromPerformanceTime(tCapture) + inputOffsetMs - note.t`, bucketed into Perfect/Great/Good. Contact is tested against the note's capture-time geometry with bounded swept input, then one terminal outcome is emitted. Late samples/miss finalization, deterministic arbitration and beam-specific timing are defined in [07](07-hit-detection-and-scoring.md). Render-predicted positions never create score.
 
 **Alternatives.** Pure timing (press-like: any hand movement in the cell at the right time); pure geometry (block must physically overlap the hand at z = 0, which is a 25 ms window at 24 m/s).
 

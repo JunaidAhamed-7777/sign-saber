@@ -23,10 +23,10 @@ This is a build specification. The present source files are stubs; completing [P
 | --- | --- | --- | --- | --- |
 | `BOOT` | Load WASM, models, fonts, bundled beatmaps; request camera permission | Starting | Silent | Logo + progress |
 | `SELECT` | Choose a bundled track, upload a file, or paste a YouTube URL; choose difficulty; generate beatmap | Running (preview silhouette in background) | Track preview optional | Attract scene: grid + silhouette, no blocks |
-| `CALIBRATION` | Verify body + hands are tracked; measure body metrics; detect wave; countdown | Running | Song pre-buffered, silent | Silhouette + calibration overlay |
+| `CALIBRATION` | Verify input, measure body metrics, confirm readiness, arm countdown/pre-roll | Running | Music scheduled for future `t0`; countdown clicks only for confident tempo | Silhouette + overlay; incoming notes during armed pre-roll |
 | `PLAYING` | The game | Running | Playing | Full scene |
 | `PAUSED` | Tracking lost, tab hidden, audio interruption, or user paused | Running when visible; capture stopped while hidden | Suspended | Frozen scene, dimmed |
-| `RESULTS` | Score breakdown, kinetic energy, 3D highlight | Running (for background silhouette) | Results sting then silence | Results scene |
+| `RESULTS` | Score breakdown, motion-energy estimate, 2.5D highlight | Running (for background silhouette) | Results sting then silence | Results scene |
 
 ## Transitions
 
@@ -35,8 +35,8 @@ This is a build specification. The present source files are stubs; completing [P
 | `BOOT` | `boot:ready` | Required assets ready, renderer usable, tracking worker ready and first valid sample received (or explicitly labelled replay ready) | `SELECT` | Start attract scene; preserve readiness evidence |
 | `BOOT` | `boot:error` | — | `BOOT` (error view) | Show actionable error: camera denied, WebGL2 missing, model fetch failed |
 | `SELECT` | `select:start` | Beatmap validated for selected difficulty, audio decoded, audio context running, selected analysis request still current | `CALIBRATION` | Reset session stats; cancel stale preview/generation work |
-| `CALIBRATION` | `calib:back` | — | `SELECT` | — |
-| `CALIBRATION` | `calib:complete` | Body present ≥ `CALIB_PRESENCE_MS`, both hands seen, wave detected, countdown finished | `PLAYING` | Store `BodyCalibration`; schedule audio start at `t0 = audioCtx.currentTime + SONG_START_LEAD_S`; spawn clock starts |
+| `CALIBRATION` | `calib:back` | — | `SELECT` | Cancel scheduled source/clicks, invalidate epoch, clear pre-roll objects |
+| `CALIBRATION` | `calib:complete` | Body/hands ready, wave or equivalent accessible confirmation accepted (or valid cached retry), countdown complete and armed audible song clock reaches 0 | `PLAYING` | Enable capture-time judgement; audio and spawn clock were already scheduled at countdown begin |
 | `PLAYING` | `track:lost` | No pose and no hands for > `TRACKING_LOST_PAUSE_MS` | `PAUSED` | Suspend `AudioContext`, freeze clock, show "step back into frame" |
 | `PLAYING` | `pause:request` | Key `Esc`/`Space`, or `visibilitychange` hidden | `PAUSED` | Same as above |
 | `PAUSED` | `track:regained` | Pause reason is tracking loss; page visible; pose and required hands stable; no fatal error | `PLAYING` | Remain paused during `RESUME_COUNTDOWN_MS`; transition only after audio resume succeeds |
@@ -75,7 +75,7 @@ BOOT also probes the quality tier (see [16 — Performance Budget](16-performanc
 ### SELECT
 
 - Library grid of bundled tracks (title, artist, BPM, duration, difficulties available).
-- Upload zone (drag & drop or picker). On drop: hash the file (SHA-256), look up the `BeatmapV1` cache in IndexedDB keyed by `hash:difficulty:generatorVersion`; on miss, run the generator worker with a progress bar ("Listening… 43 %"); on completion show detected BPM and note count.
+- Upload zone (drag & drop or picker). On drop: hash the file (SHA-256), look up the `BeatmapV1` cache in IndexedDB keyed by `hash:difficulty:generatorVersion`; on miss, run the generator worker with stage progress. Show detected BPM and note count only for confident tempo. Preserve `lowTempoConfidence` on cache hits, show "Free rhythm — beats not detected" on that path, and carry the warning into calibration/session configuration.
 - YouTube field: calls the companion service ([23](23-youtube-companion-service.md)); if unreachable, the field shows "Companion service offline — upload a file instead" and is disabled.
 - Difficulty selector: Easy / Normal / Hard.
 - Start button is disabled until a validated beatmap exists.
@@ -88,9 +88,9 @@ Sequential checklist with live ticks (each line turns green when its condition h
 
 1. **"Step back until your shoulders and both hands are visible."** Condition: pose present with shoulders visible (visibility ≥ `CALIB_VISIBILITY_MIN`) and `shoulderWidthNorm` within `[CALIB_SHOULDER_MIN, CALIB_SHOULDER_MAX]`; both hands detected at least once within `CALIB_HAND_SEEN_MS`. If `shoulderWidthNorm > CALIB_SHOULDER_MAX` show "Too close — step back". If `< CALIB_SHOULDER_MIN` show "Too far — step closer".
 2. **"Wave to confirm."** Condition: either hand's mirrored-image x coordinate meets `WAVE_REVERSALS`, `WAVE_WINDOW_MS` and `WAVE_MIN_AMPLITUDE` (see [05 §Wave detector](05-tracking-pipeline.md#wave-detector)).
-3. **"Get ready."** 3-2-1 countdown (`START_COUNTDOWN_MS` total), each digit on a beat of the track's BPM so the player feels the tempo before the first note.
+3. **"Get ready."** At this step's beginning, freeze session configuration and choose/schedule future `t0` using [15 §Start](15-audio-playback-sync.md#21-start). The song clock starts negative immediately; spawn/render early notes during the countdown so every note receives its full approach. For confident tempo the last `COUNTDOWN_STEPS` digits/clicks land on whole beat intervals before `t0`. Free-rhythm/low-confidence maps use a neutral evenly spaced countdown over `START_COUNTDOWN_MS`, with no asserted BPM or musical metronome. A longer required approach adds a short ready/preparation interval before the final digits; it does not shorten the note's travel.
 
-The checklist must remain satisfied through the countdown; loss cancels the countdown without starting the song. Give a keyboard/button alternative to the wave confirmation for players who cannot perform it. This changes only confirmation, not scoring input. Show a clear pause key, comfortable-range coaching and the option to disable camera shake before motion starts. Never require an unsafe reach to satisfy calibration.
+Confirmation is latched for the current attempt; the player need not keep waving throughout the countdown. Body/required-hand readiness must remain valid. Tracking loss, Back, hidden tab, changed selection or failed audio readiness cancels the attempt: stop and disconnect the scheduled music/click sources, clear pre-roll objects, and invalidate the clock/session epoch. A late `onended`/worker callback from that cancelled attempt cannot start play or show results. Re-arm only after readiness and confirmation are valid again. Give a keyboard/button alternative to the wave; it changes confirmation, not scoring input. Show the pause key, comfortable-range coaching and camera-shake control before motion starts. Never require an unsafe reach.
 
 On completion the following `BodyCalibration` is stored for the session:
 
@@ -120,7 +120,7 @@ Owns the game loop ordering described in [02 — Architecture §Frame loop](02-a
 
 Displays, in this order, with staggered 120 ms entrance animations:
 
-1. Rank letter (SS/S/A/B/C/D) with the highlight render on the right (3D silhouette skeleton pose at the peak-combo moment, slowly turntabling).
+1. Rank letter (SS/S/A/B/C/D) with the highlight render on the right: an owned 2.5D silhouette/skeleton composition from the actual peak-combo moment, viewed with a shallow orbit rather than presented as a reconstructed body.
 2. Score, accuracy %, max combo.
 3. Judgement bars: Perfect / Great / Good / Miss / Bad Cut counts.
 4. Motion-energy estimate, labelled as a playful proxy. If kJ/kcal are displayed, the estimate label remains visible and must not imply measured workout energy or health benefit.
@@ -137,6 +137,8 @@ Displays, in this order, with staggered 120 ms entrance animations:
 ## State-machine acceptance
 
 - [ ] Every table transition and rejected guard has a meaningful unit test, including repeated Start, quit while decoding and stale worker completion.
+- [ ] A map with a first note before `approachMs` spawns it at negative song time and gives the full approach; no score changes before song time 0. Cancelling at the final countdown digit leaves no scheduled song, click, live note or stale callback.
+- [ ] A low-confidence/onset-only map, including a cache hit, shows the free-rhythm warning and a neutral countdown without claiming detected musical beats.
 - [ ] Manual pause, hidden tab, tracking loss and audio interruption resume only through their documented route; no input scores during countdown or pause.
 - [ ] Denied camera, corrupt audio, missing model and failed resume each show a recoverable screen with the actual failure reason.
 - [ ] Twenty consecutive retry/quit cycles do not accumulate workers, media tracks, listeners or live note objects.

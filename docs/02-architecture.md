@@ -158,7 +158,7 @@ The event bus (`core/events.ts`) is a typed emitter. The following events are th
 | `note:hit` | `{ note, judgement: 'perfect'\|'great'\|'good', timingErrorMs, hand, cutPlane?: Plane, impactPos: Vec3, impactVel: Vec3, scoreDelta, combo, multiplier }` | Successful destruction |
 | `note:miss` | `{ note }` | Capture-time hit window closed without a hit; see [07] for late-arrival grace |
 | `note:badcut` | `{ note, hand, gesture }` | Wrong gesture made contact |
-| `beam:fire` | `{ hand, from: Vec3, to: Vec3, note: Note \| null }` | Charged beam fires; `null` is a visible whiff, never a hit |
+| `beam:fire` | `{ hand, from: Vec3, to: Vec3, note: Note \| null }` | Eligible charged beam fires; `null` is a defensive resolution-race whiff, never an automatic early shot |
 | `obstacle:spawn` | `{ obstacle }` | Obstacle becomes live |
 | `obstacle:hit` | `{ obstacle }` | Player inside an obstacle at the hit plane |
 | `obstacle:dodged` | `{ obstacle, scoreDelta }` | Obstacle passed without contact |
@@ -238,6 +238,8 @@ Beam notes do not travel. They fade in at `t − BEAM_LEAD_MS` at `(LANE_X[col],
 ## Frame loop
 
 `core/loop.ts` runs on `requestAnimationFrame`. Order per frame is fixed:
+
+An armed calibration countdown also runs this loop in **pre-roll**: `SongClock.now()` is negative, notes spawn/render on their normal approach schedule, and tracking updates prepare the input state. Judgement/scoring is gated off until the estimated audible song position reaches 0 and the machine enters `PLAYING`. Countdown cancellation stops the scheduled source/clicks and invalidates the session epoch; merely hiding the overlay must never leave music scheduled to start.
 
 1. **Clock** — `songTime = songClock.now()` (output-aligned from the audio clock; frozen while paused). `dt = clamp(frameDelta, 0, 50 ms)`.
 2. **Borrow tracking** — collect pending valid `TrackingFrame`s in capture-time/sequence order, including all due records in replay mode. Keep their bounded buffer ownership until consumed; do not collapse several samples into one newest cursor before judgement.
@@ -388,10 +390,11 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `CALIB_SHOULDER_MAX` | 0.40 | Maximum shoulder width accepted — larger means too close |
 | `CONTRAST_MASK_THRESHOLD` | 0.65 | Mask threshold in high-contrast mode (`?contrast=1`); default mode uses 0.5 |
 | `CONTRAST_EDGE_GAIN` | 1.5 | Silhouette edge glow multiplier in high-contrast mode |
-| `LOW_LIGHT_MASK_MEAN` / `LOW_LIGHT_MS` | 0.55 / 1000 | Mean mask confidence inside the body box below this for this long → low-light coaching line |
+| `LOW_LIGHT_MASK_MEAN` / `LOW_LIGHT_MS` | 0.55 / 1000 | Retained identifiers: low body-mask confidence for this duration → uncertain-tracking coaching. Confidence is not luminance and cannot establish low light. |
 | `TWO_BODY_BLOB_AREA` | 0.15 | Second mask blob with area ≥ this fraction of the frame → "one player at a time" coaching line |
 | `WAVE_REVERSALS` / `WAVE_WINDOW_MS` / `WAVE_MIN_AMPLITUDE` | 3 / 1500 / 0.06 | Wave detector |
-| `START_COUNTDOWN_MS` | 3 beats of the song (min 1500, max 3000) | Pre-start count |
+| `COUNTDOWN_STEPS` | 3 | Countdown digits/clicks before audible song time zero |
+| `START_COUNTDOWN_MS` | 2000 | Minimum startup preparation duration; neutral countdown uses this span. Confident tempo uses `COUNTDOWN_STEPS` whole beat intervals; early-note pre-roll may extend preparation. See [15](15-audio-playback-sync.md#21-start). |
 | `RESUME_COUNTDOWN_MS` | 1500 | Resume count |
 | `SONG_TAIL_MS` | 1500 | Wait after song end before RESULTS |
 
@@ -427,7 +430,7 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `BAND_EDGES_HZ` | low 20–150, mid 150–2000, high 2000–10000 | Spectral flux bands |
 | `ONSET_DELTA` | 0.15 | Adaptive threshold offset |
 | `ONSET_MIN_GAP_MS` | 80 | Minimum inter-onset interval |
-| `ONSET_MIN_STRENGTH` | 0.25 | Below this an onset is noise |
+| `ONSET_MIN_STRENGTH` | 0.25 | Relative peak gate; exceeding it does not prove musical content |
 | `BPM_MIN` / `BPM_MAX` / `BPM_PRIOR` | 60 / 200 / 120 | Tempo search range and log-Gaussian prior centre |
 | `BEAT_TIGHTNESS` | 100 | DP beat tracker penalty weight |
 | `SNAP_GRID` | 4 (sixteenths) | Onsets snap to 1/4-beat grid |
@@ -449,8 +452,49 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `MAX_TRACK_MS` | 300000 (5 min) | Maximum accepted playable duration; companion downloads still pass this app-level limit |
 | `MAX_UPLOAD_BYTES` | 60 × 1024 × 1024 | Larger uploads are rejected before decoding |
 | `MAX_DECODED_PCM_BYTES` | 128 × 1024 × 1024 | Decoded float PCM accepted before analysis/resampling; not a cap on native decoder peak memory |
-| `ANALYSIS_CACHE_MAX` | 30 | IndexedDB entries kept (most recent) |
+| `ANALYSIS_CACHE_MAX` | 30 | Complete source-analysis groups kept, including their difficulty maps |
 | `GENERATOR_VERSION` | 1 | Cache key component |
+
+### DSP windows, section detection and playable flow
+
+These are **initial, unmeasured design defaults** used by [08](08-beatmap-generation.md). Export them centrally during P0; calibrate on development fixtures during P2, bump `GENERATOR_VERSION` when behavior changes, then freeze before held-out evaluation. Unit conversions, FFT radix/Hann coefficients, fixed v1 topology and derived frame/bin indices are structural formulas, not additional tunables.
+
+| Name | Default | Unit | Purpose |
+| --- | --- | --- | --- |
+| `DSP_EPSILON` | `1e-12` | normalized scalar | Finite denominator/degeneracy guard |
+| `ANALYSIS_PEAK_TARGET` / `SILENCE_PEAK_MAX` | `0.95` / `1e-4` | linear full scale | Peak normalization / silent-file cutoff |
+| `STFT_LOG_GAIN` | `10` | scalar | Log-magnitude compression gain |
+| `FLUX_NORM_PERCENTILE` / `ENERGY_NORM_PERCENTILE` | `95` / `98` | percentile | Robust flux / RMS normalization |
+| `ONSET_MEAN_PRE_FRAMES` / `ONSET_MEAN_POST_FRAMES` / `ONSET_MAX_RADIUS_FRAMES` | `10` / `3` / `3` | analysis frames | Asymmetric mean window / local-max radius |
+| `ONSET_RAW_RMS_MIN` | `0.002` | linear full scale | Pre-normalization local RMS gate; approximately −54 dBFS |
+| `TEMPO_DETREND_FRAMES` | `16` | analysis frames | Slow onset-envelope removal |
+| `TEMPO_HARMONIC_WEIGHT` | `0.5` | scalar | Half/double-period autocorrelation contributions |
+| `TEMPO_OCTAVE_SWITCH_RATIO` | `1.15` | ratio | Minimum harmonic gain before octave switch |
+| `TEMPO_SUPPORT_MIN_STRENGTH` / `TEMPO_MIN_SUPPORT_ONSETS` | `0.4` / `4` | strength / count | Confidence alignment support; fewer onsets means zero confidence |
+| `BEAT_MIN_PERIOD_FACTOR` / `BEAT_MAX_PERIOD_FACTOR` | `0.5` / `2` | period multipliers | DP predecessor search interval |
+| `BEAT_EDGE_PAD_PERIODS` | `1` | beat periods | Trim extrapolated beats beyond onset extent |
+| `UNSNAPPED_MIN_STRENGTH` / `FREE_RHYTHM_MIN_STRENGTH` | `0.8` / `0.4` | strength | Retained syncopation / labelled onset-only fallback gates |
+| `SECTION_SMOOTH_MS` | `4000` | ms | RMS envelope smoothing window |
+| `KICK_MIN_STRENGTH` / `KICK_MIN_GAP_BEATS` | `0.6` / `0.5` | strength / beats | Kick event gate and rate limit |
+| `DROP_BASELINE_END_MS` / `DROP_MIN_GAP_MS` | `1000` / `16000` | ms | Baseline exclusion immediately before drop / event separation |
+| `DROP_MIN_ENERGY` | `0.6` | normalized energy | Absolute section-energy floor |
+| `BUILD_WINDOW_MS` / `BUILD_DROP_LOOKAHEAD_MS` | `8000` / `4000` | ms | Build rise window / following-drop horizon |
+| `BUILD_MAX_DIPS` / `BUILD_MAX_DIP_DEPTH` / `BUILD_MIN_RISE` | `2` / `0.03` / `0.25` | count / energy / energy | Allowed adjacent-sample dips and required rise |
+| `CALM_WINDOW_MS` / `CALM_MIN_GAP_MS` | `6000` / `12000` | ms | Low-energy duration / event separation |
+| `CALM_PERCENTILE` | `25` | percentile | Track-relative calm ceiling |
+| `DENSITY_WINDOW_MS` | `4000` | ms | Sliding note-density horizon; validator uses the same value |
+| `EASY_SMASH_TO_SLASH_EVERY` | `2` | smash candidates | Convert every Nth Easy smash to slash |
+| `FLOW_RESTART_GAP_MS` / `FLOW_RESTART_SIDE` | `1200` / `'right'` | ms / logical side | Reset alternation after a rest; not a handedness claim |
+| `FLOW_MAX_COLUMN_STEP` | `1` | columns | Preferred lateral cell step |
+| `FLOW_OUTER_ACCENT_EVERY` / `FLOW_OUTER_ACCENT_MIN_STRENGTH` | `4` / `0.7` | same-side count / strength | Occasional outer-column accent |
+| `FLOW_FULL_ROW_JUMP_MIN_GAP_MS` / `EASY_LOW_ROW_MIN_GAP_MS` | `400` / `2000` | ms | Full bottom↔top spacing / Easy low-row recovery |
+| `FLOW_HAND_MIN_GAP_MS` / `FLOW_GESTURE_SWITCH_MIN_MS` | `250` / `300` | ms | Expected-hand recovery / gesture-change spacing; layout proxies, not measured reach |
+| `OBSTACLE_EMPTY_WINDOW_MS` / `OBSTACLE_INTRO_MS` | `2000` / `8000` | ms | Quiet-slot minimum / initial wall-free time |
+| `OBSTACLE_PERIOD_BEATS` / `OBSTACLE_LOOKAHEAD_BEATS` / `OBSTACLE_LOOKAHEAD_MAX_NOTES` | `16` / `2` / `1` | beats / beats / notes | Cadence candidate / note-side horizon / Normal density gate |
+| `OBSTACLE_DURATION_BEATS` | `{ easy: 1.5, normal: 2, hard: 2 }` | beats | Wall occupancy before global duration clamp |
+| `EASY_OBSTACLE_MIN_GAP_MS` | `12000` | ms | Easy start-to-start wall spacing |
+| `GEN_PROGRESS_WEIGHTS` | `{ stft: .45, flux: .05, onsets: .05, tempo: .10, beats: .05, energy: .05, assign: .20, validate: .05 }` | fractions summing to 1 | Completed-stage progress weights |
+| `GEN_WORK_CHUNK_MS` / `GEN_MAX_RETRIES` | `8` / `1` | ms / retries | Worker task-yield budget / user-requested retry bound |
 
 ### Audio playback, reactive & SFX
 
@@ -541,14 +585,16 @@ All flags are read once at boot by `core/flags.ts` (URL query parameters) and ex
 
 | Flag / key | Effect | Spec |
 | --- | --- | --- |
-| `?replay=<fixture>.json` | Planned dev/benchmark mode: feed an allowlisted same-origin recorded `TrackingFrame` fixture; visible REPLAY badge | [17 §Replay mode](17-testing-and-qa.md) |
+| `?replay=<name>` | Planned dev/benchmark mode: logical name resolves through a local fixture allowlist; no arbitrary paths/URLs; visible REPLAY badge | [17 §Replay mode](17-testing-and-qa.md) |
+| `?speed=0.25` | Planned replay inspection only: scale simulated song/input time together; never a release timing measurement | [17 §Replay mode](17-testing-and-qa.md#replay-mode) |
+| `?stats=1` | Planned read-only diagnostics overlay; does not enable replay or change scoring | [16](16-performance-budget.md) |
 | `?tier=low\|medium\|high` | Force a quality tier (skips the probe) | [16 §Quality tiers](16-performance-budget.md#quality-tiers) |
 | `?probe=1` | Re-run the boot quality probe even if `localStorage` has `ss:tier` | [16](16-performance-budget.md) |
 | `?contrast=1` | High-contrast mode: mask threshold `CONTRAST_MASK_THRESHOLD`, edge gain `CONTRAST_EDGE_GAIN` | [10](10-rendering-silhouette.md), [21 R02](21-risks-and-fallbacks.md) |
 | `?seg=selfie` | Use `ImageSegmenter` (selfie model) for the mask instead of the pose model's mask | [05](05-tracking-pipeline.md), [ADR-003](03-decisions.md) |
 | `?difficulty=easy\|normal\|hard` | Preselect difficulty in SELECT | [14](14-ui-ux.md) |
 | Key `D` | Toggle debug overlay | [16 §Measurement](16-performance-budget.md) |
-| Key `Q` | Cycle quality tier | [16](16-performance-budget.md) |
+| Key `T` | Cycle quality tier; `Q` remains Quit while PAUSED | [16](16-performance-budget.md) |
 | Key `H` | Toggle high-contrast mode | [10](10-rendering-silhouette.md) |
 | Key `R` | Start/stop fixture recording (20 s) → downloads JSON | [17 §Fixtures](17-testing-and-qa.md) |
 | `Esc` / `Space` | Pause (all builds) | [04](04-state-machine.md) |

@@ -174,7 +174,7 @@ if (gesture === 'point' && confident) charge = min(1, charge + dt / BEAM_CHARGE_
 else                                 charge = max(0, charge − BEAM_CHARGE_DECAY · dt / BEAM_CHARGE_MS)
 ```
 
-- `charge` reaching 1 is the fire condition ([07 §Beam resolution](07-hit-detection-and-scoring.md#8-beam-resolution)). After a fire, `charge = 0` and charging is locked out for `BEAM_REFIRE_LOCK_MS`, using capture-song time, so one held point does not re-fire every render frame. The owning cursor state processes a fire/reset command; renderer/UI subscribers never modify charge.
+- `charge` reaching 1 means **ready**, not an unconditional shot. Hold full charge while no aimed target is inside its capture-time eligibility window; an early visible target must not consume charge in a repeating whiff cycle ([07 §Beam resolution](07-hit-detection-and-scoring.md#8-beam-resolution)). After an actual fire, reset charge and lock charging for `BEAM_REFIRE_LOCK_MS`, using capture-song time. The owning cursor state processes the fire/reset command; renderer/UI subscribers never modify charge.
 - The configured decay permits a short ambiguous sample without an instant reset. Hand loss, pause, stale input or identity reassignment resets charge and velocity immediately; missing samples do not accrue charging time.
 - The HUD shows `charge` as a ring around the hand indicator; the renderer draws the charging beam from `tip` ([12](12-rendering-hands-trails.md)).
 
@@ -195,7 +195,8 @@ Fixtures are recorded `HandRaw` sequences in `tests/fixtures/hands/*.json` (`{ l
 | `point_up / point_side.json` | ≥ 90 % `point`; report camera-facing/foreshortened cases separately and coach a clearer pose if they fail |
 | `slash_sequence.json` | hysteresis: stable gesture becomes `open` within 2 frames of the hand opening and never flickers to `none` during the 12 fast frames |
 | `edge_on_flip.json` | short edge-on interval preserves display continuity; sustained ambiguity reaches `none` after the documented drop count and does not charge |
-| `charge_hold.json` (0.6 s point) | `charge` reaches 1 at the frame nearest 500 ms ± 1 frame; releasing drops to 0 in ≤ 6 frames |
+| `charge_hold.json` (0.6 s point) | `charge` reaches 1 near `BEAM_CHARGE_MS` within one input sample; holds full while target is too early; releasing follows the sample-time decay formula |
+| precharged early target | A hand charged before target appearance keeps charge until the first aimed, eligible sample; no repeated early `beam:fire` events or lockout cycle |
 | synthetic velocity (positions on a straight line at 6 m/s) | `speed` within 5 % of 6; blade turns on; length matches the formula |
 | far hand (`palmSize` 0.01) | `none`, confidence 0, no throw |
 

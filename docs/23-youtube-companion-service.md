@@ -1,179 +1,130 @@
 # 23 — YouTube Companion Service
 
-An **optional**, local-only Node service in `server/` that turns a YouTube URL into an audio file the client can decode and map. Browsers cannot fetch YouTube audio directly (CORS, obfuscated streams), so this is the only honest way to offer a URL field ([ADR-012](03-decisions.md#adr-012--youtube-via-a-local-companion-service-mp3-upload-is-the-primary-path)). The game never depends on it: audio-file upload and bundled tracks are the primary paths, and the UI detects when the service is absent.
+**Optional planned extension; not implemented.** `server/src/index.mjs` is a skeleton. Bundled tracks and local upload are the complete core input paths; the game works with this service absent. Schedule companion work only after P2 in [ROADMAP.md](../ROADMAP.md), and omit it from judging unless rehearsed on the actual network.
 
-**Legal / terms-of-service caveat (state it in the README too):** downloading YouTube audio may violate YouTube's Terms of Service and the rights of the content owner. This service exists for demonstrating the beatmap generator with content you have the rights to use (your own uploads, Creative Commons tracks). It is not shipped to any host and must not be exposed beyond `localhost`.
+The browser cannot assume direct access to YouTube audio. A local Node process may invoke `yt-dlp` for authorised content, subject to platform terms/tool availability. Rights to a recording do not waive platform restrictions; review [YouTube's terms](https://www.youtube.com/static?template=terms). Prefer a local licensed file for demonstrations. Never publicly host this service, expose it on the LAN or use it to bypass restrictions.
 
-## Prerequisites
+## Prerequisites and current command
 
-| Requirement | Version | Check |
-| --- | --- | --- |
-| Node.js | ≥ 20 | `node --version` |
-| `yt-dlp` on `PATH` | current release (it breaks when stale) | `yt-dlp --version` |
-| `ffmpeg` on `PATH` (yt-dlp needs it for `-x` extraction) | ≥ 4 | `ffmpeg -version` |
+Node must meet `server/package.json`'s engine requirement (≥20.19); use the project's documented version. Record actual Node, yt-dlp and ffmpeg versions, not invented example versions. Tools must be on PATH when implemented; see [yt-dlp documentation](https://github.com/yt-dlp/yt-dlp).
 
-Zero npm dependencies: `node:http`, `node:child_process`, `node:fs`, `node:path`, `node:crypto`, `node:url` only. The service is one file (`server/src/index.mjs`, ≈ 250 lines) plus `server/package.json` with a `start` script.
-
-## Run
+The existing command runs **from `server/`**, not the repository root:
 
 ```bash
+cd server
 npm run server
 ```
 
-(from the repo root; the script is `node server/src/index.mjs`). Defaults: port `8787`, cache directory `server/cache/`. Environment variables: `PORT`, `CACHE_DIR`, `MAX_CACHE_MB` (default 500), `ALLOWED_ORIGIN` (default `http://localhost:5173`). Startup prints a one-line status including whether `yt-dlp` and `ffmpeg` were found; if either is missing the server still starts but every `/api/yt/*` call returns `503 toolMissing` and `/api/health` reports it.
+Today the empty module exits without starting a listener or printing status; it does not serve the API below. The planned built-in-only Node service binds `127.0.0.1:8787` and caches under `server/cache/`. Document optional `PORT`, `CACHE_DIR`, `MAX_CACHE_MB`, `ALLOWED_ORIGIN` configuration when implemented; no secrets or account cookies are required. Default approved origin: exactly `http://localhost:5173`. Preview on another port needs explicit configuration/rehearsal.
 
-## Endpoints
+## API contract
 
-All responses are JSON unless stated; errors are `{ error: { code, message } }`.
+Errors: `{ "error": { "code": "badUrl", "message": "Useful recovery text" } }`. Exclude raw subprocess output, private paths and tool arguments. Validate method/path/input before work; unsupported methods return 405, unknown routes 404.
 
 ### `GET /api/health`
 
-```json
-{ "ok": true, "ytDlp": "2026.09.30", "ffmpeg": true, "jobs": 1, "cacheMB": 112.4 }
+Returns process/tool availability, actual version strings, job count and cache bytes. HTTP 200 means the process is alive, not that extraction works. Missing tools keep the URL field disabled.
+
+```ts
+interface CompanionHealth {
+  ok: boolean;                 // true only when both required tools are available
+  ytDlp: string | null;         // detected version, never an executable/private path
+  ffmpeg: string | null;
+  jobs: number;                // non-negative count of active/reserved downloads
+  cacheBytes: number;          // finite non-negative completed-cache byte count
+}
 ```
 
-Always `200` while the process is alive; `ytDlp: null` / `ffmpeg: false` when missing. The client uses this to decide whether to enable the URL field.
+Health may return 200 with `ok: false`; the client checks the payload and HTTP status rather than treating transport success as usable tools.
 
 ### `GET /api/yt/resolve?url=<encoded>`
 
-Validates the URL (§URL validation), then runs
+Validate/canonicalise the ID, then run a bounded metadata-only process:
 
-```
-yt-dlp -J --no-playlist --skip-download <url>
-```
-
-with a 15 s timeout, parses stdout JSON and returns
-
-```json
-{ "id": "dQw4w9WgXcQ", "title": "…", "author": "…", "durationMs": 212000, "thumbnail": "https://…" }
+```text
+yt-dlp --ignore-config --no-playlist --skip-download --dump-single-json -- https://www.youtube.com/watch?v=<validated-id>
 ```
 
-Errors: `400 badUrl`, `404 notFound` (yt-dlp exit code ≠ 0 with "Video unavailable"), `413 tooLong` (duration > 12 min), `504 timeout`, `503 toolMissing`.
+Use `spawn` argument arrays with `shell: false`; the line above is explanatory, not a user-built shell command. At most two resolves, 15-second timeout and bounded stdout/stderr. Return `{ id, title, author, durationMs }`; returned ID must match. Reject playlists/live streams, unknown duration and items exceeding either `COMPANION_MAX_VIDEO_MS` or client `MAX_TRACK_MS`. Render metadata as text. Do not fetch remote thumbnails implicitly in a local privacy-focused demo.
 
-### `POST /api/yt/fetch` — body `{ "url": string }`
+Errors include `badUrl` 400, `notFound` 404, `tooLong` 413, `busy` 429, `toolMissing` 503, `timeout` 504 and sanitised upstream failure. Extractor wording changes; unrecognised errors must not be guessed into success.
 
-Validates, resolves the id, then:
+### `POST /api/yt/fetch`
 
-1. If `cache/<id>.mp3` exists → `200 { id, status: 'ready' }`.
-2. If a job for `id` is already running → `202 { id, status: 'downloading' }`.
-3. If ≥ 2 jobs are running → `429 busy`.
-4. Else spawn
+Require JSON body `{ "url": "..." }` within 4 KB. Resolve/validate metadata before download; unknown duration cannot bypass client limits.
 
-```
-yt-dlp -x --audio-format mp3 --audio-quality 5 --no-playlist --newline \
-       --max-filesize 100m -o "<CACHE_DIR>/%(id)s.%(ext)s" <url>
-```
+1. Validated complete cached file → `200 { id, status: 'ready' }`.
+2. Same ID active → `202 { id, status: 'downloading' }`.
+3. Two downloads active → 429 busy.
+4. Reserve a slot before asynchronous work, create a job-owned temporary directory inside the cache root, start extraction and return 202 queued.
 
-and respond `202 { id, status: 'queued' }`.
+Use `--ignore-config`, `--no-playlist`, MP3 extraction, a file-size ceiling no greater than the client upload limit, a fixed output template based on the validated ID and canonical URL after `--`. Independently enforce output/disk limits: `--max-filesize` cannot guarantee converted size. Validate completed media and atomically publish `<id>.mp3` only on success. Never serve partial/intermediate files.
 
-`--newline` makes yt-dlp print one progress line per update, which the server parses with `/\[download\]\s+([\d.]+)%/` to a `0..1` fraction (download phase = 0..0.85, post-processing/ffmpeg phase = 0.85..1.0). Job timeout: 180 s → kill, `status: 'error', code: 'timeout'`.
+Timeout: 180 seconds. Abort/timeout/shutdown stop extractor **and** spawned ffmpeg, wait for termination and release the slot once. Test Windows process-tree cleanup; killing one immediate child is insufficient proof. Resolve cleanup paths inside the cache root and remove only that job's files.
+
+If progress parsing fails, show an indeterminate stage rather than invent a percentage. Keep bounded records and monotonic `queued → downloading → ready|error` transitions. Retry is a new attempt, not a duplicate process.
 
 ### `GET /api/yt/status/:id`
 
-```json
-{ "id": "…", "status": "queued" | "downloading" | "ready" | "error", "progress": 0.42, "error": { "code": "…", "message": "…" } }
+Return `{ id, status, progress, error? }` after ID validation. Retain completed records for ten minutes; later lookups may find validated cached media. Unknown ID is 404. File existence alone does not establish completion after a failed job.
+
+```ts
+interface CompanionStatus {
+  id: string;                  // validated video ID
+  status: 'queued' | 'downloading' | 'ready' | 'error';
+  progress: number | null;      // finite 0..1 when known; null means indeterminate
+  error?: { code: string; message: string }; // bounded sanitized text on error only
+}
 ```
 
-Job records live in memory (`Map<id, Job>`) and are kept 10 minutes after completion; a status request for an unknown id checks the cache directory first (`ready` if the file exists) and returns `404` otherwise.
+Ready means a complete validated published file and `progress: 1`. Queued or unparseable progress uses `null`; no timer-based percentage. Error is terminal for the attempt and never changes to ready merely because a partial file exists.
 
 ### `GET /api/yt/audio/:id`
 
-Serves `cache/<id>.mp3` with `Content-Type: audio/mpeg`, `Accept-Ranges: bytes`, and HTTP range support (`206` with `Content-Range` for `Range` requests — the client only needs full fetches, but range support lets an `<audio>` element preview it). `404` if not ready. Touches the file's mtime (for LRU eviction).
+Serve only complete validated `<id>.mp3` inside the cache root, with type/length and no directory listing. Full fetch suffices. Optional preview range support must implement/test single ranges, 206/Content-Range, suffix/open-ended requests and unsatisfiable 416; do not advertise it before implementation. See [HTTP Range semantics](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Range).
 
-## Client integration
+Update LRU on successful access; never evict an active stream. Client hashes bytes and applies the same decode/admission/validation path as upload.
 
-`beatmap/youtube.ts` (main thread):
+## Client lifecycle
 
-1. **Presence check** on entering `SELECT`: `fetch('http://localhost:8787/api/health', { signal: AbortSignal.timeout(800) })`. Success with `ytDlp` and `ffmpeg` present → the URL field is enabled. Any failure → disabled with the copy below. Re-check when the user focuses the field.
-2. **Flow**: paste → `resolve` (show title, duration, thumbnail) → `fetch` → poll `status` every 500 ms (progress bar "Fetching audio… 42 %") → `audio` as `ArrayBuffer` → hand to the generator exactly like an uploaded file with `source: 'youtube'`, `sourceHash` from the bytes, `title`/`artist` from `resolve`.
-3. The companion is only ever addressed at `http://localhost:8787`; the port is a constant in `core/constants.ts` (`COMPANION_URL`).
+The planned adapter `beatmap/youtube.ts` does not exist yet.
 
-UI copy:
+- Probe `COMPANION_URL` on SELECT with `COMPANION_HEALTH_TIMEOUT_MS`; recheck every `YT_HEALTH_INTERVAL_MS` only while SELECT remains active. Cancel the timer/request on exit. Enable only with HTTP and tools available; absence never blocks bundled songs.
+- Resolve → confirm metadata → request extraction → poll at `COMPANION_POLL_MS` → fetch bytes → generate with `source: 'youtube'`. Failures return to usable SELECT.
+- Abort polling/fetch and invalidate request IDs on song change, SELECT exit or replacement URL. Stale responses cannot replace current selection. Release object URLs/buffers.
+- Hosted/HTTPS pages may encounter browser local-network or mixed-content restrictions. Support only the tested local origin; do not promise public deployment can reach this process.
 
-| State | Text |
-| --- | --- |
-| Service offline | "Companion service offline — run `npm run server` or upload a file instead." (field disabled) |
-| Tool missing | "Companion found but yt-dlp/ffmpeg is missing on this machine." |
-| Resolving | "Looking up video…" |
-| Too long | "Videos over 12 minutes are not supported." |
-| Busy | "Two downloads already running — wait a moment." |
-| Error | "Could not fetch audio: <message>. Try uploading the file instead." |
+Copy: “Optional companion offline — run `npm run server` from `server/`, or upload a local file.” Distinguish missing tools, duration, busy and extraction errors. Never replace failed input with a different song silently.
 
 ## Security and limits
 
-- **CORS**: `Access-Control-Allow-Origin` is exactly `ALLOWED_ORIGIN`; preflight (`OPTIONS`) answered with `Allow-Methods: GET, POST`, `Allow-Headers: Content-Type`. Any other origin gets no CORS headers (browser blocks).
-- **Bind address**: `127.0.0.1` only. Never `0.0.0.0`.
-- **URL validation** (reject everything else with `400 badUrl`): parse with `new URL()`; protocol `https:`; host ∈ `{ www.youtube.com, youtube.com, m.youtube.com, music.youtube.com, youtu.be }`; id = `searchParams.get('v')` for youtube.com `/watch`, or the first path segment for `youtu.be` and `/shorts/<id>`; id MUST match `/^[A-Za-z0-9_-]{11}$/`. The **id**, never the raw URL, is passed to `yt-dlp` as `https://www.youtube.com/watch?v=<id>` — this eliminates argument injection. Always `spawn` with an argument array; never a shell string.
-- **Body limit**: 4 KB for `POST /api/yt/fetch`; `413` beyond.
-- **Concurrency**: at most 2 concurrent `yt-dlp` download processes and 2 concurrent `resolve` processes.
-- **Cache eviction**: on each successful download, if the directory exceeds `MAX_CACHE_MB`, delete the least-recently-used `.mp3` files (by mtime) until under the limit. Partial downloads (`*.part`, `*.webm`, `*.m4a`) left by a killed job are deleted on startup and when the job errors.
-- **No logging of URLs with query strings beyond the id**; log lines are `[fetch] <id> started/ready/error <code>`.
+CORS is a browser read policy, not authentication. Reject requests **before work**, not merely by omitting response headers. See [CORS documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS).
 
-## Error mapping
-
-| yt-dlp signal | Code | HTTP |
-| --- | --- | --- |
-| Not installed (`ENOENT` on spawn) | `toolMissing` | 503 |
-| stderr contains "Video unavailable" / "Private video" / "This video is not available" | `notFound` | 404 |
-| stderr contains "Sign in to confirm your age" | `ageRestricted` | 403 |
-| stderr contains "File is larger than max-filesize" | `tooLarge` | 413 |
-| Non-zero exit, otherwise | `ytDlpFailed` (last stderr line, truncated to 200 chars) | 502 |
-| Killed by timeout | `timeout` | 504 |
-| ffmpeg conversion failed ("Postprocessing" in stderr) | `convertFailed` | 502 |
-
-## Implementation sketch
-
-```js
-// server/src/index.mjs
-import http from 'node:http'; import { spawn } from 'node:child_process';
-import fs from 'node:fs'; import path from 'node:path';
-
-const PORT = +(process.env.PORT ?? 8787), CACHE = process.env.CACHE_DIR ?? path.resolve('server/cache');
-const ORIGIN = process.env.ALLOWED_ORIGIN ?? 'http://localhost:5173';
-const jobs = new Map(); // id → { status, progress, error, startedAt, proc }
-
-const ID_RE = /^[A-Za-z0-9_-]{11}$/;
-function extractId(raw) { /* URL parse + host whitelist + id regex, return id or null */ }
-function run(args, { timeoutMs, onLine }) { /* spawn('yt-dlp', args), collect stdout/stderr, kill on timeout, resolve { code, stdout, stderr } */ }
-
-http.createServer(async (req, res) => {
-  cors(res); if (req.method === 'OPTIONS') return res.writeHead(204).end();
-  const url = new URL(req.url, 'http://127.0.0.1');
-  try {
-    if (url.pathname === '/api/health') return json(res, 200, health());
-    if (url.pathname === '/api/yt/resolve') return json(res, 200, await resolve(extractIdOrThrow(url.searchParams.get('url'))));
-    if (url.pathname === '/api/yt/fetch' && req.method === 'POST') return json(res, ...await startFetch(extractIdOrThrow((await body(req)).url)));
-    if (url.pathname.startsWith('/api/yt/status/')) return json(res, 200, status(idParam(url)));
-    if (url.pathname.startsWith('/api/yt/audio/')) return serveAudio(req, res, idParam(url));
-    json(res, 404, { error: { code: 'notFound', message: 'No such route' } });
-  } catch (e) { json(res, e.http ?? 500, { error: { code: e.code ?? 'internal', message: e.message } }); }
-}).listen(PORT, '127.0.0.1', () => console.log(`[companion] http://127.0.0.1:${PORT} cache=${CACHE}`));
-```
-
-The sketch is the contract; function names are normative so the client and tests can reference them.
+- Loopback only. Check `Host` against configured loopback host/port to resist DNS rebinding; arbitrary hostnames remain forbidden even if they resolve locally.
+- Every `/api/yt/*` request carries the exact approved `Origin`; missing/null/other origins return 403. CLI tests explicitly send it. No-Origin health may be allowed because it launches no work. This is not protection against malicious local software.
+- Exact-origin CORS with `Vary: Origin`; preflight allows only declared methods/headers. Enforce origin/host/body checks again on actual requests.
+- Parse with `new URL`: HTTPS, no credentials, approved YouTube/youtu.be hosts, supported watch/shorts/single-short-link paths, ID `/^[A-Za-z0-9_-]{11}$/`. Reject playlists/live URLs and ambiguous duplicate parameters. Only the canonical validated ID reaches the tool.
+- Invoke the real executable with argument arrays and `shell: false`; use an executable, not a Windows shell wrapper. See [Node subprocess documentation](https://nodejs.org/api/child_process.html).
+- Bound body/query bytes and read time, concurrency, metadata/output bytes, stderr buffers, disk and status records. Unlimited JSON/stdout collection is a memory leak.
+- Cache uses a resolved root and validated IDs. Reject symlink/path escapes; no user output paths. Remove only job-owned temporary files. Evict least-recent completed files over the documented cache ceiling (initial proposal: 500 MB); protect active jobs/streams.
+- Logs contain ID/stage/attempt/sanitised code, not full URLs, credentials, private paths or media. Never import cookies or access private/age-restricted media.
 
 ## Test plan
 
-Manual (needs network):
+Tests are planned under `server/test/` with Node's runner. Add a real script to package.json/README when implemented; filenames alone are not test results.
 
-1. `npm run server` with tools installed → health shows versions.
-2. `curl "http://127.0.0.1:8787/api/yt/resolve?url=https://youtu.be/<id>"` → title/duration JSON in < 15 s.
-3. `curl -X POST -H 'Content-Type: application/json' -d '{"url":"https://www.youtube.com/watch?v=<id>"}' http://127.0.0.1:8787/api/yt/fetch` → `202 queued`; `status` reaches `ready`; `audio/<id>` is a playable MP3; second `fetch` of the same id returns `200 ready` immediately.
-4. Bad inputs: `https://example.com/x`, `javascript:alert(1)`, a 10-char id, a playlist URL → all `400 badUrl`; no process spawned (check `jobs` in health).
-5. Rename `yt-dlp` temporarily → health `ytDlp: null`, calls return `503 toolMissing`, client field disabled with the correct copy.
-6. Fill `cache/` past `MAX_CACHE_MB` with dummy `.mp3` files → next successful download evicts oldest.
-7. Kill the server mid-download → client shows the error copy and the field re-checks health on focus.
-
-Automated (`server/test/validate.test.mjs`, `node --test`, no network): `extractId` table test (12 cases), progress-line parser, error mapping from sample stderr strings, range header parsing.
+- URL/ID tables cover valid forms, credentials, lookalike hosts, ports, duplicate parameters, playlists/live streams and shell-looking text. Invalid input launches zero processes.
+- Check Origin/Host/method/body, including missing/null origin, rebinding hostname, OPTIONS, unsupported content type and read overflow/timeout.
+- Stub subprocesses for concurrency reservation, deduplication, bounded output, missing tools, conversion failure, timeouts, shutdown and Windows process-tree cleanup.
+- Cache tests cover partial/empty files, atomic publication, LRU, active streams, symlinks, confined cleanup and recovery.
+- Client tests cover absent service, stale results, polling cancellation, failed decode and return to upload without silently changing audio.
+- Authorised-media rehearsal records actual versions/network/time. Verify audio and validated map, then finish a core run with service stopped. No online success is claimed until actually tested.
 
 ## Acceptance criteria
 
-- [ ] Game boots and plays bundled/uploaded tracks with the service **not running**; the URL field is disabled with the offline copy within 1 s of entering `SELECT`.
-- [ ] With the service running, a < 5-minute video resolves, fetches, and produces a validated beatmap end-to-end in < 60 s on venue Wi-Fi.
-- [ ] Every request from a non-whitelisted origin is blocked by CORS; the server listens only on `127.0.0.1`.
-- [ ] No raw user string is ever passed to a shell; only the validated id reaches `yt-dlp`.
-- [ ] The ToS caveat is present in `README.md` and in this document.
-
-## Constants required
-
-All constants referenced in this document are defined in the [02 constants table](02-architecture.md#constants).
+- [ ] Bundled/upload play completes with no service; optional field gives useful status.
+- [ ] Forbidden origins/hosts/input trigger no subprocess/protected-file access.
+- [ ] Work/output/memory/disk/lifetime limits are tested, including Windows cleanup.
+- [ ] Received media passes the same client admission/validation as upload.
+- [ ] Rights/platform restrictions are respected; no credentials/private media needed.
+- [ ] Online performance is separate evidence, never an offline-core dependency.

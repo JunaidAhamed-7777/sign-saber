@@ -1,8 +1,10 @@
 # 17 — Testing & QA
 
-A webcam game cannot be fully tested without a human in front of a camera, so the strategy has three layers: **unit tests** for every pure function (fast, run in CI), **fixture replay** for deterministic end-to-end debugging of the input pipeline without a camera, and a **manual QA checklist** run against the acceptance list in [01 §What done looks like](01-vision.md#what-done-looks-like-definition-of-the-shipped-product) with real people and real lighting.
+A webcam game needs three complementary layers: asserted unit tests for pure rules, deterministic replay for timing/collision regressions, and live manual trials with real people/cameras/lighting. [24 — Benchmark & Evidence Protocol](24-benchmark-and-evidence.md) owns performance targets, statistical definitions and evidence. **Current state: test files are empty documented stubs; no gameplay test or manual pass has been recorded.** A scaffold build is not evidence that these planned checks pass.
 
 Commands (from `app/`): `npm run test` (vitest, unit), `npm run test:watch`, `npm run typecheck`, `npm run lint`. CI runs all three plus `npm run build` on every push.
+
+Documentation validation runs from the repository root with `node scripts/check-docs.mjs`. During P0/P1, ensure CI records actual asserted test counts and fails when expected suites contain no tests. Introduce browser smoke coverage with the first playable path rather than waiting until the final presentation.
 
 ## 1. Unit tests (vitest)
 
@@ -12,20 +14,20 @@ Pure modules only; no DOM, no WebGL, no workers. Test files live in `app/tests/u
 | --- | --- | --- |
 | `classifier.test.ts` | `gestures/classifier.ts` | On every recorded fixture frame labelled `open` / `fist` / `point` (§2), the classifier returns that label with `gestureConfidence ≥ 0.6` for ≥ 95 % of frames per label; `none` is returned for the `edgeOn` fixture ≥ 80 % of frames; hysteresis: a label flip for a single frame inside a stable run does not change the output (`GESTURE_CONFIRM_FRAMES`). |
 | `cursor.test.ts` | `gestures/cursor.ts` | `mapToPlayPlane` corners: `(0,0) → (−PLAY_W/2, PLAY_CENTER_Y + PLAY_H/2)`, `(1,1) → (+PLAY_W/2, PLAY_CENTER_Y − PLAY_H/2)`; velocity from a synthetic linear motion equals the slope within 5 %; `bladeActive` turns on above `BLADE_ON_SPEED` and off below `BLADE_OFF_SPEED` only; `charge` reaches 1 exactly `BEAM_CHARGE_MS` after a stable `point`. |
-| `oneEuro.test.ts` | `utils/oneEuro.ts` | A step input settles within 10 % in < 150 ms at `ONE_EURO_MIN_CUTOFF`/`ONE_EURO_BETA`; white-noise input of σ = 0.01 is attenuated to σ ≤ 0.004 when stationary; a constant-velocity ramp has lag ≤ 1 frame at 5 m/s. |
-| `judge.test.ts` | `game/judge.ts` | Timing errors −60/0/+60 → Perfect; ±61..120 → Great; ±121..200 → Good; ±201 → no contact possible; `inputOffsetMs` shifts the boundaries exactly; wrong gesture → `badcut` regardless of timing; `SLASH_MIN_SPEED`/`SMASH_MIN_SPEED` enforced. |
+| `oneEuro.test.ts` | `utils/oneEuro.ts` | Known fixed/irregular timestamp cases match the reference filter equations; constant input stays constant, step response converges, seeded stationary noise is attenuated and duplicate/non-finite times are handled explicitly. Measure jitter/lag versus cadence and speed before choosing thresholds; do not assert unverified mutually incompatible lag/smoothing promises. |
+| `judge.test.ts` | `game/judge.ts` | Exact `WINDOW_*_MS * WINDOW_SCALE` boundaries and fractional values immediately outside each bucket; `inputOffsetMs` sign; no judgement outside eligibility. Within eligibility, [07](07-hit-detection-and-scoring.md)'s gesture/speed table distinguishes hit, badcut and no action; a resting or absent hand cannot cause an accidental badcut. Late arrivals, duplicate seq and two-hand arbitration each yield one terminal outcome. |
 | `hit.test.ts` | `game/hit.ts` | Sphere–OBB: palm at block centre → contact; palm at `BLOCK_SIZE/2 + HAND_HIT_RADIUS + 0.01` → none; blade segment crossing a block corner → contact; swept segment (previous→current pos) catches a block passed between frames at 12 m/s. Cut plane normal equals `normalize(cross(vel, lane direction))` within 1°. |
-| `score.test.ts` | `game/score.ts` | Multiplier ladder from `MULTIPLIER_LADDER` (combos 0, 4, 5, 14, 15, 29, 30); combo reset on miss/badcut/obstacle hit; `maxScore` = notes × `SCORE_PERFECT` × 8 + dodges × `SCORE_DODGE` × 8 (every obstacle assumed dodged at 8×)… verify the chosen formula matches `SessionStats.accuracy` so SS is reachable; rank thresholds from `RANK_THRESHOLDS`. |
+| `score.test.ts` | `game/score.ts` | Multiplier boundaries from `MULTIPLIER_LADDER`; resets on miss/badcut/wall hit; accuracy is unmultiplied earned base points divided by possible base points, not `score/maxScore`. All-Perfect plus all-dodged is exactly 100%; a zero-opportunity session is handled explicitly; every note/wall has one terminal outcome. Verify [07](07-hit-detection-and-scoring.md)'s exact denominator and rank boundaries. |
 | `kinetic.test.ts` | `game/kinetic.ts` | A synthetic swing with peak 8 m/s physical speed adds `0.5 · HAND_MASS_KG · 8²` J once (not per frame); stationary hand adds 0; kcal = J / 4184 / `METABOLIC_EFFICIENCY`. |
 | `dsp.test.ts` | `beatmap/dsp/*` | The 10 tests in [08 §16](08-beatmap-generation.md#16-unit-tests-apptestsunitdsptestts-assigntestts). |
 | `assign.test.ts` | `beatmap/assign.ts` | Density caps, gap rules, chord rule, hand alternation (no more than 3 consecutive notes on one side when gaps < 1200 ms), obstacle safety. |
-| `validate.test.ts` | `beatmap/validate.ts` | One failing case per rule 1–10 in [09 §Validation](09-beatmap-format.md#validation-rules-validatebeatmap); the example map passes. |
-| `slicer.test.ts` | `render/slicer.ts` (pure geometry part) | For 200 random planes through a unit cube: both halves are closed (each edge shared by exactly 2 triangles), `vol(A) + vol(B) = 1 ± 1 %`, all vertices of A satisfy `n·p − d ≤ 1e-6` and of B `≥ −1e-6`, cap polygon is planar; a plane missing the cube returns `null`. Volume via signed tetrahedra. |
+| `validate.test.ts` | `beatmap/validate.ts` | At least one failure per [09 validation rule](09-beatmap-format.md#validation-rules-validatebeatmap), including malformed shapes, NaN/Infinity, invalid enums/IDs/hashes, transitive chords, density, wall margins and logical capacity. The synthetic example passes; rejected maps never reach PLAYING. |
+| `slicer.test.ts` | `render/slicer.ts` (pure geometry part) | Two hundred seeded planes plus face/edge/vertex/tangent degeneracies: closed halves after tolerance-aware vertex welding, volume conserved within 1%, vertices on expected sides, planar caps and no NaNs. A missed/tangent cut returns the documented fallback. Shared edges use geometric position, not duplicated shading vertex indices. |
 | `stateMachine.test.ts` | `core/stateMachine.ts` | Every transition in [04](04-state-machine.md) is legal; every other `(state, event)` pair throws `assertTransition`; `onEnter`/`onExit` hooks fire in order. |
 | `spawner.test.ts` | `game/spawner.ts` | Notes become live at `t − approachMs` (beams at `t − BEAM_LEAD_MS`); position at `songTime = t` is exactly the target cell; `music:event`s fire once each. |
-| `cache.test.ts` | `beatmap/cache.ts` | With `fake-indexeddb`: key format, eviction to 30, difficulty switch hits the analysis cache. |
+| `cache.test.ts` | `beatmap/cache.ts` | Versioned map and analysis keys, grouped eviction to `ANALYSIS_CACHE_MAX`, difficulty reuse, corrupted entries, denied storage and quota failure. Valid generation remains usable when persistence fails. |
 
-Coverage target: ≥ 80 % lines in `game/`, `gestures/`, `beatmap/`, `core/`. `render/` and `ui/` are not unit-tested except `slicer`.
+Line coverage is a secondary development target (≥80% of implemented `game/`, `gestures/`, `beatmap/`, `core/`), not a substitute for assertions at boundaries. Add worker protocol tests for stale/duplicate results, cancellation task yielding, resource ownership and disposal. Check output at 30/60/120 Hz render scheduling and tracking gaps, with identical ordered judgements and scores. Accessibility and recovery flows require browser/manual coverage even when visual modules have little unit coverage.
 
 ## 2. Tracking fixtures
 
@@ -39,45 +41,50 @@ interface TrackingFixture {
   name: string;                // 'slash-right-fast', 'fist-punches', 'point-hold', 'edge-on', 'lean-left-right', 'wave'
   recordedAt: string;          // ISO date
   camera: { width: number; height: number; fps: number };
+  timestampSource: 'capture' | 'callback-receipt';
   calibration?: BodyCalibration;
   labels?: { from: number; to: number; gesture: Gesture; hand: 'left' | 'right' }[];   // ground truth ranges by seq
   frames: {
     seq: number;
     tCapture: number;          // ms, relative to first frame
+    tInferDone: number;        // same rebased timeline
+    tArrival: number;          // same timeline; preserves measured queue/arrival age
     hands: { handedness: 'left' | 'right'; score: number; landmarks: number[] /* 63 */; worldLandmarks: number[] /* 63 */ }[];
     pose: { landmarks: number[] /* 132 */; worldLandmarks: number[] /* 99 */ } | null;
   }[];                         // no mask: fixtures stay < 2 MB for 20 s
 }
 ```
 
-Landmarks are stored in **mirrored image space** exactly as the worker posts them, so a fixture frame converts to a `TrackingFrame` with `mask: null` by wrapping arrays in `Float32Array`.
+Landmarks retain the exact coordinate conventions in [02](02-architecture.md): mirrored image-space landmarks and separately named model/world landmarks, not an extra blanket mirror applied at replay. Validate lengths, finite values, monotonic relative times and unique ascending `seq` before replay. Fixtures omit masks and cannot test segmentation. Their `tInferDone`, arrival delay and calibration times must be reconstructed from explicitly recorded relative timing data; zeroing those values would hide stale-input bugs. Record consent/licence and hash the fixture; do not commit names or camera footage by default.
 
 ### Dev-only recorder
 
-In development builds the debug overlay (`D`) has a **Record 20 s** button: it buffers the next 20 s of `TrackingFrame`s (minus masks), then downloads `<timestamp>.fixture.json`. Labels are added by hand afterwards (the overlay shows `seq` so ranges can be read off while reviewing). Required fixtures to record at H0.5 ([19](19-build-plan.md)): `slash-right-fast`, `slash-left-slow`, `fist-punches`, `point-hold`, `edge-on`, `lean-left-right`, `wave`, `two-people`, `hands-leave-frame`.
+Planned P0/P1 recorder: a **Record 20 s** control buffers bounded `TrackingFrame` data without masks and downloads a fixture. Add labels afterwards with explicit seq ranges and reviewer notes. Required before P2: `slash-right-fast`, `slash-left-slow`, `fist-punches`, `point-hold`, `edge-on`, `lean-left-right`, `wave`, `two-people`, `hands-leave-frame`. Include held-out people/lighting/hand sizes; otherwise a high classifier score may just memorise one recording. These fixtures do not exist yet.
 
 ### Replay mode
 
-`?replay=<name>` (dev builds only): `tracking/replaySource.ts` replaces the camera + worker with a timer that emits fixture frames at their recorded `tCapture` cadence, looping. Everything downstream (filters, classifier, cursors, game, renderer) runs unmodified. Combined with `?seed`-free determinism of the game, a replayed fixture + a bundled beatmap reproduces the same hits every time, which is how hit-detection and scoring bugs are debugged without standing up. `?replay=…&speed=0.25` slows playback for frame-by-frame inspection; the overlay shows the current `seq`.
+Planned `?replay=<name>`: a source adapter replaces camera/worker and rebases relative timestamps into a deterministic session timeline. Consume **all due input records in capture order**, not just the latest record at each render tick; score measured samples at their mapped capture times. Simulate arrival ages deliberately for stale-input tests rather than using JSON load time. Logic can be advanced offline independently of rAF; effects have their own fixed seed. Reset session/filter/gesture state before each run and do not loop a fixture into one continuous score session. The same map/fixture produces the same ordered outcomes at different render rates.
 
-## 3. Integration smoke test [STRETCH]
+Show `REPLAY` visibly. `?speed=0.25` is inspection only and must scale the simulated song and input timelines together; slowing input alone changes timing. Mask/video and live capture/inference have separate evidence lanes in [24](24-benchmark-and-evidence.md#2-keep-three-evidence-lanes-separate).
 
-Playwright with `--use-fake-device-for-media-stream --use-file-for-fake-video-capture=tests/fixtures/video/attract.y4m`: boot → `SELECT` visible within 10 s; pick bundled track → `CALIBRATION`; with `?replay=wave` → reaches `PLAYING`; after 15 s score > 0 with `?replay=slash-right-fast`; `?autoend=1` → `RESULTS` renders. Only attempted if everything `[CORE]` is green by H10.
+## 3. Browser integration smoke test [CORE]
+
+Add the smoke harness in P1 and extend it through P2: BOOT → SELECT → explicit audio unlock → CALIBRATION → PLAYING → pause/resume → RESULTS → retry/quit. Use one continuous labelled replay with calibration and scoring segments, or an explicit harness state setup; two unrelated `?replay` query values cannot play at once. Assert expected judgements, score and stopped audio after quit rather than merely `score > 0`. Exercise camera-denied/model-missing/corrupt-upload paths. Headless replay cannot prove real GPU delegate/permissions/webcam behavior; those remain live checks. Playwright or an equivalent harness is a justified development dependency only when added with an actual runnable command.
 
 ## 4. Manual QA checklist
 
-Run twice before submission by two different players (one tall, one short if possible). Record results in `CHANGELOG.md` ("QA pass 1/2: X/Y passed, failures: …"). Every row is a MUST unless tagged.
+Run with at least three first-time players, including different heights/reach where available. Record per-row pass/fail/blocked/not-applicable, actual date, SHA, device, player alias and evidence in the release report; summarise in `CHANGELOG.md`. Not-applicable needs an explicit scope/fallback decision. No unchecked row counts as a pass.
 
 ### BOOT
 
 | # | Step | Pass criteria |
 | --- | --- | --- |
 | B1 | Open `http://localhost:5173` in Chrome | Logo + progress bar within 1 s; progress reaches 100 % in < 8 s with cached models |
-| B2 | Deny the camera prompt | Error card "Allow camera access…" with Retry; Retry re-prompts and succeeds |
+| B2 | Deny the camera prompt | Useful permission guidance and Retry; if the browser persists denial, explain site settings rather than promise a new prompt. Grant permission there and retry successfully. |
 | B3 | Disable network (airplane mode), hard reload | Boots fully (ADR-013) |
 | B4 | Delete `public/models/*.task`, reload | Error card names `npm run models` |
 | B5 | Open in a browser without WebGL2 (or `--disable-webgl`) | "Open in Chrome or Edge…" card, no exception in console |
-| B6 | Check overlay (`D` or `?stats=1`) | Tier shown; probe median logged |
+| B6 | Check diagnostics | Actual tier/drawing-buffer dimensions, delegate and timestamp source shown; probe result is not confused with a live benchmark. |
 
 ### SELECT
 
@@ -97,13 +104,13 @@ Run twice before submission by two different players (one tall, one short if pos
 | # | Step | Pass criteria |
 | --- | --- | --- |
 | C1 | Stand 2 m away, arms down | Line 1 ticks after `CALIB_PRESENCE_MS` once both hands have been seen |
-| C2 | Step within 0.7 m | "Too close — step back" |
-| C3 | Step 4 m away | "Too far — step closer" |
+| C2 | Move so the torso/hands no longer fit the calibrated framing region | Useful step-back coaching; no claim of exact camera distance from a monocular estimate. |
+| C3 | Move until body/hand size is below the valid calibration envelope | Useful step-closer coaching; Start remains blocked until reliable presence. |
 | C4 | Wave one hand (3 reversals in 1.5 s) | Line 2 ticks; waving slowly (1 reversal/s) does not |
-| C5 | Countdown | 3 digits land on beats of the song (audible metronome tick); transitions to `PLAYING` and the first note arrives on time |
+| C5 | Countdown, including a chart with an early first note | Confident-tempo digits align to the scheduled start; low-confidence audio uses a neutral countdown. Scheduled negative-time pre-roll renders the full note approach without accepting score until song start. Cancel/lost presence stops the scheduled source and invalidates that epoch. |
 | C6 | Press Back | Returns to `SELECT`, no audio playing |
 | C7 | Walk out of frame during countdown | Countdown aborts, line 1 un-ticks, no transition |
-| C8 | Two people in frame | The closer/larger person is tracked; the other's hands do not create cursors (`numHands = 2` picks the two most confident; verify both cursors belong to one player — if not, log as known limitation) |
+| C8 | A second person crosses the frame | Unmatched hands are rejected; ambiguity causes coaching/pause rather than assigning another person's hand to the player. `numHands: 2` alone cannot guarantee identity. Record any remaining limitation. |
 | C9 | Retry from Results | Shortened calibration (presence + countdown only) |
 
 ### PLAYING
@@ -115,19 +122,19 @@ Run twice before submission by two different players (one tall, one short if pos
 | P3 | Punch a magenta (Armored) block with a fist | Shatters into shards; score |
 | P4 | Open-palm a magenta block | Bad Cut: deflect flash, combo reset, no score, block continues and despawns without a second judgement |
 | P5 | Fist a cyan block | Bad Cut (same) |
-| P6 | Point at a gold target and hold 0.5 s | Charge ring fills in 500 ms; beam fires; target powers down + poof; score |
+| P6 | Point at a visible gold target, including precharging before its timing window | Charge follows `BEAM_CHARGE_MS`; a full charge waits while the target is too early, then fires only at an eligible captured sample. No early automatic whiff/refire cycle. Target powers down/poofs once; score bucket matches actual fire time. |
 | P7 | Point at nothing | Ring fills but nothing fires; no score change |
-| P8 | Stop pointing at 0.3 s | Charge resets to 0 within 2 frames |
+| P8 | Stop pointing before full charge | No beam fires after confirmed release; charge decays to zero according to [06](06-gesture-recognition.md), accounting for input cadence/hysteresis rather than a fixed render-frame count. |
 | P9 | Wall from the left | Lean right → "Dodged" +`SCORE_DODGE`; stay centred → glitch effect, combo reset, no points |
-| P10 | Lean slightly (< `LEAN_ON`) | Not counted as a dodge; HUD lean indicator stays centred |
-| P11 | Timing: hit a block as early as visible vs exactly at the plane vs late | Early → Good/Great, on plane → Perfect, late → Great/Good; nothing judged after `MISS_Z` |
+| P10 | Lean around on/off thresholds, with/without shoulder tilt | Matches `LEAN_ON`, `LEAN_OFF` and the documented tilt assist/hysteresis; a fresh small translation without sufficient tilt does not activate a dodge. |
+| P11 | Controlled contacts at early/on-time/late eligible capture times | Buckets match `WINDOW_*_MS * WINDOW_SCALE`; late delivery gets only bounded input grace. `MISS_Z` is visual cleanup and never replaces the capture-time eligibility/deadline rules in [07](07-hit-detection-and-scoring.md). |
 | P12 | Idle hands | Particles orbit palms; no blade |
 | P13 | Fast open-hand swipe through empty space | Blade ribbon appears, length grows with speed, fades after `BLADE_OFF_SPEED` |
-| P14 | Drop section of `edm-128` | FOV punch + shake + colour shift; grid pulses; no frame drop below `FLOOR_FPS` |
+| P14 | Predeclared busy/drop section | Intentional audio-reactive spectacle, readable targets and delivery meeting [24](24-benchmark-and-evidence.md); `FLOOR_FPS` is sustained, not an individual-frame guarantee. |
 | P15 | Silhouette | Edge colour visibly shifts with bass (magenta) vs treble (white/gold); no raw camera pixels anywhere |
 | P16 | Backlit (stand in front of a bright window) | Silhouette may degrade but hands still track; game remains playable (document as known limitation if not) |
-| P17 | Dim room (lights off, screen glow only) | Tracking ≥ 15 Hz; auto-pause does not trigger while the player is present |
-| P18 | Hand leaves frame mid-swing | No exception; cursor `present = false`; blade disappears; re-entry resumes within 2 frames |
+| P17 | Dim room (screen glow only) | Record actual rate/confidence. If reliability fails, coach or pause safely; do not treat physical presence as proof the model can track it. Publish the lighting limitation. |
+| P18 | Hand leaves frame mid-swing | No exception or stale-input judgement; blade fades. Re-entry follows confidence/identity confirmation, resets motion history and cannot sweep across the gap. |
 | P19 | Step fully out of frame for 2 s | Auto-pause ("step back into frame") after `TRACKING_LOST_PAUSE_MS`; audio stops |
 | P20 | Hide the tab (Ctrl+Tab) 5 s, return | Paused; resume count 3-2-1; notes and audio still aligned (no drift) |
 | P21 | Unplug the webcam mid-song | Paused with a camera error line; plugging back in (or Retry) resumes; no crash |
@@ -139,7 +146,7 @@ Run twice before submission by two different players (one tall, one short if pos
 
 | # | Step | Pass criteria |
 | --- | --- | --- |
-| Z1 | Auto-pause then step back in | Resume countdown starts only after 500 ms of stable presence; song resumes exactly where it stopped |
+| Z1 | Auto-pause then step back in | Tracking-loss pause may start its guarded countdown after stable presence; manual/hidden/fatal pauses still require their explicit route in [04](04-state-machine.md). No phantom swipe from stale history; failed audio resume stays paused. |
 | Z2 | Quit to Songs | `SELECT` with attract scene; no audio; starting a new song works |
 | Z3 | Pause during a destruction animation | Fragments freeze; on resume they continue (closed-form motion) |
 
@@ -147,37 +154,45 @@ Run twice before submission by two different players (one tall, one short if pos
 
 | # | Step | Pass criteria |
 | --- | --- | --- |
-| R1 | Finish a song | Rank, score, accuracy %, max combo, judgement bars, kJ + kcal all shown; numbers equal the HUD's final values |
+| R1 | Finish a song | Rank/score/accuracy/combo/judgements match terminal outcomes. Any motion-energy estimate is labelled approximate and is not presented as measured calories/health data. |
 | R2 | Highlight | 3D silhouette/skeleton pose from the peak-combo moment turntables; a song with zero hits shows a neutral pose, not a blank |
-| R3 | Full-combo all-Perfect on `easy` with a short test map | Accuracy 100 %, rank SS (sanity of `maxScore`) |
+| R3 | All-Perfect plus all-dodged on a valid short easy map | Accuracy exactly 100%, rank SS; verifies the base-points denominator independently of multipliers. |
 | R4 | Retry | Back to shortened calibration; stats reset to 0 |
 | R5 | Songs | `SELECT` |
 
+### Accessibility, privacy and recovery
+
+- Keyboard-only navigation reaches Start, Pause, Resume, Retry and Songs with visible focus; mouse controls remain available when gesture navigation fails.
+- Reduced motion suppresses shake/dolly/aberration/turntable motion; intensity controls preserve note legibility and avoid rapid full-screen flashes. Check colour-independent glyphs and readable small-screen HUD.
+- The app explains local camera processing before requesting access, never displays raw pixels by default, uploads no camera/audio content, and stops capture when explicitly disabled or the app is torn down.
+- Test cache denial/quota failure, worker termination, WebGL context loss and output-device suspension; each leaves a useful error/retry/quit path. No invented success state is allowed.
+- Retry ten times and change tracks/difficulty repeatedly; no previous-session score, source node, media track, bitmap or listener survives incorrectly.
+
 ## 5. Performance QA
 
-Follow [16 §Acceptance criteria](16-performance-budget.md#acceptance-criteria-measured-on-the-demo-laptop-1080p-quality-tier-as-auto-selected) on the demo laptop: run each bundled track once with the overlay visible, note avg FPS, 1 % low, `ss:frame` p95, max draw calls, tracking Hz, and the tier in `CHANGELOG.md`. Then force `?tier=high` and confirm the runtime downgrade behaves as specified if the machine cannot hold it. Run the Chrome tracing checklist once.
+Execute [24](24-benchmark-and-evidence.md)'s declared cold/warm/full-song/stress/soak/recovery runs and publish per-run raw evidence; [16](16-performance-budget.md) assigns subsystem budgets. Keep live and replay lanes separate. Run release timings without DevTools/video capture, then a separate trace for diagnosis. Verify forced-tier failure and visible adaptive downgrade independently. Until collected, every result remains **unmeasured**.
 
-## 6. Bug triage rule for the final 3 hours (after H12 feature freeze)
+## 6. Release triage after scope lock
 
 Fix **only**:
 
 1. Crashes and unhandled exceptions on the demo path (bundled track → calibration → play → results).
 2. Softlocks (any state the player cannot leave without reloading).
 3. Wrong-score bugs (double judgement, score not matching judgements, combo not resetting).
-4. Visual bugs visible during the demo script ([20](20-demo-and-judging.md)): missing destruction effect, silhouette not rendering, HUD text wrong.
+4. Visual/accessibility issues on the [demo path](20-demo-and-judging.md), privacy/resource leaks and failures of the measured acceptance gates.
 
-Everything else goes into `README.md` → Known limitations and `SUBMISSION.md`. No tuning of thresholds after H13 unless a triage-1–4 bug requires it.
+Put remaining issues in README's known limitations and the release report. P5 in [ROADMAP.md](../ROADMAP.md) is scope-locked: a timing/gesture change requires rerunning affected fixtures, live trials and benchmark gates. Actual event rules/timing are recorded only when organisers supply them.
 
 ## 7. Pre-submission checklist
 
 - [ ] `npm run typecheck && npm run lint && npm run test && npm run build` pass on a clean clone (`git clone` to a temp folder, `npm ci`, `npm run models`).
-- [ ] Manual QA passes 1 and 2 recorded in `CHANGELOG.md` with failures listed as known limitations.
-- [ ] Performance QA numbers recorded.
-- [ ] Demo laptop: Chrome updated, hardware acceleration on, notifications off, display sleep off, power plugged in, camera permission already granted for `localhost:5173`, `?tier` not forced.
+- [ ] Three first-time-player trials and every applicable QA row are recorded with failures/limitations.
+- [ ] [24](24-benchmark-and-evidence.md) evidence bundle and exact clean build SHA recorded; no replay figure is labelled live.
+- [ ] Demo laptop uses the rehearsed browser build/origin (production preview normally `localhost:4173`), hardware acceleration on, notifications off, display sleep off, power plugged in and camera permission checked. Revalidate after updates; `?tier` is not forced for the adaptive release run.
 - [ ] Offline boot verified on the demo laptop (B3).
 - [ ] README run instructions executed verbatim by someone who did not write them.
-- [ ] `SUBMISSION.md` complete with final commit SHA; `AI_USAGE.md` and `CHANGELOG.md` current.
-- [ ] Fallback gameplay video (recorded at H10) copied to the laptop desktop.
+- [ ] README Submission section identifies the tested release SHA; `AI_USAGE.md`/`CHANGELOG.md` current and actual organiser requirements checked.
+- [ ] Labelled fallback gameplay recording from the tested build is available locally; its date/SHA/input lane are stated.
 
 ## Acceptance criteria for this document
 

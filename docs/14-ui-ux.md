@@ -190,7 +190,7 @@ Colour is never the only cue (§Accessibility): each block type also has a disti
 - **Wave meter**: a 24-sample sparkline of the active hand's mirrored-image x plus a reversal counter `n / WAVE_REVERSALS`. Fills as reversals accumulate within `WAVE_WINDOW_MS`.
 - **Coaching line** (Body L, centre-bottom) shows exactly one string at a time, priority order: no body → one hand missing → too close → too far → unstable tracking → steady. Strings in §Strings. Low model/mask confidence indicates uncertain tracking, not a measured light level; suggest facing the light or clearing the background without asserting darkness. Use the existing presence/confidence rules from [05](05-tracking-pipeline.md), not an invented luminance sensor.
 - **Dashed target frame**: a rectangle on the silhouette layer spanning the `CALIB_SHOULDER_MIN`…`CALIB_SHOULDER_MAX` sweet spot, so the player sees where to stand.
-- **Countdown**: Display XL numerals 3 → 2 → 1 each entering on a beat of the track (`START_COUNTDOWN_MS`), scaling 1.4 → 1.0 with the `count` SFX. Retry runs (`calibrationCached = true`) skip the wave step and show only the presence tick and the countdown.
+- **Countdown**: Follow [15 §Start](15-audio-playback-sync.md#21-start): confident tempo gets beat-aligned digits/clicks; `lowTempoConfidence` gets a neutral countdown without a musical metronome. Drive digits from the output-aligned negative `SongClock`, including any ready stage needed to give early notes their full approach. Calm removes the 1.4 → 1.0 scale accent. Retry (`calibrationCached = true`) skips confirmation only when the same calibration remains valid; readiness checks and the full countdown still apply.
 - `‹ BACK` fires `calib:back`.
 - Show “Clear space around you. Use comfortable movements; stop if uncomfortable.” before the countdown. A wave is a convenient confirmation, not the only control: provide an accessible keyboard/button confirmation that still requires the same live presence and stable calibration. Explain any supported seated/reduced-reach profile before it changes the playable lane range; do not silently change difficulty or scoring mid-song.
 
@@ -431,7 +431,7 @@ export interface UiStore {
 
   // hud (throttled ≤ 20 Hz for text; pops are event-driven)
   hud: {
-    score: number; combo: number; multiplier: number; nextMultiplierAt: number; accuracy: number;
+    score: number; combo: number; multiplier: number; nextMultiplierAt: number; accuracy: number | null;
     songTimeMs: number; durationMs: number; dropMarkersMs: number[];
     handLeft: HandIndicator; handRight: HandIndicator;
     milestone: 10 | 25 | 50 | 100 | null;
@@ -461,7 +461,7 @@ export interface HandIndicator { present: boolean; gesture: Gesture; charge: num
 `state/adapter.ts` subscribes to the event bus once:
 
 - `state:change` → `machineState`, `pauseReason` immediately.
-- `song:progress`, `combo:change`, `note:hit` (score/accuracy), tracking updates → written into a pending patch and flushed at most every 50 ms (`UI_TEXT_HZ` = 20) via a single `set`.
+- `song:progress`, `combo:change`, tracking updates, and every terminal judgement (`note:hit`, `note:miss`, `note:badcut`, `obstacle:hit`, `obstacle:dodged`) → mirror updated authoritative aggregates into a pending patch and flush at most every 50 ms (`UI_TEXT_HZ` = 20) via a single `set`. Live accuracy uses resolved objects as its denominator; use `null` and show an em dash before the first resolved object. RESULTS uses final `SessionStats.accuracy` over the whole map, as defined in [07](07-hit-detection-and-scoring.md).
 - `note:hit` / `note:miss` / `note:badcut` / `obstacle:dodged` → `pushPop` immediately (after projection); enforce one terminal pop/outcome per note ID. Bad-cut visual despawn is not a second miss.
 - `session:end` → `results` immediately.
 

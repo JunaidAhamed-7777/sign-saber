@@ -22,8 +22,8 @@ export async function decodeForAnalysis(bytes: ArrayBuffer): Promise<{ mono: Flo
 ```ts
 class SongClock {
   constructor(private ctx: AudioContext) {}
-  scheduleStart(leadS?: number): number;      // default SONG_START_LEAD_S; returns t0 in context seconds
-  now(): number;                             // output-aligned estimated song ms; frozen while paused; NaN before start
+  scheduleStart(leadS?: number): number;      // caller passes computed pre-roll; default SONG_START_LEAD_S for clock-only tests
+  now(): number;                             // output-aligned song ms; negative during armed pre-roll, NaN before scheduling
   pause(): Promise<void>; resume(): Promise<void>; // asynchronous lifecycle; machine waits for successful completion
   fromPerformanceTime(tPerf: number): number;// maps a performance.now() stamp to song time (ms)
   readonly state: 'idle' | 'running' | 'paused' | 'ended';
@@ -33,13 +33,24 @@ class SongClock {
 ### 2.1 Start
 
 ```
-t0 = ctx.currentTime + leadS                // 150 ms lead so the scheduled source starts glitch-free
-source.start(t0)
+// At countdown BEGIN, while still in CALIBRATION and with all readiness guards met:
+stepMs = confidentTempo ? 60000 / bpm : START_COUNTDOWN_MS / COUNTDOWN_STEPS
+countSpanMs = COUNTDOWN_STEPS · stepMs
+earliestSpawnMs = min(0, each travelling note.t − approachMs,
+                        each beam.t − BEAM_LEAD_MS, each obstacle.t − approachMs)
+leadMs = max(START_COUNTDOWN_MS, countSpanMs,
+             −earliestSpawnMs + SONG_START_LEAD_S · 1000)
+t0 = songClock.scheduleStart(leadMs / 1000) // internally ctx.currentTime + leadS, context seconds
+source.start(t0)                           // schedule ONCE, never again at calib:complete
+click k is scheduled at t0 − k · stepMs / 1000 // confident tempo only; k = COUNTDOWN_STEPS ... 1
+
 graphSongTime = (ctx.currentTime − t0) · 1000  // processing position, not yet speaker output
 songTime(now) = fromPerformanceTime(performance.now()) // output-aligned estimate (§2.4)
 ```
 
-Choose `t0` early enough to schedule the calibration clicks before it; do not choose a 150 ms lead and then try to schedule three beats into the past. `CALIBRATION`'s final countdown digit is scheduled at `t0 − 60 / bpm` in **context seconds** ([04](04-state-machine.md#calibration)). Clicks use the audio clock; the DOM countdown reads the same schedule. Account for enough pre-roll to show/spawn early notes at `note.t − approachMs`; a track starting at 0 cannot show its first block's full approach unless the chart reserves an intro or the clock starts negative.
+`now()` runs negative immediately after scheduling. Run spawning and rendering during this armed pre-roll, even though scoring remains disabled until `PLAYING` begins at audible song time 0 ([04](04-state-machine.md#calibration)). Thus a note at 412 ms with a 2000 ms approach appears at −1588 ms and receives its full travel, rather than materialising partway down the lane. Preparation can exceed the visible final digits for an early note or a slow confident tempo; show a short ready state before those digits.
+
+The DOM shows digit `k` when output-aligned `SongClock.now()` crosses `−k · stepMs`; it uses the same output correlation as gameplay rather than a `ctx.currentTime`-only timer that ignores speaker delay. For confident tempo, clicks use the corresponding context-time schedule and are musical cues. A `lowTempoConfidence` warning selects a neutral visual countdown: do not use the numeric BPM estimate as a detected tempo or schedule a musical metronome. Cache hits preserve the same mode. Countdown cancellation stops/disconnects every scheduled music/click source, invalidates the epoch/anchors and clears pre-roll objects. Ignore stopped-source `onended` callbacks from that epoch so cancellation cannot produce RESULTS or a delayed song start.
 
 ### 2.2 Pause and resume
 
@@ -47,7 +58,7 @@ Choose `t0` early enough to schedule the calibration clicks before it; do not ch
 
 On resume, wait for a running context and a valid fresh output timestamp before re-anchoring the performance mapping; discard old tracking samples and reset measured sweep/charge history. Retain a small history of running-segment anchors so `fromPerformanceTime` never maps a capture from a paused interval into a new segment. If the browser interrupts audio or a resume promise fails, remain `PAUSED` with an explicit enable-audio action. Test real output continuity; do not infer it solely from `ctx.state`.
 
-The `RESUME_COUNTDOWN_MS` overlay runs *before* `ctx.resume()` is called, on wall-clock time, so the music restarts exactly when the count hits zero.
+The `RESUME_COUNTDOWN_MS` overlay runs while the context is suspended, using monotonic wall time. At its end request `ctx.resume()`; remain `PAUSED` with a brief resuming state until that promise succeeds and the output mapping is usable. Then transition to `PLAYING`. Do not promise the async browser operation restarts physical sound exactly at the zero digit. Rejection/interruption cancels the attempt and exposes an enable-audio action; a failed attempt never enables scoring.
 
 ### 2.3 End
 
@@ -138,20 +149,23 @@ The results screen sting (`RESULTS` entry) is a 2-second `results.ogg` played on
 
 ## 7. Latency compensation summary
 
-| Source of delay | Size | Compensated by |
+| Source of delay | Measurement | Treatment |
 | --- | --- | --- |
-| Camera exposure/delivery + bitmap + inference + transfer | 70–130 ms | Judging on `tCapture` (not arrival) via `fromPerformanceTime` |
+| Camera exposure and delivery | Device-dependent; capture metadata may be absent | Valid sensor `tCapture` maps the observed motion to song time. Callback-receipt fallback leaves this delay in the judgement bias; disclose the timestamp source and measure it. |
+| Bitmap preparation, inference, result transfer/consumption | Measure separate marks plus `inferenceMs` and input-age distribution | Judge the unique measured sample at its timestamp; accept late results only within the bounded policy in [07](07-hit-detection-and-scoring.md). |
 | Audio output latency | Device dependent | Output timestamp correlation; fallback subtracts a reported delay estimate, never double compensates |
-| Display latency (render → photon) | 16–33 ms | Not compensated directly; folded into the player's `inputOffsetMs` |
-| Player reaction / perception bias | ±50 ms, personal | `inputOffsetMs` slider; [STRETCH] mini-game |
+| Display delivery (render → photon) | External synchronized recording; rAF pacing alone cannot establish it | Keep cursor prediction visual-only; evaluate perceived rhythmic bias using `inputOffsetMs`. |
+| Player perception and movement bias | Measured per trial/player, with configuration disclosed | `inputOffsetMs` slider; [STRETCH] calibration mini-game |
 | Suspend/resume boundary | Browser/device dependent | Freeze scoring, await actual transition, re-anchor and reject paused-segment input (§2.2) |
 | Performance/audio clock drift | Measure over full track | Refresh correlation and retain segment history (§2.4) |
 
-Generous timing windows (`WINDOW_*`) absorb what remains (P3).
+No measurements exist yet. Timing windows (`WINDOW_*`) and the input offset are playability controls; meeting the tracking-freshness and audiovisual checks still requires the actual evidence in [24](24-benchmark-and-evidence.md).
 
 ## 8. Acceptance criteria
 
 - [ ] On the reference setup, loopback/physical recording measures scheduled start and countdown alignment; target error ≤ 5 ms and report measurement uncertainty. API timestamp agreement alone does not prove speaker/display onset.
+- [ ] An early-note fixture spawns at negative song time and reaches the hit plane at its actual `note.t`; no countdown input changes score before `PLAYING`. Back/tracking loss on the final digit leaves no music or clicks scheduled, and a fresh attempt uses a new epoch.
+- [ ] Low-confidence generation and its cache hit both use the neutral countdown. A slow confident tempo extends preparation enough to schedule every whole-beat digit without placing clicks in the past.
 - [ ] Pausing for 10 s and resuming produces no audible jump and `now()` is continuous to within 5 ms of `pausedAtSong`.
 - [ ] `now()` and `fromPerformanceTime(performance.now())` use the same output-aligned mapping and agree within timestamp precision; a recorded click-track trial checks real audible alignment at start, middle and end. Test nonzero output latency, missing timestamp API, pause boundaries and positive/negative input offsets.
 - [ ] Band energies visibly react to the kick (`low`), vocals (`mid`) and hats (`high`) of the demo tracks; a near-silent intro drives values near 0, a loud chorus near 1 (auto-gain).

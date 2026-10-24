@@ -1,0 +1,101 @@
+{
+  "recordedAt": "2026-10-24T19:59:51.640Z",
+  "scope": "Read-only official Blender MCP add-on response after final asset export",
+  "scene": {
+    "name": "SignSaberAssetAuthoring",
+    "object_count": 29,
+    "objects": [
+      {
+        "name": "shard_00",
+        "type": "MESH",
+        "location": [
+          -0.25,
+          0.25,
+          -0.25
+        ]
+      },
+      {
+        "name": "shard_01",
+        "type": "MESH",
+        "location": [
+          -0.25,
+          -0.25,
+          -0.25
+        ]
+      },
+      {
+        "name": "shard_02",
+        "type": "MESH",
+        "location": [
+          -0.25,
+          0.25,
+          0.25
+        ]
+      },
+      {
+        "name": "shard_03",
+        "type": "MESH",
+        "location": [
+          -0.25,
+          -0.25,
+          0.25
+        ]
+      },
+      {
+        "name": "shard_04",
+        "type": "MESH",
+        "location": [
+          0.25,
+          0.25,
+          -0.25
+        ]
+      },
+      {
+        "name": "shard_05",
+        "type": "MESH",
+        "location": [
+          0.25,
+          -0.25,
+          -0.25
+        ]
+      },
+      {
+        "name": "shard_06",
+        "type": "MESH",
+        "location": [
+          0.25,
+          0.25,
+          0.25
+        ]
+      },
+      {
+        "name": "shard_07",
+        "type": "MESH",
+        "location": [
+          0.25,
+          -0.25,
+          0.25
+        ]
+      },
+      {
+        "name": "armor_plates",
+        "type": "MESH",
+        "location": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "name": "beam_ring",
+        "type": "MESH",
+        "location": [
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "materials_count": 10
+  }
+}

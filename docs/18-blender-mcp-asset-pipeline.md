@@ -1,6 +1,6 @@
 # 18 — Blender MCP Asset Pipeline
 
-Sign Saber needs a handful of small, stylised 3D assets. Blender and optional **Blender MCP** produce authored geometry; the runtime loads glTF Binary assets and has a **procedural Three.js fallback** for every asset. Build those fallbacks during P1/P2 before authored P3 assets ([roadmap](../ROADMAP.md)). This pipeline is specified, not yet executed: no `.blend`, exported GLB, measured asset payload or working validation command is claimed here.
+Sign Saber needs a handful of small, stylised 3D assets. Blender and optional **Blender MCP** produce authored geometry; the runtime loads glTF Binary assets and has a **procedural Three.js fallback** for every asset. Build those fallbacks during P1/P2 before authored P3 assets ([roadmap](../ROADMAP.md)). The first authored pack is now implemented through the official Blender MCP local add-on bridge. [The asset manifest](../app/public/assets/models/manifest.json) and [source build notes](../assets-src/blender/README.md) identify actual tool versions, six GLBs, original geometry, source blend, hashes and validation. The pack is 3,320 triangles / 194,488 bytes. Cell Fracture is unavailable in this Blender install: the block is the complete eight-octant fallback, not 14 cells. Human gameplay/performance evidence remains separate.
 
 Rendering consumers: [11](11-rendering-blocks-and-destruction.md) (fractured cube, armour, beam ring, glyphs), [13](13-rendering-environment-camera-postfx.md) (pylons), [14](14-ui-ux.md) (results podium).
 
@@ -282,7 +282,7 @@ for name, objs in GROUPS.items():
 
 ## 6. Validation in the browser
 
-The repository does not yet contain `scripts/inspect-glb.ts` or a model-inspection command. Add an actual validator and documented package script during P3 before advertising a command. Until then, the planned browser inspection uses the bundled Three.js `GLTFLoader` (this is a developer-console excerpt, not a shipped menu):
+The implemented `node scripts/check-model-assets.mjs` and `node --test scripts/check-model-assets.test.mjs` verify the authored pack. The retained Khronos report is separate from the independent geometry report. No `inspect-glb.ts` command is advertised. Until then, the planned browser inspection uses the bundled Three.js `GLTFLoader` (this is a developer-console excerpt, not a shipped menu):
 
 ```ts
 const gltf = await new GLTFLoader().loadAsync(url);

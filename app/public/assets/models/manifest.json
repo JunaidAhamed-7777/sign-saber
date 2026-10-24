@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-24T19:59:51.577727+00:00",
+  "sourceBlend": "assets-src/blender/signsaber_assets.blend",
+  "sourceGenerator": "assets-src/blender/generate_assets.py",
+  "authoringRoute": "official Blender MCP add-on JSON TCP execute_code; local 127.0.0.1:9876",
+  "blenderVersion": "5.2.2 LTS",
+  "blenderBuildHash": "d13f752e3b9c",
+  "gltfExporter": "Blender bundled io_scene_gltf2",
+  "mcp": {
+    "upstream": "https://github.com/ahujasid/blender-mcp",
+    "commit": "febcd90ece59c3416d7c55fd3723cea46bcaa59d",
+    "addonSha256": "8e193a249e2ed1262f3e794ee2254efd8e3d1f0224385245f2b989154c837083",
+    "addonVersion": "1.8",
+    "protocolVersion": 15
+  },
+  "seed": 7,
+  "units": "metres",
+  "upAxis": "Y",
+  "materials": "Principled base color, no textures or emission",
+  "fractureMode": "complete-eight-octant fallback; Cell Fracture operator unavailable",
+  "armorSimplification": "Three-segment bevel at 0.02999m (10 micrometres below half thickness avoids coincident corner seams), 0.015m grooves; budget simplification from 1024 to 896 triangles.",
+  "shardCount": 8,
+  "shardVolumeM3": 0.9999999999999999,
+  "clearStage": {
+    "x": [
+      -3,
+      3
+    ],
+    "z": [
+      -5,
+      4
+    ],
+    "y": [
+      0,
+      3
+    ],
+    "note": "No upright opaque geometry intersects the central human play stage; floor is below y=0."
+  },
+  "assets": [
+    {
+      "id": "block_fractured",
+      "path": "/assets/models/block_fractured.glb",
+      "nodes": [
+        "shard_00",
+        "shard_01",
+        "shard_02",
+        "shard_03",
+        "shard_04",
+        "shard_05",
+        "shard_06",
+        "shard_07"
+      ],
+      "triangles": 96,
+      "bytes": 13232,
+      "sha256": "451d4f4e58d2a7410269e20ee7d93ec45f3035afbeecb8040a269c47b74d629f",
+      "license": "MIT"
+    },
+    {
+      "id": "armor",
+      "path": "/assets/models/armor.glb",
+      "nodes": [
+        "armor_plates"
+      ],
+      "triangles": 896,
+      "bytes": 57332,
+      "sha256": "b4773b272d113383e793d6a29f8bd1ee229faf29721b1021652b82bb86f1c600",
+      "license": "MIT"
+    },
+    {
+      "id": "beam_ring",
+      "path": "/assets/models/beam_ring.glb",
+      "nodes": [
+        "beam_ring"
+      ],
+      "triangles": 816,
+      "bytes": 45232,
+      "sha256": "b1e0765d523d6877ddea8e1b70ed9c083007f35b657a413c901c0105504c5c1f",
+      "license": "MIT"
+    },
+    {
+      "id": "glyphs",
+      "path": "/assets/models/glyphs.glb",
+      "nodes": [
+        "glyph_palm",
+        "glyph_fist",
+        "glyph_point"
+      ],
+      "triangles": 172,
+      "bytes": 10056,
+      "sha256": "3a22813916981033a71371aa455a2063a30b36e74b8bc88b7bfb49f7207a1d0c",
+      "license": "MIT"
+    },
+    {
+      "id": "pylon",
+      "path": "/assets/models/pylon.glb",
+      "nodes": [
+        "pylon"
+      ],
+      "triangles": 36,
+      "bytes": 4256,
+      "sha256": "4afdb16a007e8651c7feae6f7f67b5fd3806c7c15d7bbd9dc525d512cf63c08d",
+      "license": "MIT"
+    },
+    {
+      "id": "arena_environment",
+      "path": "/assets/models/arena_environment.glb",
+      "nodes": [
+        "arena_floor",
+        "arena_grid",
+        "arena_rail_cyan",
+        "arena_rail_magenta",
+        "arena_pylon_left_00",
+        "arena_pylon_left_01",
+        "arena_pylon_left_02",
+        "arena_pylon_left_03",
+        "arena_pylon_right_00",
+        "arena_pylon_right_01",
+        "arena_pylon_right_02",
+        "arena_pylon_right_03",
+        "arena_arch_00",
+        "arena_arch_01",
+        "arena_horizon_ring"
+      ],
+      "triangles": 1304,
+      "bytes": 64380,
+      "sha256": "2ebfd7cb9645da95bd41b504317a8092b60512539b77539191a7e1979d748045",
+      "license": "MIT"
+    }
+  ],
+  "totalTriangles": 3320,
+  "totalGlbBytes": 194488,
+  "provenance": "Original script-authored geometry. No Poly Haven, Sketchfab, generative asset service or third-party meshes/textures used. MIT repository license.",
+  "sourceBlendSha256": "31eba5645de061fd1339928690b5d416ae14c78afb8d2d34767b5cc01401da48",
+  "sourceGeneratorSha256": "d009e0db23f35ca4a62c59fd540727674ca78f12004f575bdf92f72577c405ed",
+  "sharedConstants": {
+    "source": "app/src/core/constants.ts",
+    "PYLON_SPACING_M": 8.0,
+    "PYLON_X": 5.5
+  },
+  "armorConstruction": {
+    "bevelOffsetM": 0.02999,
+    "bevelClearanceM": 1e-05,
+    "bevelSegments": 3,
+    "grooveDepthM": 0.015,
+    "preSimplifyTriangles": 1024,
+    "exportTriangles": 896
+  }
+}

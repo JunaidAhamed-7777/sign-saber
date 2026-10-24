@@ -4,23 +4,21 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 ## Development log
 
-No gameplay implementation has been recorded yet. Documentation and scaffold maintenance are recorded below; passing stub checks is not evidence of a playable game. Add entries using this shape:
+Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
-```text
+## 2026-10-25T01:40:13+05:30 — Blender MCP authored level and arena assets
+
+- Changed: Built six original MIT GLBs and a saved Blender source scene through the official Blender MCP local bridge: glyphs, armour, beam ring, pylon, complete eight-shard block and clear-centre neon arena background. Retained generator, bridge/bootstrap, actual preview, exact tool/source hashes, independent geometry reports and repeat-export hash evidence.
+- Why: Follow the user's request to author level assets and background in Blender MCP. Cell Fracture is unavailable, so the documented complete eight-octant path is explicit; it is not presented as 14 fracture cells.
+- Validation: Six GLBs total 3,320 triangles / 194,488 bytes; all passed Khronos with zero errors/warnings and independent volume/pivot/watertight/axis/stage checks. Three asset-checker tests passed. Two actual MCP regenerations produced identical GLB hashes. Docs checks passed.
+- Limits: Asset correctness is separate from GPU performance and human/live-game evidence. The arena and source scene contain no camera imagery or external downloaded models.
+
 ## 2026-10-25T01:38:56+05:30 — Dynamic song arrangements and attributed dataset input
 
 - Changed: Added real continuous 10 s fade-in / 60 s highlight / 10 s fade-out editing, raised-cosine gains, exact source/WAV/PCM receipts and fresh derivative chart generation. Added eight attributed independent COCO upper-body annotations and a bounded, hash-verified replay adapter with strict topology/clock validation, no fingers, no depth and no invented temporal motion.
 - Why: Follow the user's dataset-first trial and dynamic short-song direction while retaining all three full originals. A continuous source window avoids hidden hard splices; the highlight is a disclosed energy/onset heuristic.
 - Validation: Full worktree check passed typecheck/lint/250 assertions/build; 52 targeted runtime/dataset assertions passed. Real Chrome arrangement harness passed 9 checks across three songs. The pending app integration completed an actual 80 s Pamgaea trial to results with 131 Miss and zero fabricated hits; UI integration is committed separately next.
 - Limits: No chorus-quality, live gesture or trained-tracker claim. Independent stills have no gesture labels; training preflight is separate research work.
-
-## <actual timestamp> — <short change title>
-
-- Changed: <feature or files changed>
-- Why: <reason for the change>
-- Validation: <commands or manual checks actually run, with results>
-- Limitations: <known issues or "None identified in these checks">
-```
 
 ## 2026-10-25T01:16:05+05:30 — Bounded tracking and head-to-hips input
 

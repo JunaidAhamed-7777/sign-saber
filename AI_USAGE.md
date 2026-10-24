@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Blender MCP level assets
+
+- A dedicated agent used the verified official Blender MCP add-on in a fresh isolated Blender 5.2.2 instance to author the level assets/background, validate exported geometry and retain reproducibility evidence. Cell Fracture absence and the complete eight-shard fallback are explicit; no existing user scene was changed.
+
 ## 2026-10-25 — Arrangements and annotated dataset trial
 
 - Codex implemented and independently reviewed real derivative audio/chart generation and strict dataset fixture boundaries. Native audio checks passed; the browser ran a real 80 s edited level to genuine zero-hit results from annotated still poses. No hand gestures, temporal recording or successful model tracking was invented.

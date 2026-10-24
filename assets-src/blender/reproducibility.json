@@ -1,0 +1,33 @@
+{
+  "recordedAt": "2026-10-24T19:59:51.635Z",
+  "scope": "Two actual official BlenderMCP execute_code authoring runs of the same generator in Blender5.2.2LTS",
+  "blender": "5.2.2 LTS",
+  "sourceGeneratorSha256": "d009e0db23f35ca4a62c59fd540727674ca78f12004f575bdf92f72577c405ed",
+  "stableGlbHashes": true,
+  "assets": [
+    {
+      "id": "block_fractured",
+      "sha256": "451d4f4e58d2a7410269e20ee7d93ec45f3035afbeecb8040a269c47b74d629f"
+    },
+    {
+      "id": "armor",
+      "sha256": "b4773b272d113383e793d6a29f8bd1ee229faf29721b1021652b82bb86f1c600"
+    },
+    {
+      "id": "beam_ring",
+      "sha256": "b1e0765d523d6877ddea8e1b70ed9c083007f35b657a413c901c0105504c5c1f"
+    },
+    {
+      "id": "glyphs",
+      "sha256": "3a22813916981033a71371aa455a2063a30b36e74b8bc88b7bfb49f7207a1d0c"
+    },
+    {
+      "id": "pylon",
+      "sha256": "4afdb16a007e8651c7feae6f7f67b5fd3806c7c15d7bbd9dc525d512cf63c08d"
+    },
+    {
+      "id": "arena_environment",
+      "sha256": "2ebfd7cb9645da95bd41b504317a8092b60512539b77539191a7e1979d748045"
+    }
+  ]
+}

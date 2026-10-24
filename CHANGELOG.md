@@ -6,6 +6,37 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:10:13+05:30 — Recheck issue #1 after the new renderer integration
+
+- Changed: Normally merged main `cfdcc40` into the issue branch, retained both new controlled build/browser receipts, and updated docs16 with the current chunk table and actual first-load waterfall. No additional application code was needed; the existing groups still satisfy the budget with the new effects.
+- Why: New renderer/postprocessing work landed before the PR. The final combined application needed fresh proof rather than relying on the earlier source.
+- Validation: Full `npm run check` passed (typecheck/lint, 367 assertions/48 suites, build without the size warning, three budget regressions). The unsplit baseline still warns; current split bytes and gzip are below. Actual `npm run preview -- --port 4181` completed both source-labelled trials/results/Songs with empty runtime console/CSP logs. Root docs and source whitespace checks are rerun before this evidence commit.
+- Limits: Tested application source `74325fa783b0fadac7a96d704f87a0abfe39b7ac`; evidence-only follow-up commit is separate. Browser evidence uses the same Chrome155/Windows/headless SwiftShader/Node26.8.1/cache-disabled/1440×900 loopback method as the earlier entry. Single busy-host runs establish topology and functionality, not performance gains or webcam success.
+
+| Build | File | Raw bytes | Gzip bytes |
+| --- | --- | ---: | ---: |
+| Before | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| Before | `index-ClNtYw27.js` | 1283738 | 383171 |
+| Before | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+| After | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| After | `index-CqGRHEWt.js` | 441271 | 160410 |
+| After | `react-CTym4sTV.js` | 218790 | 67563 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 599 | 368 |
+| After | `three-C_uIrsIZ.js` | 352336 | 84187 |
+| After | `three-CqvON9a6.js` | 223814 | 59453 |
+| After | `three-CvPEqDHz.js` | 48975 | 14256 |
+| After | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+
+| Build | Script | Request start → finish (ms) |
+| --- | --- | ---: |
+| Before | `index-ClNtYw27.js` | 4566.72 → 5096.78 |
+| After | `index-CqGRHEWt.js` | 22.90 → 156.89 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 23.41 → 33.26 |
+| After | `react-CTym4sTV.js` | 23.49 → 165.22 |
+| After | `three-CqvON9a6.js` | 23.55 → 177.13 |
+| After | `three-C_uIrsIZ.js` | 23.65 → 212.36 |
+| After | `three-CvPEqDHz.js` | 23.71 → 159.68 |
+
 ## 2026-10-25T03:57:05+05:30 — Split production JavaScript and enforce its budget (#1)
 
 - Changed: `app/vite.config.ts` groups React and size-bounded Three.js modules through `build.rolldownOptions.output.codeSplitting`; the runtime remains unchanged. New dependency-free `scripts/check-bundle.mjs` reads emitted JS/worker bytes and gzip sizes, fails above the registered 500000-byte per-file limit, and rejects absent builds. `app/package.json` runs its parser/boundary/CLI tests and budget after build in `npm run check`. README documents the real command; [docs16](docs/16-performance-budget.md#bundle-size-budget) registers build-only limits and retained measurements.

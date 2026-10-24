@@ -46,6 +46,36 @@ Two preliminary probe failures are retained: [audio-unlock predicate](evidence/2
 
 After normally integrating main `1fa1827`, `npm run check` passed again (363 application assertions plus three budget tests) with no build warning. Its final entry is `index-D9QxVp5f.js` at 254784 raw/79408 gzip bytes; the other seven JS files retain the sizes above. The controlled browser comparison remains explicitly tied to `ad41466`, rather than being relabelled as a browser run of the newer source.
 
+### Latest-main bundle recheck — 2026-10-25T04:10:13+05:30
+
+After main's new arena/postprocessing work landed, it was normally integrated at `74325fa783b0fadac7a96d704f87a0abfe39b7ac` (main parent `cfdcc40`). A new controlled baseline used a temporary config copied verbatim from `origin/main:app/vite.config.ts`; the temporary file was removed, and the after build used the versioned split configuration. Application source was identical in this pair. The [integrated before](evidence/2026-10-25-bundle-before-integrated.json) and [integrated after](evidence/2026-10-25-bundle-after-integrated.json) JSON retain actual request timing/status and byte counts. Same browser/environment/cache method as above; worktrees were dirty from evidence/config files. This pair supersedes the earlier sizes for current source; it does not erase that earlier result.
+
+| Build | File | Raw bytes | Gzip bytes |
+| --- | --- | ---: | ---: |
+| Before | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| Before | `index-ClNtYw27.js` | 1283738 | 383171 |
+| Before | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+| After | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| After | `index-CqGRHEWt.js` | 441271 | 160410 |
+| After | `react-CTym4sTV.js` | 218790 | 67563 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 599 | 368 |
+| After | `three-C_uIrsIZ.js` | 352336 | 84187 |
+| After | `three-CqvON9a6.js` | 223814 | 59453 |
+| After | `three-CvPEqDHz.js` | 48975 | 14256 |
+| After | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+
+| Build | Script | Request start → finish (ms) |
+| --- | --- | ---: |
+| Before | `index-ClNtYw27.js` | 4566.72 → 5096.78 |
+| After | `index-CqGRHEWt.js` | 22.90 → 156.89 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 23.41 → 33.26 |
+| After | `react-CTym4sTV.js` | 23.49 → 165.22 |
+| After | `three-CqvON9a6.js` | 23.55 → 177.13 |
+| After | `three-C_uIrsIZ.js` | 23.65 → 212.36 |
+| After | `three-CvPEqDHz.js` | 23.71 → 159.68 |
+
+The current unsplit main entry is 1283738 bytes; every emitted split JS chunk is below 500000 bytes (largest 441271). The new-source `npm run check` passed typecheck, lint, all 367 assertions in 48 suites, production build without the size warning, and all three budget regressions. The actual prepared preview again completed the dataset and synthetic sessions and returned to Songs; detailed counts are in the JSON. Runtime console and CSP security logs were empty. No FPS, loading-speed, camera or release-gate claim is made.
+
 ## Main-thread frame budget
 
 GPU execution overlaps CPU submission. Leave browser/compositor headroom, but measure it rather than assuming a fixed overhead.

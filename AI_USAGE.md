@@ -6,7 +6,7 @@ The development workflow also occasionally includes collaboration with **Devin**
 
 ## 2026-10-25 — Issue #1 bundle budget
 
-- Codex measured the unchanged bundle and browser requests, configured Rolldown chunk groups, implemented the dependency-free emitted-byte gate and regression tests, and documented actual sizes/waterfalls and production-preview dataset/synthetic results. No gameplay changes or runtime performance gains are claimed.
+- Codex measured the unchanged bundle and browser requests, configured Rolldown chunk groups, implemented the dependency-free emitted-byte gate and regression tests, and documented actual sizes/waterfalls and production-preview dataset/synthetic results. No gameplay changes or runtime performance gains are claimed. After new renderer work landed on main, Codex normally integrated it and repeated the actual bundle/browser checks and full 367-assertion application check.
 
 ## 2026-10-25 — Fixed-tier integration and requested handoff
 

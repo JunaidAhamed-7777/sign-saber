@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatorVersion": 3,
+  "generatorVersion": 4,
   "song": {
     "title": "Pamgaea",
     "artist": "Kevin MacLeod",
@@ -8,8 +8,8 @@
     "sourceHash": "9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586",
     "audioUrl": "/assets/tracks/pamgaea/audio.mp3",
     "durationMs": 168510.6575963719,
-    "bpm": 94.1,
-    "beatOffsetMs": 225.87453981917065
+    "bpm": 94,
+    "beatOffsetMs": 46.93774864355339
   },
   "difficulty": "easy",
   "approachMs": 2600,
@@ -820,49 +820,49 @@
     {
       "id": 0,
       "t": 20470.975056689345,
-      "durationMs": 956.4293304994687,
+      "durationMs": 957.4468085106383,
       "kind": "wallLeft"
     },
     {
       "id": 1,
       "t": 40876.32653061225,
-      "durationMs": 956.4293304994687,
+      "durationMs": 957.4468085106383,
       "kind": "wallRight"
     },
     {
       "id": 2,
       "t": 61302.53968253968,
-      "durationMs": 956.4293304994687,
+      "durationMs": 957.4468085106383,
       "kind": "wallLeft"
     },
     {
       "id": 3,
       "t": 81729.88662131519,
-      "durationMs": 956.4293304994687,
+      "durationMs": 957.4468085106383,
       "kind": "wallRight"
     },
     {
       "id": 4,
       "t": 102121.36054421769,
-      "durationMs": 956.4293304994687,
+      "durationMs": 957.4468085106383,
       "kind": "wallLeft"
     },
     {
       "id": 5,
       "t": 122589.20634920635,
-      "durationMs": 956.4293304994687,
+      "durationMs": 957.4468085106383,
       "kind": "wallRight"
     },
     {
       "id": 6,
       "t": 143002.13151927438,
-      "durationMs": 956.4293304994687,
+      "durationMs": 957.4468085106383,
       "kind": "wallLeft"
     },
     {
       "id": 7,
       "t": 163398.820861678,
-      "durationMs": 956.4293304994687,
+      "durationMs": 957.4468085106383,
       "kind": "wallRight"
     }
   ],
@@ -908,11 +908,6 @@
       "intensity": 0.7121269106864929
     },
     {
-      "t": 6577.777777777777,
-      "kind": "kick",
-      "intensity": 0.8973658680915833
-    },
-    {
       "t": 6904.716553287983,
       "kind": "kick",
       "intensity": 0.6064541339874268
@@ -921,11 +916,6 @@
       "t": 8000.272108843537,
       "kind": "kick",
       "intensity": 0.8233364224433899
-    },
-    {
-      "t": 8319.36507936508,
-      "kind": "kick",
-      "intensity": 1
     },
     {
       "t": 8809.705215419503,
@@ -1846,11 +1836,6 @@
       "t": 143643.53741496598,
       "kind": "kick",
       "intensity": 1
-    },
-    {
-      "t": 143962.358276644,
-      "kind": "kick",
-      "intensity": 0.637148380279541
     },
     {
       "t": 144444.67120181405,

@@ -3,7 +3,7 @@
  *
  * Responsibility: photo reel for the dataset camera. Draws locally prepared, attributed COCO CC-BY
  * upper-body crops (scripts/prepare-dataset-camera.mjs; ignored by Git) in a deterministic order.
- * Spec: docs/05-tracking-pipeline.md §1.4
+ * Spec: docs/05-tracking-pipeline.md §1.3
  * Inputs: /dataset-camera/manifest.json + hash-pinned JPEGs; ReelClock
  * Outputs: one drawn 16:9 frame per paint and the annotation truth it depicts
  *

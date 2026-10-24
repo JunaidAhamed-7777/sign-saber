@@ -31,8 +31,9 @@ function Status() {
   const replay = useStore((s) => s.replay);
   const camera = useStore((s) => s.camera);
   const ready = useStore((s) => s.trackingReady);
-  const tone = replay ? 'dataset' : camera.calibrationValid ? (ready ? 'active' : 'warning') : 'idle';
   const datasetCamera = useStore((s) => s.cameraSource === 'dataset');
+  const tone =
+    replay || datasetCamera ? 'dataset' : camera.calibrationValid ? (ready ? 'active' : 'warning') : 'idle';
   return (
     <span className={`camera-status ${tone}`} role="status">
       <i aria-hidden="true" />

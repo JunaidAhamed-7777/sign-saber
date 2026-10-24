@@ -284,7 +284,7 @@ class Lane {
     this.log(`click ${id}`);
   }
   async screenshot(step) {
-    const file = `${prefix}-${this.name}-${step}.png`;
+    const file = `${prefix}-${this.name}-${step}.jpg`;
     await writeFile(path.join(outDir, file), await this.page.screenshot());
     this.screenshots.push(file);
     this.log(`screenshot ${step}`, { file });
@@ -413,6 +413,12 @@ async function playLane(lane, cameraControl, downloadDir) {
     lane.fail("calibration framing", error, error.snapshot);
     outcome.calibration = "framing-not-ready";
     await lane.screenshot("setup-not-ready");
+    outcome.appEvidence = await lane.page.evaluate(
+      "window.__signSaberDiagnostics.evidence()",
+    );
+    outcome.appEvidenceVia =
+      "read-only diagnostics hook (setup failed before the Settings export is reachable)";
+    await lane.click("camera-cancel").catch(() => {});
     return outcome;
   }
   await lane.screenshot("setup-preview");
@@ -626,9 +632,10 @@ async function playLane(lane, cameraControl, downloadDir) {
 /** Setup-preview only: cycle all photos by stream time and read the in-app evaluation. */
 async function sweepLane(lane, count) {
   await lane.waitFor("SELECT", (s) => s.state === "SELECT", 30000);
-  const start = Date.now();
+  // The sweep reel clock starts when the dataset camera opens; time the sweep from the accepted attempt.
+  let start = Date.now();
   await lane.click("camera-dataset");
-  const preview = await lane.waitFor(
+  let preview = await lane.waitFor(
     "first tracking result",
     (s) => s.camera.state === "error" || s.tracking.returned > 0,
     60000,
@@ -644,14 +651,15 @@ async function sweepLane(lane, count) {
       { error: preview.camera.error, tracking: preview.tracking },
     ];
     await delay(1000);
+    start = Date.now();
     await lane.click("camera-dataset");
-    const retry = await lane.waitFor(
+    preview = await lane.waitFor(
       "first tracking result (retry)",
       (s) => s.camera.state === "error" || s.tracking.returned > 0,
       60000,
     );
-    if (retry.camera.state === "error")
-      throw new Error(`Dataset camera failed twice: ${retry.camera.error}`);
+    if (preview.camera.state === "error")
+      throw new Error(`Dataset camera failed twice: ${preview.camera.error}`);
   }
   lane.log("preview", {
     note: `${preview.tracking.delegate} · ${preview.cameraStage}`,
@@ -890,6 +898,10 @@ async function main() {
       );
       const lane = new Lane(name, page, chrome.browser);
       const record = {
+        harnessLane:
+          name === "fake-webcam"
+            ? "chrome-fake-webcam-dataset"
+            : "dataset-camera",
         url: `/${query}`,
         browserArgs: extra.map((arg) => arg.replace(temp, "<temp>")),
         gpuProgramCache:

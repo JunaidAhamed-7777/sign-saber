@@ -656,7 +656,9 @@ export class GameRuntime {
       this.player!.prepare(this.buffer!);
       const map = useStore.getState().map!;
       this.renderer.setApproachMs(map.approachMs);
-      this.trace.reset(`dataset-static-annotation-trial epoch ${this.machine.epoch}`);
+      this.trace.reset(
+        `${source === 'performer' ? 'synthetic-performer-logic-replay' : 'dataset-static-annotation-trial'} epoch ${this.machine.epoch}`,
+      );
       this.session = new GameSession(map, {
         songClock: this.player!.clock,
         epoch: this.machine.epoch,

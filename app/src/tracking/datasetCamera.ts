@@ -4,7 +4,7 @@
  * Responsibility: a labelled "dataset camera": a real MediaStream from canvas.captureStream()
  * whose frames come from a pluggable reel. From the stream onward the live path is unchanged
  * (video element, rVFC, ImageBitmap crop, worker, MediaPipe, calibration, judgement).
- * Spec: docs/05-tracking-pipeline.md §1.4; evidence lane `dataset-camera` in docs/24.
+ * Spec: docs/05-tracking-pipeline.md §1.3; evidence lane `dataset-camera` in docs/24.
  * Inputs: a DatasetReel and an optional heard-song-time provider
  * Outputs: MediaStream frames; a bounded draw timeline used to attribute captures to known truth
  *

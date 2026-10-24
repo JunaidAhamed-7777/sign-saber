@@ -904,7 +904,8 @@ button:disabled,
   text-transform: uppercase;
   white-space: nowrap;
 }
-.song-copy .song-tag.loading {
+.song-copy .song-tag.loading,
+.song-copy .song-tag.cut {
   color: var(--cyan);
 }
 .song-copy .song-tag.failed {
@@ -1619,7 +1620,17 @@ button:disabled,
   box-shadow: 0 0 10px var(--cyan);
 }
 
-/* ---------- BOOT ---------- */
+/* ---------- BOOT: opaque void until the renderer and catalog are ready ---------- */
+.application.state-boot {
+  background: radial-gradient(
+    ellipse at 50% 45%,
+    color-mix(in srgb, var(--cyan) 7%, var(--void)) 0,
+    var(--void) 62%
+  );
+}
+.state-boot .app-header {
+  visibility: hidden;
+}
 .boot {
   margin: auto;
   display: flex;
@@ -1628,7 +1639,7 @@ button:disabled,
   gap: 18px;
   text-align: center;
   padding: 24px;
-  width: min(520px, 100%);
+  width: min(760px, 100%);
 }
 .boot-mark svg {
   width: 112px;
@@ -1657,6 +1668,7 @@ button:disabled,
   }
 }
 .boot-title {
+  white-space: nowrap;
   font-family: var(--display);
   font-size: clamp(40px, 5vw, 72px);
   font-weight: 800;

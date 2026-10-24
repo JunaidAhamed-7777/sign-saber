@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T03:34:38+05:30 — Opaque boot splash and arrangement source card
+
+- Changed: BOOT is now an opaque void splash (hidden header, unwrapped wordmark, indeterminate bar); `index.html` shows a static pre-boot mark until React mounts and its description no longer claims full-body play. After an 80-second cut is prepared (which clears the bundled selection), the source song card is marked “Arrangement ready” and the ready header keeps the source cover/artist.
+- Why: Screenshots showed a blank page before mount, a translucent boot overlay over the arena and no visible selection after a dataset trial returned to Songs.
+- Validation: `npm run check` passed on rerun (two arrangement/gapless tests timed out once under parallel-agent CPU load, then all 324 passed); headless Chrome boot (held manifest), compact settings/calibration/HUD (1024×640, 800×600) and 1920×1080 HUD/return-to-songs screenshots were inspected.
+- Limits: Presentation-only; no live camera or hand-navigation verification.
+
 ## 2026-10-25T03:28:35+05:30 — Song card status line, upload heading and live-start label
 
 - Changed: Loading/failed status now replaces the song card's meta line (no title truncation); the selected card shows a compact check badge. The upload page uses its own heading with a visually hidden input label, the live camera action reads “Start live play”, and the decorative keyboard glyph was removed from native-only notes.

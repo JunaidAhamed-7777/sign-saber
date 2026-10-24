@@ -4,10 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
-    <meta
-      name="description"
-      content="Sign Saber â€” controller-free, full-body 3D rhythm combat in your browser."
-    />
+    <meta name="description" content="Sign Saber — upper-body rhythm combat in your browser." />
     <title>Sign Saber</title>
     <style>
       /* Minimal pre-boot styles; the real design tokens live in src/ui (docs/14-ui-ux.md). */
@@ -33,12 +30,40 @@
       #hud > * {
         pointer-events: auto;
       }
+      /* Static pre-boot mark until React replaces #hud's children; no progress is implied. */
+      .preboot {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-content: center;
+        gap: 14px;
+        text-align: center;
+        font:
+          800 clamp(32px, 4vw, 56px) / 1 Orbitron,
+          system-ui,
+          sans-serif;
+        letter-spacing: 0.08em;
+      }
+      .preboot svg {
+        justify-self: center;
+        width: 72px;
+        height: 72px;
+        fill: none;
+        stroke: #19f5ff;
+        stroke-width: 5;
+        stroke-linecap: round;
+      }
     </style>
   </head>
   <body>
     <!-- WebGL canvas is created by src/render/renderer.ts inside #app. React mounts the DOM overlay into #hud. -->
     <div id="app"></div>
-    <div id="hud"></div>
+    <div id="hud">
+      <div class="preboot" aria-hidden="true">
+        <svg viewBox="0 0 120 120"><path d="M30 90L90 30M30 62L62 30M58 90L90 58" /></svg>
+        SIGN SABER
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -7,7 +7,8 @@ import { Button, MenuShell, RailHeading } from '../components/MenuShell';
 import type { MenuPage } from '../components/MenuShell';
 import { CoverArt } from '../components/CoverArt';
 import { duration, strings as t } from '../strings';
-type TrackState = 'idle' | 'selected' | 'loading' | 'failed';
+/** `cut` marks the bundled source of the currently prepared 80-second arrangement. */
+type TrackState = 'idle' | 'selected' | 'loading' | 'failed' | 'cut';
 function SongCard({
   runtime,
   track,
@@ -22,9 +23,11 @@ function SongCard({
       ? t.trackLoadingTag
       : state === 'failed'
         ? t.trackFailedTag
-        : state === 'selected'
-          ? t.selected
-          : '';
+        : state === 'cut'
+          ? t.arrangementReady
+          : state === 'selected'
+            ? t.selected
+            : '';
   return (
     <Button
       runtime={runtime}
@@ -37,7 +40,7 @@ function SongCard({
       <span className="song-copy">
         <strong>{track.title}</strong>
         <span>{track.artist}</span>
-        {state === 'loading' || state === 'failed' ? (
+        {state === 'loading' || state === 'failed' || state === 'cut' ? (
           <small className={`song-tag ${state}`}>{tag}</small>
         ) : (
           <small>
@@ -49,7 +52,7 @@ function SongCard({
           </small>
         )}
       </span>
-      {state === 'selected' && (
+      {(state === 'selected' || state === 'cut') && (
         <span className="song-check" aria-label={tag}>
           <span aria-hidden="true">✓</span>
         </span>
@@ -85,9 +88,22 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
     })),
   );
   const selected = s.library.find((track) => track.slug === s.selectedSlug);
+  // A prepared cut replaces the selection with its edited audio; keep its bundled source identifiable.
+  const cutSource =
+    !s.selectedSlug && s.arrangement?.ready && s.map
+      ? s.library.find((track) => track.title === s.arrangement?.sourceTitle)
+      : undefined;
   const selectionFailed = !!s.selectedSlug && !s.map && !s.loading && !!s.error;
   const trackState = (slug: string): TrackState =>
-    slug !== s.selectedSlug ? 'idle' : s.loading ? 'loading' : selectionFailed ? 'failed' : 'selected';
+    slug === cutSource?.slug
+      ? 'cut'
+      : slug !== s.selectedSlug
+        ? 'idle'
+        : s.loading
+          ? 'loading'
+          : selectionFailed
+            ? 'failed'
+            : 'selected';
   const cards = s.library.map((track) => (
     <SongCard key={track.slug} runtime={runtime} track={track} state={trackState(track.slug)} />
   ));
@@ -239,7 +255,7 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
     </p>
   );
   const title = selected?.title ?? s.map?.song.title ?? t.selectTrack;
-  const coverSource = selected ?? { slug: title, title };
+  const coverSource = selected ?? cutSource ?? { slug: title, title };
   const arrangementChip = s.arrangement?.active ? (
     <span className="chip busy-chip">
       {t.arrangementPreparing} · {Math.round(s.arrangement.fraction * 100)}%
@@ -258,7 +274,7 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
         {s.map ? (
           <p className="meta">
             {duration(s.map.song.durationMs)} · {s.map.notes.length} {t.notes}
-            {selected?.artist ? ` · ${selected.artist}` : ''}
+            {(selected ?? cutSource)?.artist ? ` · ${(selected ?? cutSource)!.artist}` : ''}
           </p>
         ) : selected ? (
           <p className="meta">{selected.artist}</p>

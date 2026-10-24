@@ -44,6 +44,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Limits: Bad cuts and misses are not split by type; no browser screenshot yet in this step.
 
 ## 2026-10-25T04:37:00+05:30 — Blade ribbons, hand particles and a cleaner shatter
+## 2026-10-25T04:47:08+05:30 — Browser check of the synthesized SFX in the performer trial
+
+- Changed: Documentation only (this entry).
+- Why: Record what the headless browser run of the new SFX wiring actually showed.
+- Validation: Production build served by `scripts/serve.mjs` in headless Chrome (48 kHz, reported output latency 40 ms), driven over CDP with trusted clicks: Pamgaea → Enable sound → hover three buttons → Watch synthetic performer, one Escape pause and Resume, run to results. A read-only page probe counted buffer starts by shape: uiEnable 1, uiHover 3, countNeutral 3 (scheduled exactly −2.000/−1.339/−0.673 s before song start; final tick rate 1.25), smash 69, slash 58, sparkle 130, glint 1, zap 4, poof 4, charge 4, combo 3 (rates 1–1.498), milestone 4 (rates 1–2), wallWarn 2 (scheduled ahead, panned −0.55 toward the left wall), dodge 2, resume 2, resultsHigh 1; hit pans spanned −0.55…0.55, jitter rates 1.01–1.05. Analyser taps measured peak 0.623 on the master output and 0.654 after the SFX limiter, with no full-scale samples. No console errors.
+- Limits: Headless output, nothing heard; analyser polling every 20 ms can miss short peaks. The Vite dev server could not be used for a long run because the pinned HMR socket fails and reloads the page. The second `resume` cue was not traced.
 
 ## 2026-10-25T04:36:52+05:30 — Original synthesized SFX set and audio feel wiring
 

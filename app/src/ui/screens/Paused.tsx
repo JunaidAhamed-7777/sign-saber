@@ -23,12 +23,19 @@ export function Paused({ runtime }: { runtime: GameRuntime }) {
   const warning = reason === 'tracking' || reason === 'audio' || reason === 'fatal';
   const blocked = !ready && reason !== 'fatal' && !runtime.datasetTrialActive;
   const resume = (
-    <Button runtime={runtime} id="resume" disabled={!ready || reason === 'fatal'} primary className="hero">
+    <Button
+      runtime={runtime}
+      id="resume"
+      disabled={!ready || reason === 'fatal'}
+      primary
+      className="hero"
+      autoFocus={ready && reason !== 'fatal'}
+    >
       {t.resume}
     </Button>
   );
   const songs = (
-    <Button runtime={runtime} id="songs">
+    <Button runtime={runtime} id="songs" autoFocus={!ready || reason === 'fatal'}>
       {t.quit}
     </Button>
   );

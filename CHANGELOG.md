@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T04:49:34+05:30 — Partial COCO + MPII run evaluated and exported
+
+- Changed: Compact dataset storage so worker processes no longer get a pickled copy of every index row (40.5 MB down to 12.9 MB per worker; items are byte-identical on 36 checked samples). Training now uses 1 DataLoader worker, and export checks the training contract instead of the raw config hash. STATUS.md/STATUS.json, training/README.md and README.md now record the partial run.
+- Why: The user asked to wrap up. The run was stopped at step 1,800 of 7,210 while the machine was memory-thrashing.
+- Validation: Full held-out evaluation (3,776 people, oracle crops): heatmap loss 0.00416 and pooled PCK@0.2 0.334 (COCO 0.393, MPII 0.310), compared with the untrained head (0.01808 / 0.016), the 3-step preflight (0.02128 / 0.014) and a mean-pose-in-crop guess (PCK 0.093). ONNX parity passed on 16 crops (1.8e-6). Unit tests pass 12/12.
+- Limits: This is a partial run: one epoch plus 358 batches, and the schedule never annealed. Results use oracle crops, with no detector and no browser or webcam evaluation. The model was not promoted, and the game keeps MediaPipe.
+
 ## 2026-10-25T04:01:41+05:30 — Shortened the full run under machine contention and allowed execution-only resume changes
 
 - Changed: The full COCO + MPII run (local upper-body-coco-mpii-9ep, launched 03:15 at below-normal priority) completed epoch 0 (frozen backbone, 1,442 steps) and was stopped deliberately at its saved epoch-1 boundary checkpoint. Resume now compares a training-contract hash that excludes only execution settings (`cpuThreads`, `dataLoaderWorkers`, `dataLoaderPrefetchFactor`, `checkpointEverySteps`, the default `epochs`, download settings) and records every changed key, the checkpoint's requested epochs/total steps and the new horizon. config.json now uses 2 DataLoader workers and a 5-epoch default.

@@ -6,6 +6,8 @@ This is a separate local, noncommercial research pipeline. The game continues to
 
 [PREFLIGHT_EVIDENCE.json](PREFLIGHT_EVIDENCE.json) records the completed **three-step** CPU preflight over 24 real COCO photo crops, with all 20,121 eligible training records available and evaluation on 919 validation people. Training batch loss fell, while held-out mean heatmap loss worsened from 0.0174751 to 0.0202273; this establishes pipeline execution and does not establish useful pose accuracy. Export parity on eight real held-out crops passed with maximum heatmap difference 0.000001185 and zero decoded coordinate difference. The receipt audit found zero identical acquired-image hashes across the COCO train/validation partitions. Full multi-dataset training and deployment remain pending.
 
+A COCO + MPII run was stopped at step 1,800 of 7,210, which is 25% of the plan. Its held-out PCK@0.2 is 0.334, compared with 0.016 untrained. It is not production quality; see [STATUS.md](STATUS.md). `report.py` writes per-dataset/per-joint held-out reports and local overlays, for example: `training/.venv/Scripts/python.exe training/report.py --checkpoint final=training/runs/NAME/latest.pt --untrained --output training/runs/NAME/report`.
+
 ## What is trainable
 
 [upper_body.py](upper_body.py) trains a real RGB network: an official torchvision MobileNetV3-Small ImageNet backbone and a new 13-channel heatmap head. The canonical points are nose, eyes, ears, shoulders, elbows, wrists and hips. No knee/ankle supervision is used. Missing labels receive zero loss; labelled occluded joints receive the configured lower weight. MPII's neck and head-top are **not** relabelled as nose. Finger joints need separate hand annotations and a separate hand localization model.

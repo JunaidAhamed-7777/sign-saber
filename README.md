@@ -50,6 +50,16 @@ Camera setup lives in Settings, independently of song choice. It requires a deli
 
 Bounded buffers, capture-time scoring, palm-to-point menu navigation, gesture hysteresis, charge, torso walls and recovery are implemented. Native camera setup reached GPU preview and Cancel retained browsing. **No consenting person has yet completed matching calibration or a verified live scored hit.** Dataset/synthetic evidence cannot establish webcam accuracy, handedness or latency.
 
+### Dataset camera (testing aid, not a webcam)
+
+The dataset camera streams attributed COCO CC-BY photos through the **unchanged live camera path** (video element, worker, MediaPipe, calibration, gestures, judgement) as a real canvas `MediaStream`. It is labelled "Dataset camera — not a webcam" everywhere and exports the `dataset-camera` evidence lane. Photos are prepared locally from the ignored research data and are never committed:
+
+```powershell
+node scripts/prepare-dataset-camera.mjs --coco training/data/coco2017
+```
+
+Then open the app with `?camera=dataset` (Set up camera uses it) or choose **Use dataset camera** in Settings. `?reel=sweep` cycles every photo during setup preview; `?stats=1` adds diagnostics export. Still photos contain no swings or gestures, so play produces misses. `node scripts/dataset-camera-trial.mjs` drives the real UI through Chrome DevTools in three lanes: the in-app dataset camera, a setup-preview sweep, and Chrome's fake capture device fed a Y4M of the same reel (the page's own `getUserMedia` sees it as a webcam). It needs Chrome (or `BROWSER_BINARY`), ffmpeg and prepared models; see [the trial evidence](docs/evidence/2026-10-25-dataset-camera-trial.md) for results and limits.
+
 ## Assets and content
 
 - [Starter music registry](app/public/assets/tracks/README.md): eight full Kevin MacLeod songs, unchanged CC-BY 4.0 MP3s, exact credits/acquisition receipts, measured metadata, 24 maps and hashes. The five additions span catalog tempos of 92–140 BPM; catalog tempo is selection metadata, not a confident detector result. Uncertain analysis stays labelled.
@@ -68,7 +78,7 @@ npm run check
 npm run beatmaps
 ```
 
-`check` runs typecheck, lint, asserted Vitest suites and production build; it no longer permits empty test suites. The integrated worktree passed 250 assertions. `beatmaps` is a real shared-DSP generation/validation command and requires ffmpeg for canonical PCM. Bundled MP3 iTunSMPB trim is honoured before analysis; browser source-zero/resampling checks caught and corrected real errors.
+`check` runs typecheck, lint, asserted Vitest suites and production build; it no longer permits empty test suites. The eight-song generator-v3 checkpoint passed 502 assertions, including integrity/readability/full synthetic replays of all 24 charts; [its evidence](docs/evidence/2026-10-25-eight-song-library.md) distinguishes these checks from human/live-camera proof. `beatmaps` is a real shared-DSP generation/validation command and requires ffmpeg for canonical PCM. Bundled MP3 iTunSMPB trim is honoured before analysis; browser source-zero/resampling checks caught and corrected real errors.
 
 From the root:
 
@@ -77,6 +87,7 @@ node --test scripts/check-docs.test.mjs
 node scripts/check-docs.mjs
 node --test scripts/serve.test.mjs
 node --test scripts/check-model-assets.test.mjs
+node --test scripts/prepare-dataset-camera.test.mjs
 node scripts/check-model-assets.mjs
 node scripts/check-audio-resampling.mjs
 node scripts/check-audio-resampling.mjs --arrangement

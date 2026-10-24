@@ -13,6 +13,9 @@ import { handTemplate } from '../src/performer/geometry';
 import { TRACK_TARGET_HZ, WINDOW_PERFECT_MS } from '../src/core/constants';
 
 const tracks = new URL('../public/assets/tracks/', import.meta.url);
+const slugs = JSON.parse(readFileSync(new URL('manifest.json', tracks), 'utf8')).tracks.map(
+  (track) => track.slug,
+);
 const loadMap = (slug, difficulty) =>
   JSON.parse(readFileSync(new URL(`${slug}/${difficulty}.json`, tracks), 'utf8'));
 const FRAME_MS = 1000 / TRACK_TARGET_HZ;
@@ -93,13 +96,14 @@ describe('synthetic performer hand templates', () => {
 
 // Each case replays a full chart at 30 Hz; allow for a busy CI/host CPU.
 describe('synthetic performer logic replay on bundled charts', { timeout: 60000 }, () => {
-  it.each([
-    ['pamgaea', 'easy', 0.05],
-    ['pamgaea', 'normal', 0.05],
-    ['electro-cabello', 'normal', 0.1],
-    ['cipher', 'normal', 0.1],
-    ['cipher', 'hard', 0.2],
-  ])(
+  // Generator v3 budgets each hand's recovery, so every planned chart note is reachable on Easy and
+  // Normal; Hard keeps a small allowance for future denser charts.
+  const maxUnplayable = { easy: 0, normal: 0, hard: 0.02 };
+  it.each(
+    slugs.flatMap((slug) =>
+      ['easy', 'normal', 'hard'].map((difficulty) => [slug, difficulty, maxUnplayable[difficulty]]),
+    ),
+  )(
     '%s %s: planned notes are hit on time through the real input pipeline and judge',
     (slug, difficulty, maxUnplayable) => {
       const map = loadMap(slug, difficulty);

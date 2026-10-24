@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatorVersion": 2,
+  "generatorVersion": 3,
   "song": {
     "title": "Marty Gots a Plan",
     "artist": "Kevin MacLeod",
@@ -15,1240 +15,859 @@
   "approachMs": 2600,
   "notes": [
     {
-      "id": 0,
-      "t": 299.8639455782313,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 1,
       "t": 1180.7256235827663,
       "type": "slash",
-      "col": 1,
+      "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 0
     },
     {
-      "id": 2,
       "t": 3458.548752834467,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
+      "type": "beam",
+      "col": 0,
+      "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 1
     },
     {
-      "id": 3,
-      "t": 4121.904761904762,
-      "type": "slash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 4,
       "t": 5015.419501133787,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 2
     },
     {
-      "id": 5,
       "t": 6903.174603174603,
       "type": "smash",
-      "col": 2,
+      "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 3
     },
     {
-      "id": 6,
       "t": 8027.800453514739,
       "type": "slash",
-      "col": 1,
+      "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 4
     },
     {
-      "id": 7,
       "t": 9864.761904761905,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 8,
-      "t": 10332.517006802722,
-      "type": "slash",
-      "col": 0,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 9,
-      "t": 10931.201814058957,
       "type": "smash",
-      "col": 2,
+      "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 5
     },
     {
-      "id": 10,
-      "t": 13763.809523809525,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 11,
-      "t": 15377.596371882086,
+      "t": 11865.30612244898,
       "type": "slash",
       "col": 3,
-      "row": 1,
+      "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 6
     },
     {
-      "id": 12,
       "t": 16107.074829931971,
-      "type": "slash",
+      "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 7
     },
     {
-      "id": 13,
       "t": 17181.723356009068,
-      "type": "slash",
+      "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 8
     },
     {
-      "id": 14,
-      "t": 17821.40589569161,
-      "type": "smash",
-      "col": 1,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 15,
       "t": 19719.954648526076,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 16,
-      "t": 20632.426303854874,
       "type": "slash",
       "col": 1,
-      "row": 1,
+      "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 9
     },
     {
-      "id": 17,
-      "t": 21263.764172335603,
-      "type": "smash",
+      "t": 21067.392290249434,
+      "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 0.7152281403541565,
+      "id": 10
     },
     {
-      "id": 18,
       "t": 22338.276643990932,
-      "type": "slash",
-      "col": 0,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 19,
-      "t": 24038.59410430839,
       "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 20,
-      "t": 25140.362811791383,
-      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 11
     },
     {
-      "id": 21,
-      "t": 25773.696145124715,
-      "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 22,
-      "t": 27444.39909297052,
+      "t": 23820.408163265307,
       "type": "slash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 12
     },
     {
-      "id": 23,
-      "t": 28564.39909297052,
-      "type": "slash",
-      "col": 1,
+      "t": 25773.696145124715,
+      "type": "beam",
+      "col": 0,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 13
+    },
+    {
+      "t": 27444.39909297052,
+      "type": "smash",
+      "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 14
     },
     {
-      "id": 24,
       "t": 30486.031746031746,
       "type": "smash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 25,
-      "t": 30904.21768707483,
-      "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 15
     },
     {
-      "id": 26,
-      "t": 31554.104308390022,
+      "t": 32012.562358276646,
       "type": "slash",
-      "col": 3,
+      "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 16
     },
     {
-      "id": 27,
       "t": 33861.5873015873,
       "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 28,
-      "t": 34958.04988662132,
-      "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 17
     },
     {
-      "id": 29,
-      "t": 37335.14739229025,
+      "t": 35452.01814058957,
       "type": "slash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 18
     },
     {
-      "id": 30,
       "t": 37721.99546485261,
       "type": "smash",
       "col": 1,
-      "row": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 19
     },
     {
-      "id": 31,
-      "t": 38373.92290249433,
-      "type": "smash",
+      "t": 38866.666666666664,
+      "type": "slash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 20
     },
     {
-      "id": 32,
       "t": 40330.702947845806,
       "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 33,
-      "t": 41649.52380952381,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 34,
-      "t": 42302.857142857145,
-      "type": "slash",
       "col": 1,
-      "row": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 21
     },
     {
-      "id": 35,
       "t": 42885.85034013605,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 36,
-      "t": 44602.448979591834,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 37,
-      "t": 45712.4716553288,
       "type": "slash",
-      "col": 1,
+      "col": 3,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 22
     },
     {
-      "id": 38,
-      "t": 48016.41723356009,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 39,
-      "t": 49760.272108843536,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 40,
-      "t": 50442.81179138322,
-      "type": "slash",
+      "t": 44856.689342403624,
+      "type": "beam",
       "col": 0,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 23
     },
     {
-      "id": 41,
-      "t": 51459.95464852608,
-      "type": "smash",
+      "t": 47571.337868480725,
+      "type": "slash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 24
     },
     {
-      "id": 42,
+      "t": 49760.272108843536,
+      "type": "smash",
+      "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 25
+    },
+    {
+      "t": 51459.95464852608,
+      "type": "smash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 26
+    },
+    {
       "t": 52563.945578231294,
       "type": "slash",
       "col": 1,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 27
     },
     {
-      "id": 43,
-      "t": 54013.74149659864,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 44,
       "t": 54930.56689342404,
       "type": "smash",
-      "col": 1,
-      "row": 2,
+      "col": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 28
     },
     {
-      "id": 45,
       "t": 56005.3514739229,
       "type": "slash",
-      "col": 3,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 46,
-      "t": 57887.43764172336,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 47,
-      "t": 58300.725623582766,
-      "type": "smash",
       "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 29
+    },
+    {
+      "t": 57887.43764172336,
+      "type": "smash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 30
+    },
+    {
+      "t": 59832.29024943311,
+      "type": "slash",
+      "col": 0,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 31
     },
     {
-      "id": 48,
-      "t": 59432.380952380954,
+      "t": 61297.18820861678,
       "type": "slash",
       "col": 2,
-      "row": 1,
+      "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 32
     },
     {
-      "id": 49,
-      "t": 61779.0022675737,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 50,
       "t": 62427.120181405895,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 33
     },
     {
-      "id": 51,
-      "t": 62900.181405895695,
+      "t": 64724.67120181406,
       "type": "slash",
-      "col": 3,
+      "col": 2,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 34
+    },
+    {
+      "t": 66277.641723356,
+      "type": "slash",
+      "col": 1,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 35
+    },
+    {
+      "t": 67741.04308390022,
+      "type": "smash",
+      "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 36
     },
     {
-      "id": 52,
-      "t": 65170.748299319726,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 53,
-      "t": 65808.02721088435,
-      "type": "smash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 54,
-      "t": 67741.04308390022,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 55,
-      "t": 68161.179138322,
-      "type": "smash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 56,
       "t": 70324.98866213152,
       "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 57,
-      "t": 70885.1247165533,
-      "type": "smash",
       "col": 1,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 37
     },
     {
-      "id": 58,
       "t": 72020.1814058957,
-      "type": "slash",
+      "type": "beam",
       "col": 3,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 0.7604336738586426,
+      "id": 38
     },
     {
-      "id": 59,
-      "t": 72664.5351473923,
-      "type": "smash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 60,
-      "t": 74639.36507936507,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 61,
-      "t": 75101.72335600907,
+      "t": 73304.17233560092,
       "type": "slash",
       "col": 1,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 0.48782509565353394,
+      "id": 39
     },
     {
-      "id": 62,
-      "t": 77162.08616780046,
-      "type": "smash",
+      "t": 74580.22675736962,
+      "type": "slash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 40
     },
     {
-      "id": 63,
+      "t": 76761.768707483,
+      "type": "slash",
+      "col": 1,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 41
+    },
+    {
       "t": 78266.71201814059,
+      "type": "smash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 42
+    },
+    {
+      "t": 79305.62358276645,
       "type": "slash",
       "col": 1,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 43
     },
     {
-      "id": 64,
-      "t": 78666.03174603175,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 65,
-      "t": 80640.09070294784,
-      "type": "slash",
-      "col": 3,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 66,
       "t": 81459.27437641723,
       "type": "slash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 67,
-      "t": 82310.74829931973,
-      "type": "smash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 44
     },
     {
-      "id": 68,
       "t": 82990.38548752834,
+      "type": "smash",
+      "col": 1,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 45
+    },
+    {
+      "t": 84069.2970521542,
       "type": "slash",
+      "col": 3,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 46
+    },
+    {
+      "t": 85742.358276644,
+      "type": "beam",
       "col": 0,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 47
     },
     {
-      "id": 69,
-      "t": 85332.06349206349,
+      "t": 87018.68480725624,
       "type": "slash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 48
     },
     {
-      "id": 70,
-      "t": 85742.358276644,
-      "type": "smash",
+      "t": 88288.07256235828,
+      "type": "slash",
       "col": 1,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 49
     },
     {
-      "id": 71,
-      "t": 88716.50793650794,
+      "t": 91303.85487528345,
       "type": "slash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 50
     },
     {
-      "id": 72,
-      "t": 89155.69160997732,
-      "type": "smash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 73,
-      "t": 92178.73015873016,
-      "type": "slash",
-      "col": 3,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 74,
       "t": 92583.03854875284,
       "type": "smash",
       "col": 1,
-      "row": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 51
     },
     {
-      "id": 75,
       "t": 95183.99092970522,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 76,
-      "t": 96026.48526077096,
       "type": "smash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 77,
-      "t": 96670.15873015873,
-      "type": "slash",
       "col": 2,
-      "row": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 52
     },
     {
-      "id": 78,
       "t": 97743.99092970522,
       "type": "smash",
       "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 79,
-      "t": 99512.24489795917,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 80,
-      "t": 100097.50566893425,
-      "type": "slash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 81,
-      "t": 100960.81632653062,
-      "type": "slash",
-      "col": 3,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 82,
-      "t": 102921.13378684808,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 83,
-      "t": 103598.820861678,
-      "type": "slash",
-      "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 53
     },
     {
-      "id": 84,
-      "t": 104608.02721088436,
+      "t": 99512.24489795917,
       "type": "smash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 54
+    },
+    {
+      "t": 100960.81632653062,
+      "type": "slash",
+      "col": 0,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 55
+    },
+    {
+      "t": 102430.56689342404,
+      "type": "slash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 56
     },
     {
-      "id": 85,
+      "t": 104380.77097505669,
+      "type": "beam",
+      "col": 0,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 57
+    },
+    {
       "t": 106317.77777777778,
       "type": "smash",
       "col": 2,
-      "row": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 58
     },
     {
-      "id": 86,
-      "t": 106996.0090702948,
-      "type": "smash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 87,
-      "t": 109284.71655328797,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 88,
-      "t": 109736.50793650793,
+      "t": 108868.66213151928,
       "type": "slash",
       "col": 1,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 59
     },
     {
-      "id": 89,
       "t": 110385.80498866213,
       "type": "smash",
       "col": 2,
-      "row": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 60
     },
     {
-      "id": 90,
       "t": 111458.91156462586,
-      "type": "slash",
+      "type": "smash",
       "col": 1,
-      "row": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 61
     },
     {
-      "id": 91,
-      "t": 113810.15873015873,
+      "t": 113220.09070294784,
+      "type": "slash",
+      "col": 3,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 62
+    },
+    {
+      "t": 114878.820861678,
+      "type": "slash",
+      "col": 0,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 63
+    },
+    {
+      "t": 116144.85260770975,
       "type": "slash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 64
     },
     {
-      "id": 92,
-      "t": 114676.96145124716,
-      "type": "slash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 93,
-      "t": 116594.28571428572,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 94,
       "t": 118319.90929705215,
-      "type": "slash",
-      "col": 3,
-      "row": 2,
+      "type": "smash",
+      "col": 1,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 65
     },
     {
-      "id": 95,
-      "t": 118961.179138322,
-      "type": "slash",
-      "col": 0,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 96,
       "t": 120025.9410430839,
-      "type": "slash",
-      "col": 2,
+      "type": "beam",
+      "col": 3,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 0.9397047758102417,
+      "id": 66
     },
     {
-      "id": 97,
-      "t": 120674.0589569161,
-      "type": "smash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 98,
-      "t": 123002.13151927438,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 99,
-      "t": 123459.77324263038,
+      "t": 122582.67573696145,
       "type": "slash",
       "col": 1,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 67
     },
     {
-      "id": 100,
-      "t": 124133.56009070294,
+      "t": 126455.14739229024,
       "type": "smash",
       "col": 2,
-      "row": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 68
     },
     {
-      "id": 101,
-      "t": 126871.2925170068,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 102,
-      "t": 127567.39229024942,
+      "t": 128043.1292517007,
       "type": "slash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 0.4748398959636688,
+      "id": 69
     },
     {
-      "id": 103,
-      "t": 128429.75056689343,
-      "type": "slash",
-      "col": 2,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 104,
-      "t": 130323.76417233562,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 105,
-      "t": 131437.09750566893,
-      "type": "slash",
-      "col": 0,
-      "row": 1,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 106,
-      "t": 133733.69614512473,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 107,
-      "t": 134383.49206349207,
-      "type": "smash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 108,
-      "t": 136315.60090702947,
+      "t": 129444.21768707482,
       "type": "slash",
       "col": 3,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 70
     },
     {
-      "id": 109,
-      "t": 136721.768707483,
-      "type": "smash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 110,
-      "t": 138889.97732426305,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 111,
-      "t": 139992.19954648527,
+      "t": 131437.09750566893,
       "type": "smash",
       "col": 1,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 71
     },
     {
-      "id": 112,
-      "t": 140592.2902494331,
+      "t": 133733.69614512473,
       "type": "smash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 72
+    },
+    {
+      "t": 134838.77551020408,
+      "type": "slash",
+      "col": 1,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 73
+    },
+    {
+      "t": 137215.10204081633,
+      "type": "beam",
+      "col": 3,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 74
+    },
+    {
+      "t": 138464.62585034012,
+      "type": "slash",
+      "col": 1,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 75
+    },
+    {
+      "t": 140172.8798185941,
+      "type": "slash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 76
     },
     {
-      "id": 113,
       "t": 141239.77324263038,
-      "type": "slash",
-      "col": 0,
-      "row": 2,
+      "type": "smash",
+      "col": 1,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 77
     },
     {
-      "id": 114,
       "t": 143152.38095238095,
       "type": "smash",
       "col": 2,
-      "row": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 78
     },
     {
-      "id": 115,
-      "t": 144020.54421768707,
-      "type": "smash",
-      "col": 1,
+      "t": 145785.57823129251,
+      "type": "slash",
+      "col": 0,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 79
     },
     {
-      "id": 116,
-      "t": 145733.65079365077,
+      "t": 147026.84807256237,
       "type": "smash",
       "col": 2,
-      "row": 2,
+      "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 80
     },
     {
-      "id": 117,
-      "t": 146422.4036281179,
+      "t": 148303.40136054423,
       "type": "slash",
       "col": 1,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 81
     },
     {
-      "id": 118,
-      "t": 147224.716553288,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 119,
-      "t": 148095.37414965988,
-      "type": "slash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 120,
       "t": 150023.12925170068,
       "type": "slash",
       "col": 2,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 82
     },
     {
-      "id": 121,
-      "t": 150906.62131519275,
+      "t": 152171.7006802721,
       "type": "slash",
-      "col": 0,
+      "col": 1,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 83
     },
     {
-      "id": 122,
-      "t": 151589.11564625852,
+      "t": 153899.63718820864,
       "type": "smash",
       "col": 2,
       "row": 1,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 84
     },
     {
-      "id": 123,
-      "t": 153899.63718820864,
+      "t": 155592.1088435374,
       "type": "slash",
+      "col": 1,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 85
+    },
+    {
+      "t": 157732.6530612245,
+      "type": "beam",
       "col": 3,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 86
     },
     {
-      "id": 124,
-      "t": 154364.30839002266,
-      "type": "smash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 125,
-      "t": 157288.16326530612,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 126,
-      "t": 157732.6530612245,
-      "type": "smash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 127,
-      "t": 158406.43990929707,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 128,
-      "t": 160753.01587301586,
-      "type": "slash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 129,
-      "t": 161871.6553287982,
-      "type": "smash",
-      "col": 1,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 130,
-      "t": 163746.3492063492,
-      "type": "smash",
-      "col": 2,
-      "row": 2,
-      "dir": "any",
-      "strength": 1
-    },
-    {
-      "id": 131,
-      "t": 164231.2471655329,
+      "t": 159018.04988662133,
       "type": "slash",
       "col": 0,
       "row": 2,
       "dir": "any",
-      "strength": 1
+      "strength": 1,
+      "id": 87
+    },
+    {
+      "t": 160753.01587301586,
+      "type": "smash",
+      "col": 2,
+      "row": 1,
+      "dir": "any",
+      "strength": 1,
+      "id": 88
+    },
+    {
+      "t": 161839.18367346938,
+      "type": "slash",
+      "col": 1,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 89
+    },
+    {
+      "t": 163746.3492063492,
+      "type": "slash",
+      "col": 2,
+      "row": 2,
+      "dir": "any",
+      "strength": 1,
+      "id": 90
     }
   ],
   "obstacles": [
     {
       "id": 0,
-      "t": 11531.201814058957,
+      "t": 13763.809523809525,
       "durationMs": 647.0165348670022,
       "kind": "wallLeft"
     },
     {
       "id": 1,
-      "t": 35558.04988662132,
+      "t": 41169.84126984127,
       "durationMs": 647.0165348670022,
       "kind": "wallRight"
     },
     {
       "id": 2,
-      "t": 60032.380952380954,
+      "t": 68637.95918367348,
       "durationMs": 647.0165348670022,
       "kind": "wallLeft"
     },
     {
       "id": 3,
-      "t": 75701.72335600907,
+      "t": 96026.48526077096,
       "durationMs": 647.0165348670022,
       "kind": "wallRight"
     },
     {
       "id": 4,
-      "t": 124733.56009070294,
+      "t": 123459.77324263038,
       "durationMs": 647.0165348670022,
       "kind": "wallLeft"
     },
     {
       "id": 5,
-      "t": 137321.768707483,
-      "durationMs": 647.0165348670022,
-      "kind": "wallRight"
-    },
-    {
-      "id": 6,
-      "t": 152189.11564625852,
-      "durationMs": 647.0165348670022,
-      "kind": "wallLeft"
-    },
-    {
-      "id": 7,
-      "t": 164831.2471655329,
+      "t": 150873.10657596373,
       "durationMs": 647.0165348670022,
       "kind": "wallRight"
     }

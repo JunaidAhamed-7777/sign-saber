@@ -21,7 +21,17 @@ The current official track template supplies CC BY 4.0 attribution for the selec
 
 The MP3s are distributed unchanged from the official downloads. Preview uses bounded playback offsets; it does not create an edited audio file. Canonical analysis is a separate ffmpeg mono float32 decode at 22050 Hz. The build explicitly honors each file's iTunSMPB gapless sample counts when the native decoder has not already done so; it rejects unexpected counts and never trims twice. That canonical PCM is hashed but not retained as an additional large asset. Generated charts are separate artifacts. Music retains Creative Commons terms, independently of the code's MIT license. No artist endorsement is implied. No catalog cover art has been copied.
 
-Generator version 2 includes gapless canonical sample-zero handling, explicit band-limited analysis resampling, raw spectral-novelty/RMS-rise admission, local source-sample onset refinement and supported-onset beat refinement, rather than a global playback offset. Tempo refinement keeps the registered prior during octave comparison. A measured sustained mid-band onset may reserve a beam by removing conflicting playable candidates; other raw onset evidence remains in diagnostics. Pamgaea and Cipher contain such beam reservations. Electro Cabello has no admitted sustained beam candidate under the registered defaults; its maps retain the actual slash/smash evidence. These are disclosed assignment heuristics, not independent music-quality measurements.
+Generator version 3 keeps v2's analysis (gapless canonical sample zero, band-limited resampling, spectral-novelty/RMS-rise admission, source-sample onset refinement, supported-onset beat refinement) and replaces assignment. Charts now follow the strongest accents under per-difficulty caps on density, notes sharing the screen (3/4/5), same-hand recovery, beam isolation and phrase length with deliberate rests. Each hand plays its own side; strong low-band hits punch, other accents slash, and the most sustained mid/high onsets become occasional far beams. Walls are planned on the tracked-beat cadence and notes move to the open side. See [08 §9](../../../../docs/08-beatmap-generation.md#9-note-assignment-assignts) for the rules and before/after counts. These are disclosed heuristics checked by the validator and the synthetic performer, not independent music-quality or human-comfort measurements.
+
+The following count comparison covers the original three starter songs. Each added song's exact counts are retained in its `generation.json` receipt; the diagnostic below now reads the full eight-song manifest.
+
+| Track | Easy notes (slash/smash/beam) | Normal | Hard |
+| --- | --- | --- | --- |
+| Pamgaea | 89 (45/34/10) | 178 (97/69/12) | 230 (112/100/18) |
+| Electro Cabello | 116 (52/54/10) | 183 (110/62/11) | 285 (129/140/16) |
+| Cipher | 116 (65/42/9) | 202 (106/83/13) | 267 (120/131/16) |
+
+The synthetic performer reaches every note of all 24 charts (`tests/performer.test.mjs`; v2 left 59/149/56 Hard notes unreachable on the original three songs). `node scripts/chart-report.mjs` now reads the eight-song manifest and prints the gesture mix, density, peak on-screen count and performer reachability of all installed charts. The [retained v3 chart diagnostic](../../../../docs/evidence/2026-10-25-eight-song-chart-report-v3.txt) reports zero unplayable notes on every chart. This is synthetic logic evidence, separate from musical quality or webcam recognition.
 
 ## Files and provenance
 

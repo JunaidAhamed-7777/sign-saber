@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatorVersion": 2,
+  "generatorVersion": 3,
   "sourceHash": "a73fa6059d078700c7d07d0c89343753acdaa368dc78f5c843bc23ec29036fec",
   "canonicalPcmSha256": "a0b7110bb98873992482838181327f17623ca60f7b86070869e75aa5880eedd4",
   "canonicalDecode": {
@@ -29,25 +29,25 @@
   },
   "maps": {
     "easy": {
-      "notes": 165,
-      "obstacles": 8,
-      "slash": 91,
-      "smash": 74,
-      "beam": 0
+      "notes": 114,
+      "obstacles": 6,
+      "slash": 62,
+      "smash": 44,
+      "beam": 8
     },
     "normal": {
-      "notes": 332,
-      "obstacles": 1,
-      "slash": 132,
-      "smash": 200,
-      "beam": 0
+      "notes": 215,
+      "obstacles": 13,
+      "slash": 115,
+      "smash": 90,
+      "beam": 10
     },
     "hard": {
-      "notes": 519,
-      "obstacles": 1,
-      "slash": 278,
-      "smash": 241,
-      "beam": 0
+      "notes": 295,
+      "obstacles": 17,
+      "slash": 145,
+      "smash": 136,
+      "beam": 14
     }
   },
   "warnings": [
@@ -55,5 +55,5 @@
     "humanRhythmAndComfortReviewPending"
   ],
   "checks": "All difficulty maps passed the shared runtime structural, density, beam, wall and ergonomic validator. This is algorithmic validation, not human musical/playability evidence.",
-  "developmentGenerationMs": 6714.467100000009
+  "developmentGenerationMs": 5083.322500000002
 }

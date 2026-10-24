@@ -1,5 +1,13 @@
 # Eight-song local library — 2026-10-25
 
+**Current acceptance uses generator version 3.** Immediately after the initial PR opened, main integrated the awaited chart branch in 93e411e. The branch normally integrated that work and regenerated the entire eight-song/24-map pack again, resolving generated JSON conflicts only through the shared generator. Original MP3/acquisition/attribution bytes and canonical audio hashes remain unchanged.
+
+The current pack passed the complete npm run check: typecheck, lint, 50 suites/502 assertions and production build. Upstream readability and full synthetic InputPipeline/GameSession replay tests now cover all 24 charts. [The v3 chart diagnostic](2026-10-25-eight-song-chart-report-v3.txt) reports zero unplayable notes on every chart. These are algorithmic/synthetic checks, not webcam or human musical-quality evidence.
+
+[The current-v3 browser report](2026-10-25-eight-song-library-v3-browser.json) passed at both 1440×900 and 1024×640: all eight songs/all 24 difficulty maps selected through native controls, original preview started/stopped, music/credits pages traversed and every exact attribution/source/license link verified. No external page requests were attempted; there were zero CSP violations, JavaScript-console errors or failed music requests. Existing favicon 404 responses remain visible. The report retains its base/merging-main SHAs and exact manifest SHA-256 (18293e3138d186798367f337e30245d36ed7e8e5869fb3471c20e3be2a063744). The linked PNGs below were refreshed and inspected from this v3 run.
+
+The earlier generator-v2 checkpoints below are retained as history; current acceptance relies on the v3 outcomes above.
+
 Issue [#2](https://github.com/JunaidAhamed-7777/sign-saber/issues/2) expands the three-song starter pack to eight full songs. The five additions were fetched unchanged from the official Incompetech catalog on 2026-10-25 local time. Each official track page explicitly supplied the By Attribution 4.0 license template at acquisition; the receipts retain the page/catalog/audio SHA-256, ISRC, original filename, exact attribution and verification timestamp.
 
 - Chipper Doodle v2: catalog 92 BPM; canonical duration 172,173.923 ms; original MP3 6,892,257 bytes.

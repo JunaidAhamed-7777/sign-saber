@@ -5,6 +5,8 @@ import {
   DENSITY_WINDOW_MS,
   GENERATOR_VERSION,
   MAX_DENSITY_PER_S,
+  SMASH_MAX_SHARE,
+  WALL_NOTE_MARGIN_MS,
 } from '../../src/core/constants';
 import type { Difficulty, Onset } from '../../src/beatmap/types';
 import { assignNotes, assignObstacles } from '../../src/beatmap/assign';
@@ -27,6 +29,11 @@ function input(difficulty: Difficulty, onsets: Onset[]): AssignmentInput {
       high: new Float32Array(frames).fill(1),
     },
   };
+}
+/** A decaying broadband transient: mid/high power falls away, so it cannot be a sustained beam. */
+function transient(source: AssignmentInput, t: number): AssignmentInput {
+  for (const band of ['mid', 'high'] as const) source.power[band][Math.ceil((t + 100) / HOP_MS)] = 1000;
+  return source;
 }
 describe('evidence-based playable assignment', () => {
   it.each(['easy', 'normal', 'hard'] as const)(
@@ -77,7 +84,7 @@ describe('evidence-based playable assignment', () => {
       { t: 1030, band: 'low', strength: 0.7 },
     ];
     const source = input('hard', onsets);
-    source.power.mid[Math.ceil(1100 / HOP_MS)] = 1000; // Broadband transient, not sustained mid power.
+    transient(source, 1000);
     const notes = assignNotes(source);
     expect(notes).toHaveLength(2);
     expect(notes[0]!.type).toBe('smash');
@@ -94,10 +101,13 @@ describe('evidence-based playable assignment', () => {
   it.each(['normal', 'hard'] as const)(
     'retains two independently timed bands on opposite sides at %s',
     (difficulty) => {
-      const source = input(difficulty, [
-        { t: 1000, band: 'low', strength: 0.9 },
-        { t: 1010, band: 'high', strength: 0.8 },
-      ]);
+      const source = transient(
+        input(difficulty, [
+          { t: 1000, band: 'low', strength: 0.9 },
+          { t: 1010, band: 'high', strength: 0.8 },
+        ]),
+        1010,
+      );
       const notes = assignNotes(source);
       expect(notes).toHaveLength(2);
       expect(notes.map((n) => n.t)).toEqual([1000, 1010]);
@@ -110,6 +120,54 @@ describe('evidence-based playable assignment', () => {
       { t: 1010, band: 'high', strength: 0.8 },
     ]);
     expect(assignNotes(source)).toHaveLength(1);
+  });
+  it.each(['easy', 'normal', 'hard'] as const)(
+    'mixes gestures even when every onset is a strong low-band hit at %s',
+    (difficulty) => {
+      const onsets: Onset[] = Array.from({ length: 280 }, (_, i) => ({
+        t: 500 + i * 100,
+        band: 'low',
+        strength: 0.95,
+      }));
+      const notes = assignNotes(input(difficulty, onsets));
+      const smash = notes.filter((n) => n.type === 'smash').length;
+      expect(smash).toBeGreaterThan(0);
+      expect(smash / notes.length).toBeLessThanOrEqual(SMASH_MAX_SHARE[difficulty] + 0.1);
+      for (const n of notes) expect(n.col < 2 ? 'left' : 'right').toBeTruthy();
+    },
+  );
+  it('thins quiet passages relative to loud ones from the measured energy envelope', () => {
+    const onsets: Onset[] = Array.from({ length: 290 }, (_, i) => ({
+      t: 200 + i * 100,
+      band: i % 2 ? 'high' : 'low',
+      strength: 0.9,
+    }));
+    const source = transient(input('hard', onsets), -1000);
+    source.energy = Array.from({ length: 301 }, (_, i) => (i < 150 ? 0.05 : 1));
+    for (const t of onsets.map((o) => o.t)) transient(source, t);
+    const notes = assignNotes(source);
+    const quiet = notes.filter((n) => n.t < 14000).length,
+      loud = notes.filter((n) => n.t >= 16000).length;
+    expect(quiet).toBeGreaterThan(0);
+    expect(quiet).toBeLessThan(loud);
+  });
+  it('keeps notes off covered lanes and lets one hand play through each planned wall', () => {
+    const onsets: Onset[] = Array.from({ length: 290 }, (_, i) => ({
+      t: 200 + i * 100,
+      band: i % 3 ? 'high' : 'low',
+      strength: 0.9,
+    }));
+    const source = input('normal', onsets);
+    for (const t of onsets.map((o) => o.t)) transient(source, t);
+    const notes = assignNotes(source),
+      obstacles = assignObstacles(source, notes);
+    expect(obstacles.length).toBeGreaterThan(0);
+    for (const wall of obstacles) {
+      const during = notes.filter(
+        (n) => n.t >= wall.t - WALL_NOTE_MARGIN_MS && n.t <= wall.t + wall.durationMs + WALL_NOTE_MARGIN_MS,
+      );
+      expect(during.every((n) => (wall.kind === 'wallLeft' ? n.col >= 2 : n.col < 2))).toBe(true);
+    }
   });
   it('is stable across repeated assignment and never moves notes off musical evidence', () => {
     const source = input(

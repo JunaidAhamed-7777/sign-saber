@@ -3,7 +3,7 @@
 Local arrangements use the existing `source: 'upload'` in-memory File playback path even when their original source was bundled. The separate versioned edit receipt retains original identity/rights/hash, source sample bounds, fade/highlight intervals and new WAV/PCM hashes. The derived `song.sourceHash` identifies the actual edited WAV; the original map cannot be reused.
 
 
-A beatmap is JSON produced by [08](08-beatmap-generation.md), cached in IndexedDB, bundled under `app/public/assets/tracks/<slug>/<difficulty>.json`, and consumed by the [spawner](07-hit-detection-and-scoring.md). The v1 schema, validator and bundled loaders are implemented; generated maps currently use generator version 2. Human edits must pass the same validator and carry an accurate provenance record; do not describe a hand-patched demo chart as untouched generator output.
+A beatmap is JSON produced by [08](08-beatmap-generation.md), cached in IndexedDB, bundled under `app/public/assets/tracks/<slug>/<difficulty>.json`, and consumed by the [spawner](07-hit-detection-and-scoring.md). The v1 schema, validator and bundled loaders are implemented; generated maps currently use generator version 3. Human edits must pass the same validator and carry an accurate provenance record; do not describe a hand-patched demo chart as untouched generator output.
 
 ## TypeScript definition
 

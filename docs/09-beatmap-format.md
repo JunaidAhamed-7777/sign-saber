@@ -1,6 +1,6 @@
 # 09 — Beatmap Format (`BeatmapV1`)
 
-A beatmap is JSON produced by [08](08-beatmap-generation.md), cached in IndexedDB, bundled under `app/public/assets/tracks/<slug>/<difficulty>.json`, and consumed by the [spawner](07-hit-detection-and-scoring.md). The format is planned; `beatmap/types.ts` and `validate.ts` are still stubs. Human edits must pass the same validator and carry an accurate provenance record; do not describe a hand-patched demo chart as untouched generator output.
+A beatmap is JSON produced by [08](08-beatmap-generation.md), cached in IndexedDB, bundled under `app/public/assets/tracks/<slug>/<difficulty>.json`, and consumed by the [spawner](07-hit-detection-and-scoring.md). The v1 schema, validator and bundled loaders are implemented; generated maps currently use generator version 2. Human edits must pass the same validator and carry an accurate provenance record; do not describe a hand-patched demo chart as untouched generator output.
 
 ## TypeScript definition
 
@@ -164,7 +164,7 @@ This is a complete schema example with intentionally synthetic metadata/hash, no
 
 The selected pack and exact credits are maintained once in the [starter music registry](../app/public/assets/tracks/README.md#selected-starter-pack). The proposed range is an approachable electronic groove, a contrasting mid-tempo rhythm and a more energetic showcase. These roles are selection intent; decoded timing, generator quality, difficulty and human playability must still be checked. Catalog BPM is reference metadata, not evidence of our detector's output.
 
-Each planned track folder contains licensed local audio, attribution/change records, three validated difficulty JSON files and optionally original or separately licensed cover art. Missing cover art gets a generated typographic fallback; do not reuse catalog artwork without its own rights record. No tracks/maps or manifest are committed yet. `npm run beatmaps` is currently a TODO failure; implement it in P2 using the same DSP/assignment code and canonical decoded input, then commit the audio/map assets and their provenance. Node does not provide browser `AudioContext`; the build must explicitly supply PCM (for example, a licensed canonical WAV or documented ffmpeg preprocessing), not assume browser decode works in Node. Bundled playback must not depend on live generation.
+Each planned track folder contains licensed local audio, attribution/change records, three validated difficulty JSON files and optionally original or separately licensed cover art. Missing cover art gets a generated typographic fallback; do not reuse catalog artwork without its own rights record. The three full tracks, nine maps and manifest are now packaged; musical/human acceptance remains pending. `npm run beatmaps` is currently a TODO failure; implement it in P2 using the same DSP/assignment code and canonical decoded input, then commit the audio/map assets and their provenance. Node does not provide browser `AudioContext`; the build must explicitly supply PCM (for example, a licensed canonical WAV or documented ffmpeg preprocessing), not assume browser decode works in Node. Bundled playback must not depend on live generation.
 
 ### Starter library manifest
 

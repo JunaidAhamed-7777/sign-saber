@@ -10,7 +10,7 @@ Start with the **[build roadmap](ROADMAP.md)** for exact implementation order, d
 
 The core menu will keep a human figure in the centre, with song choices/actions around it. Before camera setup/calibration, it shows a placeholder and **Set up camera**; browsing works by mouse/keyboard. After setup, move an open palm to steer a cursor and point to click, alongside the native controls. See the [menu and camera setup contract](docs/25-menu-and-hand-navigation.md).
 
-The planned initial library contains **three full songs**—Pamgaea, Electro Cabello and Cipher by Kevin MacLeod—with local audio, credited sources and pre-generated difficulty maps. The [starter music registry](app/public/assets/tracks/README.md) records the selections and acquisition requirements. Audio/maps are not bundled in the current scaffold yet.
+The local starter library now packages **three full songs**—Pamgaea, Electro Cabello and Cipher by Kevin MacLeod—with exact credits, unchanged CC-BY audio, measured previews, verified hashes and Easy/Normal/Hard maps. See the [starter music registry](app/public/assets/tracks/README.md). Tempo confidence is low for all three, so maps disclose onset-only timing; human musical evaluation is pending.
 
 ## What should make it memorable
 
@@ -80,7 +80,7 @@ Targets such as 60 FPS, fresh ≥24 Hz tracking and sub-four-second analysis of 
 - [MediaPipe](https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE) — Apache-2.0 for the project; record the separate model terms, model versions and hashes in the P0 asset manifest. [Hand Landmarker](https://developers.google.com/edge/mediapipe/solutions/vision/hand_landmarker/web_js) documents the synchronous inference API used by the proposed worker.
 - [Web Audio](https://www.w3.org/TR/webaudio/) supplies the master clock; [getOutputTimestamp](https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/getOutputTimestamp) maps audio output to performance time. See [15](docs/15-audio-playback-sync.md) for the project's clock contract.
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp#license) is an optional future companion dependency; its source is Unlicense, with distribution-specific third-party notices. It is not required for core gameplay.
-- No demo songs, reference corpus, generated GLBs or fonts have been committed. Add exact source URLs, licenses and credits before bundling them; [track attribution](app/public/assets/tracks/README.md) is the registry. Do not assume a public download implies permission to redistribute it.
+- The three starter songs and local Orbitron/Rajdhani fonts carry exact source/license notices. No independent reference corpus or authored GLBs are packaged; [track attribution](app/public/assets/tracks/README.md) is the registry. Do not assume a public download implies permission to redistribute it.
 
 Project code is MIT: [LICENSE](LICENSE). Development history: [CHANGELOG.md](CHANGELOG.md). AI contributions: [AI_USAGE.md](AI_USAGE.md).
 

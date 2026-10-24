@@ -1,0 +1,10 @@
+"Pamgaea" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+https://creativecommons.org/licenses/by/4.0/
+
+Source: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1300036
+Download: https://incompetech.com/music/royalty-free/mp3-royaltyfree/Pamgaea.mp3
+Changes: Packaged original downloaded MP3 bytes unchanged. Analysis and generated maps are separate; previews use playback offsets without editing the file.
+Acquired: 2026-10-24T18:46:01.888Z
+SHA-256: 9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586
+Music retains its Creative Commons license and is not MIT licensed. No artist endorsement is implied.

@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "tracks": [
+    {
+      "slug": "pamgaea",
+      "title": "Pamgaea",
+      "artist": "Kevin MacLeod",
+      "role": "intro",
+      "audioUrl": "/assets/tracks/pamgaea/audio.mp3",
+      "durationMs": 168510.6575963719,
+      "bpm": null,
+      "preview": {
+        "startMs": 345.8503401360544,
+        "durationMs": 15000
+      },
+      "difficultyMaps": {
+        "easy": "/assets/tracks/pamgaea/easy.json",
+        "normal": "/assets/tracks/pamgaea/normal.json",
+        "hard": "/assets/tracks/pamgaea/hard.json"
+      },
+      "generatorVersion": 2,
+      "warnings": [
+        "lowTempoConfidence",
+        "humanRhythmAndComfortReviewPending"
+      ],
+      "hashes": {
+        "audioSha256": "9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586",
+        "canonicalPcmSha256": "5eb6351ed7f6effe372371b5e25d83d50a1ab91f5c72c871e21a62dd1216d668",
+        "maps": {
+          "easy": "b123d613f88fc713c1b15e9f4c7a422de19e8bacd057a12098a28637c5e97c46",
+          "normal": "ad7f51be282b859a1ffbface5f9ee6689aea79fc82fb629be0bc274b4c0d0ded",
+          "hard": "229b62f57e5b5089226d6f77efdb262964fb62e435e0e048ea941b713be05e82"
+        }
+      },
+      "rights": {
+        "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1300036",
+        "license": "CC-BY-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "\"Pamgaea\" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License.",
+        "changes": "Packaged original downloaded MP3 bytes unchanged. Analysis and generated maps are separate; previews use playback offsets without editing the file."
+      }
+    },
+    {
+      "slug": "electro-cabello",
+      "title": "Electro Cabello",
+      "artist": "Kevin MacLeod",
+      "role": "groove",
+      "audioUrl": "/assets/tracks/electro-cabello/audio.mp3",
+      "durationMs": 190769.75056689343,
+      "bpm": null,
+      "preview": {
+        "startMs": 418.0952380952381,
+        "durationMs": 15000
+      },
+      "difficultyMaps": {
+        "easy": "/assets/tracks/electro-cabello/easy.json",
+        "normal": "/assets/tracks/electro-cabello/normal.json",
+        "hard": "/assets/tracks/electro-cabello/hard.json"
+      },
+      "generatorVersion": 2,
+      "warnings": [
+        "lowTempoConfidence",
+        "humanRhythmAndComfortReviewPending"
+      ],
+      "hashes": {
+        "audioSha256": "f304151035c2647de56dbf1995dcc90f3c942c656edfe7516541e7b76e4044ef",
+        "canonicalPcmSha256": "38edda4d82a3702920ebd64475b576744929068bee4b9ae651b8be45b87fad1e",
+        "maps": {
+          "easy": "69270502d55f0e64bc931bfca3eb2e197cf2eb7db6307ff45b87669fb3acb6b9",
+          "normal": "15c07bc5069ac5f1c16c8ed0785177b858bbd4be1e73a56557c78cde145097a9",
+          "hard": "4680e3129de4b286b63e1f0b0e6f3342f86f2fb429120d45b039230b9859c933"
+        }
+      },
+      "rights": {
+        "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400048",
+        "license": "CC-BY-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "\"Electro Cabello\" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License.",
+        "changes": "Packaged original downloaded MP3 bytes unchanged. Analysis and generated maps are separate; previews use playback offsets without editing the file."
+      }
+    },
+    {
+      "slug": "cipher",
+      "title": "Cipher",
+      "artist": "Kevin MacLeod",
+      "role": "showcase",
+      "audioUrl": "/assets/tracks/cipher/audio.mp3",
+      "durationMs": 231200,
+      "bpm": null,
+      "preview": {
+        "startMs": 817.0068027210884,
+        "durationMs": 15000
+      },
+      "difficultyMaps": {
+        "easy": "/assets/tracks/cipher/easy.json",
+        "normal": "/assets/tracks/cipher/normal.json",
+        "hard": "/assets/tracks/cipher/hard.json"
+      },
+      "generatorVersion": 2,
+      "warnings": [
+        "lowTempoConfidence",
+        "humanRhythmAndComfortReviewPending"
+      ],
+      "hashes": {
+        "audioSha256": "d3d0614535a61d748e2fd8d5117fc4d781022a7624794802a2462d8af3fdd522",
+        "canonicalPcmSha256": "d03027294c2fc4caf995b668f205cf66f605f40abfce762a6be6393790517071",
+        "maps": {
+          "easy": "cbe2577397cd7f59e610be356cb5f0a7df650fc720bf459feeea5c6a5feb6530",
+          "normal": "7933dbf24f35f838cce7b810232985c9eaaad2b261fab5c6e074df0ac74e7727",
+          "hard": "31538ec8603d72c1a362c0b1f9daa2cfe796695a180c2b79cabeed7f23323b8b"
+        }
+      },
+      "rights": {
+        "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100844",
+        "license": "CC-BY-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "\"Cipher\" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License.",
+        "changes": "Packaged original downloaded MP3 bytes unchanged. Analysis and generated maps are separate; previews use playback offsets without editing the file."
+      }
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "lane": "synthetic-browser-audio-correctness",
+  "recordedAt": "2026-10-24T19:12:45.616Z",
+  "gitHead": "0de0c7cb4fc4270d845f0a6b5d42268ee725ee9a",
+  "dirtyTree": true,
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+  "functionSourceSha256": "b3f91cd9eb832484cfbabba609a1b32436e469945d516b6f6ad855e68b96a918",
+  "scope": "Extracted failed numeric checks from the initial actual browser run using AudioBufferSourceNode native rate conversion. This is a failure summary, not the full raw browser output or a performance benchmark. Source sample-zero cross-correlations already passed on that run.",
+  "passed": false,
+  "failures": [
+    {
+      "name": "impulse 16000→22050",
+      "integralRatio": 1.1238115877250967,
+      "allowedAbsoluteErrorFromOne": 0.05
+    },
+    {
+      "name": "impulse 32000→22050",
+      "integralRatio": 1.4512471655328798,
+      "allowedAbsoluteErrorFromOne": 0.05
+    },
+    {
+      "name": "impulse 44100→22050",
+      "integralRatio": 2,
+      "allowedAbsoluteErrorFromOne": 0.05
+    },
+    {
+      "name": "impulse 48000→22050",
+      "integralRatio": 2.17687074829932,
+      "allowedAbsoluteErrorFromOne": 0.05
+    },
+    {
+      "name": "1kHz amplitude16000",
+      "expectedRms": 0.17677669529663687,
+      "actualRms": 0.17451933324989746,
+      "allowedRelativeError": 0.01
+    },
+    {
+      "name": "16kHz rejects above analysis Nyquist",
+      "actualRms": 0.12500288955006889,
+      "allowedRms": 0.01
+    }
+  ],
+  "resolution": "Replaced native rate conversion with explicit windowed-sinc analysis resampling. The separate current result file contains the subsequent browser outcome."
+}

@@ -1,5 +1,12 @@
 # 08 — Beatmap Generation
 
+**Implementation checkpoint (generator v2):** DSP, assignment, validation, upload cancellation and grouped caching are implemented and tested. The three bundled tracks remain disclosed onset-only maps because measured tempo confidence is low. Held-out musical F1, comfort and performance targets are not yet established.
+
+The implemented onset path gates raw spectral novelty and local RMS rise before percentile normalization, refines each onset to a supported positive PCM-power derivative within the FFT half-window, and anchors nearby tracked beats to those supported sample-zero-relative onsets. Tempo octave selection retains the BPM prior and refines period from supported long onset spans. Analysis resampling uses a registered windowed-sinc kernel; browser tests exposed unacceptable aliasing from the earlier native AudioBufferSourceNode resampling path.
+
+Sustained mid-band beam candidates reserve real measured onsets, then remove conflicting **assigned notes** using the maximum of beam isolation and charge/gesture-transition spacing. Neighbouring raw onsets do not disqualify an otherwise sustained candidate. This deliberate v2 change permits sparse beams without inventing timestamps; Electro Cabello currently has none under the measured sustain rule. All final chord groups, density and ergonomic constraints pass the shared validator. Canonical decoding honours iTunSMPB gapless trim before analysis; gameplay applies no compensating second offset.
+
+
 The generator turns an audio file into a `BeatmapV1` ([09](09-beatmap-format.md)) with no human authoring. Pillar P4 (*the music is the author*) means notes follow musical evidence, density/reach constraints keep them playable, and silence is rejected. Noisy or beatless material may be unsuitable; show uncertainty rather than manufacturing a convincing tempo.
 
 **Status: planned implementation.** The TypeScript DSP runs in `beatmap/generator.worker.ts`. Identical canonical PCM, metadata, difficulty and `GENERATOR_VERSION` must yield identical output. Browser-native lossy decode/resampling can vary across engines, so byte-identical maps from MP3 bytes on every browser are not promised. Cross-runtime regression tests use canonical PCM; evaluation hashes both source audio and PCM. [24](24-benchmark-and-evidence.md) defines the proof protocol.
@@ -307,7 +314,7 @@ Each surviving onset becomes a **candidate** with a provisional type:
 | --- | --- | --- |
 | low | `smash` | always |
 | mid, high | `slash` | default |
-| mid | `beam` | Linear mid-band power stays within `BEAM_SUSTAIN_DB` for ≥ `BEAM_SUSTAIN_MS`; no other onset within ±`BEAM_ISOLATION_MS`; last beam ≥ `BEAM_MIN_SPACING_MS[difficulty]` ago |
+| mid | `beam` | Linear mid-band power stays within `BEAM_SUSTAIN_DB` for ≥ `BEAM_SUSTAIN_MS`; no other assigned note within ±`BEAM_ISOLATION_MS`; last beam ≥ `BEAM_MIN_SPACING_MS[difficulty]` ago |
 
 Compute dB ratios from linear STFT power, not log-compressed flux. Easy converts every `EASY_SMASH_TO_SLASH_EVERY`th smash candidate to slash and uses `BEAM_MIN_SPACING_MS.easy`. Leave enough time to acquire/charge/release a beam; a visible target does not make an instant fist-to-point switch feasible.
 

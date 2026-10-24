@@ -8,3 +8,5 @@
 *.task binary
 *.tflite binary
 *.wasm binary
+# Preserve the exact pinned upstream license bytes, including upstream spaces.
+app/public/assets/fonts/*-OFL.txt whitespace=-blank-at-eol

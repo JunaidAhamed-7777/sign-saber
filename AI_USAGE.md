@@ -4,6 +4,11 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Bundled music, DSP and browser audio checks
+
+- A dedicated agent verified official music rights, acquired all three full starter songs and implemented deterministic DSP, assignment, validation, upload/caching and pinned local fonts. The integrator approved measured sustained-onset beam reservation and registered generator v2 behavior changes.
+- Real browser failures led to gapless sample-zero and resampling fixes. Twenty-five numeric browser checks passed; this is audio correctness evidence, not a webcam, audible sync, performance or human music-quality result. No model training is claimed in this content checkpoint.
+
 ## 2026-10-25 — Documentation validation correction
 
 - Codex fixed the doc walker to ignore local Python dependency environments and recorded the real failed-check/commit sequence in CHANGELOG.md. Regression and repository documentation checks then passed.

@@ -15,6 +15,13 @@ No gameplay implementation has been recorded yet. Documentation and scaffold mai
 - Limitations: <known issues or "None identified in these checks">
 ```
 
+## 2026-10-25T01:05:30+05:30 — Local starter music and deterministic generation
+
+- Changed: Acquired unchanged official CC-BY 4.0 Pamgaea, Electro Cabello and Cipher audio with exact sources, acquisition/license receipts and attribution. Packaged nine validated Easy/Normal/Hard maps, measured previews/durations, hashes and manifest. Implemented FFT/STFT/flux/onsets/tempo/beats/energy, safe seeded assignment/chords/beam reservation/walls, strict schema/catalog/hash validation, cancellable upload worker, grouped optional IndexedDB cache and real acquisition/generation scripts. Pinned local Orbitron/Rajdhani fonts with OFL notices.
+- Why: First play must require no uploaded music or network service. Browser tests exposed source-zero errors from iTunSMPB trim and aliasing from native analysis resampling; generator v2 corrects those with gapless canonical PCM and a band-limited resampler, rather than loosening admission checks.
+- Validation: Music/font/PCM/generator suites passed as part of 174 asserted tests and the full application check. All nine packaged maps/hashes validated. The isolated real Chrome 155 numeric harness passed 25 checks including three songs at 22050/44100/48000 Hz, one-sample duration agreement and zero-lag source correlation; raw result and failed-before-fix evidence retained under app/tests/fixtures/audio. Documentation checker passed after the virtual-environment exclusion fix. Map assets were not reformatted after hashing.
+- Limitations: All three tempo-confidence values remain low and are visibly labelled onset-only; catalogue BPM does not overwrite measured uncertainty. Held-out annotated musical evaluation, live comfort, audible synchronization and generation/performance targets are unverified. No demo excerpt or release evidence is claimed. This checkpoint adds real node scripts; npm script integration follows with the shell checkpoint.
+
 ## 2026-10-25T01:02:56+05:30 — Exclude local training dependencies from doc checks
 
 - Changed: The documentation walker now excludes nested Python virtual environments, Python caches and the isolated npm cache; extended the existing regression fixture to cover training/.venv third-party Markdown.

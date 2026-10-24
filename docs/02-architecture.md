@@ -461,7 +461,7 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `MAX_UPLOAD_BYTES` | 60 × 1024 × 1024 | Larger uploads are rejected before decoding |
 | `MAX_DECODED_PCM_BYTES` | 128 × 1024 × 1024 | Decoded float PCM accepted before analysis/resampling; not a cap on native decoder peak memory |
 | `ANALYSIS_CACHE_MAX` | 30 | Complete source-analysis groups kept, including their difficulty maps |
-| `GENERATOR_VERSION` | 1 | Cache key component |
+| `GENERATOR_VERSION` | 2 | Cache key component |
 
 ### DSP windows, section detection and playable flow
 
@@ -553,6 +553,11 @@ Menu defaults are initial unmeasured values; tune with held-out menu fixtures an
 | `ONSET_SPECTRAL_NOVELTY_MIN` | 0.02 | Positive log-spectrum growth / preceding total magnitude before normalization |
 | `ONSET_RMS_RISE_RATIO` | 1.08 | Local raw RMS rise required by onset refinement |
 | `GEOMETRY_EPSILON` | 1e-10 | Numerical degeneracy tolerance |
+| `RESAMPLE_TAPS` / `RESAMPLE_PHASES` | 64 / 1024 | Band-limited analysis resampler kernel/phase table |
+| `TRACK_RECORD_MS` / `TRACK_RECORD_MAX_BYTES` | 20000 / 2 × 1024 × 1024 | Explicit opt-in landmark-only recorder duration/JSON cap |
+| `UPPER_BODY_LAST_LANDMARK` | 24 | Last retained MediaPipe pose index; knees/ankles/feet are zeroed |
+| `UPPER_BODY_MASK_FADE_NORM` | 0.035 | Mask feather entirely above the actual hip line |
+| `TRACK_FIRST_RESULT_TIMEOUT_MS` | 15000 | First submitted result deadline during setup only; steady-state stall remains 1000 ms |
 | `SFX_SYNTH_DURATION_S` / `SFX_SYNTH_GAIN` | 0.18 / 0.12 | Original procedural SFX fallback buffer duration/gain |
 | `SFX_SYNTH_FREQUENCIES` | `{ slash: 880, smash: 110, beam: 1320, miss: 90, badcut: 180, dodge: 440, count: 660 }` | Procedural fallback frequencies in Hz; does not claim authored OGG assets |
 

@@ -1,0 +1,298 @@
+{
+  "lane": "synthetic-browser-audio-correctness",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+  "analysisSampleRate": 22050,
+  "passed": true,
+  "checks": [
+    {
+      "name": "impulse 16000→22050",
+      "passed": true,
+      "actual": {
+        "sourceSr": 16000,
+        "outputSamples": 132300,
+        "peakErrorSamples": 0,
+        "integralRatio": 0.9992117658316086,
+        "transferDetached": true,
+        "sourceRetained": true
+      }
+    },
+    {
+      "name": "antiphase stereo 16000",
+      "passed": true,
+      "actual": {
+        "sourceSr": 16000,
+        "antiPhaseRms": 0
+      }
+    },
+    {
+      "name": "1 kHz amplitude 16000",
+      "passed": true,
+      "actual": {
+        "sourceSr": 16000,
+        "expectedRms": 0.17677669529663687,
+        "actualRms": 0.17677678197804136
+      }
+    },
+    {
+      "name": "impulse 32000→22050",
+      "passed": true,
+      "actual": {
+        "sourceSr": 32000,
+        "outputSamples": 132300,
+        "peakErrorSamples": 0,
+        "integralRatio": 0.9995572997053999,
+        "transferDetached": true,
+        "sourceRetained": true
+      }
+    },
+    {
+      "name": "antiphase stereo 32000",
+      "passed": true,
+      "actual": {
+        "sourceSr": 32000,
+        "antiPhaseRms": 0
+      }
+    },
+    {
+      "name": "1 kHz amplitude 32000",
+      "passed": true,
+      "actual": {
+        "sourceSr": 32000,
+        "expectedRms": 0.17677669529663687,
+        "actualRms": 0.17677683681450007
+      }
+    },
+    {
+      "name": "impulse 44100→22050",
+      "passed": true,
+      "actual": {
+        "sourceSr": 44100,
+        "outputSamples": 132300,
+        "peakErrorSamples": 0,
+        "integralRatio": 0.9999760389328003,
+        "transferDetached": true,
+        "sourceRetained": true
+      }
+    },
+    {
+      "name": "antiphase stereo 44100",
+      "passed": true,
+      "actual": {
+        "sourceSr": 44100,
+        "antiPhaseRms": 0
+      }
+    },
+    {
+      "name": "1 kHz amplitude 44100",
+      "passed": true,
+      "actual": {
+        "sourceSr": 44100,
+        "expectedRms": 0.17677669529663687,
+        "actualRms": 0.1767718796077354
+      }
+    },
+    {
+      "name": "impulse 48000→22050",
+      "passed": true,
+      "actual": {
+        "sourceSr": 48000,
+        "outputSamples": 132300,
+        "peakErrorSamples": 0,
+        "integralRatio": 0.9997392447761737,
+        "transferDetached": true,
+        "sourceRetained": true
+      }
+    },
+    {
+      "name": "antiphase stereo 48000",
+      "passed": true,
+      "actual": {
+        "sourceSr": 48000,
+        "antiPhaseRms": 0
+      }
+    },
+    {
+      "name": "1 kHz amplitude 48000",
+      "passed": true,
+      "actual": {
+        "sourceSr": 48000,
+        "expectedRms": 0.17677669529663687,
+        "actualRms": 0.17678011418697298
+      }
+    },
+    {
+      "name": "16 kHz rejects above analysis Nyquist",
+      "passed": true,
+      "actual": {
+        "aliasRms": 0.00000862071345569087
+      }
+    },
+    {
+      "name": "gapless pamgaea at 22050",
+      "passed": true,
+      "actual": {
+        "sampleRate": 22050,
+        "decodedSamples": 3715659,
+        "decodedDurationMs": 168510.61224489796,
+        "canonicalDurationMs": 168510.6575963719,
+        "durationErrorMs": -0.045351473934715614
+      }
+    },
+    {
+      "name": "gapless pamgaea at 44100",
+      "passed": true,
+      "actual": {
+        "sampleRate": 44100,
+        "decodedSamples": 7431319,
+        "decodedDurationMs": 168510.6349206349,
+        "canonicalDurationMs": 168510.6575963719,
+        "durationErrorMs": -0.022675736981909722
+      }
+    },
+    {
+      "name": "source sample zero pamgaea",
+      "passed": true,
+      "actual": {
+        "bestLagAnalysisSamples": 0,
+        "bestCorrelation": 0.9999999997753487
+      }
+    },
+    {
+      "name": "gapless pamgaea at 48000",
+      "passed": true,
+      "actual": {
+        "sampleRate": 48000,
+        "decodedSamples": 8088510,
+        "decodedDurationMs": 168510.625,
+        "canonicalDurationMs": 168510.6575963719,
+        "durationErrorMs": -0.03259637189330533
+      }
+    },
+    {
+      "name": "gapless electro-cabello at 22050",
+      "passed": true,
+      "actual": {
+        "sampleRate": 22050,
+        "decodedSamples": 4206472,
+        "decodedDurationMs": 190769.7052154195,
+        "canonicalDurationMs": 190769.75056689343,
+        "durationErrorMs": -0.045351473934715614
+      }
+    },
+    {
+      "name": "gapless electro-cabello at 44100",
+      "passed": true,
+      "actual": {
+        "sampleRate": 44100,
+        "decodedSamples": 8412945,
+        "decodedDurationMs": 190769.72789115645,
+        "canonicalDurationMs": 190769.75056689343,
+        "durationErrorMs": -0.022675736981909722
+      }
+    },
+    {
+      "name": "source sample zero electro-cabello",
+      "passed": true,
+      "actual": {
+        "bestLagAnalysisSamples": 0,
+        "bestCorrelation": 0.9999743812489567
+      }
+    },
+    {
+      "name": "gapless electro-cabello at 48000",
+      "passed": true,
+      "actual": {
+        "sampleRate": 48000,
+        "decodedSamples": 9156946,
+        "decodedDurationMs": 190769.70833333334,
+        "canonicalDurationMs": 190769.75056689343,
+        "durationErrorMs": -0.04223356008878909
+      }
+    },
+    {
+      "name": "gapless cipher at 22050",
+      "passed": true,
+      "actual": {
+        "sampleRate": 22050,
+        "decodedSamples": 5097960,
+        "decodedDurationMs": 231200,
+        "canonicalDurationMs": 231200,
+        "durationErrorMs": 0
+      }
+    },
+    {
+      "name": "gapless cipher at 44100",
+      "passed": true,
+      "actual": {
+        "sampleRate": 44100,
+        "decodedSamples": 10195920,
+        "decodedDurationMs": 231200,
+        "canonicalDurationMs": 231200,
+        "durationErrorMs": 0
+      }
+    },
+    {
+      "name": "source sample zero cipher",
+      "passed": true,
+      "actual": {
+        "bestLagAnalysisSamples": 0,
+        "bestCorrelation": 0.9999999178034539
+      }
+    },
+    {
+      "name": "gapless cipher at 48000",
+      "passed": true,
+      "actual": {
+        "sampleRate": 48000,
+        "decodedSamples": 11097600,
+        "decodedDurationMs": 231200,
+        "canonicalDurationMs": 231200,
+        "durationErrorMs": 0
+      }
+    }
+  ],
+  "recordedAt": "2026-10-24T19:17:47.459Z",
+  "gitHead": "0de0c7cb4fc4270d845f0a6b5d42268ee725ee9a",
+  "dirtyTree": true,
+  "functionSourceSha256": "556edd1779e06455507535d0cb4ebdabb1de6f723dd0fcd7fcefdb475df0be76",
+  "testSourceSha256": "28d31c03e4d1b8c85795b0415c614687637a06e961ad9e7da99b0d7fd9f9b725",
+  "constantsSourceSha256": "950709c32b24b67239fe01dda430b3b0f629adb2dd4f54937b006c0eff600677",
+  "lockfileSha256": "66dc1547569b921b18b85ab19b6e22fc3166133573d1f10764aea146b0bc2bb1",
+  "assetsManifestSha256": "899b090cfaec019acab595d5c78897b43fc777f02be9bdfbec1c7cd222aae87b",
+  "musicAssets": [
+    {
+      "slug": "pamgaea",
+      "generatorVersion": 2,
+      "audioSha256": "9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586",
+      "canonicalPcmSha256": "5eb6351ed7f6effe372371b5e25d83d50a1ab91f5c72c871e21a62dd1216d668",
+      "maps": {
+        "easy": "b123d613f88fc713c1b15e9f4c7a422de19e8bacd057a12098a28637c5e97c46",
+        "normal": "ad7f51be282b859a1ffbface5f9ee6689aea79fc82fb629be0bc274b4c0d0ded",
+        "hard": "229b62f57e5b5089226d6f77efdb262964fb62e435e0e048ea941b713be05e82"
+      }
+    },
+    {
+      "slug": "electro-cabello",
+      "generatorVersion": 2,
+      "audioSha256": "f304151035c2647de56dbf1995dcc90f3c942c656edfe7516541e7b76e4044ef",
+      "canonicalPcmSha256": "38edda4d82a3702920ebd64475b576744929068bee4b9ae651b8be45b87fad1e",
+      "maps": {
+        "easy": "69270502d55f0e64bc931bfca3eb2e197cf2eb7db6307ff45b87669fb3acb6b9",
+        "normal": "15c07bc5069ac5f1c16c8ed0785177b858bbd4be1e73a56557c78cde145097a9",
+        "hard": "4680e3129de4b286b63e1f0b0e6f3342f86f2fb429120d45b039230b9859c933"
+      }
+    },
+    {
+      "slug": "cipher",
+      "generatorVersion": 2,
+      "audioSha256": "d3d0614535a61d748e2fd8d5117fc4d781022a7624794802a2462d8af3fdd522",
+      "canonicalPcmSha256": "d03027294c2fc4caf995b668f205cf66f605f40abfce762a6be6393790517071",
+      "maps": {
+        "easy": "cbe2577397cd7f59e610be356cb5f0a7df650fc720bf459feeea5c6a5feb6530",
+        "normal": "7933dbf24f35f838cce7b810232985c9eaaad2b261fab5c6e074df0ac74e7727",
+        "hard": "31538ec8603d72c1a362c0b1f9daa2cfe796695a180c2b79cabeed7f23323b8b"
+      }
+    }
+  ],
+  "scope": "Synthetic native OfflineAudioContext correctness only. No microphone/camera/audio-output permission requested; no webcam, audible playback, physical latency or musical quality claim."
+}

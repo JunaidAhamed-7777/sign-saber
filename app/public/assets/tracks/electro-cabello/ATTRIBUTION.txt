@@ -1,0 +1,10 @@
+"Electro Cabello" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+https://creativecommons.org/licenses/by/4.0/
+
+Source: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400048
+Download: https://incompetech.com/music/royalty-free/mp3-royaltyfree/Electro%20Cabello.mp3
+Changes: Packaged original downloaded MP3 bytes unchanged. Analysis and generated maps are separate; previews use playback offsets without editing the file.
+Acquired: 2026-10-24T18:46:11.336Z
+SHA-256: f304151035c2647de56dbf1995dcc90f3c942c656edfe7516541e7b76e4044ef
+Music retains its Creative Commons license and is not MIT licensed. No artist endorsement is implied.

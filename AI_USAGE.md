@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Lifecycle acceptance completion (issue #4)
+
+- Codex recorded the loaded-avatar recovery supplement, explained its intentionally incomplete overall subset result beside the complete eight-case pass, and documented native resource boundaries, actual failures/fixes and remaining evidence limits. Independent reviews remained read-only; no app code changed after the tested diagnostic checkpoint.
+
 ## 2026-10-25 — Final renderer evidence and readiness review (issue #4)
 
 - Codex verified all eight cases and all 20 strict resource cycles on the integrated avatar source. A read-only agent review identified the async-avatar loading boundary; Codex exposed the existing readiness getter and strengthened only the context probe, preserving all prior reports rather than relabelling a partial rerun as full proof.

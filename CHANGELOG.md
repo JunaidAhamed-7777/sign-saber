@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:25:57+05:30 — Complete loaded-avatar recovery evidence and issue #4 handoff
+
+- Changed: Added the separate loaded-avatar context JSON/Markdown/screenshots and a concise evidence interpretation linking every tested source, preserved failure, complete matrix and raw resource sample. README and docs17 link the actual results. No application code changed after diagnostic checkpoint `99fe5d4`.
+- Why: Keep the canonical full pass and a deliberately partial refinement distinguishable, and make the suspended-audio baseline and real fixes reviewable without hiding the initial failures.
+- Validation: The context-only supplement passed all 12 checks on clean `99fe5d4`: the actual avatar was ready across two frames before menu/play loss, fatal recovery stayed visible, play's native audio context suspended, SFX/clock/score stopped, no continuing application frames were observed and native Retry reload restored the menu. Its overall incomplete/exit-1 result correctly represents seven intentionally unrun cases. Complete `ca7eefe` evidence remains 8/8 with all 20 cycles passed. The unchanged application source passed full typecheck/lint/488 tests/build before the diagnostic commit. Final root helper/docs tests passed 7/7; checker found 52 Markdown files/561 local links, zero errors; whitespace passed. Owned browser/server/profile cleanup reported no errors.
+- Limits: No camera, audible-sync or performance acceptance; synthetic original audio/planned motion and muted software rendering only. Existing bundle warning and generic static-auditor findings remain explicitly recorded. No PR is merged by this work.
+
 ## 2026-10-25T05:23:53+05:30 — Preserve final renderer matrix and require loaded-avatar context proof (issue #4)
 
 - Changed: Saved the complete canonical `2026-10-25-lifecycle-qa.json`/`.md` and current desktop/compact screenshots from clean source `ca7eefe`. The read-only stats snapshot now exposes the existing renderer `avatarStatus` getter; the context-loss case waits for `ready` across two actual animation frames before losing WebGL in menu/play. No scoring, actions or renderer ownership changed.

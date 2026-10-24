@@ -2298,12 +2298,23 @@ button:disabled,
     font-size: 22px;
   }
 }
+/* Narrow compact windows: give song titles the card width. */
+@media (max-width: 760px) {
+  .inline-row .song-card .cover-art {
+    display: none;
+  }
+}
 /* Very short windows (for example 200% zoom on a 900 px tall laptop): drop secondary captions, keep targets. */
 @media (max-height: 520px) {
-  .compact-top .inline-pager > .page-position,
+  .inline-pager > .page-position,
   .compact-status .chips,
+  .compact-shell .btn small,
   .replay-label .replay-mark {
     display: none;
+  }
+  .compact-shell .btn {
+    font-size: 16px;
+    padding: 6px 8px;
   }
   .menu-shell.compact-shell {
     gap: 6px;

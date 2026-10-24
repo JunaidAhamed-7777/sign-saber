@@ -33,6 +33,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: Drive the authored person model from tracked, dataset and synthetic skeletons instead of thin lines.
 - Validation: 16 new assertions against the actual exported GLB (rest identity, horizontal raise with hand on wrist, 90°/120° elbows, bounded stretch, fist/point/open recovered from 21-point landmarks, hold-then-ease, head turn and limit, mirroring/handedness, 2D depth, camera-ray placement, leg indices ignored, explicit joints, static Calm idle). Typecheck clean. Blender pose renders show clean fist and raised-arm deformation.
 - Limits: Not yet wired into the renderer or menu; no browser or webcam check.
+## 2026-10-25T04:22:47+05:30 — 200% zoom and narrow compact tiers
+
+- Changed: At ≤520 px tall the compact rails hide page captions, button sub-captions and chips and use 16 px button text; at ≤760 px wide compact song cards drop the cover so titles fit. Targets stay at `MENU_TARGET_MIN_PX` with `MENU_TARGET_GAP_PX` gaps. The breakpoint test whitelists these documented sub-tiers.
+- Why: A 720×450 (200% zoom of 1440×900) screenshot showed the bottom rail scrolling and truncated song titles.
+- Validation: After merging main, `npm ci`, typecheck, lint, 369/369 assertions in 48 files (`--testTimeout=90000` because of 100% CPU from parallel jobs), build and prettier check passed. Headless Chrome screenshots at 720×450 (menu, pause), 1024×640 (performer pre-roll) and 1440×900 (pause run summary with autofocused Resume) were inspected.
+- Limits: Zoom was emulated by viewport size, not browser zoom; no human readability check.
 
 ## 2026-10-25T04:07:42+05:30 — Pause run summary, performer footer label and short-window tier
 

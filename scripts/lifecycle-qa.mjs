@@ -655,6 +655,26 @@ const scenarios = {
           await qa.start();
           await qa.playing();
         }
+        await qa.wait(
+          (s) => s.avatarStatus === "ready",
+          "actual rigged avatar loaded before context loss",
+        );
+        await qa.page.evaluate(
+          "new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve(true))))",
+        );
+        const drawn = await qa.snapshot();
+        item.avatarBeforeLoss ??= [];
+        item.avatarBeforeLoss.push({
+          phase: state,
+          avatarStatus: drawn.avatarStatus,
+          resources: drawn.resources,
+        });
+        check(
+          item,
+          `${state}: rigged avatar ready across two actual animation frames`,
+          drawn.avatarStatus === "ready",
+          drawn.resources,
+        );
         const available = await qa.page.evaluate(
           `(() => { const gl = document.querySelector('#app canvas')?.getContext('webgl2'); const extension = gl?.getExtension('WEBGL_lose_context'); if (!extension) return false; extension.loseContext(); return true; })()`,
         );

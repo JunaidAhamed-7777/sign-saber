@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:23:53+05:30 — Preserve final renderer matrix and require loaded-avatar context proof (issue #4)
+
+- Changed: Saved the complete canonical `2026-10-25-lifecycle-qa.json`/`.md` and current desktop/compact screenshots from clean source `ca7eefe`. The read-only stats snapshot now exposes the existing renderer `avatarStatus` getter; the context-loss case waits for `ready` across two actual animation frames before losing WebGL in menu/play. No scoring, actions or renderer ownership changed.
+- Why: The complete matrix verifies the incoming avatar's resource ownership, and the explicit readiness observation prevents a menu loss test from proving only its loading fallback.
+- Validation: All eight cases passed on clean `ca7eefe`, including all 20 cycles with a fixed 110-geometry/14-texture/188-DOM-listener/two-worker baseline and at most eleven native AudioNodes. Every measured quit had zero active SFX and disconnected native buffer sources. The new read-only field/harness guard passed required typecheck, lint, 488 tests in 55 files and production build; root docs/helper tests passed 7/7; checker found 50 Markdown files/547 local links and zero errors; whitespace passed. All four current recovery screenshots were inspected.
+- Limits: The loaded-avatar context-only supplemental run is next and will be recorded separately; intentionally unrun cases in that subset must remain incomplete. Canonical all-eight evidence remains attributed to `ca7eefe`, with the earlier `96aa536` report and failed baselines preserved. Synthetic muted software-rendered input proves no camera, audible-sync or performance acceptance.
+
 ## 2026-10-25T05:16:02+05:30 — Integrate final avatar resource checkpoint (issue #4)
 
 - Changed: Normally merged upstream `30572bb`, preserving its rigged avatar and current UI copy while retaining the focused cache, WebGL and visibility fixes. Resolved the App overlap by keeping the fatal Boot route and upstream banner removal together. The harness reproduction now names the current **Watch auto-play** action while continuing to identify synthetic planned input in evidence metadata.

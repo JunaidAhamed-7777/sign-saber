@@ -1579,6 +1579,7 @@ export class GameRuntime {
               }
             : null,
           quality: this.renderer?.quality ?? null,
+          avatarStatus: this.renderer?.avatarStatus ?? null,
           hud: s.hud,
           results: s.results,
           tracking: { ...this.camera.stats },

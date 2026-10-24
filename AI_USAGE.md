@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Final renderer evidence and readiness review (issue #4)
+
+- Codex verified all eight cases and all 20 strict resource cycles on the integrated avatar source. A read-only agent review identified the async-avatar loading boundary; Codex exposed the existing readiness getter and strengthened only the context probe, preserving all prior reports rather than relabelling a partial rerun as full proof.
+
 ## 2026-10-25 — Final avatar/lifecycle integration (issue #4)
 
 - Codex normally integrated upstream avatar checkpoint `30572bb`, resolved the App overlap without restoring removed banners or dropping fatal recovery, reran all app/doc checks and preserved earlier complete evidence separately for comparison.

@@ -18,6 +18,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: Adding the performer button overflowed the ready page at 1280×720; the trial already prepares its own cut.
 - Validation: `npm run check` passed (typecheck, lint, all assertions, build); compact ids in `uiPaging.test.tsx` updated. Measured rail pages without overflow at 1280×720 and 1100×700 in headless Chrome and inspected 1440×900/800×600 screenshots.
 - Limits: Presentation-only; performer behaviour itself is main's work and was not re-verified here.
+## 2026-10-25T03:40:00+05:30 — wip: Blender-authored rigged upper-body avatar source
+
+- Changed: Added `assets-src/blender/generate_avatar.py` (signed-distance primitives polygonised by surface nets, projected/relaxed, decimated; standard-named armature; bone-heat suit/hand weights, procedural head weights; vertex-colour face details; landmark anchors in armature extras), `render_avatar_preview.py`, the dedicated `signsaber_avatar.blend`, and the exported skinned `avatar.glb` with `avatar-manifest.json` (15,134 triangles, 507,252 bytes). Head, neck, torso to a closed hip finish, arms and five-digit hands only; no legs.
+- Why: The user asked to replace the flat illustrative outline and thin skeleton lines with a real person model driven by tracked skeletons.
+- Validation: Generated through the dedicated Blender 5.2.2 MCP bridge (port 9877); Workbench previews inspected for front/side/head/hand shape. Exported once; zero unweighted fallback vertices reported.
+- Limits: Work in progress. Not yet consumed by the runtime; deformation poses, structural/Khronos validation and browser rendering are not yet checked.
 
 ## 2026-10-25T03:34:38+05:30 — Opaque boot splash and arrangement source card
 

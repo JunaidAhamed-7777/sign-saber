@@ -1,5 +1,8 @@
 # 08 — Beatmap Generation
 
+**Dynamic arrangements:** `audio/arrange.ts` selects one continuous source window using measured energy/onset evidence: 10 s raised-cosine amplitude fade-in, 60 s highlight and 10 s fade-out for sources at least 80 s long. It does not claim chorus detection or human judgement of the “best” part. Confident beat alignment is supported; missing confidence remains disclosed. Short sources scale the parts proportionally and report actual duration. One continuous window makes the joins sample-continuous; no unrelated phrases are pasted across a hidden hard cut. Actual derivative float32 WAV/PCM hashes and source/sample/fade bounds are retained in the edit receipt. A fresh chart is generated from that edited audio; old note times are never shifted under it.
+
+
 **Implementation checkpoint (generator v2):** DSP, assignment, validation, upload cancellation and grouped caching are implemented and tested. The three bundled tracks remain disclosed onset-only maps because measured tempo confidence is low. Held-out musical F1, comfort and performance targets are not yet established.
 
 The implemented onset path gates raw spectral novelty and local RMS rise before percentile normalization, refines each onset to a supported positive PCM-power derivative within the FFT half-window, and anchors nearby tracked beats to those supported sample-zero-relative onsets. Tempo octave selection retains the BPM prior and refines period from supported long onset spans. Analysis resampling uses a registered windowed-sinc kernel; browser tests exposed unacceptable aliasing from the earlier native AudioBufferSourceNode resampling path.

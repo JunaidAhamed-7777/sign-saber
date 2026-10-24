@@ -1,0 +1,852 @@
+{
+  "version": 1,
+  "id": "coco-upper-body-static-trial",
+  "label": "DATASET TRIAL \u2014 independent static COCO annotations; no hand gestures",
+  "kind": "independent-static-annotations",
+  "temporalRecording": false,
+  "interpolatedMotion": false,
+  "coordinateSpace": "unmirrored-image-pixels",
+  "topology": [
+    "nose",
+    "left_eye",
+    "right_eye",
+    "left_ear",
+    "right_ear",
+    "left_shoulder",
+    "right_shoulder",
+    "left_elbow",
+    "right_elbow",
+    "left_wrist",
+    "right_wrist",
+    "left_hip",
+    "right_hip"
+  ],
+  "annotationLicense": "CC-BY-4.0",
+  "annotationSource": "https://cocodataset.org/#keypoints-2017",
+  "annotationTerms": "https://cocodataset.org/#termsofuse",
+  "annotationArchiveSha256": "113a836d90195ee1f884e704da6304dfaaecff1f023f49b6ca93c4aaae470268",
+  "changes": "Retained the 13 COCO head/arm/hip keypoints and visible labels; lower-body labels omitted. No source image pixels are redistributed. These are human dataset annotations, not outputs from this game or evidence of webcam/model accuracy.",
+  "limitations": [
+    "Independent still images are not a motion sequence.",
+    "No 21-point hands, palm/fist/point labels, segmentation mask or metric depth is available.",
+    "Cannot establish intended gesture hits or live-camera performance."
+  ],
+  "samples": [
+    {
+      "imageId": 85316,
+      "sampleId": "coco-184474",
+      "width": 640,
+      "height": 436,
+      "bbox": [
+        372.09,
+        161.85,
+        65.1,
+        166.81
+      ],
+      "keypoints": [
+        {
+          "name": "nose",
+          "x": 403.0,
+          "y": 181.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_eye",
+          "x": 406.0,
+          "y": 177.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_eye",
+          "x": 399.0,
+          "y": 177.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_ear",
+          "x": 411.0,
+          "y": 179.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_ear",
+          "x": 394.0,
+          "y": 180.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_shoulder",
+          "x": 421.0,
+          "y": 197.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_shoulder",
+          "x": 390.0,
+          "y": 198.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_elbow",
+          "x": 432.0,
+          "y": 214.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_elbow",
+          "x": 376.0,
+          "y": 221.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_wrist",
+          "x": 425.0,
+          "y": 231.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_wrist",
+          "x": 381.0,
+          "y": 236.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_hip",
+          "x": 414.0,
+          "y": 243.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_hip",
+          "x": 397.0,
+          "y": 243.0,
+          "visibility": 2
+        }
+      ],
+      "source": {
+        "url": "http://images.cocodataset.org/train2017/000000085316.jpg",
+        "flickrUrl": "http://farm6.staticflickr.com/5216/5401574380_254f3ef327_z.jpg",
+        "license": "http://creativecommons.org/licenses/by/2.0/"
+      },
+      "sourcePhotoSha256": "1f879f6469ab2cbef3192989e14b1b41c401696d45dccf8a7a815f56396b3dad",
+      "derivedAnnotationSha256": "2b86b0e0ec1012207dd13ca692ef778663a3d3f4ff8df1d62b093dc2ca5c5278",
+      "hands": null,
+      "mask": null,
+      "worldDepth": null
+    },
+    {
+      "imageId": 42492,
+      "sampleId": "coco-193417",
+      "width": 640,
+      "height": 480,
+      "bbox": [
+        156.66,
+        105.54,
+        94.79,
+        130.19
+      ],
+      "keypoints": [
+        {
+          "name": "nose",
+          "x": 195.0,
+          "y": 140.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_eye",
+          "x": 199.0,
+          "y": 134.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_eye",
+          "x": 191.0,
+          "y": 134.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_ear",
+          "x": 206.0,
+          "y": 132.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_ear",
+          "x": 181.0,
+          "y": 129.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_shoulder",
+          "x": 213.0,
+          "y": 149.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_shoulder",
+          "x": 171.0,
+          "y": 152.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_elbow",
+          "x": 224.0,
+          "y": 182.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_elbow",
+          "x": 171.0,
+          "y": 192.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_wrist",
+          "x": 233.0,
+          "y": 213.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_wrist",
+          "x": 197.0,
+          "y": 164.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_hip",
+          "x": 213.0,
+          "y": 221.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_hip",
+          "x": 178.0,
+          "y": 221.0,
+          "visibility": 2
+        }
+      ],
+      "source": {
+        "url": "http://images.cocodataset.org/train2017/000000042492.jpg",
+        "flickrUrl": "http://farm8.staticflickr.com/7072/7375922896_3269245993_z.jpg",
+        "license": "http://creativecommons.org/licenses/by/2.0/"
+      },
+      "sourcePhotoSha256": "06e948c88f44b244fe39011a62c5a1c533574426c7f43278b7008bca1007b8b1",
+      "derivedAnnotationSha256": "e0a7769e1833740eb3a3d4fab45aca205a662739c9fe9e448eac6bbd4408ba8b",
+      "hands": null,
+      "mask": null,
+      "worldDepth": null
+    },
+    {
+      "imageId": 67078,
+      "sampleId": "coco-195509",
+      "width": 640,
+      "height": 517,
+      "bbox": [
+        442.64,
+        65.06,
+        160.33,
+        446.13
+      ],
+      "keypoints": [
+        {
+          "name": "nose",
+          "x": 510.0,
+          "y": 114.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_eye",
+          "x": 521.0,
+          "y": 103.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_eye",
+          "x": 503.0,
+          "y": 104.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_ear",
+          "x": 539.0,
+          "y": 112.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_ear",
+          "x": 494.0,
+          "y": 112.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_shoulder",
+          "x": 569.0,
+          "y": 163.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_shoulder",
+          "x": 477.0,
+          "y": 163.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_elbow",
+          "x": 592.0,
+          "y": 238.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_elbow",
+          "x": 452.0,
+          "y": 239.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_wrist",
+          "x": 565.0,
+          "y": 303.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_wrist",
+          "x": 465.0,
+          "y": 305.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_hip",
+          "x": 543.0,
+          "y": 305.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_hip",
+          "x": 485.0,
+          "y": 300.0,
+          "visibility": 2
+        }
+      ],
+      "source": {
+        "url": "http://images.cocodataset.org/train2017/000000067078.jpg",
+        "flickrUrl": "http://farm4.staticflickr.com/3593/3394578702_f392b0ae39_z.jpg",
+        "license": "http://creativecommons.org/licenses/by/2.0/"
+      },
+      "sourcePhotoSha256": "b4770cb5fd994ef4b91e674cc4b37e0a1ee15a22b454a7f78901c889a1e0abd4",
+      "derivedAnnotationSha256": "8eea8c150131032dd1afe2578c1857930598640dcc4527faa5ecaefe3413e606",
+      "hands": null,
+      "mask": null,
+      "worldDepth": null
+    },
+    {
+      "imageId": 17882,
+      "sampleId": "coco-201983",
+      "width": 480,
+      "height": 640,
+      "bbox": [
+        392.66,
+        52.06,
+        24.52,
+        74.67
+      ],
+      "keypoints": [
+        {
+          "name": "nose",
+          "x": 410.0,
+          "y": 64.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_eye",
+          "x": 411.0,
+          "y": 62.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_eye",
+          "x": 408.0,
+          "y": 63.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_ear",
+          "x": 0.0,
+          "y": 0.0,
+          "visibility": 0
+        },
+        {
+          "name": "right_ear",
+          "x": 404.0,
+          "y": 62.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_shoulder",
+          "x": 413.0,
+          "y": 66.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_shoulder",
+          "x": 401.0,
+          "y": 72.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_elbow",
+          "x": 414.0,
+          "y": 74.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_elbow",
+          "x": 396.0,
+          "y": 86.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_wrist",
+          "x": 414.0,
+          "y": 80.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_wrist",
+          "x": 408.0,
+          "y": 86.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_hip",
+          "x": 409.0,
+          "y": 91.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_hip",
+          "x": 402.0,
+          "y": 92.0,
+          "visibility": 2
+        }
+      ],
+      "source": {
+        "url": "http://images.cocodataset.org/train2017/000000017882.jpg",
+        "flickrUrl": "http://farm3.staticflickr.com/2665/3888147446_fd6105a517_z.jpg",
+        "license": "http://creativecommons.org/licenses/by/2.0/"
+      },
+      "sourcePhotoSha256": "9d597bc4866fd87fdf2d4f0c4fbb8126e9d91889a98e9daedff23fdd6d998913",
+      "derivedAnnotationSha256": "ca38f1952bbd7561a828b523a60f16151ab704922114f9d53e53301dbfd49f8f",
+      "hands": null,
+      "mask": null,
+      "worldDepth": null
+    },
+    {
+      "imageId": 27519,
+      "sampleId": "coco-203410",
+      "width": 640,
+      "height": 480,
+      "bbox": [
+        128.65,
+        148.65,
+        115.67,
+        304.86
+      ],
+      "keypoints": [
+        {
+          "name": "nose",
+          "x": 178.0,
+          "y": 176.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_eye",
+          "x": 184.0,
+          "y": 169.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_eye",
+          "x": 172.0,
+          "y": 171.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_ear",
+          "x": 197.0,
+          "y": 167.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_ear",
+          "x": 0.0,
+          "y": 0.0,
+          "visibility": 0
+        },
+        {
+          "name": "left_shoulder",
+          "x": 218.0,
+          "y": 191.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_shoulder",
+          "x": 161.0,
+          "y": 197.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_elbow",
+          "x": 232.0,
+          "y": 239.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_elbow",
+          "x": 148.0,
+          "y": 238.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_wrist",
+          "x": 236.0,
+          "y": 277.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_wrist",
+          "x": 140.0,
+          "y": 268.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_hip",
+          "x": 213.0,
+          "y": 290.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_hip",
+          "x": 172.0,
+          "y": 293.0,
+          "visibility": 2
+        }
+      ],
+      "source": {
+        "url": "http://images.cocodataset.org/train2017/000000027519.jpg",
+        "flickrUrl": "http://farm3.staticflickr.com/2432/3591751015_5770246455_z.jpg",
+        "license": "http://creativecommons.org/licenses/by/2.0/"
+      },
+      "sourcePhotoSha256": "c02c560dc40337a1fd98c2445ca54f096a450085eb789b383f8ca9edd9263a51",
+      "derivedAnnotationSha256": "69f0aa88fd109cb36694b049bab2a9e3b03f39c3a037ecaa08fba7056edaa847",
+      "hands": null,
+      "mask": null,
+      "worldDepth": null
+    },
+    {
+      "imageId": 32124,
+      "sampleId": "coco-203628",
+      "width": 500,
+      "height": 351,
+      "bbox": [
+        234.26,
+        166.43,
+        83.61,
+        134.09
+      ],
+      "keypoints": [
+        {
+          "name": "nose",
+          "x": 272.0,
+          "y": 187.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_eye",
+          "x": 277.0,
+          "y": 184.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_eye",
+          "x": 268.0,
+          "y": 185.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_ear",
+          "x": 286.0,
+          "y": 186.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_ear",
+          "x": 0.0,
+          "y": 0.0,
+          "visibility": 0
+        },
+        {
+          "name": "left_shoulder",
+          "x": 286.0,
+          "y": 212.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_shoulder",
+          "x": 261.0,
+          "y": 211.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_elbow",
+          "x": 286.0,
+          "y": 251.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_elbow",
+          "x": 250.0,
+          "y": 247.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_wrist",
+          "x": 277.0,
+          "y": 253.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_wrist",
+          "x": 280.0,
+          "y": 245.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_hip",
+          "x": 279.0,
+          "y": 257.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_hip",
+          "x": 244.0,
+          "y": 263.0,
+          "visibility": 2
+        }
+      ],
+      "source": {
+        "url": "http://images.cocodataset.org/train2017/000000032124.jpg",
+        "flickrUrl": "http://farm3.staticflickr.com/2439/3843717802_a50554c340_z.jpg",
+        "license": "http://creativecommons.org/licenses/by/2.0/"
+      },
+      "sourcePhotoSha256": "5c6bd7fbfb07ec2609193f80d8c1cc5e15feee53ee9cb879b13dea7f8a7ace19",
+      "derivedAnnotationSha256": "24193f64c5e2571e641657b7736ccc942ef975410be95e8e549190eb660e781a",
+      "hands": null,
+      "mask": null,
+      "worldDepth": null
+    },
+    {
+      "imageId": 97434,
+      "sampleId": "coco-207897",
+      "width": 640,
+      "height": 266,
+      "bbox": [
+        164.01,
+        115.82,
+        65.61,
+        110.94
+      ],
+      "keypoints": [
+        {
+          "name": "nose",
+          "x": 199.0,
+          "y": 135.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_eye",
+          "x": 199.0,
+          "y": 131.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_eye",
+          "x": 194.0,
+          "y": 132.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_ear",
+          "x": 0.0,
+          "y": 0.0,
+          "visibility": 0
+        },
+        {
+          "name": "right_ear",
+          "x": 185.0,
+          "y": 135.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_shoulder",
+          "x": 203.0,
+          "y": 148.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_shoulder",
+          "x": 177.0,
+          "y": 150.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_elbow",
+          "x": 220.0,
+          "y": 162.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_elbow",
+          "x": 189.0,
+          "y": 165.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_wrist",
+          "x": 214.0,
+          "y": 167.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_wrist",
+          "x": 214.0,
+          "y": 177.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_hip",
+          "x": 193.0,
+          "y": 192.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_hip",
+          "x": 176.0,
+          "y": 193.0,
+          "visibility": 2
+        }
+      ],
+      "source": {
+        "url": "http://images.cocodataset.org/train2017/000000097434.jpg",
+        "flickrUrl": "http://farm8.staticflickr.com/7122/7856942124_de238af8cb_z.jpg",
+        "license": "http://creativecommons.org/licenses/by/2.0/"
+      },
+      "sourcePhotoSha256": "41955a52ee2c52e7ef07c93cf7497da236e0e433737918710a055a3487733b97",
+      "derivedAnnotationSha256": "615685edc42e058d140e53aed37868eb80bd8c6f3a1affb7aab82d97b094053d",
+      "hands": null,
+      "mask": null,
+      "worldDepth": null
+    },
+    {
+      "imageId": 50411,
+      "sampleId": "coco-227156",
+      "width": 640,
+      "height": 480,
+      "bbox": [
+        160.42,
+        192.75,
+        58.98,
+        65.64
+      ],
+      "keypoints": [
+        {
+          "name": "nose",
+          "x": 188.0,
+          "y": 207.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_eye",
+          "x": 190.0,
+          "y": 205.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_eye",
+          "x": 185.0,
+          "y": 205.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_ear",
+          "x": 193.0,
+          "y": 207.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_ear",
+          "x": 181.0,
+          "y": 207.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_shoulder",
+          "x": 196.0,
+          "y": 216.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_shoulder",
+          "x": 175.0,
+          "y": 217.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_elbow",
+          "x": 206.0,
+          "y": 239.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_elbow",
+          "x": 165.0,
+          "y": 237.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_wrist",
+          "x": 195.0,
+          "y": 251.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_wrist",
+          "x": 180.0,
+          "y": 251.0,
+          "visibility": 2
+        },
+        {
+          "name": "left_hip",
+          "x": 197.0,
+          "y": 252.0,
+          "visibility": 2
+        },
+        {
+          "name": "right_hip",
+          "x": 178.0,
+          "y": 252.0,
+          "visibility": 2
+        }
+      ],
+      "source": {
+        "url": "http://images.cocodataset.org/train2017/000000050411.jpg",
+        "flickrUrl": "http://farm5.staticflickr.com/4133/5046130146_7d9b909907_z.jpg",
+        "license": "http://creativecommons.org/licenses/by/2.0/"
+      },
+      "sourcePhotoSha256": "02ff10d5a57664c500b07c8b8e4a8f8c0269f7b51146e99665f415507fe3c19b",
+      "derivedAnnotationSha256": "075af74695d8ffed481ac69824d065c21188886250218f4882f9620e2ae3eb70",
+      "hands": null,
+      "mask": null,
+      "worldDepth": null
+    }
+  ]
+}

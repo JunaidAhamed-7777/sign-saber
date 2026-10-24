@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Arrangements and annotated dataset trial
+
+- Codex implemented and independently reviewed real derivative audio/chart generation and strict dataset fixture boundaries. Native audio checks passed; the browser ran a real 80 s edited level to genuine zero-hit results from annotated still poses. No hand gestures, temporal recording or successful model tracking was invented.
+
 ## 2026-10-25 — Tracking, hand navigation and upper-body scope
 
 - A dedicated agent implemented bounded camera/worker/gesture/replay ownership, pinned model preparation and same-origin response policy. Real browser probes exposed and fixed loader/factory and cold-start watchdog problems; synthetic and native-camera setup observations are labelled separately.

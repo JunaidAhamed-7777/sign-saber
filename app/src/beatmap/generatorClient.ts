@@ -122,6 +122,7 @@ export class GeneratorClient {
     file: File,
     difficulty: Difficulty,
     onProgress?: (value: GeneratorProgress) => void,
+    metadata?: { title: string; artist: string },
   ): Promise<GeneratedSong> {
     this.cancel();
     const epoch = this.epoch;
@@ -133,6 +134,11 @@ export class GeneratorClient {
       if (epoch !== this.epoch) throw new GeneratorError('cancelled', 'Audio analysis cancelled');
     };
     const run = async (): Promise<GeneratedSong> => {
+      if (metadata && (!isBoundedText(metadata.title) || !isBoundedText(metadata.artist)))
+        throw new GeneratorError('invalid', 'Invalid local audio title/artist metadata');
+      const title =
+        metadata?.title ?? (file.name.replace(/\.[^.]+$/, '').slice(0, ASSET_TEXT_MAX_CHARS) || 'Untitled');
+      const artist = metadata?.artist ?? 'Local audio';
       if (!file.size || file.size > MAX_UPLOAD_BYTES)
         throw new GeneratorError(
           'tooLarge',
@@ -157,10 +163,14 @@ export class GeneratorClient {
       current();
       if (cached) {
         onProgress?.({ stage: 'cache', fraction: 1 });
-        return { ...cached, warnings: [...new Set([...cached.warnings, ...warnings])], buffer };
+        return {
+          ...cached,
+          map: { ...cached.map, song: { ...cached.map.song, title, artist } },
+          warnings: [...new Set([...cached.warnings, ...warnings])],
+          buffer,
+        };
       }
-      const title = file.name.replace(/\.[^.]+$/, '').slice(0, ASSET_TEXT_MAX_CHARS) || 'Untitled';
-      const meta: SongMeta = { title, artist: 'Local audio', sourceHash, source: 'upload' };
+      const meta: SongMeta = { title, artist, sourceHash, source: 'upload' };
       const jobId = `generation-${epoch}`;
       let request: GenRequest;
       let transfer: Transferable[] = [];

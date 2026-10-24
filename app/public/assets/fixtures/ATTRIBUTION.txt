@@ -1,0 +1,11 @@
+COCO 2017 person keypoint annotations — COCO Consortium.
+https://cocodataset.org/#keypoints-2017
+Annotations licensed under Creative Commons Attribution 4.0:
+https://creativecommons.org/licenses/by/4.0/
+
+Changes: retained thirteen head/arm/hip keypoints for eight independent still-image examples.
+Source images are not redistributed. Individual source photo URLs, CC-BY license links,
+and acquired photo hashes are recorded in coco-upper-body-trial.json.
+
+These annotations are a labelled static dataset trial, not live tracking, recorded human
+motion, hand-gesture ground truth, model inference, or evidence that a camera works.

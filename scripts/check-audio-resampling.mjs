@@ -15,8 +15,12 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 const require = createRequire(new URL("../app/package.json", import.meta.url));
 const { build } = await import(pathToFileURL(require.resolve("vite")).href);
 const run = promisify(execFile);
+const arrangement = process.argv.includes("--arrangement");
+const entryFile = arrangement
+  ? "app/tests/browser/arrangement.ts"
+  : "app/tests/browser/resampling.ts";
 const browser =
-  process.argv[2] ||
+  process.argv.slice(2).find((argument) => !argument.startsWith("--")) ||
   process.env.BROWSER_BINARY ||
   (process.platform === "win32"
     ? "C:/Program Files/Google/Chrome/Application/chrome.exe"
@@ -34,7 +38,7 @@ try {
       write: false,
       minify: false,
       lib: {
-        entry: path.join(root, "app/tests/browser/resampling.ts"),
+        entry: path.join(root, entryFile),
         formats: ["iife"],
         name: "SignSaberAudioCheck",
       },
@@ -44,7 +48,9 @@ try {
     (item) => item.type === "chunk",
   ).code;
   const prefixes = new Map();
-  for (const slug of ["pamgaea", "electro-cabello", "cipher"]) {
+  for (const slug of arrangement
+    ? []
+    : ["pamgaea", "electro-cabello", "cipher"]) {
     const { pcm } = await decodeCanonicalPcm(
       path.join(root, "app/public/assets/tracks", slug, "audio.mp3"),
       temp,
@@ -88,7 +94,7 @@ try {
         } else res.end(bytes);
       } else if (
         req.url === "/assets/tracks/manifest.json" ||
-        /^\/assets\/tracks\/(pamgaea|electro-cabello|cipher)\/audio\.mp3$/.test(
+        /^\/assets\/tracks\/(pamgaea|electro-cabello|cipher)\/(audio\.mp3|normal\.json|generation\.json)$/.test(
           req.url ?? "",
         )
       ) {
@@ -117,7 +123,11 @@ try {
       "--dump-dom",
       `http://127.0.0.1:${address.port}/`,
     ],
-    { windowsHide: true, timeout: 30000, maxBuffer: 16 * 1024 * 1024 },
+    {
+      windowsHide: true,
+      timeout: arrangement ? 60000 : 30000,
+      maxBuffer: 16 * 1024 * 1024,
+    },
   );
   if (!payload)
     throw new Error("Browser did not finish the offline-audio checks");
@@ -132,11 +142,16 @@ try {
     encoding: "utf8",
   }).trim();
   report.functionSourceSha256 = sha(
-    await readFile(path.join(root, "app/src/beatmap/dsp/resample.ts")),
+    await readFile(
+      path.join(
+        root,
+        arrangement
+          ? "app/src/audio/arrange.ts"
+          : "app/src/beatmap/dsp/resample.ts",
+      ),
+    ),
   );
-  report.testSourceSha256 = sha(
-    await readFile(path.join(root, "app/tests/browser/resampling.ts")),
-  );
+  report.testSourceSha256 = sha(await readFile(path.join(root, entryFile)));
   report.constantsSourceSha256 = sha(
     await readFile(path.join(root, "app/src/core/constants.ts")),
   );
@@ -153,11 +168,14 @@ try {
     generatorVersion: track.generatorVersion,
     ...track.hashes,
   }));
-  report.scope =
-    "Synthetic native OfflineAudioContext correctness only. No microphone/camera/audio-output permission requested; no webcam, audible playback, physical latency or musical quality claim.";
+  report.scope = arrangement
+    ? "Actual licensed audio arrangement and derivative map correctness only. Headless native audio buffers; no audible confirmation, human best-part rating, physical latency or performance claim."
+    : "Synthetic native OfflineAudioContext correctness only. No microphone/camera/audio-output permission requested; no webcam, audible playback, physical latency or musical quality claim.";
   const output = path.join(
     root,
-    "app/tests/fixtures/audio/resample-browser-result.json",
+    arrangement
+      ? "app/tests/fixtures/audio/arrangement-browser-result.json"
+      : "app/tests/fixtures/audio/resample-browser-result.json",
   );
   await mkdir(path.dirname(output), { recursive: true });
   await writeFile(output, JSON.stringify(report, null, 2) + "\n");

@@ -1,0 +1,314 @@
+{
+  "lane": "browser-audio-arrangement-correctness",
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+  "passed": true,
+  "checks": [
+    {
+      "name": "real 80-second WAV pamgaea",
+      "passed": true,
+      "actual": {
+        "outputBytes": 28224044,
+        "decodedSeconds": 80,
+        "fileSha256": "8d437bfcd862e9cc02462e5655bdcf8de656a68b2a12f0edd1f20f79b90019c1",
+        "canonicalPcmSha256": "1c772f3bdf379510c46d6cd14843bc66d44994da674867a446a649d8ffd861b8"
+      }
+    },
+    {
+      "name": "fresh derivative chart pamgaea",
+      "passed": true,
+      "actual": {
+        "durationMs": 80000,
+        "notes": 131,
+        "obstacles": 2,
+        "mapSha256": "e9cc45bb76a097b1dd063ce5a491833b4f6e0045d5716ad756ae10602ef412c5",
+        "generatorVersion": 2,
+        "warnings": [
+          "lowTempoConfidence"
+        ]
+      }
+    },
+    {
+      "name": "continuous fades pamgaea",
+      "passed": true,
+      "actual": {
+        "firstSample": 0,
+        "lastSample": 0,
+        "sourceStartMs": 72000,
+        "sourceEndMs": 152000,
+        "selectionReason": "energy-onset-window-low-tempo-confidence"
+      }
+    },
+    {
+      "name": "real 80-second WAV electro-cabello",
+      "passed": true,
+      "actual": {
+        "outputBytes": 28224044,
+        "decodedSeconds": 80,
+        "fileSha256": "e54906b827fdd08d4ef97996c0801623eabc5574f8b5702faf72cee299408250",
+        "canonicalPcmSha256": "4065a7f08b9c4e9490c5d12b510bf496bf01b31aeef93834c1270386169bc256"
+      }
+    },
+    {
+      "name": "fresh derivative chart electro-cabello",
+      "passed": true,
+      "actual": {
+        "durationMs": 80000,
+        "notes": 139,
+        "obstacles": 0,
+        "mapSha256": "46ea2790e497842e58d8e29c6db001aa600bb9fde00fba793d484afd71f64631",
+        "generatorVersion": 2,
+        "warnings": [
+          "lowTempoConfidence"
+        ]
+      }
+    },
+    {
+      "name": "continuous fades electro-cabello",
+      "passed": true,
+      "actual": {
+        "firstSample": 0,
+        "lastSample": 0,
+        "sourceStartMs": 21000,
+        "sourceEndMs": 101000,
+        "selectionReason": "energy-onset-window-low-tempo-confidence"
+      }
+    },
+    {
+      "name": "real 80-second WAV cipher",
+      "passed": true,
+      "actual": {
+        "outputBytes": 28224044,
+        "decodedSeconds": 80,
+        "fileSha256": "7ee92cf0e9b80d28d4ba8ba647aa82ae964e83e5cb4ffce1ca97cdc331f1b00f",
+        "canonicalPcmSha256": "10240debd2593b1a665bd3046bc04d7683b5be986907bffd29f005302e035508"
+      }
+    },
+    {
+      "name": "fresh derivative chart cipher",
+      "passed": true,
+      "actual": {
+        "durationMs": 80000,
+        "notes": 125,
+        "obstacles": 0,
+        "mapSha256": "1e30c267e9c7050114f30325a34ad4a99906c22c0e1cbf2677ea318a683bf0da",
+        "generatorVersion": 2,
+        "warnings": [
+          "lowTempoConfidence"
+        ]
+      }
+    },
+    {
+      "name": "continuous fades cipher",
+      "passed": true,
+      "actual": {
+        "firstSample": 0,
+        "lastSample": 0,
+        "sourceStartMs": 21000,
+        "sourceEndMs": 101000,
+        "selectionReason": "energy-onset-window-low-tempo-confidence"
+      }
+    }
+  ],
+  "arrangements": [
+    {
+      "track": "pamgaea",
+      "edit": {
+        "sourceStartMs": 72000,
+        "sourceEndMs": 152000,
+        "outputDurationMs": 80000,
+        "fadeIn": {
+          "startMs": 0,
+          "endMs": 10000
+        },
+        "highlight": {
+          "startMs": 10000,
+          "endMs": 70000
+        },
+        "fadeOut": {
+          "startMs": 70000,
+          "endMs": 80000
+        },
+        "selectionReason": "energy-onset-window-low-tempo-confidence",
+        "tempoConfidence": 0.1590909090909091,
+        "beatAligned": false,
+        "shortTrack": false,
+        "score": {
+          "meanEnergy": 0.736102124291105,
+          "onsetEvidencePerSecond": 3.1887417450547217,
+          "activeFraction": 1,
+          "combined": 0.9935765699271047
+        },
+        "warnings": [
+          "arrangementNotBeatLocked"
+        ],
+        "version": 1,
+        "sourceTitle": "Pamgaea",
+        "sourceArtist": "Kevin MacLeod",
+        "sourceKind": "bundled",
+        "sourceAudioSha256": "9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586",
+        "sourceDurationMs": 168510.6349206349,
+        "sourceStartSample": 3175200,
+        "sourceEndSample": 6703200,
+        "sampleRate": 44100,
+        "channels": 2,
+        "outputTitle": "Pamgaea — 80.0s arrangement",
+        "outputAudioSha256": "8d437bfcd862e9cc02462e5655bdcf8de656a68b2a12f0edd1f20f79b90019c1",
+        "outputCanonicalPcmSha256": "1c772f3bdf379510c46d6cd14843bc66d44994da674867a446a649d8ffd861b8",
+        "fadeCurve": "raised-cosine-amplitude",
+        "continuity": "one-continuous-source-window",
+        "oldChartReused": false,
+        "changes": "Selected one continuous source excerpt, applied raised-cosine amplitude fades to silence, and encoded unchanged-channel float32 WAV. A new map must be generated from these exact derivative file bytes."
+      },
+      "generatedMapSha256": "e9cc45bb76a097b1dd063ce5a491833b4f6e0045d5716ad756ae10602ef412c5",
+      "generatedMapNotes": 131
+    },
+    {
+      "track": "electro-cabello",
+      "edit": {
+        "sourceStartMs": 21000,
+        "sourceEndMs": 101000,
+        "outputDurationMs": 80000,
+        "fadeIn": {
+          "startMs": 0,
+          "endMs": 10000
+        },
+        "highlight": {
+          "startMs": 10000,
+          "endMs": 70000
+        },
+        "fadeOut": {
+          "startMs": 70000,
+          "endMs": 80000
+        },
+        "selectionReason": "energy-onset-window-low-tempo-confidence",
+        "tempoConfidence": 0.20153061224489796,
+        "beatAligned": false,
+        "shortTrack": false,
+        "score": {
+          "meanEnergy": 0.42831271222091954,
+          "onsetEvidencePerSecond": 3.9120213076472283,
+          "activeFraction": 0.9916666666666667,
+          "combined": 0.9705829675589197
+        },
+        "warnings": [
+          "arrangementNotBeatLocked"
+        ],
+        "version": 1,
+        "sourceTitle": "Electro Cabello",
+        "sourceArtist": "Kevin MacLeod",
+        "sourceKind": "bundled",
+        "sourceAudioSha256": "f304151035c2647de56dbf1995dcc90f3c942c656edfe7516541e7b76e4044ef",
+        "sourceDurationMs": 190769.72789115645,
+        "sourceStartSample": 926100,
+        "sourceEndSample": 4454100,
+        "sampleRate": 44100,
+        "channels": 2,
+        "outputTitle": "Electro Cabello — 80.0s arrangement",
+        "outputAudioSha256": "e54906b827fdd08d4ef97996c0801623eabc5574f8b5702faf72cee299408250",
+        "outputCanonicalPcmSha256": "4065a7f08b9c4e9490c5d12b510bf496bf01b31aeef93834c1270386169bc256",
+        "fadeCurve": "raised-cosine-amplitude",
+        "continuity": "one-continuous-source-window",
+        "oldChartReused": false,
+        "changes": "Selected one continuous source excerpt, applied raised-cosine amplitude fades to silence, and encoded unchanged-channel float32 WAV. A new map must be generated from these exact derivative file bytes."
+      },
+      "generatedMapSha256": "46ea2790e497842e58d8e29c6db001aa600bb9fde00fba793d484afd71f64631",
+      "generatedMapNotes": 139
+    },
+    {
+      "track": "cipher",
+      "edit": {
+        "sourceStartMs": 21000,
+        "sourceEndMs": 101000,
+        "outputDurationMs": 80000,
+        "fadeIn": {
+          "startMs": 0,
+          "endMs": 10000
+        },
+        "highlight": {
+          "startMs": 10000,
+          "endMs": 70000
+        },
+        "fadeOut": {
+          "startMs": 70000,
+          "endMs": 80000
+        },
+        "selectionReason": "energy-onset-window-low-tempo-confidence",
+        "tempoConfidence": 0.22986247544204322,
+        "beatAligned": false,
+        "shortTrack": false,
+        "score": {
+          "meanEnergy": 0.4493836033707102,
+          "onsetEvidencePerSecond": 2.3179571519295377,
+          "activeFraction": 1,
+          "combined": 0.9564850412968116
+        },
+        "warnings": [
+          "arrangementNotBeatLocked"
+        ],
+        "version": 1,
+        "sourceTitle": "Cipher",
+        "sourceArtist": "Kevin MacLeod",
+        "sourceKind": "bundled",
+        "sourceAudioSha256": "d3d0614535a61d748e2fd8d5117fc4d781022a7624794802a2462d8af3fdd522",
+        "sourceDurationMs": 231200,
+        "sourceStartSample": 926100,
+        "sourceEndSample": 4454100,
+        "sampleRate": 44100,
+        "channels": 2,
+        "outputTitle": "Cipher — 80.0s arrangement",
+        "outputAudioSha256": "7ee92cf0e9b80d28d4ba8ba647aa82ae964e83e5cb4ffce1ca97cdc331f1b00f",
+        "outputCanonicalPcmSha256": "10240debd2593b1a665bd3046bc04d7683b5be986907bffd29f005302e035508",
+        "fadeCurve": "raised-cosine-amplitude",
+        "continuity": "one-continuous-source-window",
+        "oldChartReused": false,
+        "changes": "Selected one continuous source excerpt, applied raised-cosine amplitude fades to silence, and encoded unchanged-channel float32 WAV. A new map must be generated from these exact derivative file bytes."
+      },
+      "generatedMapSha256": "1e30c267e9c7050114f30325a34ad4a99906c22c0e1cbf2677ea318a683bf0da",
+      "generatedMapNotes": 125
+    }
+  ],
+  "recordedAt": "2026-10-24T19:54:01.308Z",
+  "gitHead": "f61b6108d420f5de0328b21bd707480788ca3d11",
+  "dirtyTree": true,
+  "functionSourceSha256": "252ef8bde71cb0793870b7b668153c0602e2af1ba723c39bfaaeea1738a98f69",
+  "testSourceSha256": "01f1f769106f8271a7d1b9aeb78c7e71730895d2e97715a20ed653d0ca317b93",
+  "constantsSourceSha256": "8e374b125f67a12f2ab885a55c87b564b7e7a94f564b05ae044c2f2b3bb26079",
+  "lockfileSha256": "66dc1547569b921b18b85ab19b6e22fc3166133573d1f10764aea146b0bc2bb1",
+  "assetsManifestSha256": "899b090cfaec019acab595d5c78897b43fc777f02be9bdfbec1c7cd222aae87b",
+  "musicAssets": [
+    {
+      "slug": "pamgaea",
+      "generatorVersion": 2,
+      "audioSha256": "9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586",
+      "canonicalPcmSha256": "5eb6351ed7f6effe372371b5e25d83d50a1ab91f5c72c871e21a62dd1216d668",
+      "maps": {
+        "easy": "b123d613f88fc713c1b15e9f4c7a422de19e8bacd057a12098a28637c5e97c46",
+        "normal": "ad7f51be282b859a1ffbface5f9ee6689aea79fc82fb629be0bc274b4c0d0ded",
+        "hard": "229b62f57e5b5089226d6f77efdb262964fb62e435e0e048ea941b713be05e82"
+      }
+    },
+    {
+      "slug": "electro-cabello",
+      "generatorVersion": 2,
+      "audioSha256": "f304151035c2647de56dbf1995dcc90f3c942c656edfe7516541e7b76e4044ef",
+      "canonicalPcmSha256": "38edda4d82a3702920ebd64475b576744929068bee4b9ae651b8be45b87fad1e",
+      "maps": {
+        "easy": "69270502d55f0e64bc931bfca3eb2e197cf2eb7db6307ff45b87669fb3acb6b9",
+        "normal": "15c07bc5069ac5f1c16c8ed0785177b858bbd4be1e73a56557c78cde145097a9",
+        "hard": "4680e3129de4b286b63e1f0b0e6f3342f86f2fb429120d45b039230b9859c933"
+      }
+    },
+    {
+      "slug": "cipher",
+      "generatorVersion": 2,
+      "audioSha256": "d3d0614535a61d748e2fd8d5117fc4d781022a7624794802a2462d8af3fdd522",
+      "canonicalPcmSha256": "d03027294c2fc4caf995b668f205cf66f605f40abfce762a6be6393790517071",
+      "maps": {
+        "easy": "cbe2577397cd7f59e610be356cb5f0a7df650fc720bf459feeea5c6a5feb6530",
+        "normal": "7933dbf24f35f838cce7b810232985c9eaaad2b261fab5c6e074df0ac74e7727",
+        "hard": "31538ec8603d72c1a362c0b1f9daa2cfe796695a180c2b79cabeed7f23323b8b"
+      }
+    }
+  ],
+  "scope": "Actual licensed audio arrangement and derivative map correctness only. Headless native audio buffers; no audible confirmation, human best-part rating, physical latency or performance claim."
+}

@@ -558,6 +558,17 @@ Menu defaults are initial unmeasured values; tune with held-out menu fixtures an
 | `UPPER_BODY_LAST_LANDMARK` | 24 | Last retained MediaPipe pose index; knees/ankles/feet are zeroed |
 | `UPPER_BODY_MASK_FADE_NORM` | 0.035 | Mask feather entirely above the actual hip line |
 | `TRACK_FIRST_RESULT_TIMEOUT_MS` | 15000 | First submitted result deadline during setup only; steady-state stall remains 1000 ms |
+| `ARRANGEMENT_VERSION` | 1 | Separate derivative-edit receipt version |
+| `ARRANGEMENT_TOTAL_MS` / `ARRANGEMENT_FADE_MS` / `ARRANGEMENT_HIGHLIGHT_MS` | 80000 / 10000 / 60000 | Full-length 10→60→10 arrangement; shorter admitted sources scale proportionally |
+| `ARRANGEMENT_SELECTION_HOP_MS` | 1000 | Continuous candidate-window search stride |
+| `ARRANGEMENT_ENERGY_WEIGHT` / `ARRANGEMENT_ONSET_WEIGHT` | 0.65 / 0.35 | Declared highlight heuristic weights |
+| `ARRANGEMENT_SILENCE_ENERGY` / `ARRANGEMENT_SILENCE_PENALTY` | 0.08 / 1 | Low-activity penalty in highlight selection |
+| `DATASET_TRIAL_HZ` / `DATASET_TRIAL_HOLD_MS` / `DATASET_TRIAL_CROP_FRACTION` | 30 / 10000 / 0.8 | Simulated delivery of independent still annotations; no recorded motion/fingers/depth |
+| `DATASET_TRIAL_MAX_SAMPLES` / `DATASET_TRIAL_MAX_CATCHUP_FRAMES` | 100 / 300 | Bounded fixture admission and catch-up; oversized clock jumps stop the trial instead of fabricating continuity |
+| `DATASET_TRIAL_URL` / `DATASET_TRIAL_SHA256` | Local fixture path/hash in central exports | Exact attributed fixture integrity pins, not tunable motion evidence |
+| `ASSET_MODEL_MAX_BYTES` / `MAX_LIVE_OBSTACLES` | 1048576 / 8 | Model admission and pooled wall capacity |
+| `GRAVITY_MPS2` / `GLYPH_FACE_OFFSET_M` | 9.8 / 0.31 | Cosmetic ballistic gravity and block-front glyph plane |
+| `ARENA_REACTIVE_GAIN` / `SIL_HEAD_RADIUS_M` | 2 / 0.11 | Actual audio-energy emission gain / nose-anchored head marker |
 | `SFX_SYNTH_DURATION_S` / `SFX_SYNTH_GAIN` | 0.18 / 0.12 | Original procedural SFX fallback buffer duration/gain |
 | `SFX_SYNTH_FREQUENCIES` | `{ slash: 880, smash: 110, beam: 1320, miss: 90, badcut: 180, dodge: 440, count: 660 }` | Procedural fallback frequencies in Hz; does not claim authored OGG assets |
 

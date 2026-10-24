@@ -145,8 +145,10 @@ export const BPM_MIN = 60,
   BEAT_TIGHTNESS = 100,
   SNAP_GRID = 4,
   SNAP_MAX_MS = 35;
-export const MAX_DENSITY_PER_S = { easy: 1.2, normal: 2.2, hard: 3.5 } as const;
-export const MIN_NOTE_GAP_MS = { easy: 300, normal: 180, hard: 120 } as const;
+export const MAX_DENSITY_PER_S = { easy: 0.75, normal: 1.5, hard: 2.5 } as const;
+export const MIN_NOTE_GAP_MS = { easy: 700, normal: 400, hard: 260 } as const;
+/** Most notes whose hit times fall inside one approach span, i.e. simultaneously on screen. */
+export const MAX_VISIBLE_NOTES = { easy: 3, normal: 4, hard: 5 } as const;
 export const MIN_SAME_CELL_GAP_MS = 400,
   MIN_OBSTACLE_GAP_MS = 3000,
   MIN_OBSTACLE_MS = 600,
@@ -158,7 +160,10 @@ export const DROP_RISE_RATIO = 1.4,
   TEMPO_MIN_CONFIDENCE = 0.35;
 export const BEAM_SUSTAIN_MS = 500,
   BEAM_SUSTAIN_DB = 3;
-export const BEAM_MIN_SPACING_MS = { easy: 8000, normal: 4000, hard: 4000 } as const;
+/** Songs without flat sustains may still offer their most sustained mid/high onsets, within a hard ceiling. */
+export const BEAM_SUSTAIN_PERCENTILE = 10,
+  BEAM_SUSTAIN_MAX_DB = 12;
+export const BEAM_MIN_SPACING_MS = { easy: 12000, normal: 8000, hard: 6000 } as const;
 export const CHORD_WINDOW_MS = 20,
   CENTROID_ROW_HZ = [400, 2500] as const,
   WALL_NOTE_MARGIN_MS = 600;
@@ -170,7 +175,7 @@ export const MIN_TRACK_MS = 5000,
 export const PLAYBACK_DECODE_SR = 44100,
   GAPLESS_LENGTH_TOLERANCE_SAMPLES = 2;
 export const ANALYSIS_CACHE_MAX = 30,
-  GENERATOR_VERSION = 2;
+  GENERATOR_VERSION = 3;
 export const DSP_EPSILON = 1e-12,
   ANALYSIS_PEAK_TARGET = 0.95,
   SILENCE_PEAK_MAX = 1e-4,
@@ -206,21 +211,33 @@ export const BUILD_MAX_DIPS = 2,
   CALM_MIN_GAP_MS = 12000,
   CALM_PERCENTILE = 25;
 export const DENSITY_WINDOW_MS = 4000,
-  EASY_SMASH_TO_SLASH_EVERY = 2,
   FLOW_RESTART_GAP_MS = 1200;
 export const FLOW_RESTART_SIDE = 'right' as const;
-export const FLOW_MAX_COLUMN_STEP = 1,
-  FLOW_OUTER_ACCENT_EVERY = 4,
+/** Quiet sections thin out: the local minimum gap is MIN_NOTE_GAP_MS / (floor + (1 − floor) · energy). */
+export const DENSITY_ENERGY_FLOOR = 0.5,
+  DENSITY_ENERGY_SMOOTH_MS = 2000;
+/** A continuous phrase longer than PHRASE_MAX_MS receives a deliberate note-free rest of PHRASE_REST_MS. */
+export const PHRASE_MAX_MS = { easy: 10000, normal: 14000, hard: 18000 } as const;
+export const PHRASE_REST_MS = { easy: 2000, normal: 1600, hard: 1200 } as const;
+/** Two-hand chords: strong multi-band accents only, never on Easy. */
+export const CHORD_MIN_STRENGTH = 0.85;
+export const CHORD_MIN_SPACING_MS = { easy: Infinity, normal: 6000, hard: 2500 } as const;
+/** Local share of strong low-band hits that become smashes; the rest of the phrase is slashes. */
+export const SMASH_MAX_SHARE = { easy: 0.4, normal: 0.4, hard: 0.45 } as const;
+export const SMASH_MIN_LOW_STRENGTH = 0.5,
+  GESTURE_MIX_WINDOW_MS = 8000;
+/** Per-hand budget: a hand needs FOLLOW after its previous contact plus LEAD before the next one. */
+export const FLOW_HAND_LEAD_MS = { strike: 350, beam: 720 } as const;
+export const FLOW_HAND_FOLLOW_MS = { strike: 270, beam: 160 } as const;
+export const FLOW_GESTURE_CHANGE_MS = 80;
+export const FLOW_OUTER_ACCENT_EVERY = 4,
   FLOW_OUTER_ACCENT_MIN_STRENGTH = 0.7,
   FLOW_FULL_ROW_JUMP_MIN_GAP_MS = 400;
-export const EASY_LOW_ROW_MIN_GAP_MS = 2000,
-  FLOW_HAND_MIN_GAP_MS = 250,
-  FLOW_GESTURE_SWITCH_MIN_MS = 300;
-export const OBSTACLE_EMPTY_WINDOW_MS = 2000,
-  OBSTACLE_INTRO_MS = 8000,
-  OBSTACLE_PERIOD_BEATS = 16,
-  OBSTACLE_LOOKAHEAD_BEATS = 2,
-  OBSTACLE_LOOKAHEAD_MAX_NOTES = 1;
+export const EASY_LOW_ROW_MIN_GAP_MS = 2000;
+export const OBSTACLE_INTRO_MS = 8000;
+export const OBSTACLE_PERIOD_BEATS = { easy: 32, normal: 16, hard: 12 } as const;
+/** Planned wall cadence floor; the validator's MIN_OBSTACLE_GAP_MS remains the hard minimum. */
+export const OBSTACLE_SPACING_MS = { easy: 16000, normal: 10000, hard: 7000 } as const;
 export const OBSTACLE_DURATION_BEATS = { easy: 1.5, normal: 2, hard: 2 } as const;
 export const EASY_OBSTACLE_MIN_GAP_MS = 12000;
 export const GEN_PROGRESS_WEIGHTS = {

@@ -14,6 +14,7 @@ import type { HandCursor, TrackingFrame } from '../core/types';
 import { TRACK_STALL_MS, TRACK_FIRST_RESULT_TIMEOUT_MS, INPUT_MAX_AGE_MS } from '../core/constants';
 import { TrackingClient } from './workerClient';
 import { WebcamSource, type CameraStreamSource } from './cameraSource';
+import { HAND_LABEL_MAPPING } from './protocol';
 export function cameraError(error: unknown): string {
   const name = error instanceof Error ? error.name : '';
   if (name === 'NotAllowedError' || name === 'SecurityError')
@@ -84,7 +85,7 @@ export class CameraController {
         width: video.videoWidth,
         height: video.videoHeight,
         crop: 'center-16:9',
-        mapping: 'raw-selfie-swap-v1',
+        mapping: HAND_LABEL_MAPPING,
         player: generation,
       });
       const fail = (message: string) => {

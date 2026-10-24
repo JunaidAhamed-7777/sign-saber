@@ -11,7 +11,7 @@ Owning files: `render/trails.ts` (particles + indicator), `render/blade.ts` (rib
 | left | white-hot `#FFFFFF` ×2.2 | cyan `#19F5FF` | particles, blade glow, hand spot |
 | right | white-hot `#FFFFFF` ×2.2 | violet `#B36BFF` | same |
 
-The tint is applied at the particle edges and the blade glow layer; the core stays white so both hands bloom the same way and remain readable against cyan/magenta blocks. The HUD gesture indicators ([14](14-ui-ux.md)) use the same tints.
+The tint is applied at the particle edges and the blade glow layer; the core stays white so both hands bloom the same way and remain readable against cyan/magenta blocks. The peripheral HUD labels Left/Right explicitly and uses the semantic gesture colours from [14](14-ui-ux.md): cyan Open/Slash, magenta Fist/Smash and gold Point/Beam. These differ from the renderer's persistent hand-identity tints.
 
 ## 2. Particle system (`render/trails.ts`)
 

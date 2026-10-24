@@ -160,6 +160,14 @@ export const strings = Object.freeze({
   stopCamera: 'Camera stopped. Set it up again to play.',
   lostFigure: 'Step into frame to see yourself.',
   setupError: 'Camera setup failed. You can still browse songs and retry setup.',
+  noGesture: 'No gesture',
+  beamCharged: 'Beam charged',
+  beamCharge: 'Beam charge',
+  charged: 'Charged',
+  unavailable: 'Unavailable',
+  noHandData: 'No hand data',
+  handStatus: 'status',
+  handFeedback: 'Hand gestures and beam charge',
 });
 export function duration(ms: number): string {
   const s = Math.max(0, Math.floor(ms / 1000));

@@ -409,3 +409,7 @@ export const ARENA_BASE_EMISSION = 0.4;
 export const MISS_DIM_MS = 150,
   TERMINAL_DIM_FACTOR = 0.25,
   BADCUT_TINT = 0xff1e3c;
+export const BEAM_ESCAPE_RISE_M = 3,
+  BEAM_ESCAPE_VISUAL_MS = 600;
+
+// QUALITY_*: single canonical cosmetic preset registry (docs16 §Quality tiers).

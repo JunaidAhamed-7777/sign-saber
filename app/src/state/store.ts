@@ -48,6 +48,10 @@ export interface DisplayState {
     durationMs: number;
     left: string;
     right: string;
+    leftPresent: boolean;
+    rightPresent: boolean;
+    leftCharge: number;
+    rightCharge: number;
     judgement: string;
   };
   results: SessionStats | null;
@@ -95,6 +99,10 @@ const initial: DisplayState = {
     durationMs: 0,
     left: 'none',
     right: 'none',
+    leftPresent: false,
+    rightPresent: false,
+    leftCharge: 0,
+    rightCharge: 0,
     judgement: '',
   },
   results: null,

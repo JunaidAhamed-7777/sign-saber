@@ -1,6 +1,7 @@
 /** Pooled lane renderer; camera imagery never enters this scene. */
 import * as THREE from 'three';
-import type { TrackingFrame, HandCursor, SessionStats, BandEnergies } from '../core/types';
+import type { TrackingFrame, HandCursor, SessionStats, BandEnergies, Vec3 } from '../core/types';
+import type { Note } from '../beatmap/types';
 import type { LiveNote, LiveObstacle } from '../game/liveObjects';
 import type { GameEvents } from '../core/events';
 import type { TypedEmitter } from '../utils/emitter';
@@ -8,6 +9,7 @@ import { AssetRegistry } from './assets';
 import { ShatterPool } from './shatter';
 import { SlicePool } from './slices';
 import { PoofPool } from './poof';
+import { TerminalNoteVisuals } from './failures';
 import { beamAimTarget } from '../game/hit';
 import {
   BG_COLOR,
@@ -40,6 +42,9 @@ import {
   ARENA_REACTIVE_GAIN,
   SIL_HEAD_RADIUS_M,
   ARENA_BASE_EMISSION,
+  APPROACH_MS,
+  BADCUT_TINT,
+  DESPAWN_Z,
   LANE_X,
   LANE_Y,
   BEAM_HOVER_Y_OFFSET,
@@ -48,6 +53,7 @@ import {
 const colors = { slash: 0x19f5ff, smash: 0xff2bd6, beam: 0xffc32b };
 const scratch = new THREE.Object3D();
 const tint = new THREE.Color();
+const failureTint = new THREE.Color(BADCUT_TINT);
 const aimTarget = { x: 0, y: 0, z: 0 };
 const beamCenter = { x: 0, y: 0, z: 0 };
 const BAND_KEYS = ['low', 'mid', 'high', 'rms'] as const;
@@ -111,6 +117,13 @@ export class ArenaRenderer {
     smash: new THREE.InstancedMesh(this.assets.assets.glyphs.smash, this.glyphMaterial, MAX_LIVE_NOTES),
     beam: new THREE.InstancedMesh(this.assets.assets.glyphs.beam, this.glyphMaterial, MAX_LIVE_NOTES),
   };
+  private readonly coloredTargets = [
+    this.armor,
+    this.beamRings,
+    this.glyphMeshes.slash,
+    this.glyphMeshes.smash,
+    this.glyphMeshes.beam,
+  ];
   private readonly pylons = new THREE.InstancedMesh(
     this.assets.assets.pylon,
     new THREE.MeshStandardMaterial({ color: 0x19283e, emissive: 0x081f2a, metalness: 0.5, roughness: 0.6 }),
@@ -119,6 +132,8 @@ export class ArenaRenderer {
   private readonly shatter: ShatterPool;
   private readonly slices: SlicePool;
   private readonly poofs: PoofPool;
+  private readonly failures = new TerminalNoteVisuals();
+  private readonly targetCounts = { blocks: 0, armor: 0, rings: 0, reticles: 0, slash: 0, smash: 0, beam: 0 };
   private renderedNotes: readonly LiveNote[] = [];
   private environment: THREE.Group | null = null;
   private readonly beamLines: THREE.Line[] = [];
@@ -193,6 +208,7 @@ export class ArenaRenderer {
   private hasPose = false;
   private visible = false;
   private currentTime = 0;
+  private approachMs: number = APPROACH_MS.normal;
   private unsubscribe: (() => void)[] = [];
   private menuStage: HTMLElement | null = null;
   private mode: 'menu' | 'play' | 'paused' | 'results' = 'menu';
@@ -244,12 +260,21 @@ export class ArenaRenderer {
     this.slices = new SlicePool(this.scene);
     this.poofs = new PoofPool(this.scene);
     this.blocks.frustumCulled = false;
+    this.blocks.name = 'lane_targets';
     this.blocks.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     this.scene.add(this.blocks);
     this.fragments.frustumCulled = false;
     this.fragments.name = 'debris_fragments';
     this.fragments.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     this.scene.add(this.fragments);
+    // Warm optional instance-color attributes before any terminal event needs them.
+    tint.setHex(0xffffff);
+    for (const mesh of this.coloredTargets) mesh.setColorAt(0, tint);
+    this.armor.name = 'target_armor';
+    this.beamRings.name = 'target_rings';
+    this.reticles.name = 'target_reticles';
+    for (const type of ['slash', 'smash', 'beam'] as const)
+      this.glyphMeshes[type].name = `target_glyph_${type}`;
     const edgeGeometry = new THREE.EdgesGeometry(this.cubeGeometry);
     const glyphGeometry = new THREE.BufferGeometry().setFromPoints([
       new THREE.Vector3(-0.16, -0.16, 0.31),
@@ -352,6 +377,8 @@ export class ArenaRenderer {
     }
     this.unsubscribe.push(
       events.on('note:hit', (e) => this.impact(e)),
+      events.on('note:miss', (e) => this.failures.resolve(e.note, 'miss', this.currentTime)),
+      events.on('note:badcut', (e) => this.failures.resolve(e.note, 'badcut', this.currentTime)),
       events.on('highlight:capture', () => this.capture()),
       events.on('beam:fire', (event) => this.fireBeam(event)),
     );
@@ -508,6 +535,10 @@ export class ArenaRenderer {
   setFrozenTime(time: number): void {
     if (Number.isFinite(time)) this.currentTime = time;
   }
+  setApproachMs(approachMs: number): void {
+    if (!Number.isFinite(approachMs) || approachMs <= 0) throw new RangeError('Invalid chart approach time.');
+    this.approachMs = approachMs;
+  }
   hands(hands: readonly HandCursor[]): void {
     if (this.mode === 'paused' || this.mode === 'results') return;
     for (let i = 0; i < 2; i++) {
@@ -545,79 +576,55 @@ export class ArenaRenderer {
   ): void {
     this.renderedNotes = notes;
     if (this.mode !== 'paused') this.currentTime = time;
-    let count = 0,
-      armorCount = 0,
-      beamCount = 0,
-      slashGlyphs = 0,
-      smashGlyphs = 0,
-      beamGlyphs = 0;
+    this.failures.prepare(notes);
+    const counts = this.targetCounts;
+    counts.blocks =
+      counts.armor =
+      counts.rings =
+      counts.reticles =
+      counts.slash =
+      counts.smash =
+      counts.beam =
+        0;
     const play = this.mode === 'play' || this.mode === 'paused';
     for (const edge of this.edges) edge.visible = false;
     for (const glyph of this.glyphs) glyph.visible = false;
-    if (play)
+    if (play) {
+      // Required unresolved cues keep priority over optional terminal follow-through at capacity.
       for (const live of notes) {
-        if (!live.spawned || live.state !== 'live' || count >= MAX_LIVE_NOTES || live.pos.z > 4) continue;
-        scratch.position.set(live.pos.x, live.pos.y, live.pos.z);
-        scratch.rotation.set(0, 0, live.rotation);
-        scratch.scale.setScalar(live.note.type === 'beam' ? 1.6 : 1);
-        scratch.updateMatrix();
-        this.blocks.setMatrixAt(count, scratch.matrix);
-        tint.setHex(colors[live.note.type]);
-        this.blocks.setColorAt(count, tint);
-        const edge = this.edges[count]!;
-        edge.visible = true;
-        edge.position.copy(scratch.position);
-        edge.rotation.copy(scratch.rotation);
-        edge.scale.copy(scratch.scale);
-        (edge.material as THREE.LineBasicMaterial).color.copy(tint);
-        if (live.note.type === 'smash') {
-          scratch.scale.setScalar(BLOCK_SIZE);
-          scratch.updateMatrix();
-          this.armor.setMatrixAt(armorCount++, scratch.matrix);
-        }
-        if (live.note.type === 'beam') {
-          scratch.scale.setScalar(BLOCK_SIZE * 1.6);
-          scratch.updateMatrix();
-          this.beamRings.setMatrixAt(beamCount, scratch.matrix);
-          beamAimTarget(live.note, aimTarget);
-          scratch.position.set(aimTarget.x, aimTarget.y, 0.03);
-          scratch.rotation.set(0, 0, 0);
-          scratch.scale.setScalar(1);
-          scratch.updateMatrix();
-          this.reticles.setMatrixAt(beamCount++, scratch.matrix);
-        }
-        scratch.position.set(
-          live.pos.x,
-          live.pos.y,
-          live.pos.z + GLYPH_FACE_OFFSET_M * (live.note.type === 'beam' ? 1.6 : 1),
-        );
-        scratch.rotation.set(0, 0, 0);
-        scratch.scale.setScalar(BLOCK_SIZE * 0.72 * (live.note.type === 'beam' ? 1.6 : 1));
-        scratch.updateMatrix();
-        const glyphIndex =
-          live.note.type === 'slash'
-            ? slashGlyphs++
-            : live.note.type === 'smash'
-              ? smashGlyphs++
-              : beamGlyphs++;
-        this.glyphMeshes[live.note.type].setMatrixAt(glyphIndex, scratch.matrix);
-        count++;
+        if (!live.spawned || live.state !== 'live' || live.pos.z >= DESPAWN_Z) continue;
+        this.drawTarget(live.note, live.pos, live.rotation, 1, 0, true);
       }
-    this.blocks.count = count;
+      for (let index = 0; index < notes.length; index++) {
+        const live = notes[index]!;
+        const target = this.failures.sample(index, this.currentTime, this.approachMs, this.calm);
+        if (target)
+          this.drawTarget(
+            live.note,
+            target.position,
+            target.rotation,
+            target.brightness,
+            target.redMix,
+            false,
+          );
+      }
+    }
+    this.blocks.count = counts.blocks;
     this.blocks.instanceMatrix.needsUpdate = true;
     if (this.blocks.instanceColor) this.blocks.instanceColor.needsUpdate = true;
-    this.armor.count = armorCount;
-    this.beamRings.count = beamCount;
-    this.reticles.count = beamCount;
-    this.glyphMeshes.slash.count = slashGlyphs;
-    this.glyphMeshes.smash.count = smashGlyphs;
-    this.glyphMeshes.beam.count = beamGlyphs;
+    this.armor.count = counts.armor;
+    this.beamRings.count = counts.rings;
+    this.reticles.count = counts.reticles;
+    this.glyphMeshes.slash.count = counts.slash;
+    this.glyphMeshes.smash.count = counts.smash;
+    this.glyphMeshes.beam.count = counts.beam;
     this.armor.instanceMatrix.needsUpdate = true;
     this.beamRings.instanceMatrix.needsUpdate = true;
     this.reticles.instanceMatrix.needsUpdate = true;
     this.glyphMeshes.slash.instanceMatrix.needsUpdate = true;
     this.glyphMeshes.smash.instanceMatrix.needsUpdate = true;
     this.glyphMeshes.beam.instanceMatrix.needsUpdate = true;
+    for (const mesh of this.coloredTargets) if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
     for (const wall of this.walls) wall.visible = false;
     let wallCount = 0;
     if (play)
@@ -707,6 +714,60 @@ export class ArenaRenderer {
     this.camera.updateProjectionMatrix();
     this.renderer.render(this.scene, this.camera);
     this.renderer.setScissorTest(false);
+  }
+  private drawTarget(
+    note: Note,
+    position: Vec3,
+    rotation: number,
+    brightness: number,
+    redMix: number,
+    showReticle: boolean,
+  ): void {
+    const counts = this.targetCounts;
+    if (counts.blocks >= MAX_LIVE_NOTES) return;
+    const scale = note.type === 'beam' ? 1.6 : 1;
+    scratch.position.set(position.x, position.y, position.z);
+    scratch.rotation.set(0, 0, rotation);
+    scratch.scale.setScalar(scale);
+    scratch.updateMatrix();
+    this.blocks.setMatrixAt(counts.blocks, scratch.matrix);
+    tint.setHex(colors[note.type]).lerp(failureTint, redMix).multiplyScalar(brightness);
+    this.blocks.setColorAt(counts.blocks, tint);
+    const edge = this.edges[counts.blocks++]!;
+    edge.visible = true;
+    edge.position.copy(scratch.position);
+    edge.rotation.copy(scratch.rotation);
+    edge.scale.copy(scratch.scale);
+    (edge.material as THREE.LineBasicMaterial).color.copy(tint);
+    tint.setHex(0xffffff).lerp(failureTint, redMix).multiplyScalar(brightness);
+    if (note.type === 'smash') {
+      scratch.scale.setScalar(BLOCK_SIZE);
+      scratch.updateMatrix();
+      this.armor.setMatrixAt(counts.armor, scratch.matrix);
+      this.armor.setColorAt(counts.armor++, tint);
+    }
+    if (note.type === 'beam') {
+      scratch.scale.setScalar(BLOCK_SIZE * scale);
+      scratch.updateMatrix();
+      this.beamRings.setMatrixAt(counts.rings, scratch.matrix);
+      this.beamRings.setColorAt(counts.rings++, tint);
+      if (showReticle) {
+        beamAimTarget(note, aimTarget);
+        scratch.position.set(aimTarget.x, aimTarget.y, 0.03);
+        scratch.rotation.set(0, 0, 0);
+        scratch.scale.setScalar(1);
+        scratch.updateMatrix();
+        this.reticles.setMatrixAt(counts.reticles++, scratch.matrix);
+      }
+    }
+    scratch.position.set(position.x, position.y, position.z + GLYPH_FACE_OFFSET_M * scale);
+    scratch.rotation.set(0, 0, 0);
+    scratch.scale.setScalar(BLOCK_SIZE * 0.72 * scale);
+    scratch.updateMatrix();
+    const glyph = this.glyphMeshes[note.type],
+      index = counts[note.type]++;
+    glyph.setMatrixAt(index, scratch.matrix);
+    glyph.setColorAt(index, tint);
   }
   private impact(e: GameEvents['note:hit']): void {
     if (e.note.type === 'beam') {
@@ -837,6 +898,8 @@ export class ArenaRenderer {
     this.shatter.reset();
     this.slices.reset();
     this.poofs.reset();
+    this.failures.reset();
+    this.renderedNotes = EMPTY_NOTES;
     this.beamBirth[0] = this.beamBirth[1] = -Infinity;
   }
   dispose(): void {

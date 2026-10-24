@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T02:28:34+05:30 — Hand HUD and authoritative failure feedback
+
+- Changed: Added peripheral Left/Right availability, semantic gesture colours and beam charge indicators; stale/absent/dataset hands show no fabricated charge. Added terminal-note presentation with exact chart approach speed, glyph retention, once-only Bad Cut deflection/red/dim and renderer-only upward escaped beams. Root lifecycle tests cover freshness and dataset pause/resume/results/keyboard retry.
+- Why: Make input and failure states legible while preserving the game's authoritative capture-time judgement and bounded rendering.
+- Validation: Full current-worktree check passed typecheck/lint/299 assertions/build, including six HUD, nine terminal-visual and two new runtime lifecycle assertions; the separately committed quality module contributes 20 of these. Real prepared browser completed automatic arrangement and pause/resume, real131-miss Results, Enter retry and Quit; source identity/screenshots are recorded separately. Documentation/source format checks passed before commit.
+- Limits: Late misses may already be beyond visual DESPAWN_Z when finalized; they do not reappear for a fake fade. HUD/geometry assertions do not prove live gesture accuracy or GPU/flashing safety.
+
 ## 2026-10-25T02:18:43+05:30 — Completed MPII archive acquisition and integrity audit
 
 - Changed: Reconciled the exact local COCO photo/receipt inventory and completed MPII official archive acquisition. Recorded archive hash, full tar/gzip CRC/path/type audit and prepared image-name coverage in training/DATASETS.json and training/STATUS.md; updated training setup status.

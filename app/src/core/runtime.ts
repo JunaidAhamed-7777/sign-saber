@@ -621,6 +621,7 @@ export class GameRuntime {
       this.machine.transition(retry ? 'results:retry' : 'select:start', { ready: true });
       this.player!.prepare(this.buffer!);
       const map = useStore.getState().map!;
+      this.renderer.setApproachMs(map.approachMs);
       this.session = new GameSession(map, {
         songClock: this.player!.clock,
         epoch: this.machine.epoch,
@@ -881,6 +882,7 @@ export class GameRuntime {
     try {
       player.prepare(this.buffer!);
       this.sfx?.stop();
+      this.renderer?.setApproachMs(map.approachMs);
       this.session = new GameSession(map, {
         songClock: player.clock,
         epoch: this.machine.epoch,
@@ -955,6 +957,7 @@ export class GameRuntime {
       countdown: null,
       preview: false,
       audioReady: !this.pauseTask && this.context?.state === 'running',
+      status: strings.chooseWhenReady,
     });
   }
   private async preview(): Promise<void> {
@@ -1263,7 +1266,12 @@ export class GameRuntime {
     if (now - this.lastUi >= 1000 / UI_TEXT_HZ) {
       this.lastUi = now;
       const displayState = useStore.getState(),
-        result = this.pipeline.result;
+        result = this.pipeline.result,
+        handsFresh = !this.dataset && now >= this.lastTracking && now - this.lastTracking <= INPUT_MAX_AGE_MS,
+        left = result.hands.find((hand) => hand.hand === 'left'),
+        right = result.hands.find((hand) => hand.hand === 'right'),
+        leftPresent = handsFresh && !!left?.present,
+        rightPresent = handsFresh && !!right?.present;
       display({
         trackingReady: this.fresh(now),
         figureAvailable: now - this.lastTracking <= INPUT_MAX_AGE_MS && result.body.present,
@@ -1277,8 +1285,12 @@ export class GameRuntime {
           accuracy: this.session?.liveAccuracy ?? null,
           songTimeMs: Number.isFinite(songTime) ? songTime : 0,
           durationMs: displayState.map?.song.durationMs ?? 0,
-          left: result.hands[0]?.present ? result.hands[0].gesture : 'none',
-          right: result.hands[1]?.present ? result.hands[1].gesture : 'none',
+          left: leftPresent ? left!.gesture : 'none',
+          right: rightPresent ? right!.gesture : 'none',
+          leftPresent,
+          rightPresent,
+          leftCharge: leftPresent ? left!.charge : 0,
+          rightCharge: rightPresent ? right!.charge : 0,
           judgement: now < this.popUntil ? this.pop : '',
         },
       });

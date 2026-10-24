@@ -298,9 +298,12 @@ This is the rendering destruction sub-registry linked from [02](02-architecture.
 | `BADCUT_PUSHBACK_M` / `BADCUT_MS` | 0.8 / 220 | Deflect |
 | `MISS_DIM_MS` / `TERMINAL_DIM_FACTOR` | 150 ms / 0.25 | Terminal visual dim duration / remaining colour |
 | `BADCUT_TINT` | `0xff1e3c` | Failure feedback red |
+| `BEAM_ESCAPE_RISE_M` / `BEAM_ESCAPE_VISUAL_MS` | 3 m / 600 ms | Renderer-only upward escaped-beam motion / duration |
 | `OBSTACLE_ALPHA` | 0.35 | |
 | `SPAWN_FADE_MS` | 250 | |
 
 ## Current implementation evidence
 
 The runtime uses complete eight-octant Blender-authored shatters plus armour and tested exact capped cuts. Beam hits use a separate six-slot whole-target power-down/collapse pool, a soft impact sprite, ring and 24 seeded GPU points per effect. Calm suppresses the flash and ring expansion. Each whole effect reserves all its sparks against `MAX_FRAGMENTS`; saturation recycles the oldest whole effect deterministically. `beam:fire` owns only the ray, and no beam hit creates cube debris. Automated lifetime/geometry assertions are separate from unmeasured GPU and visual acceptance gates above.
+
+Terminal failure feedback re-evaluates the note's exact trajectory using its chart's `approachMs`; the renderer does not move scored samples or emit judgements. Bad cuts retain their glyph and receive one spring deflection, red tint then dim; Calm omits deflection. Miss dimming applies only while the target remains before `DESPAWN_Z`. With the documented Normal speed, capture-time miss finalization can occur after that visual plane, so an already-culled target does not reappear for a fabricated fade. Escaped beams follow the documented upward renderer-only escape, with a fixed-position fade in Calm.

@@ -6,13 +6,16 @@ import { ArenaRenderer } from '../src/render/renderer';
 import { TypedEmitter } from '../src/utils/emitter';
 import type { GameEvents } from '../src/core/events';
 import { syntheticFrame } from './tracking-fixtures';
+import { createLiveNote, notePosition } from '../src/game/liveObjects';
 import {
   ARENA_REACTIVE_GAIN,
   PLAY_CENTER_Y,
   PLAY_H,
   PLAY_W,
   MAX_FRAGMENTS,
+  MAX_LIVE_NOTES,
   POOF_SPARKS,
+  BEAM_ESCAPE_VISUAL_MS,
 } from '../src/core/constants';
 vi.mock('three', async () => {
   const actual = await vi.importActual<typeof ThreeModule>('three');
@@ -54,6 +57,99 @@ function create() {
   return { renderer, events };
 }
 describe('upper-body figure and restrained music response', () => {
+  it('keeps live required cues ahead of terminal follow-through when the shared target pool is full', () => {
+    const { renderer } = create(),
+      notes = Array.from({ length: MAX_LIVE_NOTES + 1 }, (_, index) => {
+        const live = createLiveNote({
+          id: index,
+          t: 1000,
+          type: index === MAX_LIVE_NOTES ? 'smash' : 'beam',
+          col: 2,
+          row: 1,
+          dir: 'any',
+          strength: 1,
+        });
+        live.spawned = true;
+        if (index !== MAX_LIVE_NOTES) live.state = 'escaped';
+        return live;
+      });
+    renderer.setMode('play');
+    renderer.draw(1000, notes);
+    expect((renderer.scene.getObjectByName('lane_targets') as THREE.InstancedMesh).count).toBe(
+      MAX_LIVE_NOTES,
+    );
+    expect((renderer.scene.getObjectByName('target_glyph_smash') as THREE.InstancedMesh).count).toBe(1);
+    expect((renderer.scene.getObjectByName('target_glyph_beam') as THREE.InstancedMesh).count).toBe(
+      MAX_LIVE_NOTES - 1,
+    );
+  });
+  it('retains the required glyph after one Bad Cut, freezes it on pause and never changes authoritative state', () => {
+    const { renderer, events } = create(),
+      live = createLiveNote({ id: 0, t: 1000, type: 'smash', col: 2, row: 1, dir: 'any', strength: 1 }),
+      notes = [live];
+    live.spawned = true;
+    notePosition(live.note, 1000, 10000, live.pos);
+    renderer.setApproachMs(10000);
+    renderer.setMode('play');
+    renderer.draw(1000, notes);
+    live.state = 'badcut';
+    const state = JSON.stringify(live),
+      badcut = vi.fn(),
+      miss = vi.fn();
+    events.on('note:badcut', badcut);
+    events.on('note:miss', miss);
+    Object.freeze(live.note);
+    Object.freeze(live.pos);
+    Object.freeze(live);
+    events.emit('note:badcut', { note: live.note, hand: 'right', gesture: 'open' });
+    renderer.draw(1110, notes);
+    const targets = renderer.scene.getObjectByName('lane_targets') as THREE.InstancedMesh,
+      glyphs = renderer.scene.getObjectByName('target_glyph_smash') as THREE.InstancedMesh,
+      armor = renderer.scene.getObjectByName('target_armor') as THREE.InstancedMesh,
+      matrix = new THREE.Matrix4();
+    expect(targets.count).toBe(1);
+    expect(glyphs.count).toBe(1);
+    expect(armor.count).toBe(1);
+    targets.getMatrixAt(0, matrix);
+    const frozen = matrix.clone();
+    renderer.setMode('paused');
+    renderer.draw(5000, notes);
+    targets.getMatrixAt(0, matrix);
+    expect(matrix.equals(frozen)).toBe(true);
+    renderer.setMode('play');
+    renderer.draw(10000, notes);
+    expect(targets.count).toBe(0);
+    expect(glyphs.count).toBe(0);
+    expect(badcut).toHaveBeenCalledTimes(1);
+    expect(miss).not.toHaveBeenCalled();
+    expect(renderer.effectOccupancy).toBe(0);
+    expect(JSON.stringify(live)).toBe(state);
+    expect(() => renderer.setApproachMs(NaN)).toThrow('Invalid chart approach time');
+    expect(() => renderer.setApproachMs(0)).toThrow('Invalid chart approach time');
+  });
+  it('removes aim assistance from escaped beam targets without dropping their glyph or spawning destruction', () => {
+    const { renderer, events } = create(),
+      live = createLiveNote({ id: 0, t: 1000, type: 'beam', col: 2, row: 1, dir: 'any', strength: 1 }),
+      notes = [live];
+    live.spawned = true;
+    renderer.setMode('play');
+    renderer.draw(1250, notes);
+    const reticles = renderer.scene.getObjectByName('target_reticles') as THREE.InstancedMesh,
+      rings = renderer.scene.getObjectByName('target_rings') as THREE.InstancedMesh,
+      glyphs = renderer.scene.getObjectByName('target_glyph_beam') as THREE.InstancedMesh;
+    expect(reticles.count).toBe(1);
+    live.state = 'escaped';
+    events.emit('note:miss', { note: live.note });
+    renderer.draw(1250 + BEAM_ESCAPE_VISUAL_MS / 2, notes);
+    expect(reticles.count).toBe(0);
+    expect(rings.count).toBe(1);
+    expect(glyphs.count).toBe(1);
+    expect(renderer.effectOccupancy).toBe(0);
+    renderer.draw(1250 + BEAM_ESCAPE_VISUAL_MS, notes);
+    expect(rings.count).toBe(0);
+    expect(glyphs.count).toBe(0);
+    expect(live.state).toBe('escaped');
+  });
   it('keeps beam rays separate from poofs, spawns no beam debris and shares the full effect budget', () => {
     const { renderer, events } = create();
     renderer.setMode('play');

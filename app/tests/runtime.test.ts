@@ -32,6 +32,7 @@ vi.mock('../src/render/renderer', () => ({
     setStage = vi.fn();
     setCalm = vi.fn();
     setMusicBands = vi.fn();
+    setApproachMs = vi.fn();
     resize = vi.fn();
     hideTracking = vi.fn();
     tracking = vi.fn();
@@ -80,6 +81,8 @@ vi.mock('../src/tracking/camera', () => ({
 
 import { GameRuntime } from '../src/core/runtime';
 import { useStore } from '../src/state/store';
+import { DatasetTrial, validateDatasetTrial } from '../src/tracking/datasetTrial';
+import datasetFixture from '../public/assets/fixtures/coco-upper-body-trial.json';
 
 let now = 0;
 let nextRaf = 0;
@@ -377,6 +380,68 @@ afterEach(() => {
 });
 
 describe('runtime browser lifecycle (mocked boundaries)', () => {
+  it('reports each hand only while its capture is fresh', async () => {
+    await prepare();
+    await play();
+    advance(100);
+    expect(useStore.getState().hud).toMatchObject({ leftPresent: true, rightPresent: true });
+    step(now + 300);
+    expect(useStore.getState().hud).toMatchObject({
+      leftPresent: false,
+      rightPresent: false,
+      left: 'none',
+      right: 'none',
+      leftCharge: 0,
+      rightCharge: 0,
+    });
+  });
+  it('runs a dataset trial through pause, resume, results and keyboard retry without camera', async () => {
+    vi.spyOn(DatasetTrial, 'load').mockImplementation(
+      async () => new DatasetTrial(validateDatasetTrial(datasetFixture), now),
+    );
+    await runtime!.boot();
+    await runtime!.command('song:a');
+    await runtime!.command('audio');
+    useStore.setState({
+      arrangement: {
+        active: false,
+        ready: true,
+        stage: 'ready',
+        fraction: 1,
+        sourceTitle: 'Test',
+        durationMs: 5000,
+        error: null,
+      },
+    });
+    await runtime!.command('dataset-trial');
+    step(now + 3000);
+    await flush();
+    expect(runtime!.machine.state).toBe('PLAYING');
+    expect(runtime!.datasetTrialActive).toBe(true);
+    expect(runtime!.camera.start).not.toHaveBeenCalled();
+    expect(useStore.getState().camera.calibrationValid).toBe(false);
+    expect(useStore.getState().hud).toMatchObject({
+      leftPresent: false,
+      rightPresent: false,
+      leftCharge: 0,
+      rightCharge: 0,
+    });
+    await runtime!.pause('manual');
+    await runtime!.command('resume');
+    step(now + 1600);
+    await flush();
+    expect(runtime!.machine.state).toBe('PLAYING');
+    step(now + 7000);
+    await flush();
+    expect(runtime!.machine.state).toBe('RESULTS');
+    expect(useStore.getState().results?.counts).toMatchObject({ perfect: 0, great: 0, good: 0, miss: 1 });
+    const event = Object.assign(new Event('keydown'), { code: 'Enter', isComposing: false });
+    window.dispatchEvent(event);
+    await flush();
+    expect(runtime!.machine.state).toBe('CALIBRATION');
+    expect(runtime!.datasetTrialActive).toBe(true);
+    expect(runtime!.camera.start).not.toHaveBeenCalled();
+  });
   it('browses and decodes without creating a live audio context, requesting camera, or playing sound', async () => {
     await runtime!.boot();
     await runtime!.command('song:a');

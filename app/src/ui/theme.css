@@ -601,6 +601,110 @@ p {
   font-size: 18px;
   color: var(--cyan);
 }
+.hud-hands {
+  position: absolute;
+  inset: 0 clamp(12px, 2vw, 32px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+.hud-hand {
+  width: clamp(104px, 10vw, 140px);
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 4px;
+  text-align: center;
+  color: var(--muted);
+}
+.hud-hand-label {
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+}
+.hud-hand-symbol {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.hud-charge-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke-width: 3px;
+}
+.hud-charge-track {
+  stroke: var(--muted);
+  opacity: 0.35;
+}
+.hud-charge-fill {
+  stroke: var(--gold);
+  stroke-linecap: round;
+}
+.hud-gesture-glyph {
+  font-family: 'Segoe UI Symbol', system-ui, sans-serif;
+  font-size: 40px;
+  line-height: 1;
+}
+.hud-gesture-label {
+  font-size: 18px;
+  font-weight: 600;
+}
+.hud-charge-label {
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.hud-charge-value {
+  font-family: Orbitron, system-ui, sans-serif;
+  font-size: 28px;
+  line-height: 1.25;
+}
+.hud-charge-value span {
+  font-size: 16px;
+}
+.hud-hand.gesture-point .hud-charge-value {
+  color: var(--gold);
+}
+.hud-hand.gesture-open {
+  color: var(--cyan);
+}
+.hud-hand.gesture-fist {
+  color: var(--magenta);
+}
+.hud-hand.gesture-point {
+  color: var(--gold);
+}
+.hud-hand[data-present='false'] .hud-hand-symbol {
+  opacity: 0.3;
+}
+@media (max-width: 900px), (max-height: 540px) {
+  .hud-hand {
+    width: 104px;
+    gap: 2px;
+  }
+  .hud-hand-symbol {
+    width: 56px;
+    height: 56px;
+  }
+  .hud-gesture-glyph {
+    font-size: 30px;
+  }
+  .hud-gesture-label,
+  .hud-hand-label,
+  .hud-charge-label {
+    font-size: 16px;
+  }
+}
 .judgement {
   position: fixed;
   top: 42%;

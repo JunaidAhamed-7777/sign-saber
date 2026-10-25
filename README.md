@@ -72,7 +72,7 @@ npm run build
 npm run preview
 ```
 
-Open [127.0.0.1:4173](http://127.0.0.1:4173). Music, charts, fonts and authored geometry are served locally. The prepared server applies a same-origin Content Security Policy and supports audio range requests. A full disconnected venue drill remains a release task.
+Open [127.0.0.1:4173](http://127.0.0.1:4173). Music, charts, fonts and authored geometry are served locally. The prepared server applies a same-origin Content Security Policy and supports audio range requests. The [automated camera-free release drill](docs/evidence/pr-audit-release-drill-fixed/2026-10-25-release-drill.md) verifies one synthetic offline journey; the full disconnected manual/live-camera P5 venue exercise remains open.
 
 <details>
 <summary><strong>Troubleshooting and optional camera setup</strong></summary>
@@ -242,9 +242,14 @@ node scripts/chart-report.mjs
 node scripts/render-sfx.mjs --check
 node scripts/check-audio-resampling.mjs
 node scripts/check-audio-resampling.mjs --arrangement
+node --test scripts/release-drill.test.mjs
+node --test scripts/release-drill.browser.test.mjs
+node scripts/release-drill.mjs
 ```
 
 The numeric browser-audio harness needs Chrome (or `BROWSER_BINARY`) and ffmpeg. It checks audio/map correctness, separately from audible sync or webcam evidence. Capture commands and media provenance are in [docs/media](docs/media/README.md).
+
+`node scripts/release-drill.mjs` checks out the current committed SHA in a fresh temporary clone, runs `npm ci`, `npm run check` and `npm run build`, then drives the prepared production UI in isolated headless Chrome. Non-loopback requests are blocked while a selected song plays through **Watch auto-play**, genuine results, Play again, pause and Songs. Dated JSON/Markdown evidence and command logs go to `docs/evidence/`; failures exit nonzero and are recorded. Installation needs npm registry access; the browser stage runs with local requests only. Use `BROWSER_BINARY` or `--browser <path>` for Chrome, and `--output-dir <path>` for a separate evidence folder. `--inject-missing-asset` removes the catalog only from the temporary build to verify failure reporting. Camera paths and other manual P5 gates are excluded. See [the browser QA protocol](docs/17-testing-and-qa.md#3-browser-integration-smoke-test-core).
 
 ## Roadmap
 

@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-24T22:59:23.886Z",
+  "evidenceDate": "2026-10-25",
+  "evidenceTimezone": "Asia/Calcutta",
+  "commit": "d14c980aca096e530586a771983edfb65ca22cdd",
+  "passed": false,
+  "injectMissingAsset": true,
+  "environment": {
+    "node": "v26.8.1",
+    "npm": "11.19.0",
+    "os": "win32 10.0.26300 x64"
+  },
+  "steps": [
+    {
+      "name": "Clone current commit",
+      "passed": true,
+      "durationMs": 3258,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-missing-asset-225923886-clone-current-commit.log",
+      "outputTail": "Cloning into 'C:\\Users\\Junaid\\AppData\\Local\\Temp\\sign-saber-release-drill-3ipdHL\\repo'...\ndone.\n"
+    },
+    {
+      "name": "Checkout tested SHA",
+      "passed": true,
+      "durationMs": 941,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-missing-asset-225923886-checkout-tested-sha.log",
+      "outputTail": "HEAD is now at d14c980 fix(qa): unblock offline generator workers\n"
+    },
+    {
+      "name": "npm ci",
+      "passed": true,
+      "durationMs": 460142,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-missing-asset-225923886-npm-ci.log",
+      "outputTail": "\nadded 187 packages, and audited 188 packages in 8m\n\n47 packages are looking for funding\n  run `npm fund` for details\n\nfound 0 vulnerabilities\n"
+    },
+    {
+      "name": "npm run check",
+      "passed": true,
+      "durationMs": 76025,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-missing-asset-225923886-npm-run-check.log",
+      "outputTail": "\n> sign-saber@0.1.0 check\n> npm run typecheck && npm run lint && npm run test && npm run build\n\nnpm notice run sign-saber@0.1.0 typecheck\nnpm notice run tsc -p tsconfig.json && tsc -p tsconfig.node.json\nnpm notice run sign-saber@0.1.0 lint\nnpm notice run eslint .\nnpm notice run sign-saber@0.1.0 test\nnpm notice run vitest run\n\n RUN  v5.0.5 C:/Users/Junaid/AppData/Local/Temp/sign-saber-release-drill-3ipdHL/repo/app\n\n\n Test Files  48 passed (48)\n      Tests  367 passed (367)\n   Start at  04:38:09\n   Duration  10.53s (transform 51%, tests 37%, import 10%, worker 1%)\n\n    Isolate  48 workers spawned · ~590ms startup each (spawn + environment, per file)\n             at least ~1.30s faster with isolate: false — reuses workers across files instead of one per file\n\nnpm notice run sign-saber@0.1.0 build\nnpm notice run vite build\nvite v8.3.5 building client environment for production...\ntransforming...\n✓ 113 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                               1.64 kB │ gzip:   0.94 kB\ndist/assets/generator.worker-B6OPcKR7.js     22.44 kB\ndist/assets/tracking.worker-CRawvhz1.js     160.84 kB\ndist/assets/index-E86us2r9.css               35.13 kB │ gzip:   7.60 kB\ndist/assets/index-C_7qh5jJ.js             1,283.95 kB │ gzip: 386.01 kB │ map: 5,855.81 kB\n\n✓ built in 1.85s\n[plugin builtin:vite-reporter] \n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n"
+    },
+    {
+      "name": "npm run build",
+      "passed": true,
+      "durationMs": 3712,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-missing-asset-225923886-npm-run-build.log",
+      "outputTail": "\n> sign-saber@0.1.0 build\n> vite build\n\nvite v8.3.5 building client environment for production...\ntransforming...\n✓ 113 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                               1.64 kB │ gzip:   0.94 kB\ndist/assets/generator.worker-B6OPcKR7.js     22.44 kB\ndist/assets/tracking.worker-CRawvhz1.js     160.84 kB\ndist/assets/index-E86us2r9.css               35.13 kB │ gzip:   7.60 kB\ndist/assets/index-C_7qh5jJ.js             1,283.95 kB │ gzip: 386.01 kB │ map: 5,855.81 kB\n\n✓ built in 1.69s\n[plugin builtin:vite-reporter] \n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n"
+    },
+    {
+      "name": "Inject missing catalog asset into temporary prepared build",
+      "passed": true,
+      "durationMs": 3,
+      "asset": "/assets/tracks/manifest.json",
+      "expectedFailure": true
+    },
+    {
+      "name": "BOOT → SELECT offline",
+      "passed": false,
+      "durationMs": 32460,
+      "error": "Local music catalog did not load"
+    }
+  ],
+  "exclusions": [
+    "camera/model preparation",
+    "live recognition",
+    "human QA",
+    "audible synchronization",
+    "P4 performance gates"
+  ],
+  "harnessSha256": "c8274f5020c0f10bb399bd86e1d8c4c0e6f070d411e7574ab845859cdd9e3b69",
+  "browserHelperSha256": "d9a0a484271c1d479ce7bc426863edf7d874a5bd9356b64245f202bfee8fcea2",
+  "invokingCheckoutDirty": true,
+  "browser": {
+    "requests": [
+      {
+        "url": "http://127.0.0.1:53912/",
+        "method": "GET",
+        "type": "Document",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:53912/assets/index-C_7qh5jJ.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:53912/assets/index-E86us2r9.css",
+        "method": "GET",
+        "type": "Stylesheet",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:53912/assets/fonts/orbitron.ttf",
+        "method": "GET",
+        "type": "Font",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:53912/assets/models/armor.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:53912/assets/models/beam_ring.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:53912/assets/models/glyphs.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:53912/assets/models/pylon.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:53912/assets/models/block_fractured.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:53912/assets/models/arena_environment.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:53912/assets/models/block_shell.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:53912/assets/tracks/manifest.json",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:53912/assets/fonts/rajdhani.ttf",
+        "method": "GET",
+        "type": "Font",
+        "target": "page"
+      }
+    ],
+    "blockedRequests": [],
+    "consoleErrors": [
+      {
+        "source": "network",
+        "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      }
+    ],
+    "cspViolations": [],
+    "failedRequests": [
+      {
+        "url": "http://127.0.0.1:53912/assets/tracks/manifest.json",
+        "status": 404
+      }
+    ],
+    "interceptionErrors": [],
+    "version": "Chrome/155.0.8059.86",
+    "states": [
+      {
+        "state": "boot",
+        "at": 1622.7000000029802
+      },
+      {
+        "state": "select",
+        "at": 2413
+      }
+    ],
+    "lastScreen": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your music\n\nThe local music library could not load. Retry, or choose your own audio.\n\nLocal asset unavailable (404): /assets/tracks/manifest.json\n\nRetry\n←\nPrevious\nChoose your music\n1 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nSELECTED TRACK\nSelect a track\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nWatch synthetic performer\nPlanned motion · no camera\nTry level with dataset\nAnnotated poses · no webcam\n\nChoose a track to begin.\n\n←\nPrevious\nReady when you are\n1 of 6\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click\n\nMouse and keyboard always work",
+    "chromeStderr": "\r\nDevTools listening on ws://127.0.0.1:53915/devtools/browser/e9b9d354-3da8-4fca-89c4-36dbb3be5635\r\n[36600:1128:1025/043849.244:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 25140: Access is denied. (0x5)\r\n[36600:24816:1025/043851.624:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 18564: Access is denied. (0x5)\r\n[36600:1128:1025/043854.045:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 32088: Access is denied. (0x5)\r\n[36600:24816:1025/043854.060:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 32088: Access is denied. (0x5)\r\n[36600:1128:1025/043858.677:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 36160: Access is denied. (0x5)\r\n"
+  },
+  "failure": "Error: Local music catalog did not load\n    at waitFor (file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:206:9)\n    at async file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:393:9\n    at async step (file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:552:23)\n    at async browserJourney (file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:390:7)\n    at async runDrill (file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:649:5)\n    at async file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:702:11",
+  "notRun": [
+    "Select song and enable sound with native CDP input",
+    "Synthetic performer → genuine results",
+    "Results → Retry → playing → pause → Songs",
+    "Offline network, console and CSP assertions"
+  ],
+  "finishedAt": "2026-10-24T23:09:05.406Z"
+}

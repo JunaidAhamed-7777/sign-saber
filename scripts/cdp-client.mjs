@@ -47,6 +47,10 @@ export async function launchChrome({
     { stdio: ["ignore", "ignore", "pipe"], windowsHide: true },
   );
   let stderr = "";
+  let launchError;
+  child.once("error", (error) => {
+    launchError = error;
+  });
   child.stderr.on("data", (chunk) => {
     stderr = (stderr + chunk).slice(-16384);
   });
@@ -81,6 +85,8 @@ export async function launchChrome({
     } catch {
       /* Not yet written. */
     }
+    if (launchError)
+      throw new Error(`Could not start Chrome: ${launchError.message}`);
     if (child.exitCode !== null)
       throw new Error(`Chrome exited early: ${stderr.slice(-2000)}`);
     await delay(100);

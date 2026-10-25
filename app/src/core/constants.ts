@@ -118,7 +118,7 @@ export const TRACK_CONFIDENCE_MIN = 0.5,
   HAND_IDENTITY_GRACE_MS = 300;
 export const HAND_IDENTITY_MATCH_DIST = 0.15,
   HAND_IDENTITY_OVERRIDE_DIST = 0.08,
-  TRACK_STALL_MS = 1000,
+  TRACK_STALL_MS = 3000,
   TRACK_RECOVERY_MS = 5000;
 export const TRACK_REGAIN_MS = 500,
   TRACK_RATE_TOLERANCE_MS = 2,
@@ -131,6 +131,9 @@ export const BODY_FILTER_BETA = 0.02,
   DUCK_HYSTERESIS = 0.03;
 /** Steady, framed time after which camera setup confirms and live play counts in without a click. */
 export const CALIB_AUTO_CONFIRM_MS = 1500;
+/** Corner camera view canvas size (px, 16:9). */
+export const CAMERA_PIP_W = 320,
+  CAMERA_PIP_H = 180;
 export const CALIB_SAMPLE_MS = 500,
   CALIB_HAND_SEEN_MS = 2000,
   CALIB_ASSUMED_SHOULDER_M = 0.4;
@@ -482,6 +485,8 @@ export const UPPER_BODY_LAST_LANDMARK = 24,
   UPPER_BODY_MASK_FADE_NORM = 0.035;
 
 export const TRACK_FIRST_RESULT_TIMEOUT_MS = 15000;
+/** Capture restarts attempted after a stall before camera setup reports a failure. */
+export const TRACK_STALL_RESTARTS = 3;
 export const ARRANGEMENT_VERSION = 1,
   ARRANGEMENT_TOTAL_MS = 80000,
   ARRANGEMENT_FADE_MS = 10000,

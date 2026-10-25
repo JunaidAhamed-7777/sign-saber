@@ -14,6 +14,7 @@ import { GestureIcon } from './ui/components/GestureIcon';
 import type { BundledTrackEntry } from './beatmap/types';
 import { strings as t } from './ui/strings';
 import { useTrialCopy } from './ui/trialCopy';
+import { CameraPip } from './ui/components/CameraPip';
 function Pointer() {
   const pointer = useStore((s) => s.pointer);
   return pointer?.visible ? (
@@ -188,6 +189,7 @@ export function App({ runtime }: { runtime: GameRuntime }) {
           </Button>
         </aside>
       )}
+      <CameraPip runtime={runtime} />
       {!fatal && <Pointer />}
     </div>
   );

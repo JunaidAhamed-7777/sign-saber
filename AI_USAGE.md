@@ -10,7 +10,7 @@ The development workflow also occasionally includes collaboration with **Devin**
 
 ## 2026-10-25 — Audited PR lifecycle integration
 
-- Codex normally integrated the merged bundle, guide and eight-song changes into PR #11, preserved both paging and failure regressions, and verified the full application and bundle gates before freezing the browser-rerun source. The final integrator combined both audited browser harnesses and rechecked 567 application tests plus bundle and documentation gates.
+- Codex normally integrated the merged bundle, guide and eight-song changes into PR #11, preserved both paging and failure regressions, and verified the full application and bundle gates before freezing the browser-rerun source. The final integrator combined both audited browser harnesses and rechecked 567 application tests plus bundle and documentation gates. Concurrent camera changes were preserved, independently checked for fatal/capture compatibility and revalidated in the final application tree.
 
 ## 2026-10-25 — PR lifecycle audit correction
 

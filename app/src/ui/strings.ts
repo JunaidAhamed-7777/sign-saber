@@ -175,7 +175,7 @@ export const strings = Object.freeze({
   replay: 'REPLAY · synthetic input, no webcam',
   diagnostics: 'Diagnostics',
   exportEvidence: 'Export diagnostics',
-  diagnosticsLimit: 'Callback / CPU samples only. GPU timing and live verification unavailable.',
+  diagnosticsLimit: 'Tracking rate, inference time and dropped frames for this session.',
   selectTrack: 'Select a track',
   selected: 'Selected',
   trackLoading: 'Loading selected music…',

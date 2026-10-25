@@ -434,20 +434,6 @@ function useSettingsPages(runtime: GameRuntime, enabled: boolean): MenuPage[] {
         </>
       ),
     });
-  if (state === 'SELECT')
-    pages.push({
-      id: 'settings-dataset-camera',
-      label: strings.datasetCameraUse,
-      content: (
-        <>
-          <RailHeading eyebrow={strings.settings} title={strings.datasetCameraUse} />
-          <Button runtime={runtime} id="camera-dataset" nativeOnly disabled={camera.state === 'setting-up'}>
-            {strings.datasetCameraUse}
-          </Button>
-          <p className="note">{strings.datasetCameraAbout}</p>
-        </>
-      ),
-    });
   pages.push({
     id: 'settings-more',
     label: strings.morePage,

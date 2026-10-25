@@ -13,6 +13,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: Full `npm run check` passed. Live webcam behaviour still needs the user's hands-on test.
 - Limits: No consented live session has been recorded by the agent.
 
+## 2026-10-25T05:54:04+05:30 — Preserve camera updates with fatal recovery
+
+- Changed: Normally integrated concurrent main 5cacf9b into the audited lifecycle/release tree. Resolved App.tsx by retaining the new CameraPip and the fatal-screen pointer guard; preserved graphicsFailed guards, capture cancellation and camera stall recovery.
+- Validation: Full npm run check passed 567 application tests, typecheck/lint/build and all three bundle regressions; ten emitted chunks pass, largest 368401 bytes. Thirteen script/docs tests, link validation and whitespace checks passed. Focused independent compatibility review found no extra camera/fatal fix needed.
+- Limits: No live camera acceptance is claimed. Earlier browser receipts keep their original source IDs; a focused current-source graphics/visibility rerun follows separately.
+
 ## 2026-10-25T05:52:44+05:30 — Integrate the audited release drill with lifecycle recovery
 
 - Changed: Normally integrated PR #9 source db80a29 into PR #11, retaining both harness commands/protocols, source-attributed reports, current camera guidance and fatal-pointer recovery.
@@ -66,6 +72,13 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: The opened PR needed a newer normal integration. Verify its actual presentation/audio/game flow without relabelling earlier installation evidence or duplicating a browser driver.
 - Validation: The integrated source passed full `npm run check` (481 assertions/55 suites/build). Its prepared production build passed BOOT → selection → native sound enable → real 80-second synthetic performer → Results (84 Perfect, zero misses, 54,700 score) → Retry → play → pause → Songs. Runtime/console, CSP and interception errors were zero; cleanup succeeded. Root documentation tests/checker passed for these artifacts.
 - Limits: This supplemental run is explicitly not a new clone/install exercise. Camera/models, people, recognition, audible sync and performance targets remain outside its scope. The separately recorded clean-clone pass and intentional catalog-404 failure remain the release-drill control evidence; later main commits are outside this frozen integration.
+## 2026-10-25T06:30:00+05:30 — Corner camera view and steadier live tracking
+
+- Changed: Added a corner camera view (bottom right) that shows the mirrored webcam with MediaPipe pose and hand landmarks, hand labels/gestures, tracking rate, inference time and drops. The camera `<video>` is now attached to the page (invisibly) so frame callbacks keep flowing; a stall first restarts capture (up to `TRACK_STALL_RESTARTS`) and the stall window is 3 s instead of 1 s. Removed GPU/delegate wording from setup status, the GPU line from diagnostics, and the dataset-camera settings page (`?camera=dataset` still works for testing). Dev builds expose `window.signSaber` for console debugging.
+- Why: User saw "Tracking stopped producing frames" on a real webcam, wants to watch MediaPipe live in a corner, and asked to remove leftover GPU/dataset wording.
+- Validation: Full `npm run check` passed (482 tests). In the desktop app's pane the dataset camera ran through setup with the corner view showing the feed and rate; that pane is backgrounded, so its frame timing is not representative.
+- Limits: Not yet confirmed on the user's webcam.
+
 ## 2026-10-25T05:44:14+05:30 — Audit PR #8 and preserve current menu integration
 
 - Changed: Normally merged main including PR #6, preserved current README and camera-on-first-page behavior, retained bounded eight-song paging assertions, and updated current README library/credit counts while leaving historical measurements source-labelled.

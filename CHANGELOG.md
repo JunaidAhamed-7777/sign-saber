@@ -45,6 +45,11 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: User direction — touching a red wall should just reduce points. The old body-tracking pause during walls made live play feel like it ended whenever tracking flickered.
 - Validation: Full `npm run check` passed (482 tests), including new score and session assertions.
 - Limits: No live-camera play yet; that integration follows.
+## 2026-10-25T05:53:29+05:30 — Preserve concurrent camera work before merging PR #9
+
+- Changed: Normally integrated main 5cacf9b, preserving its corner camera view and stall recovery rather than overwriting concurrent work.
+- Validation: Full npm run check passed after integration (560 application tests, typecheck/lint/build and three bundle regressions; all ten chunks pass, largest 366456 bytes). Docs tests and link checks passed. This documentation entry records tested integrated source 9f89231dbaf724b2aaa2902028e3d45abaf223e4.
+- Limits: The earlier clean-clone/browser receipt stays tied to source 886f7be; it is not relabelled as a camera test or a browser run of this newer source. Live-camera and release gates remain open.
 
 ## 2026-10-25T05:50:47+05:30 — Verify PR #9 from a fresh committed clone
 

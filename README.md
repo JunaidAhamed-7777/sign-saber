@@ -273,4 +273,4 @@ Built on [Three.js](https://github.com/mrdoob/three.js), [React](https://github.
 
 ## Submission
 
-This is an experimental project, not a declared P5 release. The screenshots and GIFs demonstrate synthetic auto-play. No release tag, final release SHA, event rules, actual team roster, submission channel or public deployment is asserted. [CHANGELOG.md](CHANGELOG.md) records tested checkpoints and limitations; [AI_USAGE.md](AI_USAGE.md) records AI contributions. The [demo protocol](docs/20-demo-and-judging.md) and [release checklist](docs/19-build-plan.md#release-checklist) define the remaining work.
+Track 4 basically lol

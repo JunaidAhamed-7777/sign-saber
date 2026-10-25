@@ -1,0 +1,10 @@
+"Chipper Doodle v2" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+https://creativecommons.org/licenses/by/4.0/
+
+Source: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100855
+Download: https://incompetech.com/music/royalty-free/mp3-royaltyfree/Chipper%20Doodle%20v2.mp3
+Changes: Packaged original downloaded MP3 bytes unchanged. Analysis and generated maps are separate; previews use playback offsets without editing the file.
+Acquired: 2026-10-24T22:10:20.036Z
+SHA-256: addaad1315a5b1d3dd37ff22690941b1ca2575a7769d25fc2fa6e6b95a4d364a
+Music retains its Creative Commons license and is not MIT licensed. No artist endorsement is implied.

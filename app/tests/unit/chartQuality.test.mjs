@@ -1,4 +1,4 @@
-/** Readability and gesture-mix assertions on the nine packaged charts (generator v3). These are
+/** Readability and gesture-mix assertions on all packaged charts. These are
  * algorithmic chart properties, not human comfort or musical-quality evidence. */
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
@@ -16,11 +16,13 @@ import { handGapMs } from '../../src/beatmap/assign';
 const tracks = new URL('../../public/assets/tracks/', import.meta.url);
 const load = (slug, difficulty) =>
   JSON.parse(readFileSync(new URL(`${slug}/${difficulty}.json`, tracks), 'utf8'));
-const slugs = ['pamgaea', 'electro-cabello', 'cipher'];
+const slugs = JSON.parse(readFileSync(new URL('manifest.json', tracks), 'utf8')).tracks.map(
+  (track) => track.slug,
+);
 const difficulties = ['easy', 'normal', 'hard'];
 const cases = slugs.flatMap((slug) => difficulties.map((difficulty) => [slug, difficulty]));
 
-describe('packaged chart readability (generator v3)', () => {
+describe('packaged chart readability', () => {
   it.each(cases)('%s %s mixes slashes, smashes and occasional beams', (slug, difficulty) => {
     const { notes } = load(slug, difficulty);
     const share = (type) => notes.filter((n) => n.type === type).length / notes.length;

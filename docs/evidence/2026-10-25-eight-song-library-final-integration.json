@@ -1,0 +1,55 @@
+{
+  "recordedAt": "2026-10-24T22:44:42.408Z",
+  "codeHead": "d49bbf7c300679eea1083293dfff0a5b7365beda",
+  "scope": "Final main integration: added camera Settings page changes Credits navigation; recheck last-song selection and all credits at both viewports. All24 maps/eight selections were proved in preceding reports.",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 900,
+      "selectedSlug": "marty-gots-a-plan",
+      "creditSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "exactAttributions": true,
+      "cspViolations": [],
+      "consoleErrors": [],
+      "musicHttpFailures": [],
+      "httpFailures": [
+        {
+          "url": "http://127.0.0.1:54935/favicon.ico",
+          "status": 404
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "height": 640,
+      "selectedSlug": "marty-gots-a-plan",
+      "creditSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "exactAttributions": true,
+      "cspViolations": [],
+      "consoleErrors": [],
+      "musicHttpFailures": [],
+      "httpFailures": []
+    }
+  ],
+  "outsideRequests": [],
+  "browser": "Chrome/155.0.8059.86",
+  "passed": true
+}

@@ -1,0 +1,92 @@
+{
+  "recordedAt": "2026-10-24T22:59:52.584Z",
+  "gitHead": "c3adfa543b0a9d845e2e69bbe56c7cd43f194561",
+  "mergingMain": "93e411e9d5f22650084a470ad3adfe4f8c7fc0af",
+  "dirtyTree": true,
+  "generatorVersion": 3,
+  "manifestSha256": "18293e3138d186798367f337e30245d36ed7e8e5869fb3471c20e3be2a063744",
+  "scope": "Current generator-v3: native offline selection of all eight songs/all24 difficulty maps, original preview, exact credits and paging at both issue2 viewports.",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 900,
+      "selectedSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "difficultyMapsSelected": 24,
+      "originalPreviewStartedAndStopped": true,
+      "creditSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "exactAttributions": true,
+      "cspViolations": [],
+      "consoleErrors": [],
+      "musicHttpFailures": [],
+      "httpFailures": [
+        {
+          "url": "http://127.0.0.1:57088/favicon.ico",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:57088/favicon.ico",
+          "status": 404
+        }
+      ],
+      "requestCount": 79
+    },
+    {
+      "width": 1024,
+      "height": 640,
+      "selectedSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "difficultyMapsSelected": 24,
+      "originalPreviewStartedAndStopped": true,
+      "creditSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "exactAttributions": true,
+      "cspViolations": [],
+      "consoleErrors": [],
+      "musicHttpFailures": [],
+      "httpFailures": [
+        {
+          "url": "http://127.0.0.1:57088/favicon.ico",
+          "status": 404
+        }
+      ],
+      "requestCount": 78
+    }
+  ],
+  "outsideRequests": [],
+  "browser": "Chrome/155.0.8059.86",
+  "passed": true
+}

@@ -13,6 +13,11 @@ const wanted = [
   { slug: "pamgaea", isrc: "USUAN1300036", role: "intro" },
   { slug: "electro-cabello", isrc: "USUAN1400048", role: "groove" },
   { slug: "cipher", isrc: "USUAN1100844", role: "showcase" },
+  { slug: "chipper-doodle-v2", isrc: "USUAN1100855", role: "intro" },
+  { slug: "funkorama", isrc: "USUAN1100474", role: "groove" },
+  { slug: "cut-and-run", isrc: "USUAN1100851", role: "groove" },
+  { slug: "rhinoceros", isrc: "USUAN1500040", role: "showcase" },
+  { slug: "marty-gots-a-plan", isrc: "USUAN1500015", role: "showcase" },
 ];
 const sha = (bytes) => createHash("sha256").update(bytes).digest("hex");
 async function get(url) {

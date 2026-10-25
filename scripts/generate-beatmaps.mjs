@@ -20,7 +20,16 @@ const root = fileURLToPath(
   new URL("../app/public/assets/tracks/", import.meta.url),
 );
 const sha = (bytes) => createHash("sha256").update(bytes).digest("hex");
-const slugs = ["pamgaea", "electro-cabello", "cipher"];
+const slugs = [
+  "pamgaea",
+  "electro-cabello",
+  "cipher",
+  "chipper-doodle-v2",
+  "funkorama",
+  "cut-and-run",
+  "rhinoceros",
+  "marty-gots-a-plan",
+];
 const tracks = [];
 const pendingWrites = [];
 const ffmpegVersion = execFileSync("ffmpeg", ["-version"], {

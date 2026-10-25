@@ -55,5 +55,5 @@
     "humanRhythmAndComfortReviewPending"
   ],
   "checks": "All difficulty maps passed the shared runtime structural, density, beam, wall and ergonomic validator. This is algorithmic validation, not human musical/playability evidence.",
-  "developmentGenerationMs": 3852.8388999999997
+  "developmentGenerationMs": 4469.8846
 }

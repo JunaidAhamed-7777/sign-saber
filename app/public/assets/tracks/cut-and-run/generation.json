@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "generatorVersion": 4,
+  "sourceHash": "ddfa5637036e97a313a2e7a01d37d00f85226469cf4df896c83da07f7f2c353e",
+  "canonicalPcmSha256": "8002e1f4f7a28635254ca65ed7ebf1c7ebfee404a46a7bc7cad6cb76fb7cbe0f",
+  "canonicalDecode": {
+    "tool": "ffmpeg version 9.0.2-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers\r",
+    "format": "f32le",
+    "channels": 1,
+    "sampleRate": 22050,
+    "samples": 4735599,
+    "durationMs": 214766.39455782314,
+    "sourceSampleRate": 44100,
+    "decodedSourceSamples": 9474048,
+    "sourceSamplesAfterGaplessTrim": 9471197,
+    "gaplessMetadata": {
+      "encoderDelaySamples": 528,
+      "endPaddingSamples": 2323,
+      "originalSampleCount": 9471197
+    },
+    "explicitTrimApplied": true
+  },
+  "analysis": {
+    "detectedBpm": 107,
+    "catalogBpm": 109,
+    "tempoConfidence": 0.49784791965566716,
+    "onsets": 1610,
+    "beats": 383
+  },
+  "maps": {
+    "easy": {
+      "notes": 123,
+      "obstacles": 11,
+      "slash": 75,
+      "smash": 42,
+      "beam": 6
+    },
+    "normal": {
+      "notes": 236,
+      "obstacles": 12,
+      "slash": 159,
+      "smash": 71,
+      "beam": 6
+    },
+    "hard": {
+      "notes": 309,
+      "obstacles": 15,
+      "slash": 176,
+      "smash": 125,
+      "beam": 8
+    }
+  },
+  "warnings": [
+    "humanRhythmAndComfortReviewPending"
+  ],
+  "checks": "All difficulty maps passed the shared runtime structural, density, beam, wall and ergonomic validator. This is algorithmic validation, not human musical/playability evidence.",
+  "developmentGenerationMs": 5367.625200000002
+}

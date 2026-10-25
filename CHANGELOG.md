@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T06:51:29+05:30 — Bake static arena matrices
+
+- Changed: `app/src/render/renderer.ts` now computes the loaded arena environment's world matrices once and disables per-frame matrix recomputation for its nodes. Reviewed DPR, bloom and per-frame paths: `QUALITY_DPR_CAP` is already 1 (stricter than a 1.5 cap) and medium bloom already runs its mip chain at the tier's reduced `bloomResolutionScale`, so no constants changed.
+- Why: The authored arena never moves (pylon culling toggles only visibility), yet every render walked and recomposed its full node tree, competing with MediaPipe for frame time.
+- Validation: `npm run check` in `app/` passed (typecheck, lint, tests, production build, bundle budget).
+- Limits: No live frame-time measurement on the RX 6600M laptop yet; the gain is a CPU-side reduction, not a measured fps result. Anything that later animates arena nodes must re-enable their matrix updates.
+
 ## 2026-10-25T06:47:25+05:30 — Showcase the desktop experience and Track 4 submission
 
 - Changed: Rebuilt README around preserved gameplay GIFs, full-width fresh desktop menu/results, current local content, concise setup, architecture, reproducible evidence and the supplied **Make Room for Play** track. Updated the documentation index, player/contributor/troubleshooting guides, scripts guide and gesture/scoring specifications after normally integrating concurrent gameplay commit `8fd22f6`. Removed superseded interface WebPs and old gameplay stills; retained historical receipts and all three GIFs unchanged.

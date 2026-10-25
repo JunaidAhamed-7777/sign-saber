@@ -6,6 +6,7 @@ import { useStore } from '../../state/store';
 import { Button, MenuShell, RailHeading } from '../components/MenuShell';
 import type { MenuPage } from '../components/MenuShell';
 import { CoverArt } from '../components/CoverArt';
+import { ControlIcon } from '../components/ControlIcon';
 import { duration, strings as t } from '../strings';
 /** `cut` marks the bundled source of the currently prepared 80-second arrangement. */
 type TrackState = 'idle' | 'selected' | 'loading' | 'failed' | 'cut';
@@ -54,7 +55,7 @@ function SongCard({
       </span>
       {(state === 'selected' || state === 'cut') && (
         <span className="song-check" aria-label={tag}>
-          <span aria-hidden="true">✓</span>
+          <ControlIcon name="check" />
         </span>
       )}
     </Button>
@@ -193,13 +194,23 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
     ),
   }));
   const sound = s.audioReady ? (
-    <Button runtime={runtime} id="preview" disabled={!s.map || s.loading} selected={s.preview}>
-      {s.preview ? t.stopPreview : t.preview}
+    <Button
+      runtime={runtime}
+      id="preview"
+      disabled={!s.map || s.loading}
+      selected={s.preview}
+      className="support-action"
+    >
+      <ControlIcon name="sound" />
+      <span>{s.preview ? t.stopPreview : t.preview}</span>
     </Button>
   ) : (
-    <Button runtime={runtime} id="audio" nativeOnly className="native">
-      <span>{t.enableAudio}</span>
-      <small>{t.nativeShort}</small>
+    <Button runtime={runtime} id="audio" nativeOnly className="support-action">
+      <ControlIcon name="sound" />
+      <span className="action-copy">
+        <span>{t.enableAudio}</span>
+        <small>{t.nativeShort}</small>
+      </span>
     </Button>
   );
   const preparing = !!s.arrangement?.active;
@@ -213,8 +224,11 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
       className="hero"
       describedBy="trial-reason"
     >
-      <span className="hero-label">{t.datasetTrial}</span>
-      <small>{t.datasetTrialCaption}</small>
+      <span className="action-copy">
+        <span className="hero-label">{t.datasetTrial}</span>
+        <small>{t.datasetTrialCaption}</small>
+      </span>
+      <ControlIcon name="next" />
     </Button>
   );
   const live = s.camera.calibrationValid;
@@ -225,10 +239,13 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
       nativeOnly={!live}
       disabled={s.camera.state === 'setting-up'}
       busy={s.camera.state === 'setting-up'}
-      className="with-caption"
+      className="support-action"
     >
-      <span>{live ? t.cameraReconfigure : t.cameraSetup}</span>
-      <small>{live ? t.cameraReady : t.cameraSetupCaption}</small>
+      <ControlIcon name="camera" />
+      <span className="action-copy">
+        <span>{live ? t.cameraReconfigure : t.cameraSetup}</span>
+        <small>{live ? t.cameraReady : t.cameraSetupCaption}</small>
+      </span>
     </Button>
   );
   const liveStart = (
@@ -240,8 +257,11 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
       className="hero"
       describedBy="trial-reason"
     >
-      <span className="hero-label">{t.startLive}</span>
-      <small>{t.startLiveCaption}</small>
+      <span className="action-copy">
+        <span className="hero-label">{t.startLive}</span>
+        <small>{t.startLiveCaption}</small>
+      </span>
+      <ControlIcon name="next" />
     </Button>
   );
   const hero = live ? liveStart : start;
@@ -251,10 +271,13 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
       id="performer-trial"
       disabled={!s.map || s.loading || !s.audioReady}
       busy={preparing}
-      className="with-caption"
+      className="support-action demo-action"
     >
-      <span>{t.performerTrial}</span>
-      <small>{t.performerTrialCaption}</small>
+      <ControlIcon name="play" />
+      <span className="action-copy">
+        <span>{t.performerTrial}</span>
+        <small>{t.performerTrialCaption}</small>
+      </span>
     </Button>
   );
   const arrange = (
@@ -309,16 +332,16 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
     <div className="track-header">
       {(selected || s.map) && <CoverArt track={coverSource} size="large" />}
       <div className="track-copy">
-        <span className="eyebrow">{t.selectedTrack}</span>
         <h2>{title}</h2>
-        {s.map ? (
-          <p className="meta">
-            {duration(s.map.song.durationMs)} · {s.map.notes.length} {t.notes}
-            {(selected ?? cutSource)?.artist ? ` · ${(selected ?? cutSource)!.artist}` : ''}
+        {(selected ?? cutSource) && <p className="meta">{(selected ?? cutSource)!.artist}</p>}
+        {s.map && (
+          <p className="track-facts">
+            <span>{duration(s.map.song.durationMs)}</span>
+            <span>
+              {s.map.notes.length} {t.notes}
+            </span>
           </p>
-        ) : selected ? (
-          <p className="meta">{selected.artist}</p>
-        ) : null}
+        )}
       </div>
     </div>
   );

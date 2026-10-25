@@ -33,18 +33,25 @@ function Status() {
   const camera = useStore((s) => s.camera);
   const ready = useStore((s) => s.trackingReady);
   const datasetCamera = useStore((s) => s.cameraSource === 'dataset');
+  const state = useStore((s) => s.state);
   const tone =
     replay || datasetCamera ? 'dataset' : camera.calibrationValid ? (ready ? 'active' : 'warning') : 'idle';
   return (
     <span className={`camera-status ${tone}`} role="status">
       <i aria-hidden="true" />
-      {replay
-        ? trial.source
-        : camera.calibrationValid
-          ? ready
-            ? t.cameraReady
-            : t.lostFigure
-          : t.cameraNotReady}
+      <span className="status-copy">
+        {replay
+          ? state === 'PAUSED'
+            ? t.paused
+            : state === 'RESULTS'
+              ? trial.results
+              : trial.source
+          : camera.calibrationValid
+            ? ready
+              ? t.cameraReady
+              : t.lostFigure
+            : t.cameraNotReady}
+      </span>
     </span>
   );
 }

@@ -5,6 +5,7 @@ import { MENU_COMPACT_MAX_HEIGHT_PX, MENU_COMPACT_MAX_WIDTH_PX } from '../../cor
 import { useStore } from '../../state/store';
 import { strings } from '../strings';
 import { trialCopy } from '../trialCopy';
+import { ControlIcon } from './ControlIcon';
 const classes = (...names: (string | false | null | undefined)[]): string => names.filter(Boolean).join(' ');
 /**
  * One registered semantic target. Mouse, keyboard and hand activation all resolve through runtime.targets.
@@ -142,9 +143,7 @@ export function RailPager({
       className="page-button"
       label={`${strings.previous}: ${pages[index - 1]?.label ?? strings.firstPage}`}
     >
-      <span className="page-arrow" aria-hidden="true">
-        ←
-      </span>
+      <ControlIcon name="back" />
       <span>{strings.previous}</span>
     </Button>
   );
@@ -157,9 +156,7 @@ export function RailPager({
       className="page-button"
       label={`${strings.next}: ${pages[index + 1]?.label ?? strings.lastPage}`}
     >
-      <span className="page-arrow" aria-hidden="true">
-        →
-      </span>
+      <ControlIcon name="next" />
       <span>{strings.next}</span>
     </Button>
   );
@@ -234,7 +231,7 @@ export function useCompactMenu(): boolean {
   }, []);
   return compact;
 }
-/** Small uppercase rail heading with an optional display title. */
+/** One clear heading; the category is a fallback when a page has no title. */
 export function RailHeading({
   eyebrow,
   title,
@@ -247,8 +244,7 @@ export function RailHeading({
   const Title = level === 1 ? 'h1' : 'h2';
   return (
     <header className="rail-heading">
-      <span className="eyebrow">{eyebrow}</span>
-      {title !== undefined && <Title>{title}</Title>}
+      <Title>{title ?? eyebrow}</Title>
     </header>
   );
 }

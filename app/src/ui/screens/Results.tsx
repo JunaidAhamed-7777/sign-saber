@@ -131,7 +131,9 @@ export function Results({ runtime }: { runtime: GameRuntime }) {
       content: (
         <>
           <RailHeading level={1} eyebrow={resultTitle} title={track ?? t.thisRun} />
-          <p className="meta">{t[difficulty]}</p>
+          <p className="meta">
+            {resultTitle} · {t[difficulty]}
+          </p>
           <div className="result-hero">
             {rank}
             {summary}

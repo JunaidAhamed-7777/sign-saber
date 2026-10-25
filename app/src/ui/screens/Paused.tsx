@@ -65,6 +65,7 @@ export function Paused({ runtime }: { runtime: GameRuntime }) {
       content: (
         <>
           <RailHeading level={1} eyebrow={title ?? t.paused} title={t.paused} />
+          {title && <p className="meta">{title}</p>}
           {reasonNotice}
           <dl className="run-so-far" aria-label={t.thisRun}>
             <div>

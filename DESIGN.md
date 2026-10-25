@@ -41,15 +41,15 @@ Avoid full-screen menu panels over the player, tiny floating controls, unrelated
 
 ## Colors
 
-Preserve the deep blue-black void and legible pale text. Cyan marks primary interaction/open hands, magenta identifies Smash, gold identifies Point/Beam and red identifies danger. Pair all semantic colour with glyphs/text. Quiet, dark side panels can become more opaque for readable instructions. Reserve glow for the player/gesture response; never put a luminous frame around every control. Contrast over the brightest allowed scene remains a future measured check.
+Preserve the deep blue-black void and legible pale text. Cyan marks primary interaction/open hands, magenta identifies Smash, gold identifies Point/Beam and red identifies danger. Pair all semantic colour with glyphs/text. The shared rail is a nearly opaque surface derived as `--rail: color-mix(in srgb, var(--void) 96%, transparent)`; the palette's `--panel` value remains available for other surfaces. Reserve glow for the player/gesture response; never put a luminous frame around every control. Contrast over the brightest allowed scene remains a future measured check.
 
 ## Typography
 
-Orbitron is restrained display type for identity, rank and short numeric emphasis. Rajdhani carries controls, metadata and coaching, with system fallbacks and reserved layout space if local fonts fail. Use the size/weight roles in [14](docs/14-ui-ux.md#typography), tabular numerals and readable action labels. Fonts and their license files must be locally packaged before offline claims.
+Orbitron is restrained display type for identity, rank and short numeric emphasis. Rajdhani carries music titles, page headings, controls, metadata and coaching, with system fallbacks and reserved layout space if local fonts fail. Shared rail headings use one clear title rather than a repeated eyebrow/title pair; the desktop rail title is 36 px and the selected music title is 32 px, both at weight 600 with tighter tracking. Artist, duration and note count have separate quieter lines. Use the size/weight and viewport roles in [14](docs/14-ui-ux.md#typography), tabular numerals and readable action labels. Fonts and their license files must be locally packaged before offline claims.
 
 ## Layout
 
-Use one shared menu shell: top status, left song rail, clear central figure stage, right action rail and bottom control legend. Minimum target size, separation and stage width come from the menu registry, not screen-local numbers. For smaller/zoomed windows, paginate controls and reflow rails above/below the figure rather than cover its torso or shrink the targets. This layout does not add mobile gameplay support.
+Use one shared menu shell: top status, left song rail, clear central figure stage, right action rail and bottom control legend. The side-rail layout protects a 44 vw stage; minimum 72 px targets and 16 px separation come from the menu registry, not screen-local numbers. At 1099 px wide or 699 px tall and below, paginate controls and reflow rails above/below the figure rather than cover its torso or shrink the targets. At 760 px wide and below, stack song rows, place Previous/Next below page content and allow scrolling in the menu overlay around a square central stage. The nested 520 px short-window tier removes secondary captions while retaining target size. This layout does not add mobile gameplay support.
 
 The central placeholder is plainly illustrative; setup preview is labelled; live/frozen/saved figures identify the state they represent. Pause/results reuse the same frame and action placement. Only short positioning marks/countdown digits belong in the central stage. Browser-owned dialogs are an explicit native-input exception.
 
@@ -59,13 +59,13 @@ The 3D arena supplies depth. DOM panels use quiet tonal layers and structural bo
 
 ## Shapes
 
-Use broad rectangular targets and whole-card song selection with visibly distinct hover, focus, armed, pressed, selected, disabled and busy states. The human silhouette is the expressive shape. Keep familiar button silhouettes; do not add an independent radius system or require precision dragging.
+Use broad rectangular targets and whole-row song selection with visibly distinct hover, focus, armed, pressed, selected, disabled and busy states. Library rows are unboxed within their rail; a restrained wash and check identify the selection. The human silhouette is the expressive shape. Keep familiar button silhouettes; do not add an independent radius system or require precision dragging.
 
 ## Components
 
 The shared menu target registry and semantic action handler serve mouse, keyboard and hand input. Open palm steers; a deliberate point confirms once; hover never clicks. Preserve target geometry during progress/feedback, show disabled reasons persistently and let native input interrupt hand input safely.
 
-Song cards and the selected-track header carry a generated cover: deterministic procedural art from the track's own metadata, tinted by its library role, with no external image or separate rights record. Hand hover/armed/confirming/latched phases are drawn on the targeted control itself (gold readiness bar) as well as the pointer, without moving it.
+Song rows and the selected-track header carry a generated sleeve: deterministic geometric art from the track's own metadata, tinted by its library role, with no external image or separate rights record. Cyan oblique bands, magenta split squares and a gold cut disc distinguish the compositions without decorative initials or equalizer bars. Interface arrows, sound, camera, play and selection checks share thin SVG strokes; gesture glyphs retain their established semantic shapes. The primary Play action uses a clear label, caption and forward arrow; supporting action rows carry quieter icons and copy. Hand hover/armed/confirming/latched phases are drawn on the targeted control itself (gold readiness bar) as well as the pointer, without moving it. These refinements add no motion.
 
 The **Set up camera** action is available before song selection. A failed setup keeps the menu usable. Preview/Stop are explicit actions; audio does not start from selecting/hovering. Browser permission, audio unlock and system pickers require native actions where the browser demands them. Point-click never pretends to grant browser trust.
 

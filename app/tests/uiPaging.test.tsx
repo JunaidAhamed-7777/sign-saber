@@ -62,6 +62,34 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 describe('figure-centred paged menu structure', () => {
+  it.each(['annotations', 'performer'] as const)(
+    'keeps the header status in sync with a camera-free %s run and returning to music',
+    (trialSource) => {
+      const headerStatus = (): string | undefined => {
+        const html = renderToStaticMarkup(<App runtime={runtime} />);
+        const header = /<header\b[^>]*>([\s\S]*?)<\/header>/.exec(html)?.[1];
+        const status = /<span\b[^>]*role="status"[^>]*>([\s\S]*?)<\/span>/.exec(header ?? '')?.[1];
+        return status?.replace(/<[^>]*>/g, '').trim();
+      };
+      for (const mode of [false, true]) {
+        compact = mode;
+        dataset = true;
+        useStore.setState({ replay: true, trialSource });
+        for (const [state, label] of [
+          ['PLAYING', strings.runPlaying],
+          ['PAUSED', strings.paused],
+          ['PLAYING', strings.runPlaying],
+          ['RESULTS', strings.results],
+        ] as const) {
+          useStore.setState({ state });
+          expect(headerStatus()).toBe(label);
+        }
+        dataset = false;
+        useStore.setState({ state: 'SELECT', replay: false, trialSource: null });
+        expect(headerStatus()).toBe(strings.cameraNotReady);
+      }
+    },
+  );
   it('shows an honest cache fallback without disabling ready music in either layout', () => {
     const map = { song: { title: 'Local upload', durationMs: 12000 }, notes: [] } as unknown as BeatmapV1;
     useStore.setState({ state: 'SELECT', map, audioReady: true, warnings: ['cacheUnavailable'] });
@@ -261,10 +289,13 @@ describe('figure-centred paged menu structure', () => {
     expect(targets(html)).toEqual(['back']);
     expect(html).toContain('compact-shell');
   });
-  it('labels a real frozen figure even when current tracking is absent', () => {
+  it('preserves the song title beside a labelled frozen figure when current tracking is absent', () => {
     frozen = true;
-    useStore.setState({ state: 'PAUSED', figureAvailable: false });
+    const title = 'A held session title';
+    const map = { song: { title, durationMs: 80000 }, notes: [] } as unknown as BeatmapV1;
+    useStore.setState({ state: 'PAUSED', map, figureAvailable: false });
     const html = renderToStaticMarkup(<Paused runtime={runtime} />);
+    expect(html).toContain(title);
     expect(html).toContain('Paused · frozen figure');
     expect(html).not.toContain('person-illustration');
   });

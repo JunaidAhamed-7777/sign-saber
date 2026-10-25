@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T06:41:51+05:30 — Refine the rhythm arena interface
+
+- Changed: Shared menu styling, Select/App/pause/results presentation, authored control icons and deterministic geometric song sleeves. Removed redundant heading labels and repeated card borders; strengthened music/action hierarchy, preserved song context and corrected paused/results status. Narrow menus stack songs and keep full-size actions reachable by overlay scrolling. Updated DESIGN and UI/menu specifications; added status regressions and a real production menu capture with a source-hashed browser receipt.
+- Why: Give the arena a deliberate control-booth interface while preserving the clear human stage, palette, input contracts and readiness guards.
+- Validation: `npm run check` passed 569 tests, typecheck, lint, production build and three bundle regressions; all ten JS chunks remain below 500,000 bytes. Sixteen production browser checks passed, including five viewport sizes, 72 px targets, protected desktop stage, keyboard, preview, Calm/reduced motion, invalid-audio recovery and pause. Documentation tests/link checks, design lint, formatting and whitespace checks passed; Impeccable detector returned no findings.
+- Limits: The premium static audit reported 18 reviewed false positives from lowercasing React `Select`/`Button` component names; real buttons dispatch through the shared target registry and no native select exists. Production browser logged one existing Three.js already-non-indexed warning. No live-camera, standing-distance, screen-reader or performance acceptance is claimed. Receipt: [frontend-polish.json](docs/evidence/2026-10-25-frontend-polish.json).
+
 ## 2026-10-25T07:30:00+05:30 — Slower blocks and wider lanes
 
 - Changed: Blocks approach 1.4× slower at runtime (`APPROACH_SLOWDOWN`, applied to the session and renderer for every mode). Lane centres moved outward from ±0.6/±1.8 m to ±1.2/±2.15 m so hits happen away from the torso. Session tests now position cursors relative to the lanes.

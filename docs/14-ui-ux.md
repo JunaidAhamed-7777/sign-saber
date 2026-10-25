@@ -19,11 +19,11 @@ The current HUD has edge-anchored score (exponentially tweened by `HUD_TWEEN_TAU
 
 | Principle | Rule |
 | --- | --- |
-| **Dark void** | The DOM background is always transparent; the 3D void (`--void`) is the only background. Panels are translucent glass so the silhouette and grid stay visible behind menus. |
+| **Dark void** | The DOM background is transparent above the 3D void (`--void`). The shared rails use a nearly opaque void-derived surface to keep controls readable; the protected central stage leaves the player and arena visible. |
 | **Neon accents, sparingly** | One accent colour per element. Accents are reserved for interactive or live data (score, combo, Start). Decorative chrome is `--muted`. |
-| **Quiet panels** | Use a dark, nearly opaque panel and a subtle structural border. One short accent rule identifies the selected track or primary action. Blur is optional in menus only and disabled on low tier; no glowing border around every panel. The player and destruction supply the spectacle. |
+| **Quiet panels** | Use a dark, nearly opaque rail and a subtle structural border. Song rows remain unboxed; a restrained wash and check identify the selected track, and cyan fill identifies the primary action. No repeated accent frames or glowing border around every panel. Blur is optional in menus only and disabled on low tier. The player and destruction supply the spectacle. |
 | **The player owns the centre** | Reserve the central figure stage on SELECT, CALIBRATION, PAUSED and RESULTS. Before camera setup/calibration, show a clearly labelled illustrative human placeholder and a prominent Set Up Camera action. Once setup is valid, the live silhouette takes its place. Put interactive panels in side rails; status above and coaching below. No library grid, modal, loading card or Start button covers the player's face/torso. |
-| **Distinct display type** | Use Orbitron for the title, rank and selected display numbers; Rajdhani for controls, metadata and coaching. Reserve uppercase/letter spacing for short labels so instructions remain readable at a distance. |
+| **Distinct display type** | Use Orbitron for identity, rank and game display numbers; Rajdhani for music titles, page headings, controls, metadata and coaching. Shared rail headings carry one title rather than a redundant eyebrow/title pair. Reserve uppercase/letter spacing for short labels so instructions remain readable at a distance. |
 | **Beat-aware, restrained** | The combo ring or song progress may respond to `--beat` (§Motion). Score, accuracy and safety/coaching text stay spatially stable. Avoid pulsing the whole interface. |
 | **No raw webcam pixels, ever** | The DOM never renders the `<video>` element visibly. The live player uses the silhouette; the unconfigured-camera placeholder and saved results pose are explicitly labelled as illustration or highlight, never fabricated tracking ([01](01-vision.md)). |
 
@@ -35,26 +35,32 @@ The initial library contains at least three attributed bundled starter tracks fr
 
 Use large separated targets with the minimum dimensions/gaps in [25](25-menu-and-hand-navigation.md), stable positions and a full label. Hand hover, armed/point confirmation, pressed, selected, keyboard focus, disabled and busy states are distinct. Selection changes a track/difficulty; only the separate live Start action begins live calibration. Dataset trial is a distinct labelled source-specific action. No preview audio or state-changing action starts merely because a hand passes over a control.
 
-At smaller supported laptop viewports or 200% zoom, reduce the number of visible library rows and paginate long detail/stat groups inside their rails. Keep the figure stage and the primary/Back actions visible rather than overlaying the centre. **Implemented:** at or below `MENU_COMPACT_MAX_WIDTH_PX` wide or `MENU_COMPACT_MAX_HEIGHT_PX` tall, `MenuShell` places a top rail (all song cards of a library page in one row, or a non-interactive screen summary) above the stage and a bottom rail (a persistent status line plus one grouped page of full-size actions with inline Previous/Next) below it; the stage keeps the remaining height. Between 1100 and 1279 px wide the side rails drop secondary text (tempo on cards, eyebrow above the track title) instead of shrinking targets. Mouse users may scroll the rail, while large Previous/Next or More/Back buttons expose the same content to hands and keyboard. The app remains a desktop product; reflow does not imply mobile tracking support.
+At smaller supported laptop viewports or 200% zoom, paginate long detail/stat groups inside their rails. Keep the figure stage and the primary/Back actions clear rather than overlaying the centre. **Implemented:** at or below `MENU_COMPACT_MAX_WIDTH_PX` wide or `MENU_COMPACT_MAX_HEIGHT_PX` tall (1099 / 699 CSS px), `MenuShell` places a top rail (all song rows of a library page in one row, or a non-interactive screen summary) above the stage and a bottom rail (a persistent status line plus one grouped page of full-size actions with inline Previous/Next) below it; the stage keeps the remaining height. At 760 px wide and below, song rows stack, Previous/Next sit below page content, the central stage is square except in the short-window tier, and the document scrolls naturally. The nested 520 px short-window tier removes secondary captions while retaining full-size targets. Between 1100 and 1279 px wide the side rails omit song tempo and support icons instead of shrinking targets. Mouse users may scroll the rail, while large Previous/Next or More/Back buttons expose the same content to hands and keyboard. The app remains a desktop product; reflow does not imply mobile tracking support.
+
+The side-rail layout preserves the registered 44 vw central stage, 72 px minimum targets and 16 px target gaps. Selected music uses a Rajdhani title with separate artist and duration/note metadata. Its primary Play row has a forward arrow and caption; support rows remain visually quieter. Thin-stroke SVG interface symbols share one vocabulary for paging, sound, camera, play and selection. These visual refinements add no motion and do not change semantic actions or readiness guards.
 
 ## Typography
 
 Fonts are bundled as pinned TrueType Orbitron and Rajdhani files in `app/public/assets/fonts/`, with exact hashes and OFL notices in the [font registry](../app/public/assets/fonts/README.md) ([ADR-013](03-decisions.md#adr-013--everything-the-demo-needs-is-bundled-and-works-offline)). Runtime uses `font-display: swap`; preserve readable system fallbacks so a missing font never hides Retry, camera permission guidance or Start. Reserve label/number widths to prevent layout jumps. Offline checks include failed-font behaviour, not only the happy path; subset/preload optimization is not established by the existing packaged files.
 
-| Role | Family | Weight | Size (clamp) | Use |
+| Role | Family | Weight | Size | Use |
 | --- | --- | --- | --- | --- |
 | Display XL | Orbitron | 900 | `clamp(72px, 12vw, 180px)` | Rank letter, countdown numerals |
-| Display L | Orbitron | 700 | `clamp(40px, 5vw, 72px)` | Score, combo count, screen titles |
+| Display L | Orbitron | 700 | `clamp(40px, 5vw, 72px)` | Score, combo count |
 | Display M | Orbitron | 600 | `clamp(28px, 2.6vw, 40px)` | HUD numbers (accuracy, multiplier), buttons |
 | Label | Orbitron | 500 | `clamp(13px, 1.1vw, 16px)` | Uppercase labels above numbers |
+| Menu heading | Rajdhani | 600 | 36 px; 30 px in shorter/narrow side rails; 22 px on compact Credits | Shared rail/page title |
+| Selected music | Rajdhani | 600 | 32 px; 26 px in 1100–1279 px side rails | Selected track title |
 | Body L | Rajdhani | 600 | `clamp(20px, 1.8vw, 26px)` | Coaching copy, pause reason |
 | Body | Rajdhani | 500 | `clamp(16px, 1.3vw, 20px)` | Descriptions, tooltips, library metadata |
 
-Rules: HUD numbers MUST be ≥ 28 px at 1920×1080 (Display M minimum). Numbers use `font-variant-numeric: tabular-nums` so tweening digits do not jitter horizontally.
+Rules: HUD numbers MUST be ≥ 28 px at 1920×1080 (Display M minimum). Numbers use `font-variant-numeric: tabular-nums` so tweening digits do not jitter horizontally. Menu headings and selected music use `letter-spacing: -0.02em` and a 1.1 line height; these are body-family title roles, not Orbitron game displays. Artist, duration and note count stay separate from the title for a clear hierarchy.
 
 ## Colour tokens
 
 Visual palette/font roles are maintained in [DESIGN.md](../DESIGN.md); the excerpt below mirrors that source. The runtime adapter is `app/src/ui/theme.css`'s `:root` palette. Components should use tokens rather than introducing independent colours. UI behavior remains in this document and [25](25-menu-and-hand-navigation.md), with menu timings/geometry in [02](02-architecture.md#constants).
+
+The shared rail derives `--rail` from `color-mix(in srgb, var(--void) 96%, transparent)`. It does not replace the base `--panel` palette token.
 
 ```css
 :root {
@@ -169,7 +175,7 @@ The wireframe below is the original live-onboarding reference. The implemented r
 ```
 
 - **Camera/input status** (top-right): show Not Set Up, Setting Up, Calibration Required, Ready or the actual recovery state. `TRACKING OK`/Ready is not inferred from the placeholder or merely granted permission; valid live tracking and the setup/calibration guards must pass. During labelled setup, raw tracking may be reported as “Camera connected — finish calibration” with its measured rate. Missing/stale input clearly disables the hand cursor without blocking mouse/keyboard browsing.
-- **Library cards**: at least three bundled starter tracks; cover when available, real title/artist, verified duration, confidence-appropriate tempo and available difficulties. The left rail shows a bounded page of large full-row buttons. Keyboard arrows move library focus; Enter selects that focused card. Open-palm hover plus a point selects the same track through the shared action path. Keep selected state distinct from hover/focus and preserve it through page changes.
+- **Library rows**: at least three bundled starter tracks; deterministic metadata-seeded geometric sleeves, real title/artist, verified duration, confidence-appropriate tempo and available difficulties. The left rail shows a bounded page of large unboxed full-row buttons. Cyan oblique bands, magenta split squares and a gold cut disc replace decorative initials/equalizer bars. Keyboard arrows move library focus; Enter selects that focused row. Open-palm hover plus a point selects the same track through the shared action path. Keep the selected wash/check distinct from hover/focus and preserve it through page changes.
 - **Upload zone**: drag & drop or click. During generation the zone becomes a progress bar with the label `strings.select.generating` and a percentage from the beatmap worker. On completion it shows BPM and note count; on tempo-fallback it shows the badge `strings.select.tempoFallback` in `--gold`.
 - **YouTube field**: optional secondary rail detail, never a central overlay or required starter step. Enable only when the companion service health check succeeded in the last `YT_HEALTH_INTERVAL_MS` ([23](23-youtube-companion-service.md)); otherwise show disabled offline copy. Text entry remains keyboard input. Enter submits the field once; a spinner replaces the submit icon while resolving. Opening these details keeps a large Back/Close target in the same rail.
 - **Difficulty**: segmented control, default Normal, persisted in `localStorage`.
@@ -541,7 +547,8 @@ Subscribe once per adapter lifetime and return an unsubscribe/dispose function; 
 | `screens/Paused` | Source-aware guarded Resume/Songs and countdown around the labelled frozen pose. |
 | `screens/Results` | Actual rank/counts/statistics, source-appropriate motion/proxy explanation and guarded Retry/Songs around a labelled saved moment. |
 | `components/MenuShell` | Exports shared `MenuShell`, `Figure`, `RailPager` (side-rail and inline variants), `RailHeading`, `Button` (mirrors the hand pointer's hover/armed/confirming/latched phase and busy state onto the targeted control), `StatusMessage` and `useCompactMenu`; owns stable rail/compact composition and the grouped Settings pages. |
-| `components/CoverArt`, `ui/coverArt.ts` | Deterministic procedural cover per track from slug/title/role/duration/tempo; decorative, no external image or rights record. |
+| `components/CoverArt`, `ui/coverArt.ts` | Deterministic geometric sleeve per track from slug/title/role/duration/tempo; decorative, no external image or rights record. |
+| `components/ControlIcon` | Shared thin-stroke SVG arrows, sound, camera, play and selection check; decorative beside named controls. |
 | `components/GestureIcon` | Original stroke icons for open/fist/point/lean used by the legend, calibration moves and HUD; always paired with text. |
 | `ui/hudModel.ts` | Pure multiplier-ring progress and combo-milestone helpers from `MULTIPLIER_LADDER` / `HUD_COMBO_MILESTONES`. |
 | `ui/menuTargets.ts` | Registers semantic targets, geometry, allowed surface/epoch, native-only and disabled guards for shared actions. |

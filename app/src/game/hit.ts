@@ -71,21 +71,27 @@ export function pointBoxDistanceSq(point: Vec2, box: Box2): number {
     (point.x - clamp(point.x, box.minX, box.maxX)) ** 2 + (point.y - clamp(point.y, box.minY, box.maxY)) ** 2
   );
 }
-export function palmContact(point: Vec2, target: Vec2, radius = HAND_HIT_RADIUS): boolean {
-  const half = BLOCK_SIZE / 2;
+export function palmContact(point: Vec2, target: Vec2, radius = HAND_HIT_RADIUS, scale = 1): boolean {
+  const half = (BLOCK_SIZE * scale) / 2;
   const dx = Math.max(0, Math.abs(point.x - target.x) - half);
   const dy = Math.max(0, Math.abs(point.y - target.y) - half);
   return dx * dx + dy * dy <= radius * radius;
 }
 /** Exact segment versus rounded rectangle (Minkowski sum of the footprint and palm circle).
  * Testing an expanded square alone would produce false positives around its corners. */
-export function sweptPalmContact(a: Vec2, b: Vec2, target: Vec2, radius = HAND_HIT_RADIUS): number | null {
-  const half = BLOCK_SIZE / 2;
+export function sweptPalmContact(
+  a: Vec2,
+  b: Vec2,
+  target: Vec2,
+  radius = HAND_HIT_RADIUS,
+  scale = 1,
+): number | null {
+  const half = (BLOCK_SIZE * scale) / 2;
   const minX = target.x - half,
     maxX = target.x + half,
     minY = target.y - half,
     maxY = target.y + half;
-  if (palmContact(a, target, radius)) return 0;
+  if (palmContact(a, target, radius, scale)) return 0;
   let earliest = Infinity;
   const horizontal = segmentAABBBounds(a, b, minX - radius, maxX + radius, minY, maxY);
   const vertical = segmentAABBBounds(a, b, minX, maxX, minY - radius, maxY + radius);
@@ -133,8 +139,15 @@ function cornerAt(
 /** Exact first contact for a blade whose base and tip interpolate linearly between captures.
  * Contact begins when an endpoint enters the square or the segment crosses a square corner.
  * The corner condition is a quadratic in capture fraction, including footprint containment. */
-export function sweptBladeContact(a0: Vec2, b0: Vec2, a1: Vec2, b1: Vec2, target: Vec2): number | null {
-  const half = BLOCK_SIZE / 2;
+export function sweptBladeContact(
+  a0: Vec2,
+  b0: Vec2,
+  a1: Vec2,
+  b1: Vec2,
+  target: Vec2,
+  scale = 1,
+): number | null {
+  const half = (BLOCK_SIZE * scale) / 2;
   const minX = target.x - half,
     maxX = target.x + half,
     minY = target.y - half,

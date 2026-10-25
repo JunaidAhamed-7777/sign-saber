@@ -351,8 +351,11 @@ async function play(): Promise<void> {
     expect(runtime!.machine.state).toBe('CALIBRATION');
     advance(1500);
     await runtime!.command('confirm');
-    advance(2100);
-    await flush();
+    // Count-in length follows the (slowed) approach pre-roll; advance until play begins.
+    for (let i = 0; i < 200 && (runtime!.machine.state as string) !== 'PLAYING'; i++) {
+      advance(100);
+      await flush();
+    }
     expect(runtime!.machine.state).toBe('PLAYING');
   }
 }
@@ -519,8 +522,10 @@ describe('runtime browser lifecycle (mocked boundaries)', () => {
       },
     });
     await runtime!.command('dataset-trial');
-    step(now + 3000);
-    await flush();
+    for (let i = 0; i < 100 && (runtime!.machine.state as string) !== 'PLAYING'; i++) {
+      step(now + 200);
+      await flush();
+    }
     expect(runtime!.machine.state).toBe('PLAYING');
     expect(runtime!.datasetTrialActive).toBe(true);
     expect(runtime!.camera.start).not.toHaveBeenCalled();
@@ -791,8 +796,10 @@ describe('runtime browser lifecycle (mocked boundaries)', () => {
       expect(tick.starts[0]![0]).toBeCloseTo(songStart - (COUNTDOWN_STEPS - index) * step, 6),
     );
     expect(sfx()[0]!.disconnected).toBe(true);
-    advance(2100);
-    await flush();
+    for (let i = 0; i < 200 && (runtime!.machine.state as string) !== 'PLAYING'; i++) {
+      advance(100);
+      await flush();
+    }
     expect(runtime!.machine.state).toBe('PLAYING');
     await runtime!.pause('manual');
     await runtime!.command('songs');

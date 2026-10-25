@@ -427,7 +427,9 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `LEAN_TILT_ASSIST_DEG` | 15 | Optional shoulder-tilt assist, with translation evidence |
 | `DUCK_HYSTERESIS` | 0.03 | Normalized nose-height hysteresis [STRETCH] |
 | `CALIB_SAMPLE_MS` / `CALIB_HAND_SEEN_MS` | 500 / 2000 | Rest-pose averaging and recent-hand visibility windows |
-| `APPROACH_SLOWDOWN` | 1.4 | Runtime multiplier on chart approach time so blocks travel slower and absorb camera/inference delay |
+| `APPROACH_SLOWDOWN` | 2.17 | Runtime multiplier on chart approach time so blocks travel slower and absorb camera/inference delay |
+| `HIT_ZONE_SCALE` | 2.5 | Judged contact zone over the visible block and palm radius (forgiving webcam play) |
+| `CONTACT_MIN_SPEED` | 0.3 m/s | Any moving hand that reaches a slash or smash zone hits it; gesture shape is not required and there are no wrong-gesture bad cuts |
 | `FIGURE_HOLD_MS` | 700 | Display/readiness hold for the tracked figure, HUD hands and setup checks across slow inference frames (scoring keeps `INPUT_MAX_AGE_MS`) |
 | `GESTURE_EXT_RATIO` / `GESTURE_CURL_RATIO` | 1.55 / 1.3 | 3D wrist→tip ÷ wrist→MCP: straight at or above, folded at or below (orientation-independent Open/Fist/Point) |
 | `TRACK_DEFAULT_DELEGATE` | `cpu` | MediaPipe delegate without `?tracker=`; CPU avoids GPU contention with the arena and the ~8 s GPU warm-up |

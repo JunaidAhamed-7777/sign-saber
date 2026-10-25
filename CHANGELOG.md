@@ -12,6 +12,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: Give the arena a deliberate control-booth interface while preserving the clear human stage, palette, input contracts and readiness guards.
 - Validation: `npm run check` passed 569 tests, typecheck, lint, production build and three bundle regressions; all ten JS chunks remain below 500,000 bytes. Sixteen production browser checks passed, including five viewport sizes, 72 px targets, protected desktop stage, keyboard, preview, Calm/reduced motion, invalid-audio recovery and pause. Documentation tests/link checks, design lint, formatting and whitespace checks passed; Impeccable detector returned no findings.
 - Limits: The premium static audit reported 18 reviewed false positives from lowercasing React `Select`/`Button` component names; real buttons dispatch through the shared target registry and no native select exists. Production browser logged one existing Three.js already-non-indexed warning. No live-camera, standing-distance, screen-reader or performance acceptance is claimed. Receipt: [frontend-polish.json](docs/evidence/2026-10-25-frontend-polish.json).
+## 2026-10-25T07:55:00+05:30 — Forgiving contact: slower blocks, bigger hit zones, any hand shape
+
+- Changed: Blocks approach 2.17× slower than authored (another 55% on top of 1.4×). The judged contact zone is 2.5× the visible block and palm radius (`HIT_ZONE_SCALE`, applied by the session; contact geometry functions stay exact). Slash and smash blocks are hit by any hand moving at least `CONTACT_MIN_SPEED` through the zone, regardless of gesture; wrong-gesture bad cuts are gone. Beams still need a point. Tests updated (runtime count-in waits for play; lane-relative session positions; performer no longer asserts Perfect timing because larger zones register earlier).
+- Why: User live testing with webcam latency.
+- Validation: Full `npm run check` passed (567 tests); every planned performer note on all nine charts is still hit.
+- Limits: Larger zones make contact earlier, so more hits judge Great/Good; neighbouring lanes' zones can overlap.
 
 ## 2026-10-25T07:30:00+05:30 — Slower blocks and wider lanes
 

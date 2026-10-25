@@ -15,8 +15,7 @@ import {
   WINDOW_GREAT_MS,
   WINDOW_GOOD_MS,
   WINDOW_SCALE,
-  SLASH_MIN_SPEED,
-  SMASH_MIN_SPEED,
+  CONTACT_MIN_SPEED,
 } from '../core/constants';
 
 export type Judgement = 'perfect' | 'great' | 'good';
@@ -29,16 +28,11 @@ export function judgeTiming(errorMs: number, windowScale = WINDOW_SCALE): Judgem
   if (error <= WINDOW_GOOD_MS * windowScale) return 'good';
   return null;
 }
+/** Forgiving webcam play: any moving hand that reaches a slash or smash block hits it, whatever its shape. */
 export function contactOutcome(type: NoteType, gesture: Gesture, speed: number): ContactOutcome {
+  void gesture;
   if (!Number.isFinite(speed) || speed < 0) return 'ignore';
-  if (type === 'slash') {
-    if (gesture === 'open' && speed >= SLASH_MIN_SPEED) return 'hit';
-    if ((gesture === 'fist' || gesture === 'point') && speed >= SMASH_MIN_SPEED) return 'badcut';
-  }
-  if (type === 'smash') {
-    if (gesture === 'fist' && speed >= SMASH_MIN_SPEED) return 'hit';
-    if (gesture === 'open' && speed >= SLASH_MIN_SPEED) return 'badcut';
-  }
+  if ((type === 'slash' || type === 'smash') && speed >= CONTACT_MIN_SPEED) return 'hit';
   return 'ignore';
 }
 export const timingError = (songTimeAtCapture: number, noteTime: number, inputOffsetMs: number): number =>

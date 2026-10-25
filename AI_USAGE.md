@@ -35,6 +35,18 @@ The development workflow also occasionally includes collaboration with **Devin**
 ## 2026-10-25 — Automated release-drill implementation
 
 - Codex implemented the clean-commit installation and offline synthetic browser harness for issue #3, reused the shared CDP helper, retained actual test/browser failures and fixed the missing favicon exposed by those checks. Pure-helper coverage verifies loopback policy, options, failure reporting, evidence retention and CDP messages. Final committed-snapshot acceptance evidence follows separately.
+## 2026-10-25 — PR audit: current player controls and guide links
+
+- Codex reviewed PR #7 against current main, normally integrated its showcase README/camera changes, corrected player control and cancellation instructions, repaired the removed README fragment and revalidated local documentation. The integrator then merged PR #6 normally and made the documented check sequence current. Existing screenshots remain explicitly tied to their recorded source; no new runtime or live-camera evidence is claimed.
+
+## 2026-10-25 — Guide label and avatar capture refresh at main 30572bb
+
+- Codex normally integrated the requested source checkpoint into the existing guide PR, corrected the affected button/source captions while retaining synthetic-input limits, and captured/inspected four new production-app WebPs through native UI actions. It recorded actual current results, hashes, Chrome provenance and the upstream warning/failed initial harness gate, then ran the required application/documentation checks. No application code or live-camera result was authored for this maintenance.
+
+## 2026-10-25 — Player, troubleshooting and contributor guides (issue #5)
+
+- Codex wrote and independently reviewed guides against current UI/runtime sources, exact recovery messages and the constants/evidence contracts. It captured and inspected four actual production-app WebPs, including a complete labelled synthetic-performer run, and refreshed the wording/captures after concurrent main updates. No gameplay implementation or live-camera evidence is attributed to this documentation work.
+- After the first documentation milestone, Codex normally integrated main through `52e9c81`, rechecked the exact live-play label and dataset-camera distinction, refreshed all captures (including the corrected performer footer) and repeated the full application/browser checks before opening the issue PR.
 ## 2026-10-25 — PR audit and sequential integration
 
 - Codex reviewed PR #6 against current main, repaired CI budget enforcement and split the existing postprocessing dependency after measuring the oversized integrated entry. Full application/docs checks and a real production-menu browser smoke were run; live and release gates remain open.

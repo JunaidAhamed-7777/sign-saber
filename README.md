@@ -47,6 +47,8 @@ The optional webcam path uses MediaPipe. Camera integration is currently paused;
 
 ## Quick start
 
+New here? Read the [Player guide](docs/player-guide.md) for setup, moves and no-camera trials, [Troubleshooting](docs/troubleshooting.md) for recovery, or the [Contributor guide](docs/contributor-guide.md) for code flow, checks and evidence rules.
+
 Use **Node.js 22 or newer** and a current Chrome or Edge. After cloning and installing dependencies, the bundled demo needs no webcam, account or model download.
 
 ```powershell

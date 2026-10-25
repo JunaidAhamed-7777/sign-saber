@@ -13,6 +13,83 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: Full `npm run check` passed (560 tests). In real Chrome with the dataset camera, CPU and GPU tracking both ran at about 9–10 Hz / 85–100 ms; GPU needed about 8 s before its first result.
 - Limits: Gesture thresholds are not yet tuned on the user's webcam.
 
+## 2026-10-25T06:05:00+05:30 — Camera play on the main menu
+
+- Changed: **Set up camera** sits next to Enable sound on the first play page. Once calibrated, the main action becomes **Play with camera** (live play); Watch auto-play and Play level stay available. Holding a steady, framed pose for `CALIB_AUTO_CONFIRM_MS` confirms camera setup and starts the live count-in without returning to the mouse.
+- Why: User asked to integrate the camera properly; setup and live start were hidden in Settings and required mouse clicks while standing back.
+- Validation: Full `npm run check` passed. Live webcam behaviour still needs the user's hands-on test.
+- Limits: No consented live session has been recorded by the agent.
+
+## 2026-10-25T05:55:36+05:30 — Record final PR #11 integration checks
+
+- Changed: Preserved current-source graphics/visibility receipts and two recovery screenshots; linked exact scope from lifecycle notes and docs17. Normally integrated main after PR #9 merged; application/scripts are unchanged from tested clean ce300c80536de1b004252884057c3b6efd492622.
+- Validation: Graphics context loss passed 12 checks and hidden-tab recovery passed seven; cleanup recorded no errors. Six scenarios were not run, so expected partial exit 1 is recorded honestly. The tested application tree passed 567 tests, typecheck/lint/build and three bundle regressions (largest chunk 368401 bytes). Thirteen helper/docs tests and local-link/whitespace checks passed and are repeated before this evidence commit.
+- Limits: Prior full-matrix, cache and clean-clone reports retain their own source IDs. No live-camera, audible-sync, performance or full release acceptance is inferred.
+
+## 2026-10-25T05:54:04+05:30 — Preserve camera updates with fatal recovery
+
+- Changed: Normally integrated concurrent main 5cacf9b into the audited lifecycle/release tree. Resolved App.tsx by retaining the new CameraPip and the fatal-screen pointer guard; preserved graphicsFailed guards, capture cancellation and camera stall recovery.
+- Validation: Full npm run check passed 567 application tests, typecheck/lint/build and all three bundle regressions; ten emitted chunks pass, largest 368401 bytes. Thirteen script/docs tests, link validation and whitespace checks passed. Focused independent compatibility review found no extra camera/fatal fix needed.
+- Limits: No live camera acceptance is claimed. Earlier browser receipts keep their original source IDs; a focused current-source graphics/visibility rerun follows separately.
+
+## 2026-10-25T05:52:44+05:30 — Integrate the audited release drill with lifecycle recovery
+
+- Changed: Normally integrated PR #9 source db80a29 into PR #11, retaining both harness commands/protocols, source-attributed reports, current camera guidance and fatal-pointer recovery.
+- Validation: Full npm run check passed 567 application tests, typecheck/lint/build and three bundle regressions; all ten chunks pass. Thirteen lifecycle/release/doc helper tests and the local-link checker passed. Earlier browser reports remain tied to their exact sources.
+- Limits: Concurrent new camera work on main is integrated and revalidated separately; no new live-camera or full release claim is made.
+
+## 2026-10-25T05:48:56+05:30 — Record audited recovery subset and correct camera menu guidance
+
+- Changed: Preserved the selected browser report, raw JSON and four desktop/compact screenshots under `docs/evidence/pr-audit-lifecycle/`; lifecycle notes identify the exact clean tested source `670291c`. README now names the current main-menu **Set up camera** and **Play with camera** controls instead of saying camera work is paused or setup is only in Settings.
+- Why: Confirm storage, graphics and visibility recovery after the audited bundle/library integrations and keep player instructions aligned with the existing menu.
+- Validation: Cache passed 7/7 checks, loaded-avatar menu/play context loss passed 12/12 and hidden-tab cancellation/pause/manual resume passed 7/7. Screenshots were visually inspected; owned browser/server/profile cleanup reported no errors. Five other scenarios were intentionally not run, so overall incomplete/exit 1 is expected. The clean tested source already passed full application/bundle checks; final helper/documentation and whitespace checks passed for this evidence-only increment.
+- Limits: No new full eight-case matrix, 20-cycle soak, webcam recognition, audible-sync or performance claim. This commit records earlier tested code and changes only documentation/evidence.
+
+## 2026-10-25T05:46:45+05:30 — Integrate audited library, guides and bundle gate into lifecycle PR
+
+- Changed: Normally integrated main `0159d24`, preserving the eight-song bounded paging, current camera controls, wall scoring and fatal-pointer fix. Resolved only overlapping UI-test imports and the first-page description; the lifecycle/cache/fatal and library bounds assertions all remain. Kept merged changelog entries newest-first.
+- Why: Verify graphics, visibility and storage recovery against the independently audited application and production chunk layout.
+- Validation: Full `npm run check` passed typecheck, lint, 567 tests in 55 files, production build and all three bundle tests; ten JavaScript chunks each meet 500,000 bytes. Seven lifecycle-helper/docs tests passed; the local Markdown checker and whitespace checks passed.
+- Limits: The selected browser recovery rerun follows this clean source checkpoint and will be recorded separately. Historical full-matrix reports keep their original source IDs; this integration does not claim new live-camera or performance acceptance.
+
+## 2026-10-25T05:45:00+05:30 — Walls only cost points
+
+- Changed: A wall hit now deducts `SCORE_WALL_PENALTY` (100, floored at zero) and no longer breaks the combo. Walls never pause or stop the run: frames without a body cannot hit a wall, and an unobserved wall passes with neither penalty nor reward. Merged the remote README showcase (#10) with the user's local README edit.
+- Why: User direction — touching a red wall should just reduce points. The old body-tracking pause during walls made live play feel like it ended whenever tracking flickered.
+- Validation: Full `npm run check` passed (482 tests), including new score and session assertions.
+- Limits: No live-camera play yet; that integration follows.
+## 2026-10-25T05:53:29+05:30 — Preserve concurrent camera work before merging PR #9
+
+- Changed: Normally integrated main 5cacf9b, preserving its corner camera view and stall recovery rather than overwriting concurrent work.
+- Validation: Full npm run check passed after integration (560 application tests, typecheck/lint/build and three bundle regressions; all ten chunks pass, largest 366456 bytes). Docs tests and link checks passed. This documentation entry records tested integrated source 9f89231dbaf724b2aaa2902028e3d45abaf223e4.
+- Limits: The earlier clean-clone/browser receipt stays tied to source 886f7be; it is not relabelled as a camera test or a browser run of this newer source. Live-camera and release gates remain open.
+
+## 2026-10-25T05:50:47+05:30 — Verify PR #9 from a fresh committed clone
+
+- Changed: Retained the initial old-banner harness failure and corrected clean-clone drill receipts under docs/evidence/pr-audit-release-drill and pr-audit-release-drill-fixed; linked current evidence from README and docs17. This documentation commit records tested application/harness source 886f7beb990af721bd2faf4292cc9260c97379fb.
+- Validation: Clean clone/checkout, npm ci, full npm run check (560 application tests and three bundle tests), production build, offline menu/audio unlock, 84 Perfect synthetic hits, Retry, pause and Songs all passed. All 24 observed requests were local; no console/runtime/CSP errors, external attempts or cleanup failure. Unit tests 6 and docs tests 2 passed; documentation links are rechecked before commit.
+- Limits: Initial source 810bf67 reached real results but failed its stale source-banner check; that failure remains recorded. Neither run proves live-camera recognition, audible sync, physical latency or a complete manual release gate.
+
+## 2026-10-25T05:46:45+05:30 — Keep the release drill aligned with neutral run screens
+
+- Changed: Normally integrated merged PRs #7/#8. The release drill now uses the existing stats diagnostics to assert the synthetic-performer evidence lane and camera-free provenance instead of requiring a removed source banner. Native UI actions and DOM judgement counts still drive the journey.
+- Why: Current main intentionally uses neutral run copy; the old banner predicate would reject a successful synthetic session.
+- Validation: The initial clean clone installed and passed the full 560-test application check and bundle gate. Release-drill unit tests and documentation checks are run before this fix commit. The initial old-harness browser attempt and corrected end-to-end run are recorded separately after completion.
+- Limits: Full corrected browser validation is still pending here; no live-camera, audible-sync or performance claim is added.
+
+## 2026-10-25T05:43:08+05:30 — Record missing-browser release-drill failures
+
+- Changed: Normally integrated current main into the release-drill branch, preserving the README showcase and release-drill instructions. `scripts/cdp-client.mjs` now rejects browser spawn errors through its awaited startup path; `scripts/release-drill.test.mjs` covers a missing executable.
+- Why: An invalid `--browser` path previously emitted an unhandled child-process error, bypassing the drill's failure report and temporary-clone cleanup.
+- Validation: Release-drill unit tests passed 6/6, the real worker/network browser regression passed 1/1, documentation tests passed 2/2, and the local Markdown checker passed (56 files, 600 links).
+- Limits: This patch verifies browser-launch failure handling and worker isolation. The final integrated application check and clean-clone/offline journey are performed separately; live camera, human QA and release gates remain open.
+
+## 2026-10-25T05:03:12+05:30 — Verify the PR's prepared integration build
+
+- Changed: Retained separately labelled prepared-build JSON/Markdown and linked them from docs17. The exact tracked browser journey was reused on committed integration `f68f84e933bb6495bc66f80da455f7b3ae5e3fd8` (main `db45982`); the earlier clean-clone and missing-asset artifacts keep their own tested SHAs. This publication changes documentation only.
+- Why: The opened PR needed a newer normal integration. Verify its actual presentation/audio/game flow without relabelling earlier installation evidence or duplicating a browser driver.
+- Validation: The integrated source passed full `npm run check` (481 assertions/55 suites/build). Its prepared production build passed BOOT → selection → native sound enable → real 80-second synthetic performer → Results (84 Perfect, zero misses, 54,700 score) → Retry → play → pause → Songs. Runtime/console, CSP and interception errors were zero; cleanup succeeded. Root documentation tests/checker passed for these artifacts.
+- Limits: This supplemental run is explicitly not a new clone/install exercise. Camera/models, people, recognition, audible sync and performance targets remain outside its scope. The separately recorded clean-clone pass and intentional catalog-404 failure remain the release-drill control evidence; later main commits are outside this frozen integration.
 ## 2026-10-25T06:30:00+05:30 — Corner camera view and steadier live tracking
 
 - Changed: Added a corner camera view (bottom right) that shows the mirrored webcam with MediaPipe pose and hand landmarks, hand labels/gestures, tracking rate, inference time and drops. The camera `<video>` is now attached to the page (invisibly) so frame callbacks keep flowing; a stall first restarts capture (up to `TRACK_STALL_RESTARTS`) and the stall window is 3 s instead of 1 s. Removed GPU/delegate wording from setup status, the GPU line from diagnostics, and the dataset-camera settings page (`?camera=dataset` still works for testing). Dev builds expose `window.signSaber` for console debugging.
@@ -27,46 +104,24 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: Full npm run check passed (560 application tests, typecheck/lint/build, three bundle regressions); all ten chunks pass. Docs tests (2), link checker and whitespace check passed. Shared runtime asset validators and synthetic planner accept all 24 maps with zero unplayable notes.
 - Limits: No new human music-quality, webcam, comfort or performance gate is claimed.
 
-## 2026-10-25T04:54:57+05:30 — Freeze all eight songs on generator v4 from main 09671b7
-
-- Changed: Froze the issue #2 acceptance checkpoint on upstream 09671b7, which adds real tempo-period refinement and generator version 4 alongside other upstream work. Normally integrated it and regenerated all 24 maps/receipts/manifest again through the shared script. Resolved generated JSON through regeneration and reconciled the music registry without losing the five additions. Updated current version/confidence docs, retained the v4 chart diagnostic/browser report, and refreshed the actual PNGs. Original audio bytes, acquisition/attribution receipts and canonical PCM hashes are unchanged.
-- Why: The issue requires the same latest generator across all eight songs; the tempo change alters real map hashes and which songs qualify for beat snapping. Earlier v2/v3 acceptance results are preserved as historical checkpoints, with no claim that they verify v4.
-- Validation: Full npm run check passed typecheck, lint, 54 suites/558 assertions and production build. All 24 maps passed shared structural/readability tests and full synthetic InputPipeline/GameSession replays; the v4 diagnostic reports zero unplayable notes for every chart. Chrome 155/SwiftShader at both 1440×900 and 1024×640 selected all eight v4 songs/all 24 difficulty maps, paged music/credits, started/stopped original preview and verified all eight exact attributions/source/license links. Zero CSP, JavaScript-console, music-request or external-page-request failures. Current manifest SHA-256: c0d70d68751eb90593e9b8c55fca15a3a6611ef91e1f7e4a5c5a8760cbfc460a. Scoped formatting passed; root documentation checks are rerun before committing this frozen checkpoint.
-- Limits: Freeze identifies a tested upstream source; later unrelated main changes are not retroactively claimed as tested. Existing favicon/bundle warnings and human/camera/music-quality/performance gates remain explicit. No production generator/game algorithm was changed by this music issue.
-
-## 2026-10-25T04:44:12+05:30 — Preserve the later block-asset main integration
-
-- Changed: Normally integrated main 87032d0 into the issue #2 branch before final handoff, preserving the upstream block-model/render changes and resolving the shared changelog overlap. The eight-song acquisition bytes, exact credits, generator version 3, all generated maps and manifest are unchanged.
-- Why: Keep the PR current with main without discarding other contributors' work or expanding music scope.
-- Validation: Full npm run check passed again (typecheck, lint, 50 suites/502 assertions, production build). The existing current-v3 two-viewport/all-eight-song/all-24-map browser evidence still identifies the unchanged music manifest; no new browser/performance result is claimed for unrelated block work. Root documentation checks are rerun before this integration commit.
-- Limits: Existing large-bundle/favicon warnings and all previously stated human/camera/music-quality limits remain unchanged.
-
-## 2026-10-25T04:39:17+05:30 — Regenerate the eight-song pack with awaited generator v3
-
-- Changed: Main integrated the awaited chart branch immediately after PR #8 opened. Kept the PR draft while normally integrating 93e411e, regenerated all 24 maps/receipts/manifest with upstream generator version 3, and resolved the three generated-receipt conflicts using generator output. Extended upstream chart-readability tests, full synthetic InputPipeline/GameSession replays and the existing chart diagnostic to every song in the eight-track manifest. Updated the music registry/current format version and retained current-v3 browser/diagnostic evidence; original audio bytes/credits remain unchanged.
-- Why: Issue #2 explicitly requires the latest chart generator across the complete library before review. Earlier passing generator-v2 browser/check results are historical and are superseded for current acceptance.
-- Validation: Full npm run check passed typecheck, lint, 50 suites/502 assertions and production build. All 24 maps passed the shared validator/readability tests and full synthetic performer replays; the retained diagnostic reports zero unplayable notes for every chart. Actual Chrome 155/SwiftShader at 1440×900 and 1024×640 selected all eight current-v3 songs/all 24 difficulties, paged music/credits, started/stopped preview and verified every exact attribution/source/license link. There were zero CSP, JavaScript-console, music-request or external-page-request failures. The browser report identifies the merging main SHA and exact eight-track manifest SHA-256. PNGs were refreshed and inspected; root documentation checks are rerun before this integration commit.
-- Limits: Existing favicon 404 responses and the separate large-bundle warning remain recorded. Synthetic logic, offline selection and numeric audio validation do not establish webcam recognition, human comfort, musical quality or measured performance.
-
-## 2026-10-25T04:22:29+05:30 — Verify music pack against newer main
-
-- Changed: Normally integrated main 752acf3 and then 52e9c81 into the issue #2 branch after the content checkpoint, preserving their camera Settings, footer/ARIA, training and other upstream work. Refreshed the final music/credits screenshots and retained both final integration browser reports. Generator version 2 and all music-generation sources are unchanged from the final full-pack regeneration.
-- Why: Main changed before opening the PR; the extra Settings page moves the Credits navigation target, and the subsequent interface update changes the footer.
-- Validation: Full npm run check passed on code commits d49bbf7 (380 assertions) and 0ec036c (48 suites/382 assertions), including typecheck, lint and production build. Native Chrome at 1440×900 and 1024×640 booted, navigated to/selected the eighth song and traversed the updated Settings/credits pages; every exact attribution passed with zero CSP, console or external-request failures. PNG screenshots were captured explicitly after upstream changed its generic screenshot helper to JPEG. Root docs checks passed 2/2 and the link checker passed; they are rerun after this evidence update. Scoped formatting checks passed.
-- Limits: The existing favicon 404 and large-bundle warning remain explicit, separate from music acceptance. No human, webcam, musical-quality or performance proof is inferred.
-
-
-## 2026-10-25T04:10:41+05:30 — Eight licensed full songs and 24 generated charts (issue #2)
-
-- Changed: Extended the explicit music acquisition/generation lists with Chipper Doodle v2, Funkorama, Cut and Run, Rhinoceros and Marty Gots a Plan. Added five unchanged official CC-BY 4.0 MP3s (35,593,862 bytes total), exact attribution/acquisition receipts and 15 generated maps; regenerated the entire eight-song/24-map pack with main's generator version 2 after integrating cfdcc40. Refreshed the manifest, measured metadata, credits/docs and audio/PCM/map integrity tests. Existing paging assertions now use the registered page capacity instead of assuming the entire library fits in one page; production UI is unchanged.
-- Why: Fulfil issue #2's 3 → 8 licensed local library, with catalog tempo/genre variety (92–140 BPM for the additions), measured durations of 168–214.766 seconds and preserved source identity.
-- Validation: Official catalog/track-page license templates verified at acquisition; all hashes/receipts retained. Shared generation/validator passed all 24 maps. Full npm run check on cfdcc40 passed typecheck, lint, 48 suites/380 assertions and production build; scoped Prettier checks passed. Root docs tests passed 2/2 and the link checker passed. Native Chrome 155/SwiftShader at 1440×900 and 1024×640 selected all eight songs/all 24 difficulties, started/stopped the original preview, paged the library and checked all eight exact credits offline. After main's renderer/UI merge, another browser run repeated all eight Normal selections/credits/preview at both sizes. Reports and inspected screenshots are linked from docs/evidence/2026-10-25-eight-song-library.md.
-- Limits: No live-camera, human musical-quality, comfort or performance claim. The existing large-bundle warning belongs to issue #1; unrelated favicon 404 responses remain recorded. Initial shared-cache install failure, three obsolete paging assertions and two browser-driver failures are disclosed in the evidence; the corrected checks pass. Final integration with any newer remote main is recorded separately.
 ## 2026-10-25T05:42:41+05:30 — Integrate the merged bundle gate into PR #7
 
 - Changed: Normally merged main after PR #6 and made the contributor check sequence describe the current bundle gate.
 - Validation: Repeated documentation checker tests and local-link validation; no application behavior changed. CI runs the full integrated application check.
 - Limits: Guide evidence retains its recorded historical source; no live-camera or release gate is claimed.
+
+## 2026-10-25T05:41:22+05:30 — Audit and integrate PR #6 bundle enforcement
+
+- Changed: Normally integrated current main, preserving its README and camera/game changes. CI now runs the complete application check including bundle budgets. Added the existing postprocessing dependency to its own chunk; no dependency or runtime feature was added.
+- Why: Review found CI skipped the budget command, and the integrated application entry measured 530999 bytes, exceeding the unchanged 500000-byte limit.
+- Validation: Full npm run check passed (482 application tests, three budget regressions, typecheck/lint/build); all ten chunks pass, largest 363984 bytes. Docs checker tests (2) and local-link checker passed. A fresh headless production-menu smoke reached SELECT with three songs and a canvas, with zero runtime errors; browser cleanup is recorded separately if it fails.
+- Limits: This validates build integration and camera-free startup, not live-camera play, audible synchronization or release performance gates.
+## 2026-10-25T05:41:13+05:30 — Hide stale hand input on fatal graphics recovery
+
+- Changed: `App.tsx` hides the hand pointer whenever the fatal recovery screen is visible. The existing fatal UI regression now begins with a visible confirming pointer and checks that both menu and paused failures remove it. Normally integrated `origin/main` at `97bf0d3`, preserving its current camera/menu and wall-scoring behavior; README keeps both the current setup guidance and lifecycle commands.
+- Why: Graphics loss stops application frames, so the last store pointer snapshot could otherwise remain frozen over the native reload screen after the controller itself was cancelled.
+- Validation: Targeted runtime/UI suites passed 34 tests. Full `npm run check` passed typecheck, lint, 489 tests in 55 files and production build. Lifecycle-helper/documentation tests passed 7/7; the local Markdown checker and whitespace check passed.
+- Limits: This is a rendered UI regression and integration check. Existing browser lifecycle reports retain their original source identities; no new live-camera, browser matrix or performance acceptance is claimed. The existing large production-chunk warning remains for the separate bundle PR.
 
 ## 2026-10-25T05:40:37+05:30 — Audit player guides against current main
 
@@ -74,6 +129,13 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: PR #7's frozen screenshots retain honest historical provenance, but the instructions and local links must follow current controls and documentation before merging.
 - Validation: Root documentation tests passed 2/2; checker passed 52 Markdown files / 608 local links / zero errors. Both staged and working-tree whitespace checks passed. The final documentation checks were repeated after this entry.
 - Limits: Documentation audit and normal integration only; no new browser, webcam, human, audible-sync or performance evidence. The application changes are inherited from main and receive the sequential PR integration checks separately.
+
+## 2026-10-25T05:35:00+05:30 — README quick start
+
+- Changed: Rewrote the README run section as a quick start: requirements, clone/install/run commands, the play flow (pick song, Enable sound, Watch auto-play or Play level, pause), gesture summary, command table and troubleshooting.
+- Why: User asked for how-to-run instructions in the README.
+- Validation: Documentation checks passed.
+- Limits: Camera play is described as a later step; it is paused by the user.
 
 ## 2026-10-25T05:28:45+05:30 — Refresh player guides for auto-play and the avatar
 
@@ -83,53 +145,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation failures retained: The initial harness label equality included the button's **Demo run** caption; corrected the selector assertion. The diagnostic preflight's console-empty gate failed on the upstream `THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.` warning. The final capture gate requires no JavaScript errors/exceptions and retains that same warning; it does not claim an empty console. The frozen upstream build also emits its existing large-chunk warning.
 - Limits: Documentation/capture maintenance only; no application behavior authored. Headless SwiftShader with muted output supplies no webcam/person, audible-sync, accessibility, comfort or GPU-performance acceptance. Historical 131-note guide results remain historical; these refreshed captures use the actual current 84-note arrangement.
 
-## 2026-10-25T04:20:26+05:30 — Final guide verification checkpoint at main 52e9c81
+## 2026-10-25T05:25:57+05:30 — Complete loaded-avatar recovery evidence and issue #4 handoff
 
-- Changed: Normally integrated main `52e9c81`, preserving its interface/training changes. Rechecked the new pause summary, keyboard focus, short-window styling and source-specific performer footer; refreshed all four guide captures and their exact source provenance. The issue #5 diff remains the requested guides/images/links and required contribution records.
-- Why: Main continued changing during the issue pass. This is the explicit tested source checkpoint for the documentation PR; later unrelated work does not become untested evidence in these captures.
-- Validation: `npm run check` passed typecheck, lint, 369 assertions in 48 files and production build. Root docs tests passed 2/2; checker passed 50 Markdown files/555 local links with zero errors. The prepared build completed the full native-action Pamgaea Normal synthetic-performer run to actual results (90,800 score, 131 Perfect, zero other note judgements, 100% accuracy), then returned to Songs. Chrome console was empty; all refreshed 1440×900/1024×640 WebPs were inspected, including the corrected synthetic-performer footer. Whitespace validation passed.
-- Limits: Same synthetic/headless SwiftShader/muted-output and human/live/performance limits as the preceding entries. The existing large-bundle warning is retained for issue #1. No application behavior was authored for this issue.
-
-## 2026-10-25T04:13:14+05:30 — Recheck issue #5 guides against latest main
-
-- Changed: Normally integrated main `752acf3` after the documentation milestone. Updated the exact **Start live play** label, distinguished the prepared-photo inference lane in the contributor diagram/text and refreshed all four WebPs plus capture provenance for the new dataset-camera Settings page/pager totals. Preserved every upstream tracking/evidence change and changelog entry.
-- Why: Issue #5 requires wording and captures to be rechecked against the latest main before opening the PR; main advanced after the first validated milestone.
-- Validation: Rebuilt the production app; repeated real native menu actions through the complete Pamgaea Normal 80-second synthetic-performer run → results (90,800 score, 131 Perfect, zero other note judgements, 100% accuracy) → Songs. Inspected all four current captures at 1440×900/1024×640; Chrome console remained empty. `npm run check` on the integrated source passed typecheck, lint, 367 assertions in 48 files and build. Root documentation checks and whitespace validation were rerun before the merge commit.
-- Limits: Synthetic/browser documentation evidence only, with the same declared webcam, audible-sync, human/accessibility and performance limits as the preceding entry. The upstream large-bundle warning remains assigned to issue #1; this PR adds no application behavior.
-
-## 2026-10-25T04:06:23+05:30 — Player, troubleshooting and contributor guides (issue #5)
-
-- Changed: Added `docs/player-guide.md`, `docs/troubleshooting.md` and `docs/contributor-guide.md`, linked from README and the documentation index. The guides cover current setup/menu flow, gestures and judgement windows, Calm/difficulty/80-second arrangements, exact searchable recovery messages, code/data flow, current commands, the tunable registry and evidence/commit conventions. Four small actual-app WebPs under `docs/images/` show the desktop menu, labelled synthetic play, results and compact menu; their source SHA/browser/rendering limits are stated in the player guide. `AI_USAGE.md` records the contribution and independent review.
-- Why: Issue #5 requests accessible player and contributor entry points verified against the app, without replacing the normative specifications or claiming unobserved capabilities.
-- Validation: Fetched/integrated concurrent main updates through `cfdcc40`, rechecked UI/error/renderer sources and refreshed all captures against its production build. In isolated headless Chrome 155.0.8059.86/SwiftShader with muted output, native menu actions completed Pamgaea Normal → Enable sound → synthetic performer → actual 80-second results (90,800 score, 131 Perfect, zero other note judgements, 100% accuracy) → Songs; console errors/warnings were empty. Inspected captures at 1440×900 and 1024×640. Final `npm run check` passed typecheck, lint, 367 assertions in 48 files and build. Root docs tests passed 2/2 and the final checker reported 50 Markdown files/554 local links/zero errors. Prepared-server tests passed 5 with 1 host-limited symlink skip. `git diff --check` passed.
-- Validation failures retained: The first `npm ci` hit a shared npm-cache ENOENT/corrupt-tarball error; an isolated-cache install succeeded without changing dependencies. An intermediate unchanged suite under parallel host load timed out the existing audio-arrangement test at its 20-second limit (362/363 passed); the final unchanged suite above passed without widening any timeout. Two retries were interrupted to integrate newer main or stagger concurrent checks. Initial temporary capture-harness selector quoting was corrected, and captures were repeated after entrance animations settled.
-- Limits: Documentation and synthetic-input/browser evidence only; no webcam/person, audible synchronization, screen-reader/standing-distance, comfort/flashing or GPU-performance acceptance. The existing large-bundle warning remains for issue #1. No application behavior or dependency changed in this commit.
-## 2026-10-25T06:05:00+05:30 — Camera play on the main menu
-
-- Changed: **Set up camera** sits next to Enable sound on the first play page. Once calibrated, the main action becomes **Play with camera** (live play); Watch auto-play and Play level stay available. Holding a steady, framed pose for `CALIB_AUTO_CONFIRM_MS` confirms camera setup and starts the live count-in without returning to the mouse.
-- Why: User asked to integrate the camera properly; setup and live start were hidden in Settings and required mouse clicks while standing back.
-- Validation: Full `npm run check` passed. Live webcam behaviour still needs the user's hands-on test.
-- Limits: No consented live session has been recorded by the agent.
-
-## 2026-10-25T05:45:00+05:30 — Walls only cost points
-
-- Changed: A wall hit now deducts `SCORE_WALL_PENALTY` (100, floored at zero) and no longer breaks the combo. Walls never pause or stop the run: frames without a body cannot hit a wall, and an unobserved wall passes with neither penalty nor reward. Merged the remote README showcase (#10) with the user's local README edit.
-- Why: User direction — touching a red wall should just reduce points. The old body-tracking pause during walls made live play feel like it ended whenever tracking flickered.
-- Validation: Full `npm run check` passed (482 tests), including new score and session assertions.
-- Limits: No live-camera play yet; that integration follows.
-
-## 2026-10-25T05:41:22+05:30 — Audit and integrate PR #6 bundle enforcement
-
-- Changed: Normally integrated current main, preserving its README and camera/game changes. CI now runs the complete application check including bundle budgets. Added the existing postprocessing dependency to its own chunk; no dependency or runtime feature was added.
-- Why: Review found CI skipped the budget command, and the integrated application entry measured 530999 bytes, exceeding the unchanged 500000-byte limit.
-- Validation: Full npm run check passed (482 application tests, three budget regressions, typecheck/lint/build); all ten chunks pass, largest 363984 bytes. Docs checker tests (2) and local-link checker passed. A fresh headless production-menu smoke reached SELECT with three songs and a canvas, with zero runtime errors; browser cleanup is recorded separately if it fails.
-- Limits: This validates build integration and camera-free startup, not live-camera play, audible synchronization or release performance gates.
-## 2026-10-25T05:35:00+05:30 — README quick start
-
-- Changed: Rewrote the README run section as a quick start: requirements, clone/install/run commands, the play flow (pick song, Enable sound, Watch auto-play or Play level, pause), gesture summary, command table and troubleshooting.
-- Why: User asked for how-to-run instructions in the README.
-- Validation: Documentation checks passed.
-- Limits: Camera play is described as a later step; it is paused by the user.
+- Changed: Added the separate loaded-avatar context JSON/Markdown/screenshots and a concise evidence interpretation linking every tested source, preserved failure, complete matrix and raw resource sample. README and docs17 link the actual results. No application code changed after diagnostic checkpoint `99fe5d4`.
+- Why: Keep the canonical full pass and a deliberately partial refinement distinguishable, and make the suspended-audio baseline and real fixes reviewable without hiding the initial failures.
+- Validation: The context-only supplement passed all 12 checks on clean `99fe5d4`: the actual avatar was ready across two frames before menu/play loss, fatal recovery stayed visible, play's native audio context suspended, SFX/clock/score stopped, no continuing application frames were observed and native Retry reload restored the menu. Its overall incomplete/exit-1 result correctly represents seven intentionally unrun cases. Complete `ca7eefe` evidence remains 8/8 with all 20 cycles passed. The unchanged application source passed full typecheck/lint/488 tests/build before the diagnostic commit. Final root helper/docs tests passed 7/7; checker found 52 Markdown files/561 local links, zero errors; whitespace passed. Owned browser/server/profile cleanup reported no errors.
+- Limits: No camera, audible-sync or performance acceptance; synthetic original audio/planned motion and muted software rendering only. Existing bundle warning and generic static-auditor findings remain explicitly recorded. No PR is merged by this work.
 
 ## 2026-10-25T05:25:00+05:30 — Synthetic performer reel for the dataset camera
 
@@ -138,6 +159,26 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: `npm run check` 424 tests in 50 files and build passed; trial: MediaPipe detected pose and both hands in 100% of rendered frames, handedness 690/690. Calibration was not accepted at 3.5 Hz / 311 ms inference under 82–86% machine load, so no notes were scored through the camera.
 - Limits: synthetic render, not a person or webcam; the avatar's head renders tilted (face error ~0.5 shoulder widths); play-to-results comparison with the logic replay still needs an idle machine.
 
+## 2026-10-25T05:23:53+05:30 — Preserve final renderer matrix and require loaded-avatar context proof (issue #4)
+
+- Changed: Saved the complete canonical `2026-10-25-lifecycle-qa.json`/`.md` and current desktop/compact screenshots from clean source `ca7eefe`. The read-only stats snapshot now exposes the existing renderer `avatarStatus` getter; the context-loss case waits for `ready` across two actual animation frames before losing WebGL in menu/play. No scoring, actions or renderer ownership changed.
+- Why: The complete matrix verifies the incoming avatar's resource ownership, and the explicit readiness observation prevents a menu loss test from proving only its loading fallback.
+- Validation: All eight cases passed on clean `ca7eefe`, including all 20 cycles with a fixed 110-geometry/14-texture/188-DOM-listener/two-worker baseline and at most eleven native AudioNodes. Every measured quit had zero active SFX and disconnected native buffer sources. The new read-only field/harness guard passed required typecheck, lint, 488 tests in 55 files and production build; root docs/helper tests passed 7/7; checker found 50 Markdown files/547 local links and zero errors; whitespace passed. All four current recovery screenshots were inspected.
+- Limits: The loaded-avatar context-only supplemental run is next and will be recorded separately; intentionally unrun cases in that subset must remain incomplete. Canonical all-eight evidence remains attributed to `ca7eefe`, with the earlier `96aa536` report and failed baselines preserved. Synthetic muted software-rendered input proves no camera, audible-sync or performance acceptance.
+
+## 2026-10-25T04:59:57+05:30 — Resolve the release-drill PR's newer main integration
+
+- Changed: Normally integrated main `db45982567a217f861cd94e576d4629201a84a13` after the PR was opened; preserved its HUD/projection, camera-reel, training and historical work. Exported the existing browser journey unchanged so the post-integration prepared-build smoke check reuses the actual driver rather than duplicating it. The default release command still performs its fresh clone/install/check/build sequence.
+- Why: GitHub reported the focused PR needed integration with newer main. Keep the clean-clone evidence at its real `10bca5e` SHA and exercise the changed presentation path separately.
+- Validation: The integrated application passed typecheck, lint, 481 assertions in 55 suites and production build. Documentation validation passed. The exact browser journey follows on the committed prepared build; the earlier positive/negative clean-clone proof remains intact.
+- Limits: The supplemental prepared-build run is not a new clean-clone/install result and is labelled separately. No camera, person, recognition, audible-sync or performance claim is added.
+
+## 2026-10-25T04:51:52+05:30 — Verify the normally integrated release-drill snapshot
+
+- Changed: Refreshed the canonical passing JSON/Markdown from the actual committed integration `10bca5ef1aa1aada09c06b1ead5139f7f4bf11c6` (main `09671b7`), archived the previous `d14c980` pass byte-for-byte, and updated docs17 to distinguish each tested source. This final evidence publication changes documentation only.
+- Why: New charts, sound-worker/audio behavior, score/results and rendering landed on main after the first passing candidate; those changes need their own actual browser outcome rather than inheriting the earlier numbers.
+- Validation: The real release command exited 0 from a clean invoking checkout and fresh committed clone. `npm ci`, full application check (480 assertions/54 suites) and explicit production build passed. BOOT → selection → native sound unlock → the updated 80-second performer → Results yielded 84 Perfect, zero misses and 54,700 score. Retry → play → pause → Songs passed. All 17 observed app requests were local, with zero runtime/console/CSP/interception errors; temporary-directory cleanup succeeded. Earlier deliberate catalog-404 command exited 1 with failure evidence at its explicitly recorded `d14c980` SHA. The unchanged helper/browser regression coverage previously passed 6/6; root docs tests/checker passed for the publication.
+- Limits: Planned synthetic landmarks and headless Chrome, no camera/person or recognition proof. The browser is blocked from external destinations after installation; this is not an unplugged-network or audible-sync test. No performance or complete P5 gate is claimed, and later main commits are outside this frozen snapshot.
 ## 2026-10-25T05:22:18+05:30 — Showcase README with real browser media and measured evidence
 
 - Changed: Rebuilt `README.md` around real auto-play footage, a screenshot feature grid, exact run instructions, gesture controls, Mermaid architecture, measured numbers, source layout, roadmap and asset credits. Added `docs/media/`, the reusable `scripts/capture-readme.mjs` browser harness and `docs/evidence/2026-10-25-readme-metrics.json`; updated `AI_USAGE.md`. Application source is unchanged from remote main `30572bb9cdbe345b79e8e48279019bd7d8b59877`.
@@ -152,6 +193,27 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: Full `npm run check` passed (481 tests). Exported diagnostics still name the source lane.
 - Limits: Hand shapes on the turned avatar use reflected landmark geometry; not tuned.
 
+## 2026-10-25T05:16:02+05:30 — Integrate final avatar resource checkpoint (issue #4)
+
+- Changed: Normally merged upstream `30572bb`, preserving its rigged avatar and current UI copy while retaining the focused cache, WebGL and visibility fixes. Resolved the App overlap by keeping the fatal Boot route and upstream banner removal together. The harness reproduction now names the current **Watch auto-play** action while continuing to identify synthetic planned input in evidence metadata.
+- Why: The incoming avatar changes actual geometry/texture ownership, so resource evidence must be rerun on the integrated renderer rather than reused from `96aa536`.
+- Validation: Full `npm run check` passed typecheck, lint, 488 assertions in 55 files and production build after integration. Root docs/helper tests passed 7/7; checker found 49 Markdown files/547 local links with zero errors; whitespace and conflict-marker checks passed. The previous complete eight-case proof remains preserved under its exact source SHA.
+- Limits: This is the final frozen upstream renderer checkpoint; its new eight-case browser run is next. No later unrelated main change is included in this tested-source claim. Existing large-bundle warning is outside issue #4.
+
+## 2026-10-25T05:14:53+05:30 — Preserve complete clean-source lifecycle proof (issue #4)
+
+- Changed: Saved the exact complete browser report and four inspected desktop/compact screenshots under `docs/evidence/2026-10-25-lifecycle-96aa536/`. Clarified the shared CDP client's Node 22+ requirement in the real command documentation.
+- Why: Preserve complete evidence before integrating the newly landed avatar renderer, whose geometry ownership requires a final resource recheck.
+- Validation: The clean source `96aa536` passed all eight independent browser scenarios and every one of the 20 measured cycles. The fixed suspended-audio baseline was 107 geometries, 13 textures, 188 native DOM listeners, two workers, three native audio contexts and eleven native AudioNodes; samples stayed at or below it. Every quit had zero active SFX voices and no connected native buffer sources. Native source IDs changed rather than accumulating; the ten/eleven-node boundary is retained verbatim. Real hidden-tab cancellation/pause/manual resume and all fixed-tier performer Results passed. The exact app code previously passed required typecheck/lint/488 tests/build; root docs checks and helper tests run again for this evidence-only increment.
+- Limits: Synthetic planned motion and muted headless software rendering; no camera, audible-sync or performance acceptance. The separate nine-node running-Results baseline failure remains preserved. Final integration against upstream avatar checkpoint `30572bb` is next; this report is not attributed to that later source.
+
+## 2026-10-25T05:07:16+05:30 — Add repeatable lifecycle matrix and correct hidden-pause ownership (issue #4)
+
+- Changed: Added `scripts/lifecycle-qa.mjs`, pure fixture/resource/report tests and minimal native fault probes, reusing the shared CDP client without dependencies. The eight independent cases drive real uploads, DSP cancellation, invalid inputs, cache denial/quota, WebGL loss/reload, 20 cycles, actual tab hiding and low/medium/high performer results. Evidence retains raw baseline and first full matrix failures. Window blur now cancels pointer input while actual visibility owns hidden pause; an earlier manual pause is preserved. Fatal UI uses the existing opaque Boot shell. Read-only diagnostics expose context state/active SFX voices. README, scripts index and docs04/17 describe the real command and evidence limits.
+- Why: The first complete matrix passed six cases but found that blur preceded visibility and incorrectly labelled hidden pauses manual. The strict audio-node gate compared a running Results boundary (nine nodes) with suspended quit boundaries (ten/eleven); this is retained as a failure. Updated native-ID/graph instrumentation and explicit retry/quit warm-up will test the same lifecycle boundary without a tolerance or moving baseline. Screenshot review caught the fatal screen's missing opaque shell after canvas loss.
+- Validation: First full matrix executed all eight cases and all 20 cycles; six passed, hidden/resources failed with exact reproductions. Cancellation occurred during actual STFT at fraction 0.45. Targeted runtime/UI tests passed 34 assertions; full `npm run check` passed typecheck, lint, 488 assertions in 55 files and build. Five pure harness tests and two docs tests passed; checker found 48 Markdown files/545 local links, zero errors; whitespace passed. Desktop and compact cache/error screenshots were inspected. A separate read-only acceptance review tightened cancellation and frozen-clock/native-audio assertions.
+- Limits: The final clean-source browser rerun is pending; no overall pass is claimed at this milestone. The retained pre-fix upload check incorrectly treated an upstream geometry warning as an error; the warning remains in raw evidence and is distinguished from actual errors in the final harness. Muted headless SwiftShader and synthetic planned motion do not establish camera recognition, audibility or performance. Generic strict UI-audit findings recorded in the preceding entry remain outside these targeted fixes.
+
 ## 2026-10-25T04:58:00+05:30 — Rigged avatar replaces the outline and line figure
 
 - Changed: `render/renderer.ts` loads `avatar.glb` (tier `AVATAR_TIER_FIGURE`; low tier and load failure keep the line skeleton) and drives it from tracking/dataset/synthetic frames, an illustrative idle in the menu placeholder (static in Calm), a frozen pose when paused and the saved pose in results; the mask silhouette and line skeleton hide while the avatar shows. The avatar draws after the arena and before a depth-clear sentinel so all targets/effects render over it, in both the post-FX and direct paths. `MenuShell` `Figure` shows the SVG outline only when the avatar failed or is disabled and reports the placeholder state to the renderer. Fixed side mapping for ears/eyes/hand points in retargeting. Placeholder scale/height retuned.
@@ -159,6 +221,26 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: typecheck and lint clean; 480/480 tests across 54 files. Embedded browser at 1440×900: menu idle shows the holographic avatar; "Watch synthetic performer" pre-roll and play show it driven by the performer with hands on the cursor rings and open/fist hand shapes, targets drawn over it.
 - Limits: No live webcam exercise; dataset-trial visual check not repeated after the merge; no GPU timing. Holographic material and proportions are a first pass.
 
+## 2026-10-25T04:55:21+05:30 — Integrate current audio/render lifecycle before browser measurement (issue #4)
+
+- Changed: Normally merged main `db45982`, preserving the focused cache/context-loss fixes while integrating the current SFX director/worker, renderer and HUD. This is the frozen upstream source checkpoint for the lifecycle matrix.
+- Why: Retained-audio/worker measurements must cover the current implementation rather than the previous oscillator bus.
+- Validation: Full `npm run check` passed typecheck, lint, 485 assertions in 55 files and production build. Root docs tests passed 2/2; checker found 48 Markdown files, 543 local links and zero errors. Whitespace passed. The five pure lifecycle-helper tests also passed. Impeccable found no findings for the changed UI. The generic strict UI auditor reported 18 existing ownership/action findings; its action checks do not understand the application's shared `Button`/runtime target dispatch, and the native dataset-source selector predates this fix. These findings are retained for review, not represented as a clean audit.
+- Limits: The full eight-scenario browser matrix remains in progress. Existing build-size warning and upstream geometry warning remain outside the targeted recovery fixes.
+
+## 2026-10-25T04:54:57+05:30 — Freeze all eight songs on generator v4 from main 09671b7
+
+- Changed: Froze the issue #2 acceptance checkpoint on upstream 09671b7, which adds real tempo-period refinement and generator version 4 alongside other upstream work. Normally integrated it and regenerated all 24 maps/receipts/manifest again through the shared script. Resolved generated JSON through regeneration and reconciled the music registry without losing the five additions. Updated current version/confidence docs, retained the v4 chart diagnostic/browser report, and refreshed the actual PNGs. Original audio bytes, acquisition/attribution receipts and canonical PCM hashes are unchanged.
+- Why: The issue requires the same latest generator across all eight songs; the tempo change alters real map hashes and which songs qualify for beat snapping. Earlier v2/v3 acceptance results are preserved as historical checkpoints, with no claim that they verify v4.
+- Validation: Full npm run check passed typecheck, lint, 54 suites/558 assertions and production build. All 24 maps passed shared structural/readability tests and full synthetic InputPipeline/GameSession replays; the v4 diagnostic reports zero unplayable notes for every chart. Chrome 155/SwiftShader at both 1440×900 and 1024×640 selected all eight v4 songs/all 24 difficulty maps, paged music/credits, started/stopped original preview and verified all eight exact attributions/source/license links. Zero CSP, JavaScript-console, music-request or external-page-request failures. Current manifest SHA-256: c0d70d68751eb90593e9b8c55fca15a3a6611ef91e1f7e4a5c5a8760cbfc460a. Scoped formatting passed; root documentation checks are rerun before committing this frozen checkpoint.
+- Limits: Freeze identifies a tested upstream source; later unrelated main changes are not retroactively claimed as tested. Existing favicon/bundle warnings and human/camera/music-quality/performance gates remain explicit. No production generator/game algorithm was changed by this music issue.
+
+## 2026-10-25T04:51:03+05:30 — Stop invisible runs and surface optional-cache failure (issue #4)
+
+- Changed: `core/runtime.ts` now cancels scheduled frame work, audio/capture and pending jobs after actual WebGL context loss, enters the existing fatal pause/cancel path and rejects stale actions until reload. `App.tsx` reuses the fatal Boot error view with its native Retry/reload link. `Select.tsx`/`strings.ts` show the retained cache-unavailable warning without disabling ready music. Read-only stats diagnostics expose current generation/chart identity and actual renderer resource counts for lifecycle assertions. Runtime/UI regression tests and docs04/14/17/README describe the implemented recovery.
+- Why: The first native browser probes found that IndexedDB denial/quota failure was hidden despite successful generation, and context loss kept audio/scoring and 172/200 observed frame callbacks running behind an unusable arena.
+- Validation: The original synthesized WAV generated 13 notes; its actual performer results contained 12 Perfect hits and one wall dodge. Repeated storage-denial/quota and menu/play context-loss probes pass their specific checks after the fixes. The partial harness correctly remains incomplete because other issue scenarios are unrun. Thirty targeted runtime/UI assertions passed. Full `npm run check` passed typecheck, lint, 428 assertions in 50 files and production build. Root docs checks and whitespace validation run before committing.
+- Limits: This is a scoped recovery milestone, not completion of issue #4's eight-scenario/20-cycle acceptance. Native browser input and synthetic motion only; no live-camera, audible-sync or performance claim. The upstream non-indexed-geometry warning remains recorded as a warning, and the existing bundle-size warning remains assigned to issue #1.
 ## 2026-10-25T04:50:00+05:30 — Blade ribbons, hand particles and a cleaner shatter
 
 ## 2026-10-25T04:49:34+05:30 — Partial COCO + MPII run evaluated and exported
@@ -174,6 +256,19 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: Record what the headless browser run of the new SFX wiring actually showed.
 - Validation: Production build served by `scripts/serve.mjs` in headless Chrome (48 kHz, reported output latency 40 ms), driven over CDP with trusted clicks: Pamgaea → Enable sound → hover three buttons → Watch synthetic performer, one Escape pause and Resume, run to results. A read-only page probe counted buffer starts by shape: uiEnable 1, uiHover 3, countNeutral 3 (scheduled exactly −2.000/−1.339/−0.673 s before song start; final tick rate 1.25), smash 69, slash 58, sparkle 130, glint 1, zap 4, poof 4, charge 4, combo 3 (rates 1–1.498), milestone 4 (rates 1–2), wallWarn 2 (scheduled ahead, panned −0.55 toward the left wall), dodge 2, resume 2, resultsHigh 1; hit pans spanned −0.55…0.55, jitter rates 1.01–1.05. Analyser taps measured peak 0.623 on the master output and 0.654 after the SFX limiter, with no full-scale samples. No console errors.
 - Limits: Headless output, nothing heard; analyser polling every 20 ms can miss short peaks. The Vite dev server could not be used for a long run because the pinned HMR socket fails and reloads the page. The second `resume` cue was not traced.
+
+## 2026-10-25T04:44:12+05:30 — Preserve the later block-asset main integration
+
+- Changed: Normally integrated main 87032d0 into the issue #2 branch before final handoff, preserving the upstream block-model/render changes and resolving the shared changelog overlap. The eight-song acquisition bytes, exact credits, generator version 3, all generated maps and manifest are unchanged.
+- Why: Keep the PR current with main without discarding other contributors' work or expanding music scope.
+- Validation: Full npm run check passed again (typecheck, lint, 50 suites/502 assertions, production build). The existing current-v3 two-viewport/all-eight-song/all-24-map browser evidence still identifies the unchanged music manifest; no new browser/performance result is claimed for unrelated block work. Root documentation checks are rerun before this integration commit.
+- Limits: Existing large-bundle/favicon warnings and all previously stated human/camera/music-quality limits remain unchanged.
+## 2026-10-25T04:46:22+05:30 — Integrate current main before final release-drill verification
+
+- Changed: Normally integrated main `09671b7b6f5a6f1d89fa756cd6c825f58abd4bba`, preserving the new charts, avatar/target rendering, SFX worker, score/result changes and their existing history. The release harness, favicon fix and recorded failures remain scoped to issue #3.
+- Why: The user requests frequent pulls; the current main contains material application changes beyond the earlier tested candidate, so its evidence cannot be borrowed from that older SHA.
+- Validation: The integrated worktree passed `npm run check`: typecheck, lint, 480 assertions in 54 suites and production build. Root docs tests passed 2/2; 53 Markdown files / 546 links checked with zero errors. The earlier positive and negative clean-clone runs remain explicitly tied to `d14c980`.
+- Limits: This integration's actual CLI/browser run follows after committing the exact snapshot. No new webcam, human, audible-sync or performance claim is made; later remote changes are outside this frozen candidate.
 
 ## 2026-10-25T04:43:58+05:30 — Judgement pops at the hit position and combo-break note
 
@@ -196,6 +291,13 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: `npm run check` 367 tests in 48 files and build passed; docs tests 2/2 and docs checker 0 errors. Trial: canvas stream and Chrome fake webcam both reached GPU preview; pose detected on 24/24 photos; median per-photo joint error 0.118 shoulder widths; handedness agreement 369/393 under the new mapping; calibration with the declared-rule photo never framed (one hand); with the measured photo framing became ready but Confirm was not accepted under 2.6–5.5 Hz tracking.
 - Limits: whole-machine CPU was 52–100% busy before and ~100% during lanes from unrelated training/Blender/agent work, so timings are not performance evidence and the play → Results → Retry flow was not reached. Still photos only; not webcam evidence.
 
+## 2026-10-25T04:40:56+05:30 — Passing release drill and deliberate missing-asset failure
+
+- Changed: Published the real release-drill command and evidence links in `README.md` and docs17/19. Retained dated passing/missing-asset JSON and Markdown plus earlier failures. Bound the worker regression fixture to its created target ID and deliberately opened another blank page to prevent a later page from stealing the inspected session. Cleanup now has a separate useful Markdown error and bounded retries within the validated own temporary directory; it never kills unrelated Chrome processes.
+- Why: Issue #3 requires a reproducible clean-commit installation and actual offline browser journey, plus proof that a broken step yields failure evidence and a nonzero exit.
+- Validation: Both real commands tested `d14c980aca096e530586a771983edfb65ca22cdd` in fresh clones: install, full application check (367 assertions/48 suites) and explicit production build passed. The positive command exited 0 after BOOT → select → native sound enable → actual 80-second synthetic performer → Results (131 Perfect, 90,800 score) → Retry → play → pause → Songs, with 16 local requests and zero runtime/console/CSP/interception errors. The negative command removed only the cloned prepared catalog, observed its actual 404/menu error, wrote failure evidence and exited 1. Five pure-helper tests plus the real worker browser regression passed (6/6). A preceding worker-test rerun timed out because its fixture used the last ready page; the target-ID correction passed with an intentionally later blank page. Root documentation tests/checker passed.
+- Limits: These reports identify their exact tested SHA and exclude later main integrations. Installation uses network and a task-specific npm cache; only the browser stage blocks external destinations. Camera/model preparation, actual people, audible sync, performance and the remaining P5 gates are excluded. Auxiliary raw command logs are generated locally; committed JSON includes exit codes, timings and output tails. Cleanup failures remain failures with their own message and retained directory, not fabricated gameplay failures.
+
 ## 2026-10-25T04:38:46+05:30 — Keep the bundle PR current with generator v3 and target assets
 
 - Changed: Normally integrated main `87032d0`, refreshed production-preview evidence and visually inspected menu/performer WebP captures. Updated docs16; application/runtime code remains unchanged by issue #1.
@@ -216,6 +318,19 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: New score test checks per-type totals, single counting, snapshot isolation and that per-type hits sum to perfect+great+good; full suite, typecheck and lint passed.
 - Limits: Bad cuts and misses are not split by type; no browser screenshot yet in this step.
 
+## 2026-10-25T04:39:17+05:30 — Regenerate the eight-song pack with awaited generator v3
+
+- Changed: Main integrated the awaited chart branch immediately after PR #8 opened. Kept the PR draft while normally integrating 93e411e, regenerated all 24 maps/receipts/manifest with upstream generator version 3, and resolved the three generated-receipt conflicts using generator output. Extended upstream chart-readability tests, full synthetic InputPipeline/GameSession replays and the existing chart diagnostic to every song in the eight-track manifest. Updated the music registry/current format version and retained current-v3 browser/diagnostic evidence; original audio bytes/credits remain unchanged.
+- Why: Issue #2 explicitly requires the latest chart generator across the complete library before review. Earlier passing generator-v2 browser/check results are historical and are superseded for current acceptance.
+- Validation: Full npm run check passed typecheck, lint, 50 suites/502 assertions and production build. All 24 maps passed the shared validator/readability tests and full synthetic performer replays; the retained diagnostic reports zero unplayable notes for every chart. Actual Chrome 155/SwiftShader at 1440×900 and 1024×640 selected all eight current-v3 songs/all 24 difficulties, paged music/credits, started/stopped preview and verified every exact attribution/source/license link. There were zero CSP, JavaScript-console, music-request or external-page-request failures. The browser report identifies the merging main SHA and exact eight-track manifest SHA-256. PNGs were refreshed and inspected; root documentation checks are rerun before this integration commit.
+- Limits: Existing favicon 404 responses and the separate large-bundle warning remain recorded. Synthetic logic, offline selection and numeric audio validation do not establish webcam recognition, human comfort, musical quality or measured performance.
+
+## 2026-10-25T04:38:46+05:30 — Keep the bundle PR current with generator v3 and target assets
+
+- Changed: Normally integrated main `87032d0`, refreshed production-preview evidence and visually inspected menu/performer WebP captures. Updated docs16; application/runtime code remains unchanged by issue #1.
+- Why: Keep the open PR valid after the chart/avatar/target work landed without reusing old-source results as new proof.
+- Validation: `npm run check` passed (typecheck/lint, 424 assertions/50 suites, production build without a chunk-size warning, three budget regressions). All eight JS chunks pass; the entry is 443013 raw/161024 gzip bytes. Real dataset results: 86 Miss/0 hits; synthetic results: 86 Perfect/0 misses; Songs return passed after both. Menu and play captures show the arena. Root documentation tests/checker and whitespace checks are rerun before commit.
+- Limits/failures: Application assertions passed at `18745d446601dee57176078eef22ea87ab5d2a5c`; one upstream geometry warning and favicon 404s are retained. The temporary probe later exited 1 during optional profile cleanup (Windows EBUSY lockfile), and the profile was left safely in place. The JSON separates this cleanup failure from application results. No performance gain, live-camera or release completion is claimed. Earlier source-identified measurements remain intact.
 ## 2026-10-25T04:37:00+05:30 — Blade ribbons, hand particles and a cleaner shatter
 
 ## 2026-10-25T04:36:52+05:30 — Original synthesized SFX set and audio feel wiring
@@ -232,12 +347,34 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: Refined tempi are 94.0/117.0/150.0 BPM, matching the publisher catalog (94/117/150), which the analysis never reads; confidence 0.252/0.496/0.558 against the 0.35 gate. A new syncopated 117 BPM synthetic click test fails without the search (117.2 BPM, low confidence) and passes with it; the 128 BPM, 90/180 BPM octave, noise and hum tests still pass. v4 charts: Electro Cabello 117 (57/51/9), 176 (104/64/8), 281 (132/135/14); Cipher 111 (59/41/11), 195 (98/82/15), 266 (108/140/18); Pamgaea unchanged from v3. The performer still reaches every note of all nine charts. `npm run check` passed (typecheck, lint, 376 tests in 46 files, production build); prettier on changed sources and both docs checks passed.
 - Limits: The search maximises the same alignment used for confidence, so it carries a small upward selection bias; catalog agreement is independent evidence only for these three tracks. No annotated beat fixtures or held-out beat F-measure exist yet. Pamgaea's strong onsets are mostly syncopated, so its 94.0 BPM is not claimed as confident.
 
+## 2026-10-25T04:24:06+05:30 — Correct worker blocking in the release harness
+
+- Changed: `release-drill.mjs` now applies an ordered CDP Network origin allowlist to app page/worker targets, uses Fetch interception only on page/frame targets, and excludes Chrome's internal `browser_ui` targets. Added `scripts/release-drill.browser.test.mjs`, a real isolated-Chrome regression that resumes a dedicated worker, permits its loopback fetch and verifies an external fetch is blocked by the inspector before network access. Retained the first committed-candidate failure and the previous browser attempt unchanged.
+- Why: The actual `b9b1a85` drill passed clean-clone installation, all 367 application assertions and production builds, then exposed `Fetch.enable` as unavailable on worker targets. The unsupported command left the generator paused in the harness. This was a harness defect, not an application or camera result.
+- Validation: Five pure-helper tests and the real Chrome worker regression passed (6/6 total). The worker returned `local ok` and rejected the explicitly labelled external probe with `blockedReason: inspector`. The earlier browser run had zero console/CSP errors and proved the favicon fix, menu and native sound unlock before the harness defect.
+- Limits: The corrected full synthetic journey and deliberate missing-asset acceptance are pending the next committed-snapshot run. No release, webcam, human or performance gate is declared complete.
+
 ## 2026-10-25T04:22:47+05:30 — 200% zoom and narrow compact tiers
 
 - Changed: At ≤520 px tall the compact rails hide page captions, button sub-captions and chips and use 16 px button text; at ≤760 px wide compact song cards drop the cover so titles fit. Targets stay at `MENU_TARGET_MIN_PX` with `MENU_TARGET_GAP_PX` gaps. The breakpoint test whitelists these documented sub-tiers.
 - Why: A 720×450 (200% zoom of 1440×900) screenshot showed the bottom rail scrolling and truncated song titles.
 - Validation: After merging main, `npm ci`, typecheck, lint, 369/369 assertions in 48 files (`--testTimeout=90000` because of 100% CPU from parallel jobs), build and prettier check passed. Headless Chrome screenshots at 720×450 (menu, pause), 1024×640 (performer pre-roll) and 1440×900 (pause run summary with autofocused Resume) were inspected.
 - Limits: Zoom was emulated by viewport size, not browser zoom; no human readability check.
+
+## 2026-10-25T04:22:29+05:30 — Verify music pack against newer main
+
+- Changed: Normally integrated main 752acf3 and then 52e9c81 into the issue #2 branch after the content checkpoint, preserving their camera Settings, footer/ARIA, training and other upstream work. Refreshed the final music/credits screenshots and retained both final integration browser reports. Generator version 2 and all music-generation sources are unchanged from the final full-pack regeneration.
+- Why: Main changed before opening the PR; the extra Settings page moves the Credits navigation target, and the subsequent interface update changes the footer.
+- Validation: Full npm run check passed on code commits d49bbf7 (380 assertions) and 0ec036c (48 suites/382 assertions), including typecheck, lint and production build. Native Chrome at 1440×900 and 1024×640 booted, navigated to/selected the eighth song and traversed the updated Settings/credits pages; every exact attribution passed with zero CSP, console or external-request failures. PNG screenshots were captured explicitly after upstream changed its generic screenshot helper to JPEG. Root docs checks passed 2/2 and the link checker passed; they are rerun after this evidence update. Scoped formatting checks passed.
+- Limits: The existing favicon 404 and large-bundle warning remain explicit, separate from music acceptance. No human, webcam, musical-quality or performance proof is inferred.
+
+
+## 2026-10-25T04:20:26+05:30 — Final guide verification checkpoint at main 52e9c81
+
+- Changed: Normally integrated main `52e9c81`, preserving its interface/training changes. Rechecked the new pause summary, keyboard focus, short-window styling and source-specific performer footer; refreshed all four guide captures and their exact source provenance. The issue #5 diff remains the requested guides/images/links and required contribution records.
+- Why: Main continued changing during the issue pass. This is the explicit tested source checkpoint for the documentation PR; later unrelated work does not become untested evidence in these captures.
+- Validation: `npm run check` passed typecheck, lint, 369 assertions in 48 files and production build. Root docs tests passed 2/2; checker passed 50 Markdown files/555 local links with zero errors. The prepared build completed the full native-action Pamgaea Normal synthetic-performer run to actual results (90,800 score, 131 Perfect, zero other note judgements, 100% accuracy), then returned to Songs. Chrome console was empty; all refreshed 1440×900/1024×640 WebPs were inspected, including the corrected synthetic-performer footer. Whitespace validation passed.
+- Limits: Same synthetic/headless SwiftShader/muted-output and human/live/performance limits as the preceding entries. The existing large-bundle warning is retained for issue #1. No application behavior was authored for this issue.
 
 ## 2026-10-25T04:20:00+05:30 — Readable, playable charts (generator v3)
 
@@ -267,6 +404,25 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: 16 new assertions against the actual exported GLB (rest identity, horizontal raise with hand on wrist, 90°/120° elbows, bounded stretch, fist/point/open recovered from 21-point landmarks, hold-then-ease, head turn and limit, mirroring/handedness, 2D depth, camera-ray placement, leg indices ignored, explicit joints, static Calm idle). Typecheck clean. Blender pose renders show clean fist and raised-arm deformation.
 - Limits: Not yet wired into the renderer or menu; no browser or webcam check.
 
+## 2026-10-25T04:13:14+05:30 — Recheck issue #5 guides against latest main
+
+- Changed: Normally integrated main `752acf3` after the documentation milestone. Updated the exact **Start live play** label, distinguished the prepared-photo inference lane in the contributor diagram/text and refreshed all four WebPs plus capture provenance for the new dataset-camera Settings page/pager totals. Preserved every upstream tracking/evidence change and changelog entry.
+- Why: Issue #5 requires wording and captures to be rechecked against the latest main before opening the PR; main advanced after the first validated milestone.
+- Validation: Rebuilt the production app; repeated real native menu actions through the complete Pamgaea Normal 80-second synthetic-performer run → results (90,800 score, 131 Perfect, zero other note judgements, 100% accuracy) → Songs. Inspected all four current captures at 1440×900/1024×640; Chrome console remained empty. `npm run check` on the integrated source passed typecheck, lint, 367 assertions in 48 files and build. Root documentation checks and whitespace validation were rerun before the merge commit.
+- Limits: Synthetic/browser documentation evidence only, with the same declared webcam, audible-sync, human/accessibility and performance limits as the preceding entry. The upstream large-bundle warning remains assigned to issue #1; this PR adds no application behavior.
+
+## 2026-10-25T04:10:41+05:30 — Eight licensed full songs and 24 generated charts (issue #2)
+
+- Changed: Extended the explicit music acquisition/generation lists with Chipper Doodle v2, Funkorama, Cut and Run, Rhinoceros and Marty Gots a Plan. Added five unchanged official CC-BY 4.0 MP3s (35,593,862 bytes total), exact attribution/acquisition receipts and 15 generated maps; regenerated the entire eight-song/24-map pack with main's generator version 2 after integrating cfdcc40. Refreshed the manifest, measured metadata, credits/docs and audio/PCM/map integrity tests. Existing paging assertions now use the registered page capacity instead of assuming the entire library fits in one page; production UI is unchanged.
+- Why: Fulfil issue #2's 3 → 8 licensed local library, with catalog tempo/genre variety (92–140 BPM for the additions), measured durations of 168–214.766 seconds and preserved source identity.
+- Validation: Official catalog/track-page license templates verified at acquisition; all hashes/receipts retained. Shared generation/validator passed all 24 maps. Full npm run check on cfdcc40 passed typecheck, lint, 48 suites/380 assertions and production build; scoped Prettier checks passed. Root docs tests passed 2/2 and the link checker passed. Native Chrome 155/SwiftShader at 1440×900 and 1024×640 selected all eight songs/all 24 difficulties, started/stopped the original preview, paged the library and checked all eight exact credits offline. After main's renderer/UI merge, another browser run repeated all eight Normal selections/credits/preview at both sizes. Reports and inspected screenshots are linked from docs/evidence/2026-10-25-eight-song-library.md.
+- Limits: No live-camera, human musical-quality, comfort or performance claim. The existing large-bundle warning belongs to issue #1; unrelated favicon 404 responses remain recorded. Initial shared-cache install failure, three obsolete paging assertions and two browser-driver failures are disclosed in the evidence; the corrected checks pass. Final integration with any newer remote main is recorded separately.
+## 2026-10-25T04:11:38+05:30 — Release-drill implementation and retained failures
+
+- Changed: Added `scripts/release-drill.mjs` and pure-helper tests. The drill clones the exact committed SHA, captures install/check/build command logs, serves the prepared build with the existing server, blocks external browser destinations, and observes native-input synthetic playback/results/retry/Songs. It writes dated JSON/Markdown evidence, preserves previous attempts and excludes camera/model preparation. Added a local SVG favicon declaration in `app/index.html` after the browser exposed a missing favicon request.
+- Why: Issue #3 requires repeatable clean-clone and offline release evidence with visible failures and no console/CSP errors.
+- Validation: Helper tests passed 5/5; documentation tests passed 2/2 and 521 local links checked with zero errors. A fresh clone of `ad41466` passed `npm ci`, the full application check (363 assertions) and production build. The integrated `cfdcc40` worktree plus favicon passed `npm run check` (367 assertions/48 suites/build). Main `752acf3` is now integrated for the committed-snapshot run. An earlier `5a786e5` clone failed one gapless-test timeout; its failure is retained. The first browser attempt reached the selected song and enabled sound, then exposed an incorrect harness predicate (the successful sound action replaces its button) and a real favicon 404; both were corrected.
+- Limits: The corrected committed-snapshot browser journey and injected missing-asset drill are pending the next evidence step. No complete P5, live-camera, recognition, audible-sync or performance gate is claimed. The initial failed-run filename uses its UTC date; subsequent evidence includes the local timezone/date explicitly.
 ## 2026-10-25T04:10:13+05:30 — Recheck issue #1 after the new renderer integration
 
 - Changed: Normally merged main `cfdcc40` into the issue branch, retained both new controlled build/browser receipts, and updated docs16 with the current chunk table and actual first-load waterfall. No additional application code was needed; the existing groups still satisfy the budget with the new effects.
@@ -305,6 +461,13 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: Full suite passed 338/338 in 45 files with `--testTimeout=90000` and the build passed; the default `npm run check` hit audio/DSP 5 s timeouts only, with machine CPU at 100% from parallel jobs. Typecheck, lint, prettier and docs checks passed. New assertions cover the pause summary and that no performer label mentions the dataset; the breakpoint test allows the documented 520 px sub-tier.
 - Limits: The 520 px tier and pre-roll trim were not re-screenshotted in this step.
 
+## 2026-10-25T04:06:23+05:30 — Player, troubleshooting and contributor guides (issue #5)
+
+- Changed: Added `docs/player-guide.md`, `docs/troubleshooting.md` and `docs/contributor-guide.md`, linked from README and the documentation index. The guides cover current setup/menu flow, gestures and judgement windows, Calm/difficulty/80-second arrangements, exact searchable recovery messages, code/data flow, current commands, the tunable registry and evidence/commit conventions. Four small actual-app WebPs under `docs/images/` show the desktop menu, labelled synthetic play, results and compact menu; their source SHA/browser/rendering limits are stated in the player guide. `AI_USAGE.md` records the contribution and independent review.
+- Why: Issue #5 requests accessible player and contributor entry points verified against the app, without replacing the normative specifications or claiming unobserved capabilities.
+- Validation: Fetched/integrated concurrent main updates through `cfdcc40`, rechecked UI/error/renderer sources and refreshed all captures against its production build. In isolated headless Chrome 155.0.8059.86/SwiftShader with muted output, native menu actions completed Pamgaea Normal → Enable sound → synthetic performer → actual 80-second results (90,800 score, 131 Perfect, zero other note judgements, 100% accuracy) → Songs; console errors/warnings were empty. Inspected captures at 1440×900 and 1024×640. Final `npm run check` passed typecheck, lint, 367 assertions in 48 files and build. Root docs tests passed 2/2 and the final checker reported 50 Markdown files/554 local links/zero errors. Prepared-server tests passed 5 with 1 host-limited symlink skip. `git diff --check` passed.
+- Validation failures retained: The first `npm ci` hit a shared npm-cache ENOENT/corrupt-tarball error; an isolated-cache install succeeded without changing dependencies. An intermediate unchanged suite under parallel host load timed out the existing audio-arrangement test at its 20-second limit (362/363 passed); the final unchanged suite above passed without widening any timeout. Two retries were interrupted to integrate newer main or stagger concurrent checks. Initial temporary capture-harness selector quoting was corrected, and captures were repeated after entrance animations settled.
+- Limits: Documentation and synthetic-input/browser evidence only; no webcam/person, audible synchronization, screen-reader/standing-distance, comfort/flashing or GPU-performance acceptance. The existing large-bundle warning remains for issue #1. No application behavior or dependency changed in this commit.
 ## 2026-10-25T04:02:00+05:30 — wip: a-priori dataset-camera trial and measured calibration photo
 
 - Changed: retained `docs/evidence/2026-10-25-dataset-camera-apriori-trial.json` and its sweep app evidence. The harness now retries camera setup once after an error (as a person would), shares one Chrome profile across lanes (first lane cold GPU program cache), records whole-machine CPU busy fractions and GPU adapters, exports app evidence when calibration framing fails, times the sweep from the accepted setup and saves JPEG screenshots. `prepare-dataset-camera.mjs --calibration-from <sweep evidence>` moves the photo with the best measured two-hand detection to the calibration slot and records the evidence hash plus the declared rule's own choice.

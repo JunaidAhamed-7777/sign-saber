@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-24T23:17:30.853Z",
+  "evidenceDate": "2026-10-25",
+  "evidenceTimezone": "Asia/Calcutta",
+  "commit": "10bca5ef1aa1aada09c06b1ead5139f7f4bf11c6",
+  "passed": true,
+  "injectMissingAsset": false,
+  "environment": {
+    "node": "v26.8.1",
+    "npm": "11.19.0",
+    "os": "win32 10.0.26300 x64"
+  },
+  "steps": [
+    {
+      "name": "Clone current commit",
+      "passed": true,
+      "durationMs": 610,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-231730853-clone-current-commit.log",
+      "outputTail": "Cloning into 'C:\\Users\\Junaid\\AppData\\Local\\Temp\\sign-saber-release-drill-h9QEPx\\repo'...\ndone.\n"
+    },
+    {
+      "name": "Checkout tested SHA",
+      "passed": true,
+      "durationMs": 781,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-231730853-checkout-tested-sha.log",
+      "outputTail": "HEAD is now at 10bca5e merge: integrate main for release-drill validation\n"
+    },
+    {
+      "name": "npm ci",
+      "passed": true,
+      "durationMs": 53167,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-231730853-npm-ci.log",
+      "outputTail": "\nadded 187 packages, and audited 188 packages in 53s\n\n47 packages are looking for funding\n  run `npm fund` for details\n\nfound 0 vulnerabilities\n"
+    },
+    {
+      "name": "npm run check",
+      "passed": true,
+      "durationMs": 49392,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-231730853-npm-run-check.log",
+      "outputTail": "\n> sign-saber@0.1.0 check\n> npm run typecheck && npm run lint && npm run test && npm run build\n\nnpm notice run sign-saber@0.1.0 typecheck\nnpm notice run tsc -p tsconfig.json && tsc -p tsconfig.node.json\nnpm notice run sign-saber@0.1.0 lint\nnpm notice run eslint .\nnpm notice run sign-saber@0.1.0 test\nnpm notice run vitest run\n\n RUN  v5.0.5 C:/Users/Junaid/AppData/Local/Temp/sign-saber-release-drill-h9QEPx/repo/app\n\n\n Test Files  54 passed (54)\n      Tests  480 passed (480)\n   Start at  04:49:02\n   Duration  10.58s (tests 48%, transform 37%, import 15%, worker 1%)\n\n    Isolate  54 workers spawned · ~536ms startup each (spawn + environment, per file)\n             at least ~1.39s faster with isolate: false — reuses workers across files instead of one per file\n\nnpm notice run sign-saber@0.1.0 build\nnpm notice run vite build\nvite v8.3.5 building client environment for production...\ntransforming...\n✓ 120 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                               1.64 kB │ gzip:   0.94 kB\ndist/assets/sfxRender.worker-BfMz86U3.js     21.76 kB\ndist/assets/generator.worker-DvUGyHl4.js     26.02 kB\ndist/assets/tracking.worker-KnkdkfXB.js     161.25 kB\ndist/assets/index-ByDUbS_N.css               36.94 kB │ gzip:   7.84 kB\ndist/assets/index-BJK5UnEa.js             1,329.89 kB │ gzip: 401.33 kB │ map: 6,072.29 kB\n\n✓ built in 896ms\n[plugin builtin:vite-reporter] \n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n"
+    },
+    {
+      "name": "npm run build",
+      "passed": true,
+      "durationMs": 1871,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-231730853-npm-run-build.log",
+      "outputTail": "\n> sign-saber@0.1.0 build\n> vite build\n\nvite v8.3.5 building client environment for production...\ntransforming...\n✓ 120 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                               1.64 kB │ gzip:   0.94 kB\ndist/assets/sfxRender.worker-BfMz86U3.js     21.76 kB\ndist/assets/generator.worker-DvUGyHl4.js     26.02 kB\ndist/assets/tracking.worker-KnkdkfXB.js     161.25 kB\ndist/assets/index-ByDUbS_N.css               36.94 kB │ gzip:   7.84 kB\ndist/assets/index-BJK5UnEa.js             1,329.89 kB │ gzip: 401.33 kB │ map: 6,072.29 kB\n\n✓ built in 914ms\n[plugin builtin:vite-reporter] \n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n"
+    },
+    {
+      "name": "BOOT → SELECT offline",
+      "passed": true,
+      "durationMs": 1632,
+      "catalogEntries": 3
+    },
+    {
+      "name": "Select song and enable sound with native CDP input",
+      "passed": true,
+      "durationMs": 3372,
+      "target": "song:pamgaea",
+      "nativeInput": "Input.dispatchMouseEvent"
+    },
+    {
+      "name": "Synthetic performer → genuine results",
+      "passed": true,
+      "durationMs": 92560,
+      "counts": {
+        "perfect": 84,
+        "great": 0,
+        "good": 0,
+        "miss": 0,
+        "badcut": 0
+      },
+      "hits": 84,
+      "summary": "Score\n54,700\nAccuracy\n100.0%\nBest combo\n84",
+      "label": "◆SYNTHETIC PERFORMER · planned motion · no camera"
+    },
+    {
+      "name": "Results → Retry → playing → pause → Songs",
+      "passed": true,
+      "durationMs": 3550
+    },
+    {
+      "name": "Offline network, console and CSP assertions",
+      "passed": true,
+      "durationMs": 0,
+      "requests": 17,
+      "externalRequests": 0,
+      "cspViolations": 0,
+      "consoleErrors": 0
+    }
+  ],
+  "exclusions": [
+    "camera/model preparation",
+    "live recognition",
+    "human QA",
+    "audible synchronization",
+    "P4 performance gates"
+  ],
+  "harnessSha256": "c7c6916d7859c900e1da2e02ee67b47d7f0666c5103bd3e2b75182eab0c2d0cf",
+  "browserHelperSha256": "d9a0a484271c1d479ce7bc426863edf7d874a5bd9356b64245f202bfee8fcea2",
+  "invokingCheckoutDirty": false,
+  "browser": {
+    "requests": [
+      {
+        "url": "http://127.0.0.1:63757/",
+        "method": "GET",
+        "type": "Document",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/index-BJK5UnEa.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/index-ByDUbS_N.css",
+        "method": "GET",
+        "type": "Stylesheet",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/fonts/orbitron.ttf",
+        "method": "GET",
+        "type": "Font",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/models/armor.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/models/beam_ring.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/models/glyphs.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/models/pylon.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/models/block_fractured.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/models/arena_environment.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/models/block_targets.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/tracks/manifest.json",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/fonts/rajdhani.ttf",
+        "method": "GET",
+        "type": "Font",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/tracks/pamgaea/normal.json",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/tracks/pamgaea/audio.mp3",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/sfxRender.worker-BfMz86U3.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:63757/assets/generator.worker-DvUGyHl4.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      }
+    ],
+    "blockedRequests": [],
+    "consoleErrors": [],
+    "cspViolations": [],
+    "failedRequests": [],
+    "interceptionErrors": [],
+    "version": "Chrome/155.0.8059.86",
+    "results": {
+      "counts": {
+        "perfect": 84,
+        "great": 0,
+        "good": 0,
+        "miss": 0,
+        "badcut": 0
+      },
+      "hits": 84,
+      "summary": "Score\n54,700\nAccuracy\n100.0%\nBest combo\n84",
+      "label": "◆SYNTHETIC PERFORMER · planned motion · no camera"
+    },
+    "states": [
+      {
+        "state": "boot",
+        "at": 1100
+      },
+      {
+        "state": "select",
+        "at": 1453.2000000029802
+      },
+      {
+        "state": "calibration",
+        "at": 13579.30000000447
+      },
+      {
+        "state": "playing",
+        "at": 15740.70000000298
+      },
+      {
+        "state": "results",
+        "at": 97480.30000000447
+      },
+      {
+        "state": "calibration",
+        "at": 97648.60000000149
+      },
+      {
+        "state": "playing",
+        "at": 99902.60000000149
+      },
+      {
+        "state": "paused",
+        "at": 100135.90000000596
+      },
+      {
+        "state": "select",
+        "at": 101093.20000000298
+      }
+    ],
+    "lastScreen": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your music\nP\nPamgaea\nKevin MacLeod\nARRANGEMENT READY\n✓\nE\nElectro Cabello\nKevin MacLeod\n3:10 · 117 BPM\nC\nCipher\nKevin MacLeod\n3:51 · 150 BPM\n←\nPrevious\nChoose your music\n1 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nP\nSELECTED TRACK\nPamgaea — 80.0s arrangement\n\n1:20 · 84 notes · Kevin MacLeod\n\nArrangement ready · 1:20\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nWatch synthetic performer\nPlanned motion · no camera\nTry level with dataset\nAnnotated poses · no webcam\n\nEnable sound with the mouse or keyboard before starting.\n\nChoose music when you are ready.\n\n←\nPrevious\nReady when you are\n1 of 6\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click",
+    "chromeStderr": "\r\nDevTools listening on ws://127.0.0.1:63758/devtools/browser/52a1fbee-d620-402a-9a17-04954c436ae3\r\n[33588:33172:1025/044936.725:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 12868: Access is denied. (0x5)\r\n[33588:15308:1025/044936.894:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 4992: Access is denied. (0x5)\r\n[33588:33172:1025/044937.078:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 26096: Access is denied. (0x5)\r\n[33588:15308:1025/044937.242:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 37520: Access is denied. (0x5)\r\n[33588:33172:1025/044937.410:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 35952: Access is denied. (0x5)\r\n[33588:15308:1025/044937.569:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 23884: Access is denied. (0x5)\r\n"
+  },
+  "notRun": [],
+  "finishedAt": "2026-10-24T23:21:03.563Z"
+}

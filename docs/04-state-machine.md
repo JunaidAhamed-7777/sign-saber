@@ -63,6 +63,8 @@ Prepare the renderer, shell, required fonts/menu assets and local bundled catalo
 
 Shell/renderer failures use an actionable BOOT card with retry. A missing optional font uses the documented fallback; a bad catalog explains which content is unavailable instead of inventing songs. No WebGL2 shows the supported-browser/hardware-acceleration guidance. Required gameplay assets may prepare lazily, but Start stays unavailable until they are actually ready.
 
+**Implemented graphics-loss path:** `webglcontextlost` at any screen stops the application frame loop, cancels pending music/setup jobs and stops audio/capture. PLAYING first enters its existing fatal PAUSED route; an armed countdown is cancelled through Back. The shared fatal error view replaces active controls and explains that Retry reloads the game. A driver's later context restoration never resumes an old invisible run. This is a clear failure/reload route, not a claim of automatic GPU recovery.
+
 WASM/models, camera permission, device opening and tracking initialization have separate progress inside the `SELECT` camera-setup panel. Their failure does not strand music browsing behind BOOT. Camera-denied/busy/missing-model/delegate errors retain the illustrative central person and **Set up camera**/retry guidance. A replay is a separately labelled developer/demo path, never a substitute for camera readiness.
 
 BOOT may choose a conservative initial graphics tier. Defer the full tracking-on probe until setup succeeds (see [16 — Performance Budget](16-performance-budget.md#quality-tiers)); an empty scene or placeholder's median cannot certify gameplay performance. Store measured device/browser context with the final choice and permit the documented override.
@@ -134,6 +136,7 @@ Displays, in this order, with staggered 120 ms entrance animations:
 ## Implementation notes
 
 - The machine is a plain object: `{ state, transition(event, payload) }` with an exhaustive `switch`; subscribers receive `(prev, next)` via the event bus (`state:change`). React screens subscribe through the Zustand store, which mirrors `state`.
+- Actual `visibilitychange` owns hidden-tab pause/cancel semantics. Window blur immediately cancels the hand pointer but does not invent a manual pause before the hidden event arrives. An already manual pause keeps its reason when the tab later becomes hidden; returning to the tab alone never resumes either pause.
 - Subsystems implement `onEnter(state)` / `onExit(state)` hooks registered with the machine; e.g. the audio engine suspends on entering `PAUSED` and resumes on leaving it. Avoid scattering `if (state === …)` checks in update loops.
 - State transitions have a single owner and an observable sequence number. Hooks are idempotent; listeners, media streams, decoded buffers, workers and render resources have an explicit owner/dispose path. Quit/Retry resets note pools, filters, gesture charge and capture watermarks, so old input cannot score in a new run.
 - Retry may reuse body calibration only for the same camera/crop/player and unchanged viewport mapping. If any of those change, rerun calibration. A cached wave skip never skips readiness or the countdown.

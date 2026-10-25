@@ -96,6 +96,8 @@ A checkpoint is reached when its deliverable is implemented, relevant assertions
 
 ## Release checklist
 
+Repeat `node scripts/release-drill.mjs` from the root on each committed candidate. The [automated browser subset](17-testing-and-qa.md#3-browser-integration-smoke-test-core) produces dated clean-clone and offline synthetic-journey evidence, including failed steps. It leaves camera/model preparation, consented live play and the remaining manual gates below open.
+
 - [ ] Actual event/submission rules and team details recorded when applicable.
 - [ ] `npm ci`, asset preparation and production run repeated on a clean clone; commands and runtime asset provenance accurate.
 - [ ] Executed tests contain assertions; local documentation checker passes; CI result tied to the candidate SHA.

@@ -28,6 +28,7 @@ vi.mock('../src/beatmap/generatorClient', () => ({
 }));
 vi.mock('../src/render/renderer', () => ({
   ArenaRenderer: class {
+    renderer = { domElement: new EventTarget() };
     setMode = vi.fn();
     setStage = vi.fn();
     setCalm = vi.fn();
@@ -404,6 +405,86 @@ afterEach(() => {
 });
 
 describe('runtime browser lifecycle (mocked boundaries)', () => {
+  it('lets real visibility own the hidden pause when blur arrives first', async () => {
+    await prepare();
+    await play();
+    window.dispatchEvent(new Event('blur'));
+    expect(runtime!.machine.state).toBe('PLAYING');
+    (document as unknown as { hidden: boolean }).hidden = true;
+    document.dispatchEvent(new Event('visibilitychange'));
+    await flush();
+    expect(runtime!.machine.state).toBe('PAUSED');
+    expect(runtime!.machine.pauseReason).toBe('hidden');
+    expect(Context.instances[0]!.state).toBe('suspended');
+    (document as unknown as { hidden: boolean }).hidden = false;
+    document.dispatchEvent(new Event('visibilitychange'));
+    step(now + 3000);
+    await flush();
+    expect(runtime!.machine.state).toBe('PAUSED');
+    expect(runtime!.machine.pauseReason).toBe('hidden');
+  });
+  it('preserves an already manual pause when the page later becomes hidden', async () => {
+    await prepare();
+    await play();
+    await runtime!.pause('manual');
+    window.dispatchEvent(new Event('blur'));
+    (document as unknown as { hidden: boolean }).hidden = true;
+    document.dispatchEvent(new Event('visibilitychange'));
+    await flush();
+    expect(runtime!.machine.pauseReason).toBe('manual');
+  });
+  it('cancels an armed countdown on real visibility loss without auto-starting on return', async () => {
+    await prepare();
+    advance(700);
+    await runtime!.command('start');
+    expect(runtime!.machine.state).toBe('CALIBRATION');
+    (document as unknown as { hidden: boolean }).hidden = true;
+    document.dispatchEvent(new Event('visibilitychange'));
+    await flush();
+    expect(runtime!.machine.state).toBe('SELECT');
+    expect(Context.instances[0]!.sources.every((source) => source.disconnected)).toBe(true);
+    (document as unknown as { hidden: boolean }).hidden = false;
+    document.dispatchEvent(new Event('visibilitychange'));
+    step(now + 4000);
+    await flush();
+    expect(runtime!.machine.state).toBe('SELECT');
+  });
+  it('stops an invisible run and all future frame work after WebGL context loss', async () => {
+    await prepare();
+    await play();
+    const context = Context.instances[0]!;
+    const canvas = (mocks.renderers[0]!.renderer as { domElement: EventTarget }).domElement;
+    const lost = new Event('webglcontextlost', { cancelable: true });
+    canvas.dispatchEvent(lost);
+    await flush();
+    expect(lost.defaultPrevented).toBe(true);
+    expect(runtime!.machine.state).toBe('PAUSED');
+    expect(runtime!.machine.pauseReason).toBe('fatal');
+    expect(useStore.getState()).toMatchObject({
+      fatal: strings.graphicsLost,
+      audioReady: false,
+      replay: false,
+    });
+    expect(context.state).toBe('suspended');
+    expect(context.sources.every((source) => source.disconnected)).toBe(true);
+    expect(raf.size).toBe(0);
+    const draws = vi.mocked(mocks.renderers[0]!.draw as () => void).mock.calls.length;
+    step(now + 5000);
+    await runtime!.command('resume');
+    expect(runtime!.machine.state).toBe('PAUSED');
+    expect(vi.mocked(mocks.renderers[0]!.draw as () => void).mock.calls).toHaveLength(draws);
+    expect(raf.size).toBe(0);
+  });
+  it('reports context loss on the menu and rejects stale menu actions until reload', async () => {
+    await runtime!.boot();
+    const canvas = (mocks.renderers[0]!.renderer as { domElement: EventTarget }).domElement;
+    canvas.dispatchEvent(new Event('webglcontextlost', { cancelable: true }));
+    await runtime!.command('song:a');
+    expect(useStore.getState().fatal).toBe(strings.graphicsLost);
+    expect(mocks.map).not.toHaveBeenCalled();
+    expect(runtime!.machine.state).toBe('SELECT');
+    expect(raf.size).toBe(0);
+  });
   it('reports each hand only while its capture is within the display hold', async () => {
     await prepare();
     await play();

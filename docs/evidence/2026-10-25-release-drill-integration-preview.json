@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "lane": "prepared-integration-preview-synthetic-performer",
+  "recordedAt": "2026-10-24T23:30:51.609Z",
+  "commit": "f68f84e933bb6495bc66f80da455f7b3ae5e3fd8",
+  "invokingCheckoutDirty": false,
+  "environment": {
+    "node": "v26.8.1",
+    "os": "win32 10.0.26300 x64"
+  },
+  "passed": true,
+  "steps": [
+    {
+      "name": "BOOT → SELECT offline",
+      "passed": true,
+      "durationMs": 3369,
+      "catalogEntries": 3
+    },
+    {
+      "name": "Select song and enable sound with native CDP input",
+      "passed": true,
+      "durationMs": 6295,
+      "target": "song:pamgaea",
+      "nativeInput": "Input.dispatchMouseEvent"
+    },
+    {
+      "name": "Synthetic performer → genuine results",
+      "passed": true,
+      "durationMs": 101389,
+      "counts": {
+        "perfect": 84,
+        "great": 0,
+        "good": 0,
+        "miss": 0,
+        "badcut": 0
+      },
+      "hits": 84,
+      "summary": "Score\n54,700\nAccuracy\n100.0%\nBest combo\n84",
+      "label": "◆SYNTHETIC PERFORMER · planned motion · no camera"
+    },
+    {
+      "name": "Results → Retry → playing → pause → Songs",
+      "passed": true,
+      "durationMs": 2560
+    },
+    {
+      "name": "Offline network, console and CSP assertions",
+      "passed": true,
+      "durationMs": 0,
+      "requests": 17,
+      "externalRequests": 0,
+      "cspViolations": 0,
+      "consoleErrors": 0
+    }
+  ],
+  "exclusions": [
+    "No fresh clone or install in this supplemental run",
+    "Camera/model preparation",
+    "Human recognition",
+    "Audible sync",
+    "Performance targets"
+  ],
+  "harnessSha256": "773b4d6d1210f12add140d735f00889431759a7058ed2b5c006c23c70da0143c",
+  "preparedIndexSha256": "9d036468b021a17007a5c647e8ad2ec61028764c4b90065e35dcf434317adb9d",
+  "browser": {
+    "requests": [
+      {
+        "url": "http://127.0.0.1:59372/",
+        "method": "GET",
+        "type": "Document",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/index-DcHkzAOT.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/index-zMyJEfrf.css",
+        "method": "GET",
+        "type": "Stylesheet",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/fonts/orbitron.ttf",
+        "method": "GET",
+        "type": "Font",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/models/armor.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/models/beam_ring.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/models/glyphs.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/models/pylon.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/models/block_fractured.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/models/arena_environment.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/models/block_targets.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/tracks/manifest.json",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/fonts/rajdhani.ttf",
+        "method": "GET",
+        "type": "Font",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/tracks/pamgaea/normal.json",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/tracks/pamgaea/audio.mp3",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/sfxRender.worker-BfMz86U3.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:59372/assets/generator.worker-DvUGyHl4.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      }
+    ],
+    "blockedRequests": [],
+    "consoleErrors": [],
+    "cspViolations": [],
+    "failedRequests": [],
+    "interceptionErrors": [],
+    "version": "Chrome/155.0.8059.86",
+    "results": {
+      "counts": {
+        "perfect": 84,
+        "great": 0,
+        "good": 0,
+        "miss": 0,
+        "badcut": 0
+      },
+      "hits": 84,
+      "summary": "Score\n54,700\nAccuracy\n100.0%\nBest combo\n84",
+      "label": "◆SYNTHETIC PERFORMER · planned motion · no camera"
+    },
+    "states": [
+      {
+        "state": "boot",
+        "at": 1290
+      },
+      {
+        "state": "select",
+        "at": 1715.6000000014901
+      },
+      {
+        "state": "calibration",
+        "at": 27238.19999999553
+      },
+      {
+        "state": "playing",
+        "at": 29696.89999999851
+      },
+      {
+        "state": "results",
+        "at": 110985.19999999553
+      },
+      {
+        "state": "calibration",
+        "at": 111102
+      },
+      {
+        "state": "playing",
+        "at": 113383.60000000149
+      },
+      {
+        "state": "paused",
+        "at": 113497.89999999851
+      },
+      {
+        "state": "select",
+        "at": 113571.19999999553
+      }
+    ],
+    "lastScreen": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your music\nP\nPamgaea\nKevin MacLeod\nARRANGEMENT READY\n✓\nE\nElectro Cabello\nKevin MacLeod\n3:10 · 117 BPM\nC\nCipher\nKevin MacLeod\n3:51 · 150 BPM\n←\nPrevious\nChoose your music\n1 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nP\nSELECTED TRACK\nPamgaea — 80.0s arrangement\n\n1:20 · 84 notes · Kevin MacLeod\n\nArrangement ready · 1:20\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nWatch synthetic performer\nPlanned motion · no camera\nTry level with dataset\nAnnotated poses · no webcam\n\nEnable sound with the mouse or keyboard before starting.\n\nChoose music when you are ready.\n\n←\nPrevious\nReady when you are\n1 of 6\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click",
+    "chromeStderr": "\r\nDevTools listening on ws://127.0.0.1:54283/devtools/browser/0fc43ca1-99c0-4b21-97bd-d93ad5b03e6c\r\n[35832:30292:1025/050116.576:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 34752: Access is denied. (0x5)\r\n[35832:30292:1025/050120.053:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 39480: Access is denied. (0x5)\r\n[35832:32264:1025/050123.490:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 35924: Access is denied. (0x5)\r\n[35832:30292:1025/050124.262:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 19864: Access is denied. (0x5)\r\n[35832:32264:1025/050126.585:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 19176: Access is denied. (0x5)\r\n[35832:30292:1025/050128.941:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 37940: Access is denied. (0x5)\r\n"
+  },
+  "finishedAt": "2026-10-24T23:32:51.417Z"
+}

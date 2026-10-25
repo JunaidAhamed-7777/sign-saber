@@ -1,0 +1,330 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-25T00:16:47.852Z",
+  "evidenceDate": "2026-10-25",
+  "evidenceTimezone": "Asia/Calcutta",
+  "commit": "886f7beb990af721bd2faf4292cc9260c97379fb",
+  "passed": true,
+  "injectMissingAsset": false,
+  "environment": {
+    "node": "v26.8.1",
+    "npm": "11.19.0",
+    "os": "win32 10.0.26300 x64"
+  },
+  "steps": [
+    {
+      "name": "Clone current commit",
+      "passed": true,
+      "durationMs": 3127,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-001647852-clone-current-commit.log",
+      "outputTail": "Cloning into 'C:\\Users\\Junaid\\AppData\\Local\\Temp\\sign-saber-release-drill-Z53koV\\repo'...\ndone.\n"
+    },
+    {
+      "name": "Checkout tested SHA",
+      "passed": true,
+      "durationMs": 1810,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-001647852-checkout-tested-sha.log",
+      "outputTail": "HEAD is now at 886f7be fix(qa): verify auto-play source through diagnostics\n"
+    },
+    {
+      "name": "npm ci",
+      "passed": true,
+      "durationMs": 68474,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-001647852-npm-ci.log",
+      "outputTail": "\nadded 187 packages, and audited 188 packages in 1m\n\n47 packages are looking for funding\n  run `npm fund` for details\n\nfound 0 vulnerabilities\n"
+    },
+    {
+      "name": "npm run check",
+      "passed": true,
+      "durationMs": 39224,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-001647852-npm-run-check.log",
+      "outputTail": "\n> sign-saber@0.1.0 check\n> npm run typecheck && npm run lint && npm run test && npm run build && npm run bundle:check\n\nnpm notice run sign-saber@0.1.0 typecheck\nnpm notice run tsc -p tsconfig.json && tsc -p tsconfig.node.json\nnpm notice run sign-saber@0.1.0 lint\nnpm notice run eslint .\nnpm notice run sign-saber@0.1.0 test\nnpm notice run vitest run\n\n RUN  v5.0.5 C:/Users/Junaid/AppData/Local/Temp/sign-saber-release-drill-Z53koV/repo/app\n\n\n Test Files  55 passed (55)\n      Tests  560 passed (560)\n   Start at  05:48:30\n   Duration  9.43s (tests 58%, transform 26%, import 14%, worker 1%)\n\n    Isolate  55 workers spawned · ~357ms startup each (spawn + environment, per file)\n             at least ~952ms faster with isolate: false — reuses workers across files instead of one per file\n\nnpm notice run sign-saber@0.1.0 build\nnpm notice run vite build\nvite v8.3.5 building client environment for production...\ntransforming...\n✓ 127 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                             2.11 kB │ gzip:   1.05 kB\ndist/assets/sfxRender.worker-BfMz86U3.js   21.76 kB\ndist/assets/generator.worker-DvUGyHl4.js   26.02 kB\ndist/assets/tracking.worker-KnkdkfXB.js   161.25 kB\ndist/assets/index-zMyJEfrf.css             38.12 kB │ gzip:   8.08 kB\ndist/assets/rolldown-runtime-WkwZ5CU-.js    0.59 kB │ gzip:   0.36 kB\ndist/assets/three-CtILIWwi.js              48.97 kB │ gzip:  14.33 kB │ map:   249.90 kB\ndist/assets/postprocessing-BH5msiTw.js    167.10 kB │ gzip:  75.53 kB │ map:   725.53 kB\ndist/assets/react-CTym4sTV.js             218.79 kB │ gzip:  68.31 kB │ map: 1,043.82 kB\ndist/assets/three-CZu3cChN.js             224.17 kB │ gzip:  59.96 kB │ map: 1,903.32 kB\ndist/assets/three-BtMhuEOU.js             352.33 kB │ gzip:  84.79 kB │ map:   984.38 kB\ndist/assets/index-C4ggcdxy.js             363.98 kB │ gzip: 116.58 kB │ map: 1,328.58 kB\n\n✓ built in 413ms\nnpm notice run sign-saber@0.1.0 bundle:check\nnpm notice run node --test ../scripts/check-bundle.test.mjs && node ../scripts/check-bundle.mjs\n✔ argument parser accepts one path and rejects unknown flags / extra paths (1.5753ms)\n✔ budget includes exact boundary and rejects oversized, missing, invalid sizes (0.8289ms)\n✔ emitted parser reads JS and nested workers, ignores maps, and CLI fails on excess (181.3098ms)\nℹ tests 3\nℹ suites 0\nℹ pass 3\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 277.424\ngenerator.worker-DvUGyHl4.js: 26028 bytes (10531 gzip)\nindex-C4ggcdxy.js: 363984 bytes (115700 gzip)\npostprocessing-BH5msiTw.js: 167101 bytes (75444 gzip)\nreact-CTym4sTV.js: 218790 bytes (67563 gzip)\nrolldown-runtime-WkwZ5CU-.js: 599 bytes (368 gzip)\nsfxRender.worker-BfMz86U3.js: 21764 bytes (7955 gzip)\nthree-BtMhuEOU.js: 352339 bytes (84202 gzip)\nthree-CtILIWwi.js: 48977 bytes (14208 gzip)\nthree-CZu3cChN.js: 224173 bytes (59503 gzip)\ntracking.worker-KnkdkfXB.js: 161250 bytes (47944 gzip)\nBundle budget passed: 10 JavaScript chunks, each ≤ 500000 bytes.\n"
+    },
+    {
+      "name": "npm run build",
+      "passed": true,
+      "durationMs": 1223,
+      "exitCode": 0,
+      "log": "2026-10-25-release-drill-001647852-npm-run-build.log",
+      "outputTail": "\n> sign-saber@0.1.0 build\n> vite build\n\nvite v8.3.5 building client environment for production...\ntransforming...\n✓ 127 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                             2.11 kB │ gzip:   1.05 kB\ndist/assets/sfxRender.worker-BfMz86U3.js   21.76 kB\ndist/assets/generator.worker-DvUGyHl4.js   26.02 kB\ndist/assets/tracking.worker-KnkdkfXB.js   161.25 kB\ndist/assets/index-zMyJEfrf.css             38.12 kB │ gzip:   8.08 kB\ndist/assets/rolldown-runtime-WkwZ5CU-.js    0.59 kB │ gzip:   0.36 kB\ndist/assets/three-CtILIWwi.js              48.97 kB │ gzip:  14.33 kB │ map:   249.90 kB\ndist/assets/postprocessing-BH5msiTw.js    167.10 kB │ gzip:  75.53 kB │ map:   725.53 kB\ndist/assets/react-CTym4sTV.js             218.79 kB │ gzip:  68.31 kB │ map: 1,043.82 kB\ndist/assets/three-CZu3cChN.js             224.17 kB │ gzip:  59.96 kB │ map: 1,903.32 kB\ndist/assets/three-BtMhuEOU.js             352.33 kB │ gzip:  84.79 kB │ map:   984.38 kB\ndist/assets/index-C4ggcdxy.js             363.98 kB │ gzip: 116.58 kB │ map: 1,328.58 kB\n\n✓ built in 555ms\n"
+    },
+    {
+      "name": "BOOT → SELECT offline",
+      "passed": true,
+      "durationMs": 2063,
+      "catalogEntries": 3
+    },
+    {
+      "name": "Select song and enable sound with native CDP input",
+      "passed": true,
+      "durationMs": 1541,
+      "target": "song:pamgaea",
+      "nativeInput": "Input.dispatchMouseEvent"
+    },
+    {
+      "name": "Synthetic performer → genuine results",
+      "passed": true,
+      "durationMs": 91662,
+      "counts": {
+        "perfect": 84,
+        "great": 0,
+        "good": 0,
+        "miss": 0,
+        "badcut": 0
+      },
+      "hits": 84,
+      "summary": "Score\n54,700\nAccuracy\n100.0%\nBest combo\n84",
+      "source": {
+        "lane": "synthetic-performer-logic-replay",
+        "performerTrial": {
+          "synthetic": true,
+          "camera": false,
+          "plannedUnplayableNotes": 0
+        }
+      }
+    },
+    {
+      "name": "Results → Retry → playing → pause → Songs",
+      "passed": true,
+      "durationMs": 2141
+    },
+    {
+      "name": "Offline network, console and CSP assertions",
+      "passed": true,
+      "durationMs": 0,
+      "requests": 24,
+      "externalRequests": 0,
+      "cspViolations": 0,
+      "consoleErrors": 0
+    }
+  ],
+  "exclusions": [
+    "camera/model preparation",
+    "live recognition",
+    "human QA",
+    "audible synchronization",
+    "P4 performance gates"
+  ],
+  "harnessSha256": "078e489da5e7735d7d01d0b4c39c1153c82e9a9a4432d94ae6349d32916fa102",
+  "browserHelperSha256": "e6ecb822b2d46a129a9f5ecf53da672e4eac6b3ab9086242cb94e504a6a4c6ad",
+  "invokingCheckoutDirty": false,
+  "browser": {
+    "requests": [
+      {
+        "url": "http://127.0.0.1:57032/?stats=1",
+        "method": "GET",
+        "type": "Document",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/index-C4ggcdxy.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/rolldown-runtime-WkwZ5CU-.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/react-CTym4sTV.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/three-CZu3cChN.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/three-BtMhuEOU.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/three-CtILIWwi.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/postprocessing-BH5msiTw.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/index-zMyJEfrf.css",
+        "method": "GET",
+        "type": "Stylesheet",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/fonts/orbitron.ttf",
+        "method": "GET",
+        "type": "Font",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/models/avatar.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/models/armor.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/models/beam_ring.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/models/glyphs.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/models/pylon.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/models/block_fractured.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/models/arena_environment.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/models/block_targets.glb",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/tracks/manifest.json",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/fonts/rajdhani.ttf",
+        "method": "GET",
+        "type": "Font",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/tracks/pamgaea/normal.json",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/tracks/pamgaea/audio.mp3",
+        "method": "GET",
+        "type": "Fetch",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/sfxRender.worker-BfMz86U3.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      },
+      {
+        "url": "http://127.0.0.1:57032/assets/generator.worker-DvUGyHl4.js",
+        "method": "GET",
+        "type": "Script",
+        "target": "page"
+      }
+    ],
+    "blockedRequests": [],
+    "consoleErrors": [],
+    "cspViolations": [],
+    "failedRequests": [],
+    "interceptionErrors": [],
+    "version": "Chrome/155.0.8059.86",
+    "results": {
+      "counts": {
+        "perfect": 84,
+        "great": 0,
+        "good": 0,
+        "miss": 0,
+        "badcut": 0
+      },
+      "hits": 84,
+      "summary": "Score\n54,700\nAccuracy\n100.0%\nBest combo\n84",
+      "source": {
+        "lane": "synthetic-performer-logic-replay",
+        "performerTrial": {
+          "synthetic": true,
+          "camera": false,
+          "plannedUnplayableNotes": 0
+        }
+      }
+    },
+    "states": [
+      {
+        "state": "boot",
+        "at": 875.5
+      },
+      {
+        "state": "select",
+        "at": 953.0999999940395
+      },
+      {
+        "state": "calibration",
+        "at": 11447
+      },
+      {
+        "state": "playing",
+        "at": 14041.79999999702
+      },
+      {
+        "state": "results",
+        "at": 95114.29999999702
+      },
+      {
+        "state": "calibration",
+        "at": 95273
+      },
+      {
+        "state": "playing",
+        "at": 97320.29999999702
+      },
+      {
+        "state": "paused",
+        "at": 97385
+      },
+      {
+        "state": "select",
+        "at": 97397.5
+      }
+    ],
+    "lastScreen": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your music\nP\nPamgaea\nKevin MacLeod\nARRANGEMENT READY\n✓\nE\nElectro Cabello\nKevin MacLeod\n3:10 · 117 BPM\nC\nCipher\nKevin MacLeod\n3:51 · 150 BPM\n←\nPrevious\nChoose your music\n1 of 4\n→\nNext\n\nIllustrative upper body · camera not set up\n\nP\nSELECTED TRACK\nPamgaea — 80.0s arrangement\n\n1:20 · 84 notes · Kevin MacLeod\n\nArrangement ready · 1:20\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nSet up camera\nStand back · head to hips in view\nPlay level\n80-second cut\nWatch auto-play\nDemo run\n\nEnable sound with the mouse or keyboard before starting.\n\nChoose music when you are ready.\n\n←\nPrevious\nReady when you are\n1 of 6\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click",
+    "chromeStderr": "\r\nDevTools listening on ws://127.0.0.1:57033/devtools/browser/03eac000-4a25-466a-a055-da2fca29b810\r\n[37368:29776:1025/054902.641:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 8228: Access is denied. (0x5)\r\n[37368:39004:1025/054904.755:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 39832: Access is denied. (0x5)\r\n[37368:29776:1025/054906.865:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 37244: Access is denied. (0x5)\r\n[37368:39004:1025/054906.986:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 27824: Access is denied. (0x5)\r\n[37368:29776:1025/054907.109:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 27576: Access is denied. (0x5)\r\n[37368:39004:1025/054909.231:ERROR:chrome\\updater\\ipc\\update_service_dialer_win.cc:76] Failed to open named pipe server process 18184: Access is denied. (0x5)\r\n"
+  },
+  "notRun": [],
+  "finishedAt": "2026-10-25T00:20:22.725Z"
+}

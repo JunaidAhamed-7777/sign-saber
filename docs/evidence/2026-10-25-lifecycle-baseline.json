@@ -1,0 +1,372 @@
+{
+  "schema": 1,
+  "date": "2026-10-25",
+  "recordedAt": "2026-10-24T23:03:50.771Z",
+  "gitHead": "87032d0876ec8e3d3215db9de95952bd58473985",
+  "dirtyTree": true,
+  "environment": {
+    "node": "v26.8.1",
+    "os": "win32 10.0.26300",
+    "logicalCpus": 16
+  },
+  "sourceHashes": {
+    "scripts/lifecycle-qa.mjs": "3d7d94ddda3a64c4bd5b11844b185a7e6ad6392d44a3e724892f8041c1e48f50",
+    "scripts/lifecycle-helpers.mjs": "900180a3c52af4586f50cc3b15cb2e046da7c1d8611b9537dfa20209952a75db",
+    "scripts/lifecycle-probe.mjs": "a0e4ae5ae56c6ee70f9ee7ce13cd2fb403f8da528a544947e7591f10070409de",
+    "scripts/cdp-client.mjs": "d9a0a484271c1d479ce7bc426863edf7d874a5bd9356b64245f202bfee8fcea2",
+    "app/src/core/runtime.ts": "162af1e97dcb892a683931c696772423529abd32cfcffc4e40a8f5e61860e4f2",
+    "app/src/render/renderer.ts": "dfa60e8d86b20a4931c4c3c59513b20b53d2cdad2f9fb26b55f038bd47f8731d",
+    "app/src/ui/strings.ts": "bd029a35c5d740659eb3a621e6c0e9d7922d46fd71a7e1bbc81f5149f154aead",
+    "app/src/ui/screens/Select.tsx": "f7a8fad896299580fc5225177d13bede17d9de55b8173967925fafa23b03b533",
+    "app/package-lock.json": "66dc1547569b921b18b85ab19b6e22fc3166133573d1f10764aea146b0bc2bb1"
+  },
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/155.0.8059.86",
+    "revision": "@804d6b05f089b27af8342622a36558c49401a1d4",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+    "jsVersion": "15.5.35.25"
+  },
+  "protocol": {
+    "WebAudio": {
+      "commands": [
+        "enable",
+        "disable",
+        "getRealtimeData"
+      ],
+      "events": [
+        "contextCreated",
+        "contextWillBeDestroyed",
+        "contextChanged",
+        "audioListenerCreated",
+        "audioListenerWillBeDestroyed",
+        "audioNodeCreated",
+        "audioNodeWillBeDestroyed",
+        "audioParamCreated",
+        "audioParamWillBeDestroyed",
+        "nodesConnected",
+        "nodesDisconnected",
+        "nodeParamConnected",
+        "nodeParamDisconnected"
+      ]
+    },
+    "Memory": {
+      "commands": [
+        "getDOMCounters",
+        "getDOMCountersForLeakDetection",
+        "prepareForLeakDetection",
+        "forciblyPurgeJavaScriptMemory",
+        "setPressureNotificationsSuppressed",
+        "simulatePressureNotification",
+        "startSampling",
+        "stopSampling",
+        "getAllTimeSamplingProfile",
+        "getBrowserSamplingProfile",
+        "getSamplingProfile"
+      ]
+    },
+    "HeapProfiler": {
+      "commands": [
+        "addInspectedHeapObject",
+        "collectGarbage",
+        "disable",
+        "enable",
+        "getHeapObjectId",
+        "getObjectByHeapObjectId",
+        "getSamplingProfile",
+        "startSampling",
+        "startTrackingHeapObjects",
+        "stopSampling",
+        "stopTrackingHeapObjects",
+        "takeHeapSnapshot"
+      ],
+      "events": [
+        "addHeapSnapshotChunk",
+        "heapStatsUpdate",
+        "lastSeenObjectId",
+        "reportHeapSnapshotProgress",
+        "resetProfiles"
+      ]
+    },
+    "Target": {
+      "commands": [
+        "activateTarget",
+        "attachToTarget",
+        "attachToBrowserTarget",
+        "closeTarget",
+        "exposeDevToolsProtocol",
+        "createBrowserContext",
+        "getBrowserContexts",
+        "createTarget",
+        "detachFromTarget",
+        "disposeBrowserContext",
+        "getTargetInfo",
+        "getTargets",
+        "sendMessageToTarget",
+        "setAutoAttach",
+        "autoAttachRelated",
+        "setDiscoverTargets",
+        "setRemoteLocations",
+        "getDevToolsTarget",
+        "openDevTools"
+      ],
+      "events": [
+        "attachedToTarget",
+        "detachedFromTarget",
+        "receivedMessageFromTarget",
+        "targetCreated",
+        "targetDestroyed",
+        "targetCrashed",
+        "targetInfoChanged"
+      ]
+    }
+  },
+  "fixtures": {
+    "valid": {
+      "bytes": 529244,
+      "durationSec": 12,
+      "sampleRate": 22050,
+      "sha256": "66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "second": {
+      "bytes": 573344,
+      "durationSec": 13,
+      "sampleRate": 22050,
+      "sha256": "0ec8fc97d01184f7fbdc1abbde8fa96f192ce4d05d9814ca2419119eceefc6e0",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "long": {
+      "bytes": 10584044,
+      "durationSec": 240,
+      "sampleRate": 22050,
+      "sha256": "9ab3b0a21e72768474a95253e107c2fd308a2bdf0e4b467d812382d945446e09",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "short": {
+      "bytes": 44144,
+      "durationSec": 1,
+      "sampleRate": 22050,
+      "sha256": "4b18b7c0677cb7f1edd5dffa482e6943897447f02e1f175dbc793d103d07dd46",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "corrupt": {
+      "bytes": 10,
+      "sha256": "a51bc7aed5605ec18e922abbd62d0de95f30d88bbd8cf5991159f3664e6e30b5"
+    },
+    "wrong": {
+      "bytes": 33,
+      "sha256": "2e66915610e0a099910393ac799a6b8192f8c4388569eca28ec82f42280ca107"
+    },
+    "oversized": {
+      "bytes": 62914561,
+      "source": "sparse zero file; admission limit check only"
+    }
+  },
+  "measurement": {
+    "renderer": "Actual Three.js renderer.info.memory; read-only ?stats=1 diagnostics",
+    "audio": "CDP WebAudio lifetime events; only native string IDs retained; no AudioNode references",
+    "listeners": "CDP Memory.getDOMCounters.jsEventListeners after HeapProfiler.collectGarbage and the same quiet boundary",
+    "workers": "CDP Target.getTargets worker targets in the current isolated browser context",
+    "observers": "Preload probe stores observer IDs only; disconnect removes IDs",
+    "warmup": "One complete generated-chart performer run, return to Songs, then GC/quiet baseline before 20 measured cycles"
+  },
+  "limitations": [
+    "Synthetic original WAVs/planned motion; no camera/person/recognition",
+    "Muted headless software rendering; no audible-sync or GPU-performance claim",
+    "Forced GC/resource counts are lifecycle diagnostics, not release performance evidence"
+  ],
+  "scenarios": [
+    {
+      "name": "upload",
+      "status": "fail",
+      "checks": [
+        {
+          "name": "original synthesized upload generated a real nonempty chart",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-valid\",\"sourceHash\":\"66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734\",\"difficulty\":\"normal\",\"notes\":13,\"warnings\":[]}"
+        },
+        {
+          "name": "generation progress was observed",
+          "ok": true,
+          "detail": "[{\"active\":true,\"fraction\":0,\"stage\":\"read\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":0,\"stage\":\"resample\"},{\"active\":true,\"fraction\":1,\"stage\":\"validate\"}]"
+        },
+        {
+          "name": "performer reached real results with nonzero hits",
+          "ok": true,
+          "detail": "{\"perfect\":12,\"great\":0,\"good\":0,\"miss\":0,\"badcut\":0,\"obstaclesHit\":0,\"obstaclesDodged\":1}"
+        },
+        {
+          "name": "Songs returns to a usable menu",
+          "ok": true
+        },
+        {
+          "name": "no unexpected browser console errors",
+          "ok": false,
+          "detail": "[{\"type\":\"warning\",\"text\":\"THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.\"}]"
+        }
+      ],
+      "startedAt": "2026-10-24T23:04:15.848Z",
+      "reproduction": "Upload lifecycle-valid.wav, wait for analysis, choose Easy then Normal, Enable sound, Watch synthetic performer, wait for Results, choose Songs.",
+      "results": {
+        "score": 2100,
+        "maxScore": 2400,
+        "accuracy": 1,
+        "rank": "SS",
+        "maxCombo": 12,
+        "counts": {
+          "perfect": 12,
+          "great": 0,
+          "good": 0,
+          "miss": 0,
+          "badcut": 0,
+          "obstaclesHit": 0,
+          "obstaclesDodged": 1
+        },
+        "kineticJoules": 41.36463147346641,
+        "kcal": 0.03954553678151664,
+        "peakComboSongTimeMs": 11489.483000001725
+      },
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:05:15.867Z"
+    },
+    {
+      "name": "cancel",
+      "status": "not-run",
+      "checks": []
+    },
+    {
+      "name": "invalid",
+      "status": "not-run",
+      "checks": []
+    },
+    {
+      "name": "cache",
+      "status": "fail",
+      "checks": [
+        {
+          "name": "unavailable: generation succeeds without cache",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-valid\",\"sourceHash\":\"66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734\",\"difficulty\":\"normal\",\"notes\":13,\"warnings\":[\"cacheUnavailable\"]}"
+        },
+        {
+          "name": "unavailable: cache failure is retained in chart warnings",
+          "ok": true,
+          "detail": "[\"cacheUnavailable\"]"
+        },
+        {
+          "name": "unavailable: visible honest cache-fallback message",
+          "ok": false,
+          "detail": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your own audio\nChoose your own audio\n\nMP3, WAV, OGG or M4A · up to 5 minutes · Use mouse or keyboard for this step.\n\n←\nPrevious\nChoose your own audio\n2 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nL\nSELECTED TRACK\nlifecycle-valid\n\n0:12 · 13 notes\n\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nWatch synthetic performer\nPlanned motion · no camera\nTry level with dataset\nAnnotated poses · no webcam\n\nEnable sound with the mouse or keyboard before starting.\n\n←\nPrevious\nReady when you are\n1 of 6\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click"
+        },
+        {
+          "name": "quota: generation succeeds without cache",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-valid\",\"sourceHash\":\"66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734\",\"difficulty\":\"normal\",\"notes\":13,\"warnings\":[\"cacheUnavailable\"]}"
+        },
+        {
+          "name": "quota: cache failure is retained in chart warnings",
+          "ok": true,
+          "detail": "[\"cacheUnavailable\"]"
+        },
+        {
+          "name": "quota: visible honest cache-fallback message",
+          "ok": false,
+          "detail": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your own audio\nChoose your own audio\n\nMP3, WAV, OGG or M4A · up to 5 minutes · Use mouse or keyboard for this step.\n\n←\nPrevious\nChoose your own audio\n2 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nL\nSELECTED TRACK\nlifecycle-valid\n\n0:12 · 13 notes\n\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nWatch synthetic performer\nPlanned motion · no camera\nTry level with dataset\nAnnotated poses · no webcam\n\nEnable sound with the mouse or keyboard before starting.\n\n←\nPrevious\nReady when you are\n1 of 6\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click"
+        }
+      ],
+      "startedAt": "2026-10-24T23:05:15.868Z",
+      "reproduction": "Before load, deny IndexedDB access or make real readwrite transactions throw QuotaExceededError; upload the synthesized WAV and inspect the visible fallback notice.",
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:05:31.861Z"
+    },
+    {
+      "name": "context",
+      "status": "fail",
+      "checks": [
+        {
+          "name": "menu: actual context-loss extension available",
+          "ok": true
+        },
+        {
+          "name": "menu: useful visible graphics failure or successful recovery",
+          "ok": false,
+          "detail": "{\"before\":{\"state\":\"SELECT\",\"pauseReason\":null,\"status\":\"\",\"error\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":false,\"trackingReady\":false,\"figureAvailable\":false,\"audioReady\":false,\"loading\":false,\"mapReady\":false,\"arrangementReady\":false,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":0,\"stage\":\"\"},\"selection\":null,\"resources\":{\"geometries\":64,\"textures\":13,\"programs\":27,\"contextLost\":true,\"runtimeListeners\":12},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":0,\"durationMs\":0,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":false,\"rightPresent\":false,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\",\"judgementSeq\":0},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null},\"after\":{\"state\":\"SELECT\",\"pauseReason\":null,\"status\":\"\",\"error\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":false,\"trackingReady\":false,\"figureAvailable\":false,\"audioReady\":false,\"loading\":false,\"mapReady\":false,\"arrangementReady\":false,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":0,\"stage\":\"\"},\"selection\":null,\"resources\":{\"geometries\":64,\"textures\":13,\"programs\":27,\"contextLost\":true,\"runtimeListeners\":12},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":0,\"durationMs\":0,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":false,\"rightPresent\":false,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\",\"judgementSeq\":0},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null},\"text\":\"SIGN SABER\\nCamera not set up\\nMouse / keyboard to browse · Esc to pause\\nMUSIC LIBRARY\\nChoose your music\\nP\\nPamgaea\\nKevin MacLeod\\n2:48 · Tempo unclear\\nE\\nElectro Cabello\\nKevin MacLeod\\n3:10 · Tempo unclear\\nC\\nCipher\\nKevin MacLeod\\n3:51 · Tempo unclear\\n←\\nPrevious\\nChoose your music\\n1 of 2\\n→\\nNext\\n\\nIllustrative upper body · camera not set up\\n\\nSELECTED TRACK\\nSelect a track\\nDIFFICULTY\\nEasy\\nNormal\\nHard\\nEnable sound\\nMouse or keyboard\\nWatch synthetic performer\\nPlanned motion · no camera\\nTry level with dataset\\nAnnotated poses · no webcam\\n\\nChoose a track to begin.\\n\\n←\\nPrevious\\nReady when you are\\n1 of 6\\n→\\nNext\\n\\nOpen palm to move. Point to click. Open again before the next click.\\n\\nOpen palm · move\\nPoint · click\\nOpen again before the next click\"}"
+        },
+        {
+          "name": "menu: no zombie scoring/audio run",
+          "ok": true,
+          "detail": "{\"state\":\"SELECT\",\"songTimeMs\":null}"
+        },
+        {
+          "name": "menu: no zombie render callback loop while context remains lost",
+          "ok": false,
+          "detail": "{\"callbacksAfterLoss\":172}"
+        },
+        {
+          "name": "play: actual context-loss extension available",
+          "ok": true
+        },
+        {
+          "name": "play: useful visible graphics failure or successful recovery",
+          "ok": false,
+          "detail": "{\"before\":{\"state\":\"PLAYING\",\"pauseReason\":null,\"status\":\"Get ready.\",\"error\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":true,\"figureAvailable\":true,\"audioReady\":true,\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":1,\"stage\":\"ready\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":84,\"textures\":13,\"programs\":29,\"contextLost\":true,\"runtimeListeners\":12},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":100,\"combo\":1,\"multiplier\":1,\"accuracy\":1,\"songTimeMs\":1505.1763333363124,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"perfect\",\"judgementSeq\":1},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":1513.747000002979},\"after\":{\"state\":\"PLAYING\",\"pauseReason\":null,\"status\":\"Get ready.\",\"error\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":true,\"figureAvailable\":true,\"audioReady\":true,\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":1,\"stage\":\"ready\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":84,\"textures\":13,\"programs\":29,\"contextLost\":true,\"runtimeListeners\":12},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"hud\":{\"score\":200,\"combo\":2,\"multiplier\":1,\"accuracy\":1,\"songTimeMs\":2519.728666666666,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"perfect\",\"judgementSeq\":2},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":2579.7816666726285},\"text\":\"SIGN SABER\\nSYNTHETIC PERFORMER · planned motion · no camera\\nMouse / keyboard to browse · Esc to pause\\n◆\\nSYNTHETIC PERFORMER · planned motion · no camera\\nSCORE\\n200\\nCOMBO\\n×1\\n2\\nACCURACY\\n100.0%\\nLeft hand\\nNo gesture\\n0%\\nBeam charge\\nRight hand\\nNo gesture\\n0%\\nBeam charge\\nPERFECT\\n0:02\\n0:12\\n\\nCallback / CPU samples only. GPU timing and live verification unavailable.\\n\\nExport diagnostics\"}"
+        },
+        {
+          "name": "play: no zombie scoring/audio run",
+          "ok": false,
+          "detail": "{\"state\":\"PLAYING\",\"songTimeMs\":2579.7816666726285}"
+        },
+        {
+          "name": "play: no zombie render callback loop while context remains lost",
+          "ok": false,
+          "detail": "{\"callbacksAfterLoss\":200}"
+        }
+      ],
+      "startedAt": "2026-10-24T23:05:31.861Z",
+      "reproduction": "On the menu and separately during performer play, call the canvas WEBGL_lose_context extension. Check visible failure/recovery, halted audio/scoring and bounded render callbacks.",
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-24T23:05:57.155Z"
+    },
+    {
+      "name": "cycles",
+      "status": "not-run",
+      "checks": []
+    },
+    {
+      "name": "hidden",
+      "status": "not-run",
+      "checks": []
+    },
+    {
+      "name": "tiers",
+      "status": "not-run",
+      "checks": []
+    }
+  ],
+  "completedAt": "2026-10-24T23:06:07.257Z",
+  "passed": false
+}

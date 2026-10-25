@@ -6,6 +6,12 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:53:29+05:30 — Preserve concurrent camera work before merging PR #9
+
+- Changed: Normally integrated main 5cacf9b, preserving its corner camera view and stall recovery rather than overwriting concurrent work.
+- Validation: Full npm run check passed after integration (560 application tests, typecheck/lint/build and three bundle regressions; all ten chunks pass, largest 366456 bytes). Docs tests and link checks passed. This documentation entry records tested integrated source 9f89231dbaf724b2aaa2902028e3d45abaf223e4.
+- Limits: The earlier clean-clone/browser receipt stays tied to source 886f7be; it is not relabelled as a camera test or a browser run of this newer source. Live-camera and release gates remain open.
+
 ## 2026-10-25T05:50:47+05:30 — Verify PR #9 from a fresh committed clone
 
 - Changed: Retained the initial old-banner harness failure and corrected clean-clone drill receipts under docs/evidence/pr-audit-release-drill and pr-audit-release-drill-fixed; linked current evidence from README and docs17. This documentation commit records tested application/harness source 886f7beb990af721bd2faf4292cc9260c97379fb.

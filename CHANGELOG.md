@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:46:45+05:30 — Keep the release drill aligned with neutral run screens
+
+- Changed: Normally integrated merged PRs #7/#8. The release drill now uses the existing stats diagnostics to assert the synthetic-performer evidence lane and camera-free provenance instead of requiring a removed source banner. Native UI actions and DOM judgement counts still drive the journey.
+- Why: Current main intentionally uses neutral run copy; the old banner predicate would reject a successful synthetic session.
+- Validation: The initial clean clone installed and passed the full 560-test application check and bundle gate. Release-drill unit tests and documentation checks are run before this fix commit. The initial old-harness browser attempt and corrected end-to-end run are recorded separately after completion.
+- Limits: Full corrected browser validation is still pending here; no live-camera, audible-sync or performance claim is added.
+
 ## 2026-10-25T05:43:08+05:30 — Record missing-browser release-drill failures
 
 - Changed: Normally integrated current main into the release-drill branch, preserving the README showcase and release-drill instructions. `scripts/cdp-client.mjs` now rejects browser spawn errors through its awaited startup path; `scripts/release-drill.test.mjs` covers a missing executable.

@@ -6,7 +6,7 @@ The development workflow also occasionally includes collaboration with **Devin**
 
 ## 2026-10-25 — Release-drill audit fix
 
-- Codex reviewed the release harness for false outcomes, cleanup and source evidence, then fixed an unhandled missing-browser spawn error with a focused regression. It normally integrated current main, preserved README instructions and checked the unit/browser regressions plus documentation links; the final integrated journey is recorded separately.
+- Codex reviewed the release harness for false outcomes, cleanup and source evidence, then fixed an unhandled missing-browser spawn error with a focused regression. The integrator also replaced a stale source-banner predicate with the existing read-only evidence-lane export after combining the guides and eight-song library. It normally integrated current main, preserved README instructions and checked the unit/browser regressions plus documentation links; the final integrated journey is recorded separately.
 
 ## 2026-10-25 — Prepared PR-integration verification
 

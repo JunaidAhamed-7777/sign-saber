@@ -393,7 +393,7 @@ export async function browserJourney(clone, temporary, options, report, step) {
     };
     try {
       await step("BOOT → SELECT offline", async () => {
-        await cdp.send("Page.navigate", { url: origin }, pageSession);
+        await cdp.send("Page.navigate", { url: `${origin}/?stats=1` }, pageSession);
         await state("select");
         await waitFor(
           () =>
@@ -432,13 +432,20 @@ export async function browserJourney(clone, temporary, options, report, step) {
         await state("playing");
         await state("results", PERFORMANCE_TIMEOUT_MS);
         const results = await evaluate(
-          `(()=>{const counts=Object.fromEntries([...document.querySelectorAll('.judgement-row')].map(e=>[e.className.match(/j-(\\w+)/)[1],Number(e.querySelector('.count').textContent)]));return {counts,hits:(counts.perfect??0)+(counts.great??0)+(counts.good??0),summary:document.querySelector('.result-stats')?.innerText,label:document.querySelector('.replay-label')?.textContent}})()`,
+          `(()=>{const counts=Object.fromEntries([...document.querySelectorAll('.judgement-row')].map(e=>[e.className.match(/j-(\\w+)/)[1],Number(e.querySelector('.count').textContent)]));return {counts,hits:(counts.perfect??0)+(counts.great??0)+(counts.good??0),summary:document.querySelector('.result-stats')?.innerText}})()`,
+        );
+        results.source = await evaluate(
+          `(async()=>{const evidence=await window.__signSaberDiagnostics?.evidence();return {lane:evidence?.lane,performerTrial:evidence?.performerTrial}})()`,
         );
         diagnostics.results = results;
         if (!(results.hits > 0))
           throw new Error("Performer results did not show non-zero hits");
-        if (!results.label?.includes("SYNTHETIC PERFORMER"))
-          throw new Error("Synthetic performer label missing");
+        if (
+          results.source.lane !== "synthetic-performer-logic-replay" ||
+          results.source.performerTrial?.synthetic !== true ||
+          results.source.performerTrial.camera !== false
+        )
+          throw new Error("Synthetic performer source evidence missing");
         return results;
       });
       await step("Results → Retry → playing → pause → Songs", async () => {

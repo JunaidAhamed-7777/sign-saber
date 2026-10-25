@@ -6,6 +6,26 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25 06:53 +05:30 — Smooth display of hand cursors and avatar between tracking samples
+
+- **Changed:** `app/src/render/renderer.ts` now eases drawn hand cursors, guide lines and trail/blade inputs each frame toward `predictCursor` (capped by `EXTRAPOLATE_MAX_MS`) using new display-only `HAND_DISPLAY_SMOOTH_MS = 45`; `AVATAR_SMOOTH_MS` 55→85 and `AVATAR_ROOT_SMOOTH_MS` 70→95 (`app/src/core/constants.ts`, `docs/02-architecture.md`).
+- **Why:** tracking arrives at ~9–10 Hz, so cursors and the avatar visibly stepped at 60 fps.
+- **Validation:** `npm run check` in `app/`; `node scripts/check-docs.mjs`.
+- **Limits:** display only — scoring still uses capture-time samples. Not checked with a live webcam; longer avatar smoothing adds slight visual lag.
+
+## 2026-10-25T06:47:25+05:30 — Showcase the desktop experience and Track 4 submission
+
+- Changed: Rebuilt README around preserved gameplay GIFs, full-width fresh desktop menu/results, current local content, concise setup, architecture, reproducible evidence and the supplied **Make Room for Play** track. Updated the documentation index, player/contributor/troubleshooting guides, scripts guide and gesture/scoring specifications after normally integrating concurrent gameplay commit `8fd22f6`. Removed superseded interface WebPs and old gameplay stills; retained historical receipts and all three GIFs unchanged.
+- Why: Present the strongest working experience clearly, make the submission case persuasive, and replace stale three-song/test/bundle claims with measured current-source results. Desktop remains the product priority.
+- Validation: Integrated source `8f0e318` passed `npm run check`: 569 tests in 55 files, typecheck, lint, production build and three bundle regressions. Fresh 24-chart replay produced 4,447 hits (288 Perfect, 4,159 Good), zero misses/bad cuts/wall collisions across 324 walls; all 24 planner reports and 56 full/Calm PCM hashes passed. Ten production JS chunks pass the 500,000-byte budget (largest 370,024 bytes). A real production Pamgaea run completed with 84 hits and generated new native 1440×900 screenshots; GIF SHA-256 hashes are unchanged. Documentation tests, local links, JSON integrity, image/hash checks and whitespace checks passed.
+- Limits: Current generous contact volumes score many early contacts Good; the fresh receipt records the actual grades rather than reusing the earlier all-Perfect result. Browser results were 25,060 score, 45.8% accuracy, D rank, zero misses and 84 best combo. These are synthetic logic/media results, separate from open live-camera, human comfort, accessibility and performance gates. Historical lifecycle and GIF evidence retain their own source revisions.
+
+## 2026-10-25T06:41:51+05:30 — Refine the rhythm arena interface
+
+- Changed: Shared menu styling, Select/App/pause/results presentation, authored control icons and deterministic geometric song sleeves. Removed redundant heading labels and repeated card borders; strengthened music/action hierarchy, preserved song context and corrected paused/results status. Narrow menus stack songs and keep full-size actions reachable by overlay scrolling. Updated DESIGN and UI/menu specifications; added status regressions and a real production menu capture with a source-hashed browser receipt.
+- Why: Give the arena a deliberate control-booth interface while preserving the clear human stage, palette, input contracts and readiness guards.
+- Validation: `npm run check` passed 569 tests, typecheck, lint, production build and three bundle regressions; all ten JS chunks remain below 500,000 bytes. Sixteen production browser checks passed, including five viewport sizes, 72 px targets, protected desktop stage, keyboard, preview, Calm/reduced motion, invalid-audio recovery and pause. Documentation tests/link checks, design lint, formatting and whitespace checks passed; Impeccable detector returned no findings.
+- Limits: The premium static audit reported 18 reviewed false positives from lowercasing React `Select`/`Button` component names; real buttons dispatch through the shared target registry and no native select exists. Production browser logged one existing Three.js already-non-indexed warning. No live-camera, standing-distance, screen-reader or performance acceptance is claimed. Receipt: [frontend-polish.json](docs/evidence/2026-10-25-frontend-polish.json).
 ## 2026-10-25T07:55:00+05:30 — Forgiving contact: slower blocks, bigger hit zones, any hand shape
 
 - Changed: Blocks approach 2.17× slower than authored (another 55% on top of 1.4×). The judged contact zone is 2.5× the visible block and palm radius (`HIT_ZONE_SCALE`, applied by the session; contact geometry functions stay exact). Slash and smash blocks are hit by any hand moving at least `CONTACT_MIN_SPEED` through the zone, regardless of gesture; wrong-gesture bad cuts are gone. Beams still need a point. Tests updated (runtime count-in waits for play; lane-relative session positions; performer no longer asserts Perfect timing because larger zones register earlier).

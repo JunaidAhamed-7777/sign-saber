@@ -330,6 +330,7 @@ This is the shared constants registry. `core/constants.ts` now exports these nam
 | --- | --- |
 | `SCORE_PERFECT` / `SCORE_GREAT` / `SCORE_GOOD` | 100 / 70 / 40 |
 | `SCORE_DODGE` | 50 |
+| `SCORE_WALL_PENALTY` | 100 | Points removed (never below zero) when the body touches a wall; walls never break the combo, pause or end the run |
 | `MULTIPLIER_LADDER` | `[[0,1],[5,2],[15,4],[30,8]]` (combo ≥ threshold → multiplier) |
 | `RANK_THRESHOLDS` | SS ≥ 0.95, S ≥ 0.90, A ≥ 0.80, B ≥ 0.65, C ≥ 0.50, else D (accuracy uses unmultiplied base points; see [07]) |
 | `HAND_MASS_KG` | 2.5 (hand + forearm effective mass for kinetic energy) |
@@ -426,6 +427,7 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `LEAN_TILT_ASSIST_DEG` | 15 | Optional shoulder-tilt assist, with translation evidence |
 | `DUCK_HYSTERESIS` | 0.03 | Normalized nose-height hysteresis [STRETCH] |
 | `CALIB_SAMPLE_MS` / `CALIB_HAND_SEEN_MS` | 500 / 2000 | Rest-pose averaging and recent-hand visibility windows |
+| `CALIB_AUTO_CONFIRM_MS` | 1500 | Steady framed time that confirms camera setup and starts the live count-in without a click |
 | `CALIB_ASSUMED_SHOULDER_M` | 0.40 | Assumed shoulder span for the playful physical-speed proxy; not a measurement |
 | `SWING_REFRACTORY_MS` / `SWING_TROUGH_RATIO` | 150 / 0.5 | Motion-proxy peak separation and trough rule |
 
@@ -452,6 +454,7 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `ENERGY_HOP_MS` | 100 | Energy envelope sampling for `analysis.energy` |
 | `TEMPO_PRIOR_SIGMA_OCT` | 0.9 | Log-Gaussian tempo prior width, octaves |
 | `TEMPO_MIN_CONFIDENCE` | 0.35 | Below this → onset-only mode with a warning badge |
+| `TEMPO_REFINE_RANGE` / `TEMPO_REFINE_STEP` | 0.01 / 0.0001 | Fine beat-period search span and step, as fractions of the period; maximises supported onsets on a rigid grid ([08 §5](08-beatmap-generation.md#5-tempo-estimation-dsptempots)) |
 | `BEAM_SUSTAIN_MS` / `BEAM_SUSTAIN_DB` | 500 / 3 | Mid/high-band power within this many dB for this long → beam candidate |
 | `BEAM_SUSTAIN_PERCENTILE` / `BEAM_SUSTAIN_MAX_DB` | 10 / 12 | Otherwise the song's most sustained mid/high onsets (this percentile of their dB variation) qualify, never above the ceiling |
 | `BEAM_MIN_SPACING_MS` | `{ easy: 12000, normal: 8000, hard: 6000 }` | Minimum time between beam notes |
@@ -465,7 +468,7 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `PLAYBACK_DECODE_SR` | 44100 Hz | Offline playback decode rate before a live `AudioContext` exists; keeps full-band music (analysis still uses `ANALYSIS_SR`) |
 | `GAPLESS_LENGTH_TOLERANCE_SAMPLES` | 2 | Extra output-sample tolerance (plus the resampling ratio) when matching decoded MP3 length to iTunSMPB trimmed/untrimmed counts |
 | `ANALYSIS_CACHE_MAX` | 30 | Complete source-analysis groups kept, including their difficulty maps |
-| `GENERATOR_VERSION` | 3 | Cache key component |
+| `GENERATOR_VERSION` | 4 | Cache key component |
 
 ### DSP windows, section detection and playable flow
 
@@ -519,12 +522,31 @@ These are **initial, unmeasured design defaults** used by [08](08-beatmap-genera
 | `BAND_LOW_HZ` / `BAND_MID_HZ` / `BAND_HIGH_HZ` | 20–150 / 150–2000 / 2000–10000 |
 | `ANALYSER_SMOOTH` / `ANALYSER_LOW_ATTACK` | 0.6 / 0.3 — retained previous value per 60 Hz frame; actual blend uses `1 − retention^(dt · 60)` |
 | `ANALYSER_PEAK_DECAY_S` / `ANALYSER_PEAK_FLOOR` / `ANALYSER_RMS_GAIN` | 4 / 0.15 / 3 — adaptive band peak release, normalization floor and RMS scale |
-| `SFX_POLYPHONY` | 6 simultaneous one-shots per sound |
-| `SFX_PITCH_JITTER_CENTS` | 69 (≈ ±4 %) |
+| `SFX_POLYPHONY` | 6 simultaneous one-shots per sound (default; see `SFX_VOICE_LIMITS`) |
+| `SFX_PITCH_JITTER_CENTS` | 35 (≈ ±2 %) — seeded cosmetic jitter on non-tonal hits only |
 | `SFX_JUDGEMENT_RATE` | `{ perfect: 1.03, great: 1, good: 0.97 }` — deterministic playback-rate modifier |
 | `SFX_STOP_RAMP_S` | 0.01 — fade an evicted one-shot before stopping |
 | `MASTER_GAIN_DEFAULT` / `SFX_GAIN_DEFAULT` | 0.8 / 1.0 — persisted volume defaults |
 | `DUCK_DB` / `DUCK_ATTACK_S` / `DUCK_RELEASE_S` | −1.5 / 0.03 / 0.4 — music ducking on the drop sting |
+| `SFX_LOUDNESS_LUFS` | Per-sound BS.1770 momentary loudness target for the 28 synthesized cues (−42 … −15 LUFS); its keys define `SfxId`. Table and rationale in [15 §6](15-audio-playback-sync.md#6-sfx-bus-and-audio-feel-audiosfxts) |
+| `SFX_PEAK_CEILING_DBFS` / `SFX_PEAK_KNEE` | −5 / 0.85 — rendered-sample ceiling and soft-knee start (fraction of the ceiling) |
+| `SFX_CALM_LOUDNESS_DB` / `SFX_CALM_LOWPASS_HZ` | −3 / 4500 — Calm renders: quieter and low-passed |
+| `SFX_SEED` | `0x51675abe` — synthesis seed (mixed with the sound id) and cosmetic-jitter seed |
+| `SFX_DEFAULT_ROOT_HZ` / `SFX_UI_ROOT_HZ` | 523.25 / 880 — pitched-cue root octave start (and fallback root) / fixed menu root |
+| `SFX_COMBO_STEP_SEMITONES` / `SFX_MILESTONE_SEMITONES` | `{ major: [0, 0, 4, 7], minor: [0, 0, 3, 7] }` / `{ major: [0, 4, 7, 12], minor: [0, 3, 7, 12] }` — reward transposition by multiplier-ladder / milestone index |
+| `SFX_TONIC_FFT` / `SFX_TONIC_FRAMES` | 4096 / 40 — tonal-centre FFT size and frame count |
+| `SFX_TONIC_MIN_HZ` / `SFX_TONIC_MAX_HZ` / `SFX_TONIC_MIN_CORRELATION` | 130 / 1760 / 0.5 — chroma band and minimum key-profile correlation; weaker estimates keep the default root |
+| `SFX_MAX_VOICES` | 24 — global voice cap across sounds |
+| `SFX_VOICE_LIMITS` | `{ charge: 2, resultsHigh: 1, resultsLow: 1, drop: 2, wallWarn: 3, milestone: 2, combo: 3, uiEnable: 1, uiHover: 2 }` — per-sound overrides of `SFX_POLYPHONY` |
+| `SFX_LIMITER` | `{ thresholdDb: −3, kneeDb: 0, ratio: 20, attackS: 0.001, releaseS: 0.08 }` — bus safety limiter; the bus trims the compressor's spec makeup gain (≈ 1.71 dB) |
+| `SFX_LIMITER_LOOKAHEAD_S` | 0.006 — compressor pre-delay; future-scheduled cues start this much earlier |
+| `SFX_CACHE_MAX_BUFFERS` | 96 — rendered-buffer LRU bound across voicings |
+| `SFX_BEAT_SNAP_MS` / `SFX_LOOKAHEAD_MS` / `SFX_LATE_SKIP_MS` | 40 / 120 / 20 — early-hit snap to chart time, chart-cue scheduling horizon, skip a scheduled cue later than this |
+| `SFX_PAN_LANE` / `SFX_PAN_HAND` / `SFX_PAN_WALL` / `SFX_PAN_BEAM` | 0.45 / 0.1 / 0.55 / 0.3 — stereo placement of outer lanes, hand bias, wall side, beam hand |
+| `SFX_DYNAMICS_DB` / `SFX_DYNAMICS_FULL_RATIO` | `{ min: −2, max: 1 }` / 2.5 — gesture-hit gain from swing speed relative to the gesture minimum |
+| `SFX_WALL_WARN_LEAD_S` | 0.52 — wall-warning swell start before arrival (its peak) |
+| `SFX_CHARGE_START` / `SFX_CHARGE_CANCEL_DROP` / `SFX_RELEASE_S` | 0.05 / 0.1 / 0.04 — beam-charge cue start, cancel drop from peak, release fade |
+| `SFX_MISS_MIN_GAP_MS` / `SFX_UI_MIN_GAP_MS` / `SFX_BREAK_MIN_COMBO` / `SFX_NEUTRAL_GO_RATE` | 90 / 45 / 10 / 1.25 — miss and hover rate limits, minimum broken combo for the break cue, final neutral tick rate |
 
 ### UI
 
@@ -548,6 +570,8 @@ These are **initial, unmeasured design defaults** used by [08](08-beatmap-genera
 | `MENU_COMPACT_MAX_WIDTH_PX` / `MENU_COMPACT_MAX_HEIGHT_PX` | 1099 / 699 — at or below either bound the side rails reflow above/below the figure stage with grouped inline pages; `ui/theme.css` mirrors both values (asserted by `tests/unit/compactBreakpoint.test.mjs`) |
 | `HUD_TWEEN_TAU_MS` | 90 — exponential damping constant for the displayed HUD score; Calm shows the exact value |
 | `HUD_COMBO_MILESTONES` | `[10, 25, 50, 100]` — unbroken combo counts that show the HUD milestone callout |
+| `HUD_POP_TORSO_CLEAR_FRACTION` | 0.09 — half-width of the central viewport band that projected judgement-pop text is moved out of, so the player's torso stays clear |
+| `HUD_COMBO_BREAK_MIN` | 5 — smallest broken combo that shows the brief HUD “Combo ended” note |
 
 Menu defaults are initial unmeasured values; tune with held-out menu fixtures and live standing-distance trials, recording changes with their test results. `DWELL_SELECT_MS` is retired: point-click navigation is CORE rather than an optional dwell mode. Runtime central exports remain a P0 implementation task.
 
@@ -580,12 +604,12 @@ Menu defaults are initial unmeasured values; tune with held-out menu fixtures an
 | `DATASET_CAMERA_SWEEP_FIRST_HOLD_MS` | 20000 | `?reel=sweep` calibration-photo hold before cycling every photo by stream time |
 | `DATASET_CAMERA_TRANSITION_GUARD_MS` / `DATASET_CAMERA_TIMELINE_CAPACITY` | 300 / 1024 | Captures this soon after a drawn-photo change are not attributed; bounded draw history |
 | `DATASET_CAMERA_MATCH_SHOULDER_FRACTION` / `DATASET_CAMERA_PCK_SHOULDER_FRACTION` | 0.5 / 0.5 | Dataset-camera evaluation: wrist-to-hand match radius and PCK threshold, in annotated shoulder widths |
+| `PERFORMER_REEL_RENDER_W` / `PERFORMER_REEL_RENDER_H` / `PERFORMER_REEL_CAMERA_DISTANCE_M` | 960 / 540 / 3 | Synthetic performer reel: avatar render size and virtual front-camera distance |
+| `PERFORMER_REEL_IDLE_SONG_MS` / `PERFORMER_REEL_TRUTH_POOL` | −60000 / 128 | Rest-pose sample time outside a session; reused truth objects for evaluation |
 | `JUDGEMENT_TRACE_CAPACITY` | 8192 | Typed judgement-trace events per session; further events are counted as explicit overflow |
 | `ASSET_MODEL_MAX_BYTES` / `MAX_LIVE_OBSTACLES` | 1048576 / 8 | Model admission and pooled wall capacity |
 | `GRAVITY_MPS2` / `GLYPH_FACE_OFFSET_M` | 9.8 / 0.31 | Cosmetic ballistic gravity and block-front glyph plane |
 | `ARENA_REACTIVE_GAIN` / `SIL_HEAD_RADIUS_M` | 2 / 0.11 | Actual audio-energy emission gain / nose-anchored head marker |
-| `SFX_SYNTH_DURATION_S` / `SFX_SYNTH_GAIN` | 0.18 / 0.12 | Original procedural SFX fallback buffer duration/gain |
-| `SFX_SYNTH_FREQUENCIES` | `{ slash: 880, smash: 110, beam: 1320, miss: 90, badcut: 180, dodge: 440, count: 660 }` | Procedural fallback frequencies in Hz; does not claim authored OGG assets |
 
 These are implementation defaults and development-fixture tuning, not held-out quality results. `BodyCalibration` additionally carries a current `identity` string covering camera/crop/player/mapping and `capturedAt` on the main performance timeline; its presence alone never establishes readiness.
 
@@ -670,14 +694,15 @@ app/
 │       ├── tracks/<slug>/ audio.mp3, easy|normal|hard.json, cover.webp, README.md
 │       ├── models/        GLB: block_fractured.glb, glyphs.glb, armor.glb, pylon.glb
 │       ├── fonts/         Orbitron, Rajdhani (woff2, bundled for offline)
-│       └── sfx/           slash, smash, poof, miss, badcut, dodge, combo, drop, count (ogg)
+│       └── sfx/           empty: every SFX is synthesized at runtime by src/audio/sfxSynth.ts
 ├── src/
 │   ├── main.tsx           bootstraps renderer + React root
 │   ├── App.tsx            screen router keyed on machine state
 │   ├── core/              loop.ts, stateMachine.ts, events.ts, clock.ts, constants.ts, flags.ts
 │   ├── tracking/          camera.ts, tracking.worker.ts, workerClient.ts, filters.ts, body.ts, wave.ts
 │   ├── gestures/          classifier.ts, cursor.ts, blade.ts
-│   ├── audio/             decode.ts, songClock.ts, player.ts, analyser.ts, sfx.ts
+│   ├── audio/             decode.ts, songClock.ts, player.ts, analyser.ts, sfx.ts, sfxSynth.ts, sfxBank.ts,
+│   │                      sfxRender.worker.ts, sfxDirector.ts, sfxMetrics.ts, tonic.ts
 │   ├── beatmap/           types.ts, validate.ts, generator.worker.ts, generatorClient.ts, assign.ts, cache.ts, bundled.ts,
 │   │                      dsp/ (resample, fft, stft, flux, peaks, tempo, beats, energy)
 │   ├── game/              spawner.ts, liveObjects.ts, hit.ts, judge.ts, score.ts, kinetic.ts, session.ts

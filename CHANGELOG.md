@@ -6,6 +6,91 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T06:05:00+05:30 — Camera play on the main menu
+
+- Changed: **Set up camera** sits next to Enable sound on the first play page. Once calibrated, the main action becomes **Play with camera** (live play); Watch auto-play and Play level stay available. Holding a steady, framed pose for `CALIB_AUTO_CONFIRM_MS` confirms camera setup and starts the live count-in without returning to the mouse.
+- Why: User asked to integrate the camera properly; setup and live start were hidden in Settings and required mouse clicks while standing back.
+- Validation: Full `npm run check` passed. Live webcam behaviour still needs the user's hands-on test.
+- Limits: No consented live session has been recorded by the agent.
+
+## 2026-10-25T05:45:00+05:30 — Walls only cost points
+
+- Changed: A wall hit now deducts `SCORE_WALL_PENALTY` (100, floored at zero) and no longer breaks the combo. Walls never pause or stop the run: frames without a body cannot hit a wall, and an unobserved wall passes with neither penalty nor reward. Merged the remote README showcase (#10) with the user's local README edit.
+- Why: User direction — touching a red wall should just reduce points. The old body-tracking pause during walls made live play feel like it ended whenever tracking flickered.
+- Validation: Full `npm run check` passed (482 tests), including new score and session assertions.
+- Limits: No live-camera play yet; that integration follows.
+
+## 2026-10-25T05:41:22+05:30 — Audit and integrate PR #6 bundle enforcement
+
+- Changed: Normally integrated current main, preserving its README and camera/game changes. CI now runs the complete application check including bundle budgets. Added the existing postprocessing dependency to its own chunk; no dependency or runtime feature was added.
+- Why: Review found CI skipped the budget command, and the integrated application entry measured 530999 bytes, exceeding the unchanged 500000-byte limit.
+- Validation: Full npm run check passed (482 application tests, three budget regressions, typecheck/lint/build); all ten chunks pass, largest 363984 bytes. Docs checker tests (2) and local-link checker passed. A fresh headless production-menu smoke reached SELECT with three songs and a canvas, with zero runtime errors; browser cleanup is recorded separately if it fails.
+- Limits: This validates build integration and camera-free startup, not live-camera play, audible synchronization or release performance gates.
+## 2026-10-25T05:35:00+05:30 — README quick start
+
+- Changed: Rewrote the README run section as a quick start: requirements, clone/install/run commands, the play flow (pick song, Enable sound, Watch auto-play or Play level, pause), gesture summary, command table and troubleshooting.
+- Why: User asked for how-to-run instructions in the README.
+- Validation: Documentation checks passed.
+- Limits: Camera play is described as a later step; it is paused by the user.
+
+## 2026-10-25T05:25:00+05:30 — Synthetic performer reel for the dataset camera
+
+- Changed: new `tracking/performerReel.ts` renders the skinned avatar (`AvatarFigure.poseFromJoints`, natural variant, no outline) in a plain room from a virtual front camera framed to `PERFORMER_SHOULDER_WIDTH_NORM`, posed each frame from `Choreography`/`performerJoints` on the session song clock (rest pose outside a session; arm and face depth from the rig's proportions), drawn into the dataset-camera canvas. Enabled with `?camera=dataset&reel=performer`; evidence lane `dataset-camera-synthetic-performer` (reels may now declare their lane; the runtime keeps the last lane after the camera stops). `?stats=1` diagnostics expose the current dataset frame image (never for a webcam). Harness lane `performer` (low tier) saves the rendered camera frame. Registered the PERFORMER_REEL_* constants.
+- Why: exercise the real camera → MediaPipe → scoring path with a moving performer.
+- Validation: `npm run check` 424 tests in 50 files and build passed; trial: MediaPipe detected pose and both hands in 100% of rendered frames, handedness 690/690. Calibration was not accepted at 3.5 Hz / 311 ms inference under 82–86% machine load, so no notes were scored through the camera.
+- Limits: synthetic render, not a person or webcam; the avatar's head renders tilted (face error ~0.5 shoulder widths); play-to-results comparison with the logic replay still needs an idle machine.
+
+## 2026-10-25T05:22:18+05:30 — Showcase README with real browser media and measured evidence
+
+- Changed: Rebuilt `README.md` around real auto-play footage, a screenshot feature grid, exact run instructions, gesture controls, Mermaid architecture, measured numbers, source layout, roadmap and asset credits. Added `docs/media/`, the reusable `scripts/capture-readme.mjs` browser harness and `docs/evidence/2026-10-25-readme-metrics.json`; updated `AI_USAGE.md`. Application source is unchanged from remote main `30572bb9cdbe345b79e8e48279019bd7d8b59877`.
+- Why: Make the project page demonstrate its working interactions while replacing stale test/asset/training counts with source-identified evidence. Synthetic auto-play, static annotations, dataset-camera inference and separate training results retain their distinct scopes.
+- Validation: Fresh-worktree install succeeded with an isolated npm cache after the default cache failed with ENOENT/corrupt-tarball warnings. `npm run check` passed typecheck, lint, 481 tests in 55 files and production build. Targeted performer replay passed 13/13: all 1,643 notes Perfect across nine full charts, zero bad cuts/wall collisions. Chart report and asset structural checks passed; asset regressions 3/3; all 56 synthesized full/Calm renders matched the receipt. Real headless Chrome UI completed an 80-second Normal Pamgaea arrangement: 84 Perfect, zero misses/bad cuts, 100.0% accuracy, score 54,700 and rank SS. Capture script syntax and whitespace checks passed. Final documentation tests passed 2/2; 49 Markdown files and 574 local links checked with zero errors. All three GIFs/five screenshots were visually reviewed; ffprobe verified GIF dimensions/durations/frame counts, and all eight media lengths/SHA-256 hashes match the capture receipt.
+- Limits: Captures use synthetic hands through the real judge, not a webcam. Retained COCO photo and oracle-crop training measurements were not rerun. Latest main still emits a >500 kB JavaScript chunk warning; measured entry size is 1,373,350 raw / 412,107 gzip-level-9 bytes. The capture retained a Three.js non-indexed-geometry warning; no runtime exception or live-camera/FPS/latency/release claim was introduced.
+
+## 2026-10-25T05:20:00+05:30 — Back-facing avatar and neutral run labels
+
+- Changed: The arena avatar is rotated 180° so the viewer sees its back; tracking/performer joints keep their screen sides and forward reach goes into the lane (`AVATAR_FACE_AWAY`). The virtual-camera performer pose still faces the camera. Removed the visible dataset/synthetic/no-camera banner, status, captions and pre-roll copy; buttons now read **Play level** and **Watch auto-play**. Added HANDOFF summary of the multi-agent round.
+- Why: Direct user requests: avatar back turned to the player, and no on-screen "dataset instead of camera" wording. Camera integration is paused by the user.
+- Validation: Full `npm run check` passed (481 tests). Exported diagnostics still name the source lane.
+- Limits: Hand shapes on the turned avatar use reflected landmark geometry; not tuned.
+
+## 2026-10-25T04:58:00+05:30 — Rigged avatar replaces the outline and line figure
+
+- Changed: `render/renderer.ts` loads `avatar.glb` (tier `AVATAR_TIER_FIGURE`; low tier and load failure keep the line skeleton) and drives it from tracking/dataset/synthetic frames, an illustrative idle in the menu placeholder (static in Calm), a frozen pose when paused and the saved pose in results; the mask silhouette and line skeleton hide while the avatar shows. The avatar draws after the arena and before a depth-clear sentinel so all targets/effects render over it, in both the post-FX and direct paths. `MenuShell` `Figure` shows the SVG outline only when the avatar failed or is disabled and reports the placeholder state to the renderer. Fixed side mapping for ears/eyes/hand points in retargeting. Placeholder scale/height retuned.
+- Why: The user asked for a moving person model built on the tracked skeleton instead of the stick outline and thin lines.
+- Validation: typecheck and lint clean; 480/480 tests across 54 files. Embedded browser at 1440×900: menu idle shows the holographic avatar; "Watch synthetic performer" pre-roll and play show it driven by the performer with hands on the cursor rings and open/fist hand shapes, targets drawn over it.
+- Limits: No live webcam exercise; dataset-trial visual check not repeated after the merge; no GPU timing. Holographic material and proportions are a first pass.
+
+## 2026-10-25T04:50:00+05:30 — Blade ribbons, hand particles and a cleaner shatter
+
+## 2026-10-25T04:49:34+05:30 — Partial COCO + MPII run evaluated and exported
+
+- Changed: Compact dataset storage so worker processes no longer get a pickled copy of every index row (40.5 MB down to 12.9 MB per worker; items are byte-identical on 36 checked samples). Training now uses 1 DataLoader worker, and export checks the training contract instead of the raw config hash. STATUS.md/STATUS.json, training/README.md and README.md now record the partial run.
+- Why: The user asked to wrap up. The run was stopped at step 1,800 of 7,210 while the machine was memory-thrashing.
+- Validation: Full held-out evaluation (3,776 people, oracle crops): heatmap loss 0.00416 and pooled PCK@0.2 0.334 (COCO 0.393, MPII 0.310), compared with the untrained head (0.01808 / 0.016), the 3-step preflight (0.02128 / 0.014) and a mean-pose-in-crop guess (PCK 0.093). ONNX parity passed on 16 crops (1.8e-6). Unit tests pass 12/12.
+- Limits: This is a partial run: one epoch plus 358 batches, and the schedule never annealed. Results use oracle crops, with no detector and no browser or webcam evaluation. The model was not promoted, and the game keeps MediaPipe.
+
+## 2026-10-25T04:47:08+05:30 — Browser check of the synthesized SFX in the performer trial
+
+- Changed: Documentation only (this entry).
+- Why: Record what the headless browser run of the new SFX wiring actually showed.
+- Validation: Production build served by `scripts/serve.mjs` in headless Chrome (48 kHz, reported output latency 40 ms), driven over CDP with trusted clicks: Pamgaea → Enable sound → hover three buttons → Watch synthetic performer, one Escape pause and Resume, run to results. A read-only page probe counted buffer starts by shape: uiEnable 1, uiHover 3, countNeutral 3 (scheduled exactly −2.000/−1.339/−0.673 s before song start; final tick rate 1.25), smash 69, slash 58, sparkle 130, glint 1, zap 4, poof 4, charge 4, combo 3 (rates 1–1.498), milestone 4 (rates 1–2), wallWarn 2 (scheduled ahead, panned −0.55 toward the left wall), dodge 2, resume 2, resultsHigh 1; hit pans spanned −0.55…0.55, jitter rates 1.01–1.05. Analyser taps measured peak 0.623 on the master output and 0.654 after the SFX limiter, with no full-scale samples. No console errors.
+- Limits: Headless output, nothing heard; analyser polling every 20 ms can miss short peaks. The Vite dev server could not be used for a long run because the pinned HMR socket fails and reloads the page. The second `resume` cue was not traced.
+
+## 2026-10-25T04:43:58+05:30 — Judgement pops at the hit position and combo-break note
+
+- Changed: `core/judgementPops.ts` keeps a pooled `MAX_POPS` queue of terminal judgements with world positions (impact point for hits, hit-plane note position for Miss/Bad Cut) and Great/Good timing error; the runtime pushes on `note:hit`/`note:miss`/`note:badcut`, prunes after `POP_LIFETIME_MS` at the UI tick (so Calm pops also expire) and clears outside PLAYING/PAUSED. The HUD projects each pop through `ui/projection.ts` (mirrors the static play camera: `CAM_POS`, `CAM_LOOK_AT`, `CAM_FOV_DEG`, full viewport) into six pooled slots, moving text out of the central `HUD_POP_TORSO_CLEAR_FRACTION` band; the central single judgement was removed. Breaking a combo of at least `HUD_COMBO_BREAK_MIN` briefly tints the ring/count and shows “Combo ended · N” (cleared by the next hit); no scene shake. Removed the interim `judgementSeq` field. Both constants are registered in docs02.
+- Why: Requested positional pops and readable, non-punishing combo-break feedback.
+- Validation: Typecheck, lint, 426/426 tests in 51 files (new queue test; HUD test renders a projected Great with timing), build, prettier and docs checks passed.
+- Limits: Not screenshot-verified in a browser this step; the projection must follow any future camera choreography. The compact pre-roll overlap item was not started.
+
+## 2026-10-25T04:42:00+05:30 — Hit spark bursts and subtle gameplay camera response
+
+- Changed: `render/sparks.ts` adds a bounded spark pool (`HIT_SPARK_POOL` × `HIT_SPARKS`, one additive Points draw, closed-form motion, seeded directions) for Slash hits (spray flattened into the cut plane) and Smash hits; tier count follows the poof preset and Calm halves it. `render/cameraRig.ts` adds trauma-based smooth value-noise shake (hits, perfect, bad cut, obstacle, kick, drop; capped by `SHAKE_MAX_M`/`SHAKE_MAX_ROLL_DEG`) and a `CAMERA_BASS_FOV_DEG` breath, active only in play and never in Calm.
+- Why: Hit payoff and kinetic response from docs 11–13, kept restrained per the user's playability request.
+- Validation: Lint, build and 64 render/quality/slicer assertions pass; synthetic-performer trial screenshot in native Chrome inspected (planned motion, no camera).
+- Limits: No frame-safety projection test for the shake, no GPU timing, no flashing review.
+
 ## 2026-10-25T04:41:00+05:30 — Dataset camera trial evidence and docs
 
 - Changed: added `docs/evidence/2026-10-25-dataset-camera-trial.md` with the final run's JSON, per-lane app evidence and setup screenshots; docs05 §1.3, docs17 §3, docs24 §2/§9 and README describe the dataset camera, harness and judgement trace (docs05 handedness link now points at the trial report). The camera controller keeps the last stopped source's evidence so failed dataset runs stay inspectable. A refused camera Confirm (readiness lapsed between display and click) now shows the existing framing status instead of being ignored silently. The harness treats a guard flipping between check and click as "not yet clickable", retries guarded clicks like a persistent user, waits for a genuinely new setup preview and handles fatal pauses.
@@ -19,6 +104,42 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: Keep the open PR valid after the chart/avatar/target work landed without reusing old-source results as new proof.
 - Validation: `npm run check` passed (typecheck/lint, 424 assertions/50 suites, production build without a chunk-size warning, three budget regressions). All eight JS chunks pass; the entry is 443013 raw/161024 gzip bytes. Real dataset results: 86 Miss/0 hits; synthetic results: 86 Perfect/0 misses; Songs return passed after both. Menu and play captures show the arena. Root documentation tests/checker and whitespace checks are rerun before commit.
 - Limits/failures: Application assertions passed at `18745d446601dee57176078eef22ea87ab5d2a5c`; one upstream geometry warning and favicon 404s are retained. The temporary probe later exited 1 during optional profile cleanup (Windows EBUSY lockfile), and the profile was left safely in place. The JSON separates this cleanup failure from application results. No performance gain, live-camera or release completion is claimed. Earlier source-identified measurements remain intact.
+## 2026-10-25T04:39:19+05:30 — Results hits by gesture
+
+- Changed: `render/blade.ts` adds per-hand blade ribbons (white-hot core plus tinted additive glow) rebuilt into preallocated buffers from the measured `HandCursor.history`, uniformly resampled by arc length, drawn length eased by a critically damped spring (`BLADE_LENGTH_SPRING_RAD_S`), reset on reacquisition and guarded against degenerate tangents. `render/trails.ts` adds tier-sized GPU particles per hand (two-ring orbit, fist knot, point cone; band-driven orbit speed, twinkle off in Calm) that elongate onto the blade spine. The renderer feeds the latest cursors (visual only) and hides trails in results/paused. Shatter pieces start at `SHATTER_PIECE_SCALE`, vanish by `SHATTER_VISIBLE_FRACTION` of the lifetime, use saturated magenta cross-sections and darker rims; the dev preview no longer has a hands toggle.
+- Why: The doc 12 blade/particle look was missing and busy smash runs still filled the near field with pale pieces.
+- Validation: New `tests/renderTrails.test.ts` (4 assertions: monotone growth to the measured length, hilt on the palm, retract/reset, no NaNs on stationary history, tier draw ranges). Typecheck, lint and build pass; full vitest 364/366 — the two failures are arrangement-audio tests timing out under concurrent Blender/Chrome load (20–60 s each), unrelated to rendering. Native Chrome synthetic-performer screenshots (planned motion, no camera) inspected.
+- Limits: Tip sparks, beam-noise cylinder and hit spark bursts are not implemented; no allocation profile or GPU timing was measured.
+
+## 2026-10-25T04:39:19+05:30 — Results hits by gesture
+
+- Changed: `SessionStats.byType` records hits versus chart totals for slash, smash and beam. `ScoreState` derives totals from the map and counts each hit once (`hit(judgement, type)`); `GameSession` passes the note type and syncs the copy. Results shows “Hits by gesture” bars with gesture icons on the second left page (and a compact page) beside the motion estimate.
+- Why: Requested breakdown; `SessionStats` did not expose it.
+- Validation: New score test checks per-type totals, single counting, snapshot isolation and that per-type hits sum to perfect+great+good; full suite, typecheck and lint passed.
+- Limits: Bad cuts and misses are not split by type; no browser screenshot yet in this step.
+
+## 2026-10-25T04:37:00+05:30 — Blade ribbons, hand particles and a cleaner shatter
+
+## 2026-10-25T04:36:52+05:30 — Original synthesized SFX set and audio feel wiring
+
+- Changed: Replaced the 7-tone placeholder SFX with 28 original cues synthesized from code (`app/src/audio/sfxSynth.ts`: TPT filters, polyBLEP oscillators, FM bells, grains, Karplus–Strong, small room), each normalized to a registered BS.1770 momentary loudness under a soft-knee −5 dBFS ceiling, with Calm renders 3 LU quieter and low-passed. Added `sfxMetrics.ts` (K-weighted loudness, peak, centroid), `sfxRender.worker.ts` + `sfxBank.ts` (off-main-thread rendering, validated LRU cache, inline fallback), `tonic.ts` (Krumhansl–Kessler tonal-centre estimate so pitched gameplay cues follow the track), a rewritten `sfx.ts` bus (per-voice stereo panner, per-sound and global voice caps with oldest-voice stealing, hard-knee limiter with spec makeup trimmed out, scheduled starts/offsets, pause-aware silencing that keeps future cues, full disconnection on stop/dispose) and `sfxDirector.ts`, which subscribes to game, lifecycle, store and DOM events. Wired: hits by gesture and judgement (Perfect sparkle, Great glint layers; lane/hand pan; swing-speed dynamics; early hits snap to chart time), bad cut, rate-limited miss, beam charge riser per hand and zap on fire, wall warning timed to arrival from the wall side, wall hit, dodge, multiplier and milestone rewards transposed by key mode, soft combo break, chart-timed drop sting, countdown ticks for both start paths (pitched for confident tempo, unpitched neutral ticks otherwise), resume, results sting by rank, unlock chime, menu hover/focus/confirm/back/select and hand-pointer hover/arm/activation. `core/runtime.ts` now constructs the director and calls `attach`, `beginSession`, `hands`, `pointer`, `menuAction`, `stop` and `dispose`; the old per-event `play` calls are gone. Registered the new `SFX_*` constants in `constants.ts` and docs/02 (removed `SFX_SYNTH_*`, `SFX_PITCH_JITTER_CENTS` 69 → 35), rewrote docs/15 §6, noted neutral ticks in docs/15 §2.1, and added `scripts/render-sfx.mjs` with the 48 kHz receipt `assets-src/audio/sfx-receipt.json`.
+- Why: Only the bus was constructed and a few events played near-identical noise tones; the performer trial path scheduled no countdown at all. The user asked for a premium, cohesive and tight original SFX set with distinct gesture timbres, judgement layering, musical pitch, restrained loudness and correct pause/quit behaviour. Runtime synthesis renders at the device rate without decode or resampling, makes Calm and per-track tuning cheap, avoids uneven Ogg Vorbis support and means the tested buffers are exactly the played ones. Loudness rather than peak normalization was adopted after measuring that peak-normalized crackly cues varied by 2.8 LU between 44.1 and 48 kHz.
+- Validation: `npm run check` passed (typecheck, lint, 384 tests in 48 files, production build with a separate 21 kB SFX worker chunk). New suites: `sfxSynth.test.ts` (determinism, receipt hashes, loudness/peak/DC/edge bounds, role balance, gesture centroids, Calm, sample-rate consistency, tonal transposition, wall-peak and charge-ping timing, tonic estimates), `sfxBus.test.ts` (unlock, limiter trim, scheduling, per-sound/global caps, jitter, pause boundary, release, retries, bank validation/fallback/LRU/warm order) and `sfxDirector.test.ts` (every event mapping, countdown modes, drop lookahead, store/DOM/pointer cues, charge lifecycle, tuning, disposal); `runtime.test.ts` now separates music from SFX sources and adds an unlock/countdown/quit lifecycle case. `node scripts/render-sfx.mjs --out … --ffmpeg` agreed with ffmpeg ebur128 within 0.1 LU on all 56 renders. Docs checks passed (47 files, 521 links).
+- Limits: Nothing was listened to; balance against each track, audible stacking, the drop duck and audiovisual skew need a recorded listening check on real speakers. Paused-screen menu cues, a pause sting and resume-countdown ticks are silent because pause suspends the shared context. The tonal estimate is a cosmetic heuristic (Electro Cabello correlates only 0.57). There is no master limiter on the music path. docs/14 still describes a `combo` cue on the SS/S rank letter; the implemented cue is the results sting on RESULTS entry.
+
+## 2026-10-25T04:26:00+05:30 — Fine beat-period search; two bundled songs now beat-confident (generator v4)
+
+- Changed: `beatmap/dsp/tempo.ts` adds a fine period search (`TEMPO_REFINE_RANGE` ±1%, `TEMPO_REFINE_STEP` 0.01%) that keeps the period whose best rigid-grid phase aligns the most supported onsets (`gridAlignment`), taking the middle of the maximum plateau. `GENERATOR_VERSION` is 4; the nine bundled maps, receipts and manifest were regenerated. Electro Cabello and Cipher are now confident, beat-snapped maps with manifest BPM 117 and 150; Pamgaea stays onset-only. Docs 02/08/09 and the tracks README record the method, the new visibility/hand-budget validation rules and per-map counts.
+- Why: All three songs disclosed low tempo confidence although their detected tempi were within 1 BPM of the catalog. Hop-quantized span refinement left the period a fraction of a BPM off (94.1/117.2/150.8), so a song-long grid drifted out of the ±35 ms tolerance and alignment confidence collapsed (0.159/0.202/0.230).
+- Validation: Refined tempi are 94.0/117.0/150.0 BPM, matching the publisher catalog (94/117/150), which the analysis never reads; confidence 0.252/0.496/0.558 against the 0.35 gate. A new syncopated 117 BPM synthetic click test fails without the search (117.2 BPM, low confidence) and passes with it; the 128 BPM, 90/180 BPM octave, noise and hum tests still pass. v4 charts: Electro Cabello 117 (57/51/9), 176 (104/64/8), 281 (132/135/14); Cipher 111 (59/41/11), 195 (98/82/15), 266 (108/140/18); Pamgaea unchanged from v3. The performer still reaches every note of all nine charts. `npm run check` passed (typecheck, lint, 376 tests in 46 files, production build); prettier on changed sources and both docs checks passed.
+- Limits: The search maximises the same alignment used for confidence, so it carries a small upward selection bias; catalog agreement is independent evidence only for these three tracks. No annotated beat fixtures or held-out beat F-measure exist yet. Pamgaea's strong onsets are mostly syncopated, so its 94.0 BPM is not claimed as confident.
+
+## 2026-10-25T04:22:47+05:30 — 200% zoom and narrow compact tiers
+
+- Changed: At ≤520 px tall the compact rails hide page captions, button sub-captions and chips and use 16 px button text; at ≤760 px wide compact song cards drop the cover so titles fit. Targets stay at `MENU_TARGET_MIN_PX` with `MENU_TARGET_GAP_PX` gaps. The breakpoint test whitelists these documented sub-tiers.
+- Why: A 720×450 (200% zoom of 1440×900) screenshot showed the bottom rail scrolling and truncated song titles.
+- Validation: After merging main, `npm ci`, typecheck, lint, 369/369 assertions in 48 files (`--testTimeout=90000` because of 100% CPU from parallel jobs), build and prettier check passed. Headless Chrome screenshots at 720×450 (menu, pause), 1024×640 (performer pre-roll) and 1440×900 (pause run summary with autofocused Resume) were inspected.
+- Limits: Zoom was emulated by viewport size, not browser zoom; no human readability check.
 
 ## 2026-10-25T04:20:00+05:30 — Readable, playable charts (generator v3)
 

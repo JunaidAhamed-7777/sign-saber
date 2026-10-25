@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatorVersion": 3,
+  "generatorVersion": 4,
   "song": {
     "title": "Pamgaea",
     "artist": "Kevin MacLeod",
@@ -8,8 +8,8 @@
     "sourceHash": "9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586",
     "audioUrl": "/assets/tracks/pamgaea/audio.mp3",
     "durationMs": 168510.6575963719,
-    "bpm": 94.1,
-    "beatOffsetMs": 225.87453981917065
+    "bpm": 94,
+    "beatOffsetMs": 46.93774864355339
   },
   "difficulty": "normal",
   "approachMs": 2000,
@@ -1621,97 +1621,97 @@
     {
       "id": 0,
       "t": 10216.780045351474,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallLeft"
     },
     {
       "id": 1,
       "t": 20470.975056689345,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallRight"
     },
     {
       "id": 2,
       "t": 30650.340136054423,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallLeft"
     },
     {
       "id": 3,
       "t": 40876.32653061225,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallRight"
     },
     {
       "id": 4,
       "t": 51060.680272108846,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallLeft"
     },
     {
       "id": 5,
       "t": 61302.53968253968,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallRight"
     },
     {
       "id": 6,
       "t": 71527.75510204081,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallLeft"
     },
     {
       "id": 7,
       "t": 81729.88662131519,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallRight"
     },
     {
       "id": 8,
       "t": 91940.8163265306,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallLeft"
     },
     {
       "id": 9,
       "t": 102121.36054421769,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallRight"
     },
     {
       "id": 10,
       "t": 112366.34920634922,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallLeft"
     },
     {
       "id": 11,
       "t": 122589.20634920635,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallRight"
     },
     {
       "id": 12,
       "t": 132796.55328798186,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallLeft"
     },
     {
       "id": 13,
       "t": 143002.13151927438,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallRight"
     },
     {
       "id": 14,
       "t": 153182.04081632654,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallLeft"
     },
     {
       "id": 15,
       "t": 163398.820861678,
-      "durationMs": 1275.239107332625,
+      "durationMs": 1276.595744680851,
       "kind": "wallRight"
     }
   ],
@@ -1757,11 +1757,6 @@
       "intensity": 0.7121269106864929
     },
     {
-      "t": 6577.777777777777,
-      "kind": "kick",
-      "intensity": 0.8973658680915833
-    },
-    {
       "t": 6904.716553287983,
       "kind": "kick",
       "intensity": 0.6064541339874268
@@ -1770,11 +1765,6 @@
       "t": 8000.272108843537,
       "kind": "kick",
       "intensity": 0.8233364224433899
-    },
-    {
-      "t": 8319.36507936508,
-      "kind": "kick",
-      "intensity": 1
     },
     {
       "t": 8809.705215419503,
@@ -2695,11 +2685,6 @@
       "t": 143643.53741496598,
       "kind": "kick",
       "intensity": 1
-    },
-    {
-      "t": 143962.358276644,
-      "kind": "kick",
-      "intensity": 0.637148380279541
     },
     {
       "t": 144444.67120181405,

@@ -157,6 +157,11 @@ export class CameraController {
   observeProcessed(tCapture: number, hands: readonly HandCursor[]): void {
     this.source?.observeProcessed?.(tCapture, hands);
   }
+  /** Diagnostics image of the current DATASET frame; always null for a webcam source. */
+  datasetFrame(): string | null {
+    const source = this.source as (CameraStreamSource & { frameDataUrl?: () => string | null }) | null;
+    return source?.kind === 'dataset' ? (source.frameDataUrl?.() ?? null) : null;
+  }
   /** Current source evidence, or the last stopped source's evidence so failed runs stay inspectable. */
   sourceEvidence(): unknown {
     const current = this.source?.evidence?.();

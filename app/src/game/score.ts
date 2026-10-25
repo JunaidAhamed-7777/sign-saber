@@ -8,13 +8,14 @@
  *
  * Implemented for the first playable spine. Replay/unit evidence is separate from live-camera acceptance.
  */
-import type { BeatmapV1 } from '../beatmap/types';
+import type { BeatmapV1, NoteType } from '../beatmap/types';
 import type { SessionStats } from '../core/types';
 import {
   SCORE_PERFECT,
   SCORE_GREAT,
   SCORE_GOOD,
   SCORE_DODGE,
+  SCORE_WALL_PENALTY,
   MULTIPLIER_LADDER,
   RANK_THRESHOLDS,
 } from '../core/constants';
@@ -52,11 +53,19 @@ export class ScoreState {
     obstaclesHit: 0,
     obstaclesDodged: 0,
   };
+  readonly byType: SessionStats['byType'] = {
+    slash: { hits: 0, total: 0 },
+    smash: { hits: 0, total: 0 },
+    beam: { hits: 0, total: 0 },
+  };
   constructor(map: Pick<BeatmapV1, 'notes' | 'obstacles'>) {
+    // forEach skips holes in sparse test fixtures that only declare a count.
+    map.notes.forEach((note) => this.byType[note.type].total++);
     this.maxScore = maximumScore(map.notes.length, map.obstacles.length);
     this.possibleBase = map.notes.length * SCORE_PERFECT + map.obstacles.length * SCORE_DODGE;
   }
-  hit(judgement: Judgement): number {
+  hit(judgement: Judgement, type?: NoteType): number {
+    if (type) this.byType[type].hits++;
     this.combo++;
     this.maxCombo = Math.max(this.maxCombo, this.combo);
     this.multiplier = multiplierFor(this.combo);
@@ -82,10 +91,13 @@ export class ScoreState {
     this.resolvedBase += SCORE_PERFECT;
     this.breakCombo();
   }
-  obstacleHit(): void {
+  /** A wall hit only costs points (never below zero); the combo and the run continue. */
+  obstacleHit(): number {
     this.counts.obstaclesHit++;
     this.resolvedBase += SCORE_DODGE;
-    this.breakCombo();
+    const penalty = Math.min(this.score, SCORE_WALL_PENALTY);
+    this.score -= penalty;
+    return -penalty;
   }
   dodge(): number {
     const delta = SCORE_DODGE * this.multiplier;
@@ -109,6 +121,11 @@ export class ScoreState {
       rank: rankFor(this.finalAccuracy),
       maxCombo: this.maxCombo,
       counts: { ...this.counts },
+      byType: {
+        slash: { ...this.byType.slash },
+        smash: { ...this.byType.smash },
+        beam: { ...this.byType.beam },
+      },
       kineticJoules,
       kcal,
       peakComboSongTimeMs,

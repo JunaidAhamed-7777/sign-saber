@@ -52,6 +52,7 @@ export default defineConfig({
           groups: [
             { name: 'three', test: /node_modules[\\/]three[\\/]/, maxSize: BUILD_CHUNK_TARGET_BYTES },
             { name: 'react', test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/ },
+            { name: 'postprocessing', test: /node_modules[\\/]postprocessing[\\/]/ },
           ],
         },
       },

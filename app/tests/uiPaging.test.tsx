@@ -68,7 +68,8 @@ describe('figure-centred paged menu structure', () => {
     const html = renderToStaticMarkup(<Select runtime={runtime} />),
       ids = targets(html);
     for (const track of manifest.tracks) expect(ids).toContain(`song:${track.slug}`);
-    expect(ids).not.toContain('camera');
+    // Camera setup is a first-page action, not buried in Settings.
+    expect(ids).toContain('camera');
     expect(ids).toContain('audio');
     expect(ids).toContain('dataset-trial');
     expect(ids).toContain('performer-trial');
@@ -97,6 +98,7 @@ describe('figure-centred paged menu structure', () => {
       'ui:compact-top:next',
       'ui:compact:previous',
       'audio',
+      'camera',
       'dataset-trial',
       'performer-trial',
       'ui:compact:next',
@@ -195,7 +197,7 @@ describe('figure-centred paged menu structure', () => {
       expect.arrayContaining(['difficulty:easy', 'difficulty:normal', 'difficulty:hard']),
     );
     expect(html).not.toMatch(/data-target="dataset-trial"[^>]*disabled/);
-    expect(html).not.toContain('data-target="camera"');
+    expect(html).toContain('data-target="camera"');
   });
   it('keeps confirmation disabled until framing, then shows preparation with persistent Back when armed', () => {
     useStore.setState({
@@ -244,6 +246,7 @@ describe('figure-centred paged menu structure', () => {
       rank: 'A' as const,
       maxCombo: 2,
       counts: { perfect: 1, great: 1, good: 0, miss: 0, badcut: 0, obstaclesHit: 0, obstaclesDodged: 0 },
+      byType: { slash: { hits: 1, total: 4 }, smash: { hits: 0, total: 2 }, beam: { hits: 1, total: 4 } },
       kineticJoules: 20,
       kcal: 20 / 4184 / 0.25,
       peakComboSongTimeMs: 500,

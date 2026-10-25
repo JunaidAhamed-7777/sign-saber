@@ -25,6 +25,8 @@ import {
   SHARD_FLASH_MS,
   SHATTER_DEPTH_FRACTION,
   SHATTER_RECEDE_MPS,
+  SHATTER_PIECE_SCALE,
+  SHATTER_VISIBLE_FRACTION,
 } from '../core/constants';
 import { createShardMaterial, createTargetUniforms } from './blocks';
 
@@ -123,7 +125,10 @@ export class ShatterPool {
       }
       const seconds = age / 1000,
         // Pieces shrink steadily from the burst so the near field clears quickly.
-        fade = 1 - 0.85 * Math.min(1, age / this.lifetimeMs) ** 0.8,
+        // Pieces start slightly smaller than the cube and are gone by SHATTER_VISIBLE_FRACTION of the
+        // lifetime, so a busy run of smashes never fills the near field.
+        fade =
+          SHATTER_PIECE_SCALE * Math.max(0, 1 - age / (this.lifetimeMs * SHATTER_VISIBLE_FRACTION)) ** 0.7,
         // White-hot for SHARD_FLASH_MS (never in Calm), then the fracture faces cool over the lifetime.
         flash = calm ? 0 : Math.max(0, 1 - age / SHARD_FLASH_MS);
       this.tint

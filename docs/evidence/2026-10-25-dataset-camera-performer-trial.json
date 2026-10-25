@@ -1,0 +1,832 @@
+{
+  "schema": 1,
+  "scope": "Dataset-camera trials through the live camera path. Still COCO photos are not a webcam, a person, motion or swings; no webcam, human, latency or release claim.",
+  "recordedAt": "2026-10-24T23:13:05.615Z",
+  "gitHead": "cd6684863c5a5e90005a0fbd32f1ada3fef8ba2d",
+  "dirtyTree": true,
+  "environment": {
+    "node": "v26.8.1",
+    "platform": "win32 10.0.26300",
+    "cpus": "AMD Ryzen 9 5900HX with Radeon Graphics        ",
+    "logicalCpus": 16,
+    "totalMemoryBytes": 16477028352,
+    "headless": false,
+    "browser": "Chrome/155.0.8059.86",
+    "gpuDevices": [
+      {
+        "vendor": "",
+        "device": "AMD Radeon(TM) Graphics",
+        "driver": "31.0.21925.1001"
+      },
+      {
+        "vendor": "",
+        "device": "AMD Radeon RX 6600M",
+        "driver": "32.0.21045.16010"
+      },
+      {
+        "vendor": "",
+        "device": "Microsoft Basic Render Driver",
+        "driver": "10.0.26100.9711"
+      }
+    ]
+  },
+  "commands": {
+    "prepare": "node scripts/prepare-dataset-camera.mjs --coco <training/data/coco2017>",
+    "trial": "node scripts/dataset-camera-trial.mjs --lanes performer --tag performer"
+  },
+  "reel": {
+    "manifestSha256": "6c8ad47f528f33ef741776afcd6807c977371d758e27665cfb82e1f89e0621d2",
+    "createdAt": "2026-10-24T22:18:31.618Z",
+    "generator": {
+      "scriptSha256": "bbe91c0b5ea6add4188686200a13b1ccb2aab9a15a51888ff4a7b2c48a38615b",
+      "seed": 20261025,
+      "summary": {
+        "eligiblePeopleInIndex": 21040,
+        "candidates": 131,
+        "calibrationEligible": 110,
+        "selected": 24,
+        "rejected": {
+          "nose-not-visible": 6427,
+          "too-small": 3856,
+          "left_wrist-unlabelled": 793,
+          "not-upright": 299,
+          "not-frontal": 1547,
+          "not-facing-camera": 601,
+          "left_shoulder-not-visible": 1163,
+          "left_hip-unlabelled": 535,
+          "crop-exceeds-image": 604,
+          "left_elbow-unlabelled": 1619,
+          "right_elbow-unlabelled": 1128,
+          "right_wrist-unlabelled": 374,
+          "leaning": 466,
+          "right_shoulder-not-visible": 1102,
+          "other-person-in-crop": 230,
+          "shoulder-scale": 85,
+          "right_hip-unlabelled": 62,
+          "joint-near-edge": 15,
+          "crowd-in-crop": 3
+        },
+        "prominenceCheck": "full-official-annotations"
+      }
+    },
+    "count": 24,
+    "items": [
+      {
+        "id": "coco-444854",
+        "role": "calibration",
+        "sha256": "fa6e7750e33f51f1b991937de9484d281c06644f1f415a8095776dbd82d8b478",
+        "cocoImageId": 346090,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm8.staticflickr.com/7092/7307890340_8b2783f26e_z.jpg",
+        "shoulderWidthNorm": 0.178
+      },
+      {
+        "id": "coco-208859",
+        "role": "reel",
+        "sha256": "1d73d586ebd556992c33f3f303d08aa869df21793172b70c9945b023bbc44f69",
+        "cocoImageId": 165883,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm1.staticflickr.com/64/202095295_81847d5ae6_z.jpg",
+        "shoulderWidthNorm": 0.234
+      },
+      {
+        "id": "coco-435636",
+        "role": "reel",
+        "sha256": "bda5292b4baed2fcae4da3d733e7131cb66227156e6b2f6f48b592f9c87c908f",
+        "cocoImageId": 350413,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm9.staticflickr.com/8353/8401634289_2be81de104_z.jpg",
+        "shoulderWidthNorm": 0.176
+      },
+      {
+        "id": "coco-481633",
+        "role": "reel",
+        "sha256": "0529a6509f34d644b92116b0bd46dda30f71953a1a0fb409e75de68500db5181",
+        "cocoImageId": 446909,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm9.staticflickr.com/8181/7895053490_2c7b0dcfe9_z.jpg",
+        "shoulderWidthNorm": 0.177
+      },
+      {
+        "id": "coco-430384",
+        "role": "reel",
+        "sha256": "b5fecb303e3863045210c00568955a33acba93172caaebf34b5a5184ea302155",
+        "cocoImageId": 103970,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm9.staticflickr.com/8150/7497761254_a1b89c0f20_z.jpg",
+        "shoulderWidthNorm": 0.162
+      },
+      {
+        "id": "coco-432301",
+        "role": "reel",
+        "sha256": "6309ae97397f71ad6dc759ff47e575072e1cf71ff5df7373119ab8f443891a1a",
+        "cocoImageId": 311436,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm7.staticflickr.com/6014/6020188220_897b7ca7ff_z.jpg",
+        "shoulderWidthNorm": 0.158
+      },
+      {
+        "id": "coco-449488",
+        "role": "reel",
+        "sha256": "3353188b8372c306726cc07b77fa063667dafdcc0958d56df185b67151691e74",
+        "cocoImageId": 85491,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm4.staticflickr.com/3033/2359254792_e9bfa3f745_z.jpg",
+        "shoulderWidthNorm": 0.219
+      },
+      {
+        "id": "coco-505870",
+        "role": "reel",
+        "sha256": "2742da3b7b313cbf36c44950157170c106e76482fef9471d2d2006c0a564f66a",
+        "cocoImageId": 278238,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm9.staticflickr.com/8480/8228152859_ac5c0f8bf6_z.jpg",
+        "shoulderWidthNorm": 0.165
+      },
+      {
+        "id": "coco-543535",
+        "role": "reel",
+        "sha256": "f5e7717337ed54186dd5e3615335773d6ae7e047265796449ab302d027a92bc2",
+        "cocoImageId": 270738,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm9.staticflickr.com/8527/8647874627_bf444d5762_z.jpg",
+        "shoulderWidthNorm": 0.186
+      },
+      {
+        "id": "coco-442897",
+        "role": "reel",
+        "sha256": "e89b5c05d7fe3b50171353462d4dc398e59a1540506cbfd5e3fc53df65297f94",
+        "cocoImageId": 406315,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm1.staticflickr.com/114/312372524_afafef5a9a_z.jpg",
+        "shoulderWidthNorm": 0.26
+      },
+      {
+        "id": "coco-451487",
+        "role": "reel",
+        "sha256": "93eb338e73815cf99c637ba0766675ce8b97e6d4b276a406f92456c02910a768",
+        "cocoImageId": 388955,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm3.staticflickr.com/2830/8878355192_721d0bebac_z.jpg",
+        "shoulderWidthNorm": 0.162
+      },
+      {
+        "id": "coco-1744006",
+        "role": "reel",
+        "sha256": "1b0e863219edf34a9383cc49b4c34411c64d38d49490dbb3dc16b775e158697e",
+        "cocoImageId": 92627,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm7.staticflickr.com/6172/6188832411_66ed34f06b_z.jpg",
+        "shoulderWidthNorm": 0.155
+      },
+      {
+        "id": "coco-424051",
+        "role": "reel",
+        "sha256": "092e0a404999e3a398211ba916b6fa117633e97dcc6c0a3fca36432eff30830a",
+        "cocoImageId": 314154,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm2.staticflickr.com/1156/5147250589_50f51750b7_z.jpg",
+        "shoulderWidthNorm": 0.173
+      },
+      {
+        "id": "coco-424944",
+        "role": "reel",
+        "sha256": "6c9eebd94c238ed7a482fcd4c1502fc3c674d89cd303fe5c202c29c60dc5b9a5",
+        "cocoImageId": 541343,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm6.staticflickr.com/5017/5504608358_7ea0f39c89_z.jpg",
+        "shoulderWidthNorm": 0.153
+      },
+      {
+        "id": "coco-431375",
+        "role": "reel",
+        "sha256": "d5e243b203dd1c05f21057b26dda807fe3d6ba484b4542ab7170ea2a14898f4d",
+        "cocoImageId": 155194,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm9.staticflickr.com/8379/8668590371_8e8f16a0c3_z.jpg",
+        "shoulderWidthNorm": 0.177
+      },
+      {
+        "id": "coco-457551",
+        "role": "reel",
+        "sha256": "7473e215975947a7d5bb6cc9b527e652a98f04f16fc78a5945c5dbd218d6f757",
+        "cocoImageId": 72255,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm7.staticflickr.com/6047/6258820194_d40bb20d67_z.jpg",
+        "shoulderWidthNorm": 0.194
+      },
+      {
+        "id": "coco-488141",
+        "role": "reel",
+        "sha256": "a097a0027394f2879ad592c303270306d3d0e9fdb96a3b22eeb0b31ef42a3753",
+        "cocoImageId": 98927,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm2.staticflickr.com/1092/1258719060_e95f84ef17_z.jpg",
+        "shoulderWidthNorm": 0.212
+      },
+      {
+        "id": "coco-436560",
+        "role": "reel",
+        "sha256": "5503a1281dbb261dee2c0031b4c12453e420386f69f882689af1d4a7287db499",
+        "cocoImageId": 157237,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm6.staticflickr.com/5317/5896310274_f023ac3542_z.jpg",
+        "shoulderWidthNorm": 0.211
+      },
+      {
+        "id": "coco-501780",
+        "role": "reel",
+        "sha256": "00bbfa7ec1467384134756a2ad5947f2b2be7d386443b22f9ba333201f2683f2",
+        "cocoImageId": 426079,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm1.staticflickr.com/32/88263954_6d5ad0cd85_z.jpg",
+        "shoulderWidthNorm": 0.19
+      },
+      {
+        "id": "coco-466877",
+        "role": "reel",
+        "sha256": "97cd4df66ec16ac10f923d960b7f0c801bba76a6d572ec334947f64e74826cdb",
+        "cocoImageId": 419019,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm4.staticflickr.com/3643/3437092743_7222579f56_z.jpg",
+        "shoulderWidthNorm": 0.186
+      },
+      {
+        "id": "coco-466406",
+        "role": "reel",
+        "sha256": "dbc57615fd4540baafa3925b60e0ed8c08d80a718ccaa90dc012a6e708a0bf27",
+        "cocoImageId": 205931,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm4.staticflickr.com/3127/5847876466_ca92091af2_z.jpg",
+        "shoulderWidthNorm": 0.183
+      },
+      {
+        "id": "coco-483054",
+        "role": "reel",
+        "sha256": "29cf2ae1823eb277cc38f064688de9a7ac3102b3d3382c296deec40506454c04",
+        "cocoImageId": 557926,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm3.staticflickr.com/2391/2449825837_51e13e9b66_z.jpg",
+        "shoulderWidthNorm": 0.247
+      },
+      {
+        "id": "coco-210679",
+        "role": "reel",
+        "sha256": "48fa8df4d564f4e5a08577ec0e39239b9548b09e5b60cb24b1a5fc2452b74032",
+        "cocoImageId": 116074,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm1.staticflickr.com/89/229377589_da70e9d262_z.jpg",
+        "shoulderWidthNorm": 0.17
+      },
+      {
+        "id": "coco-494209",
+        "role": "reel",
+        "sha256": "cfd17ba402c3ec43abbe2ee92e753ff2fc825e0cf1415d50fa8591edb45e3382",
+        "cocoImageId": 384617,
+        "license": "http://creativecommons.org/licenses/by/2.0/",
+        "flickrUrl": "http://farm8.staticflickr.com/7077/7401559884_d5b18a7da9_z.jpg",
+        "shoulderWidthNorm": 0.155
+      }
+    ]
+  },
+  "song": "pamgaea",
+  "lanes": {
+    "performer": {
+      "harnessLane": "dataset-camera-synthetic-performer",
+      "url": "/?camera=dataset&reel=performer&tier=low&stats=1",
+      "browserArgs": [
+        "--window-size=1440,960"
+      ],
+      "gpuProgramCache": "cold (fresh profile)",
+      "backgroundCpuBusyBeforeLaunch": 0.856,
+      "reachedResults": false,
+      "setupAttempts": [
+        {
+          "attempt": 1,
+          "ok": false,
+          "error": "Tracking stopped producing frames. Retry camera setup. · Dataset camera — not a webcam",
+          "tracking": {
+            "hz": 0,
+            "initMs": 2004.6,
+            "inferenceMs": 0,
+            "mainToMainMs": 0,
+            "dropped": 0,
+            "delegate": "GPU",
+            "timestampSource": "callback-receipt",
+            "opportunities": 117,
+            "skippedBusy": 116,
+            "submitted": 1,
+            "returned": 0,
+            "initializationError": null,
+            "phase": "stopped",
+            "cameraCallbacks": 117,
+            "bitmapsCreated": 1,
+            "lastCaptureAt": 11904.4,
+            "lastBitmapAt": 11914.1,
+            "lastSubmitAt": 11914.8,
+            "lastResultAt": 0,
+            "phaseAtFailure": "worker"
+          }
+        },
+        {
+          "attempt": 2,
+          "firstResultMs": 6603,
+          "ok": true
+        }
+      ],
+      "setup": {
+        "delegate": "GPU",
+        "initMs": 1910.1,
+        "cameraSource": "dataset",
+        "stage": "Preparing the first camera sample · GPU tracking · Dataset camera — not a webcam",
+        "calibrationReadyMs": 31052
+      },
+      "calibration": "framing-not-ready",
+      "appEvidenceVia": "read-only diagnostics hook (calibration was not accepted)",
+      "steps": [
+        {
+          "atMs": 1350,
+          "step": "click song:pamgaea"
+        },
+        {
+          "atMs": 2465,
+          "step": "click audio"
+        },
+        {
+          "atMs": 2775,
+          "step": "click arrange"
+        },
+        {
+          "atMs": 7381,
+          "step": "arrangement ready",
+          "note": "Sound enabled."
+        },
+        {
+          "atMs": 8215,
+          "step": "click camera-dataset"
+        },
+        {
+          "atMs": 27960,
+          "step": "click camera-dataset"
+        },
+        {
+          "atMs": 33936,
+          "step": "preview",
+          "note": "GPU · Preparing the first camera sample · GPU tracking · Dataset camera — not a webcam"
+        },
+        {
+          "atMs": 33985,
+          "step": "camera frame setup",
+          "file": "2026-10-25-dataset-camera-performer-performer-camera-setup.jpg"
+        },
+        {
+          "atMs": 58638,
+          "step": "screenshot setup-preview",
+          "file": "2026-10-25-dataset-camera-performer-performer-setup-preview.jpg"
+        },
+        {
+          "atMs": 110294,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 111918,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 113428,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 114321,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 117430,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 119106,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 119627,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 122973,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 123520,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 125211,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 125770,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 131885,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 138550,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 139086,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 139632,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 143091,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 146967,
+          "step": "click camera-confirm"
+        },
+        {
+          "atMs": 148928,
+          "step": "screenshot setup-not-ready",
+          "file": "2026-10-25-dataset-camera-performer-performer-setup-not-ready.jpg"
+        },
+        {
+          "atMs": 149046,
+          "step": "click camera-cancel"
+        }
+      ],
+      "failures": [
+        {
+          "atMs": 26332,
+          "step": "camera setup attempt 1",
+          "message": "Tracking stopped producing frames. Retry camera setup. · Dataset camera — not a webcam",
+          "snapshot": {
+            "state": "SELECT",
+            "pauseReason": null,
+            "status": "Sound enabled.",
+            "error": null,
+            "camera": {
+              "state": "error",
+              "mode": "browse",
+              "calibrationValid": false,
+              "error": "Tracking stopped producing frames. Retry camera setup. · Dataset camera — not a webcam"
+            },
+            "cameraSource": null,
+            "cameraStage": "Preparing the first camera sample · GPU tracking · Dataset camera — not a webcam",
+            "calibrationReady": false,
+            "trackingReady": false,
+            "figureAvailable": false,
+            "audioReady": true,
+            "loading": false,
+            "mapReady": true,
+            "arrangementReady": true,
+            "countdown": null,
+            "hud": {
+              "score": 0,
+              "combo": 0,
+              "multiplier": 1,
+              "accuracy": null,
+              "songTimeMs": 0,
+              "durationMs": 80000,
+              "left": "none",
+              "right": "none",
+              "leftPresent": false,
+              "rightPresent": false,
+              "leftCharge": 0,
+              "rightCharge": 0,
+              "judgement": "",
+              "judgementSeq": 0
+            },
+            "results": null,
+            "tracking": {
+              "hz": 0,
+              "initMs": 2004.6,
+              "inferenceMs": 0,
+              "mainToMainMs": 0,
+              "dropped": 0,
+              "delegate": "GPU",
+              "timestampSource": "callback-receipt",
+              "opportunities": 117,
+              "skippedBusy": 116,
+              "submitted": 1,
+              "returned": 0,
+              "initializationError": null,
+              "phase": "stopped",
+              "cameraCallbacks": 117,
+              "bitmapsCreated": 1,
+              "lastCaptureAt": 11904.4,
+              "lastBitmapAt": 11914.1,
+              "lastSubmitAt": 11914.8,
+              "lastResultAt": 0,
+              "phaseAtFailure": "worker"
+            },
+            "songTimeMs": null
+          }
+        },
+        {
+          "atMs": 148639,
+          "step": "calibration round 1",
+          "message": "Timed out after 90000 ms (17 clicks) waiting for calibration accepted",
+          "snapshot": {
+            "state": "SELECT",
+            "pauseReason": null,
+            "status": "Keep your shoulders and both hands in the guide until framing is ready.",
+            "error": null,
+            "camera": {
+              "state": "setting-up",
+              "mode": "camera-setup",
+              "calibrationValid": false,
+              "error": null
+            },
+            "cameraSource": "dataset",
+            "cameraStage": "Camera setup preview · GPU tracking · Dataset camera — not a webcam",
+            "calibrationReady": false,
+            "trackingReady": false,
+            "figureAvailable": false,
+            "audioReady": true,
+            "loading": false,
+            "mapReady": true,
+            "arrangementReady": true,
+            "countdown": null,
+            "hud": {
+              "score": 0,
+              "combo": 0,
+              "multiplier": 1,
+              "accuracy": null,
+              "songTimeMs": 0,
+              "durationMs": 80000,
+              "left": "none",
+              "right": "none",
+              "leftPresent": false,
+              "rightPresent": false,
+              "leftCharge": 0,
+              "rightCharge": 0,
+              "judgement": "",
+              "judgementSeq": 0
+            },
+            "results": null,
+            "tracking": {
+              "hz": 3.474,
+              "initMs": 1910.1,
+              "inferenceMs": 268.5,
+              "mainToMainMs": 281.5,
+              "dropped": 0,
+              "delegate": "GPU",
+              "timestampSource": "callback-receipt",
+              "opportunities": 2920,
+              "skippedBusy": 2576,
+              "submitted": 344,
+              "returned": 343,
+              "initializationError": null,
+              "phase": "worker",
+              "cameraCallbacks": 2920,
+              "bitmapsCreated": 344,
+              "lastCaptureAt": 149190.4,
+              "lastBitmapAt": 149202.3,
+              "lastSubmitAt": 149202.5,
+              "lastResultAt": 149187,
+              "phaseAtFailure": null
+            },
+            "songTimeMs": null
+          }
+        }
+      ],
+      "screenshots": [
+        "2026-10-25-dataset-camera-performer-performer-camera-setup.jpg",
+        "2026-10-25-dataset-camera-performer-performer-setup-preview.jpg",
+        "2026-10-25-dataset-camera-performer-performer-setup-not-ready.jpg"
+      ],
+      "uiSamples": {
+        "samples": 756,
+        "playingSamples": 0,
+        "playingFigureRate": null,
+        "playingBothHandsRate": null,
+        "playingAnyHandRate": null,
+        "playingHudGestures": {
+          "left": {},
+          "right": {}
+        },
+        "judgementsSeen": []
+      },
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "error",
+          "text": "[Sign Saber tracking watchdog] {\"hz\":0,\"initMs\":2004.6000000014901,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"GPU\",\"timestampSource\":\"callback-receipt\",\"opportunities\":117,\"skippedBusy\":116,\"submitted\":1,\"returned\":0,\"initializationError\":null,\"phase\":\"worker\",\"cameraCallbacks\":117,\"bitmapsCreated\":1,\"lastCaptureAt\":11904.4,\"lastBitmapAt\":11914.10000000149,\"lastSubmitAt\":11914.79999999702,\"lastResultAt\":0,\"phaseAtFailure\":null}"
+        }
+      ],
+      "appEvidenceFile": "2026-10-25-dataset-camera-performer-performer-app-evidence.json",
+      "appEvidenceSummary": {
+        "lane": "dataset-camera-synthetic-performer",
+        "cameraSource": null,
+        "camera": {},
+        "tracking": {
+          "hz": 3.46,
+          "initMs": 1910.1,
+          "inferenceMs": 310.9,
+          "mainToMainMs": 316.4,
+          "dropped": 0,
+          "delegate": "GPU",
+          "timestampSource": "callback-receipt",
+          "opportunities": 2936,
+          "skippedBusy": 2590,
+          "submitted": 346,
+          "returned": 345,
+          "initializationError": null,
+          "phase": "stopped",
+          "cameraCallbacks": 2936,
+          "bitmapsCreated": 346,
+          "lastCaptureAt": 149838.8,
+          "lastBitmapAt": 149842.8,
+          "lastSubmitAt": 149842.9,
+          "lastResultAt": 149785.7,
+          "phaseAtFailure": null
+        },
+        "calibration": null,
+        "results": null,
+        "judgementTrace": {
+          "count": 0,
+          "overflow": 0,
+          "repeats": 0,
+          "sha256": "56fc7f1e91b057f6a4c7b7de194b317be1c6074c4ae6525c1b1c0dec137e8b74",
+          "kinds": {}
+        },
+        "inferenceMs": {
+          "count": 75,
+          "p50": 217.6,
+          "p95": 239.9,
+          "p99": 244.2,
+          "max": 244.2
+        },
+        "inputAgeMs": {
+          "count": 75,
+          "p50": 227.6,
+          "p95": 246.9,
+          "p99": 247.7,
+          "max": 247.7
+        },
+        "frameIntervalMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null,
+          "max": null
+        },
+        "frameWorkMs": {
+          "count": 0,
+          "p50": null,
+          "p95": null,
+          "p99": null,
+          "max": null
+        },
+        "datasetCamera": {
+          "framesPainted": 3613,
+          "streamMs": 120696,
+          "timelineTransitions": 1024,
+          "reel": {
+            "kind": "synthetic-performer",
+            "lane": "dataset-camera-synthetic-performer",
+            "synthetic": true,
+            "material": "avatar natural (skin/fabric PBR)",
+            "background": "plain room: warm grey wall and floor",
+            "render": {
+              "width": 960,
+              "height": 540
+            },
+            "framing": {
+              "shoulderWidthNorm": 0.24,
+              "frameWidthM": 1.542,
+              "cameraDistanceM": 3
+            },
+            "unplayableNotes": 0,
+            "counters": {
+              "rendered": 3613,
+              "poseFailures": 0,
+              "idleFrames": 3613,
+              "songFrames": 0
+            },
+            "truth": "Planned choreography image joints; the rendered rig differs in proportions and solver limits."
+          },
+          "evaluation": {
+            "definitions": {
+              "unit": "Per-photo means; frames of one still photo are not independent samples.",
+              "error": "Isotropic distance between unmirrored MediaPipe pose landmark and annotation, divided by annotated shoulder width.",
+              "pck": "Fraction of photos whose mean joint error is <= 0.5 shoulder widths.",
+              "wristMatch": "A detected hand's wrist landmark within 0.5 shoulder widths of an annotated wrist; handedness agreement compares the adapter's player hand with that anatomical wrist.",
+              "detected": "poseRate >= 0.5 of attributed frames."
+            },
+            "attributedFrames": 345,
+            "unattributedFrames": 0,
+            "unattributedProcessed": 0,
+            "overflowFrames": 0,
+            "truthsObserved": 1,
+            "poseDetectedTruths": 1,
+            "anyHandTruths": 1,
+            "twoHandTruths": 1,
+            "medianLabelledJointError": 0.266,
+            "perJoint": {
+              "nose": {
+                "items": 1,
+                "median": 0.469,
+                "pck": 1
+              },
+              "left_eye": {
+                "items": 1,
+                "median": 0.545,
+                "pck": 0
+              },
+              "right_eye": {
+                "items": 1,
+                "median": 0.512,
+                "pck": 0
+              },
+              "left_ear": {
+                "items": 1,
+                "median": 0.544,
+                "pck": 0
+              },
+              "right_ear": {
+                "items": 1,
+                "median": 0.421,
+                "pck": 1
+              },
+              "left_shoulder": {
+                "items": 1,
+                "median": 0.172,
+                "pck": 1
+              },
+              "right_shoulder": {
+                "items": 1,
+                "median": 0.03,
+                "pck": 1
+              },
+              "left_elbow": {
+                "items": 1,
+                "median": 0.08,
+                "pck": 1
+              },
+              "right_elbow": {
+                "items": 1,
+                "median": 0.033,
+                "pck": 1
+              },
+              "left_wrist": {
+                "items": 1,
+                "median": 0.144,
+                "pck": 1
+              },
+              "right_wrist": {
+                "items": 1,
+                "median": 0.131,
+                "pck": 1
+              },
+              "left_hip": {
+                "items": 1,
+                "median": 0.216,
+                "pck": 1
+              },
+              "right_hip": {
+                "items": 1,
+                "median": 0.154,
+                "pck": 1
+              }
+            },
+            "wristHands": {
+              "matched": 690,
+              "handednessAgree": 690,
+              "handednessDisagree": 0,
+              "unmatched": 0
+            },
+            "gestures": {
+              "left": {
+                "open": 0,
+                "fist": 0,
+                "point": 0,
+                "none": 75,
+                "absent": 0
+              },
+              "right": {
+                "open": 0,
+                "fist": 0,
+                "point": 0,
+                "none": 75,
+                "absent": 0
+              }
+            }
+          }
+        }
+      },
+      "machineCpuBusyDuringLane": 0.82
+    }
+  }
+}

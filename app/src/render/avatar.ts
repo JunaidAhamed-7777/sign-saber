@@ -17,6 +17,7 @@ import {
   AVATAR_FILL_COLOR,
   AVATAR_OUTLINE_M,
   AVATAR_PLACEHOLDER_HIP_Y,
+  AVATAR_FACE_AWAY,
   AVATAR_PLACEHOLDER_SCALE,
   AVATAR_RIM_COLOR_A,
   AVATAR_RIM_COLOR_B,
@@ -212,7 +213,8 @@ function holoMaterial(slot: AvatarSlot, shared: AvatarShared, outline: boolean):
     fragmentShader: FRAGMENT,
     vertexColors: slot === 'skin' || slot === 'eye',
     side: outline ? THREE.BackSide : THREE.FrontSide,
-    transparent: outline,
+    // Opaque list so it draws with the body, before the depth-clear sentinel (additive still applies).
+    transparent: false,
     blending: outline ? THREE.AdditiveBlending : THREE.NormalBlending,
     depthWrite: !outline,
     uniforms: {
@@ -289,6 +291,8 @@ export class AvatarFigure {
   private hasTargets = false;
   private kickAt = -Infinity;
   private variantName: AvatarVariant = 'holo';
+  /** Arena poses turn the avatar 180° about Y; performer (virtual camera) poses face the viewer. */
+  private facingAway = false;
 
   constructor(
     readonly asset: AvatarAsset,
@@ -312,16 +316,24 @@ export class AvatarFigure {
       this.natural.set(mesh, naturalMaterial(source, slot));
       mesh.material = this.holo.get(mesh)!;
       mesh.frustumCulled = false;
+      mesh.renderOrder = -100;
       if (options.outline !== false && slot !== 'eye' && slot !== 'accent') {
         const hull = new THREE.SkinnedMesh(mesh.geometry, holoMaterial(slot, this.shared, true));
         hull.name = `${mesh.name}_outline`;
         hull.frustumCulled = false;
-        hull.renderOrder = -1;
+        hull.renderOrder = -99;
         mesh.parent!.add(hull);
         hull.bind(mesh.skeleton, mesh.bindMatrix);
         this.outlines.push(hull);
       }
     }
+    // Backdrop rule (docs10 §2): after the avatar draws, clear depth so targets/effects always draw over it.
+    const sentinel = new THREE.Mesh(SENTINEL_GEOMETRY, SENTINEL_MATERIAL);
+    sentinel.name = 'player_avatar_depth_clear';
+    sentinel.frustumCulled = false;
+    sentinel.renderOrder = -98;
+    sentinel.onAfterRender = (renderer) => renderer.clearDepth();
+    this.root.add(sentinel);
     this.root.traverse((object) => object.layers.set(AVATAR_LAYER));
     this.applyPose();
   }
@@ -353,7 +365,17 @@ export class AvatarFigure {
   /** Store play-space targets from a tracking frame; returns false without a usable torso. */
   track(frame: TrackingFrame): boolean {
     this.hasTargets =
-      !!frame.pose && targetsFromTracking(frame.pose, frame.hands, this.targets, this.asset.rig);
+      !!frame.pose &&
+      targetsFromTracking(frame.pose, frame.hands, this.targets, this.asset.rig, {
+        mirror: !AVATAR_FACE_AWAY,
+      });
+    if (this.hasTargets && AVATAR_FACE_AWAY) {
+      // Solve in a frame rotated 180° about Y: negating x there keeps each joint on its screen side,
+      // and leaves z so reaching toward the camera becomes reaching into the lane once turned around.
+      const t = this.targets;
+      for (let i = 0; i < t.joints.length; i += 3) t.joints[i] = -t.joints[i]!;
+      for (const hand of t.hands) if (hand) for (let i = 0; i < hand.length; i += 3) hand[i] = -hand[i]!;
+    }
     return this.hasTargets;
   }
   clearTracking(): void {
@@ -388,6 +410,7 @@ export class AvatarFigure {
     f.curl[0] = t.curl[0];
     f.curl[1] = t.curl[1];
     if (!this.solver.update(f, nowMs, dtMs)) return false;
+    this.facingAway = AVATAR_FACE_AWAY;
     this.wantPosition.copy(this.solver.state.anchor).multiplyScalar(-this.scale).add(this.shoulderMid);
     this.placeEased(dtMs);
     this.applyPose();
@@ -399,6 +422,7 @@ export class AvatarFigure {
     idleTargets(this.asset.rig, this.fitted, tSec);
     this.solver.update(this.fitted, nowMs, dtMs);
     this.scale = AVATAR_PLACEHOLDER_SCALE;
+    this.facingAway = AVATAR_FACE_AWAY;
     this.wantPosition.set(0, AVATAR_PLACEHOLDER_HIP_Y, 0);
     this.position.copy(this.wantPosition);
     this.applyPose();
@@ -412,6 +436,7 @@ export class AvatarFigure {
     targetsFromJoints(input, this.fitted);
     if (!this.solver.update(this.fitted, nowMs, dtMs)) return false;
     this.scale = 1;
+    this.facingAway = false;
     const t = this.fitted.joints;
     this.wantPosition
       .set(
@@ -438,7 +463,10 @@ export class AvatarFigure {
       bone.quaternion.fromArray(local, i * 4);
       bone.position.copy(rest[i]!.localPos).multiplyScalar(stretch[i]!);
     });
-    this.root.position.copy(this.position);
+    // Facing away: the solved frame is rotated 180° about Y into the arena.
+    if (this.facingAway) this.root.position.set(-this.position.x, this.position.y, -this.position.z);
+    else this.root.position.copy(this.position);
+    this.root.rotation.y = this.facingAway ? Math.PI : 0;
     this.root.scale.setScalar(this.scale > 0 ? this.scale : 1);
   }
 
@@ -489,6 +517,15 @@ export class AvatarFigure {
   }
 }
 
+const SENTINEL_GEOMETRY = new THREE.BufferGeometry().setAttribute(
+  'position',
+  new THREE.BufferAttribute(new Float32Array(9), 3),
+);
+const SENTINEL_MATERIAL = new THREE.MeshBasicMaterial({
+  colorWrite: false,
+  depthWrite: false,
+  depthTest: false,
+});
 const scratchL = new THREE.Vector3(),
   scratchR = new THREE.Vector3();
 function ease(current: number, target: number, dtMs: number, tauMs: number): number {

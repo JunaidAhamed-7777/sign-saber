@@ -2,7 +2,7 @@
 
 The three documented full-length starter songs are now packaged locally with original MP3 bytes, acquisition records, attribution, measured metadata and Easy/Normal/Hard maps. They can be browsed before camera setup. The app never contacts the publisher to select or play them.
 
-**Evidence status:** all nine packaged charts pass the shared schema, timing, density, beam-isolation, wall-margin and ergonomic checks. This is algorithmic validation. Independent musical annotations, standing comfort, live webcam completion and the offline browser exercise remain pending. Current analysis reports low tempo confidence for all three songs; the menu preserves that warning and does not present catalog tempo as a measured confident beat result.
+**Evidence status:** all nine packaged charts pass the shared schema, timing, density, beam-isolation, wall-margin and ergonomic checks. This is algorithmic validation. Independent musical annotations, standing comfort, live webcam completion and the offline browser exercise remain pending. Generator v4 measures Electro Cabello at 117.0 BPM (confidence 0.496) and Cipher at 150.0 BPM (0.558), so their maps snap to tracked beats; both agree with the publisher's catalog tempo, which the analysis does not use. Pamgaea measures 94.0 BPM but only 0.252 confidence (most strong onsets are syncopated), so it stays a disclosed onset-only map and the menu keeps its warning instead of presenting the catalog tempo as a confident result.
 
 ## Selected starter pack
 
@@ -14,13 +14,13 @@ The current official track template supplies CC BY 4.0 attribution for the selec
 
 The MP3s are distributed unchanged from the official downloads. Preview uses bounded playback offsets; it does not create an edited audio file. Canonical analysis is a separate ffmpeg mono float32 decode at 22050 Hz. The build explicitly honors each file's iTunSMPB gapless sample counts when the native decoder has not already done so; it rejects unexpected counts and never trims twice. That canonical PCM is hashed but not retained as an additional large asset. Generated charts are separate artifacts. Music retains Creative Commons terms, independently of the code's MIT license. No artist endorsement is implied. No catalog cover art has been copied.
 
-Generator version 3 keeps v2's analysis (gapless canonical sample zero, band-limited resampling, spectral-novelty/RMS-rise admission, source-sample onset refinement, supported-onset beat refinement) and replaces assignment. Charts now follow the strongest accents under per-difficulty caps on density, notes sharing the screen (3/4/5), same-hand recovery, beam isolation and phrase length with deliberate rests. Each hand plays its own side; strong low-band hits punch, other accents slash, and the most sustained mid/high onsets become occasional far beams. Walls are planned on the tracked-beat cadence and notes move to the open side. See [08 §9](../../../../docs/08-beatmap-generation.md#9-note-assignment-assignts) for the rules and before/after counts. These are disclosed heuristics checked by the validator and the synthetic performer, not independent music-quality or human-comfort measurements.
+Generator version 4 keeps v2's analysis (gapless canonical sample zero, band-limited resampling, spectral-novelty/RMS-rise admission, source-sample onset refinement, supported-onset beat refinement), adds a fine beat-period search and replaces assignment. Charts now follow the strongest accents under per-difficulty caps on density, notes sharing the screen (3/4/5), same-hand recovery, beam isolation and phrase length with deliberate rests. Each hand plays its own side; strong low-band hits punch, other accents slash, and the most sustained mid/high onsets become occasional far beams. Walls are planned on the tracked-beat cadence and notes move to the open side. See [08 §9](../../../../docs/08-beatmap-generation.md#9-note-assignment-assignts) for the rules and before/after counts. These are disclosed heuristics checked by the validator and the synthetic performer, not independent music-quality or human-comfort measurements.
 
 | Track | Easy notes (slash/smash/beam) | Normal | Hard |
 | --- | --- | --- | --- |
 | Pamgaea | 89 (45/34/10) | 178 (97/69/12) | 230 (112/100/18) |
-| Electro Cabello | 116 (52/54/10) | 183 (110/62/11) | 285 (129/140/16) |
-| Cipher | 116 (65/42/9) | 202 (106/83/13) | 267 (120/131/16) |
+| Electro Cabello | 117 (57/51/9) | 176 (104/64/8) | 281 (132/135/14) |
+| Cipher | 111 (59/41/11) | 195 (98/82/15) | 266 (108/140/18) |
 
 The synthetic performer reaches every note of all nine charts (`tests/performer.test.mjs`; v2 left 59/149/56 Hard notes unreachable). `node scripts/chart-report.mjs` prints the gesture mix, density, peak on-screen count and performer reachability of the installed charts.
 

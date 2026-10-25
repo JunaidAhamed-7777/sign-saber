@@ -208,12 +208,6 @@ export class GameSession {
     for (const live of this.obstacles)
       if (live.spawned && live.state === 'live') {
         updateLiveObstacle(live, songTimeMs, this.map.approachMs);
-        if (
-          songTimeMs >= live.obstacle.t + OBSTACLE_GRACE_MS &&
-          songTimeMs <= live.obstacle.t + live.obstacle.durationMs &&
-          songTimeMs - this.bodyLastSong > INPUT_MAX_AGE_MS
-        )
-          this.needsTrackingPause = 'Body tracking is needed to judge this wall. Step back into frame.';
       }
     this.expire(songTimeMs);
     this.progress.songTimeMs = songTimeMs;
@@ -419,7 +413,7 @@ export class GameSession {
     const judgement = judgeTiming(error, this.windowScale);
     if (!judgement || live.state !== 'live') return;
     const oldMax = this.scoring.maxCombo;
-    const scoreDelta = this.scoring.hit(judgement);
+    const scoreDelta = this.scoring.hit(judgement, live.note.type);
     live.state = 'hit';
     updateLiveNote(live, songTime, this.map.approachMs);
     const impactPos = {
@@ -507,24 +501,14 @@ export class GameSession {
       Number.isFinite(body.centerX) &&
       Number.isFinite(body.leanX) &&
       Number.isFinite(body.torsoSpeed);
-    const previousBodySong = this.bodyLastSong;
     if (valid) this.bodyLastSong = songTime;
     for (const live of this.obstacles) {
       if (!live.spawned || live.state !== 'live') continue;
       const start = live.obstacle.t + OBSTACLE_GRACE_MS,
         end = live.obstacle.t + live.obstacle.durationMs;
-      if (
-        songTime >= start &&
-        previousBodySong < end &&
-        Math.min(songTime, end) - Math.max(start, previousBodySong) > INPUT_MAX_AGE_MS
-      )
-        this.needsTrackingPause =
-          'Body observations were interrupted during the wall. Restore tracking to continue.';
+      // Walls never pause the run: frames without a body simply cannot hit the wall.
       if (songTime < start || songTime > end) continue;
-      if (!valid || body.tCapture !== this.lastCapture) {
-        this.needsTrackingPause = 'Body tracking is needed to judge this wall. Step back into frame.';
-        continue;
-      }
+      if (!valid || body.tCapture !== this.lastCapture) continue;
       live.entered = true;
       live.bodySamples++;
       if (!obstacleSafe(live.obstacle, body)) {
@@ -532,7 +516,6 @@ export class GameSession {
         this.scoring.obstacleHit();
         this.syncStats();
         this.onEvent('obstacle:hit', { obstacle: live.obstacle });
-        this.comboEvent(true);
       }
     }
   }
@@ -553,12 +536,9 @@ export class GameSession {
       if (!live.spawned || live.state !== 'live') continue;
       const end = live.obstacle.t + live.obstacle.durationMs;
       if (this.captureWatermark > end || songTime > end + INPUT_MAX_AGE_MS) {
-        if (live.bodySamples === 0 || end - this.bodyLastSong > INPUT_MAX_AGE_MS || this.needsTrackingPause) {
-          this.needsTrackingPause = 'The wall needs a valid body observation. Restore tracking to continue.';
-          continue;
-        }
         live.state = 'dodged';
-        const scoreDelta = this.scoring.dodge();
+        // Unobserved walls pass without penalty or reward.
+        const scoreDelta = live.bodySamples > 0 ? this.scoring.dodge() : 0;
         this.syncStats();
         this.onEvent('obstacle:dodged', { obstacle: live.obstacle, scoreDelta });
       }
@@ -582,6 +562,8 @@ export class GameSession {
     this.stats.rank = rankFor(this.stats.accuracy);
     this.stats.maxCombo = this.scoring.maxCombo;
     Object.assign(this.stats.counts, this.scoring.counts);
+    for (const type of ['slash', 'smash', 'beam'] as const)
+      Object.assign(this.stats.byType[type], this.scoring.byType[type]);
     this.stats.peakComboSongTimeMs = this.peakComboSongTime;
     this.stats.kineticJoules = this.kinetic.joules;
     this.stats.kcal = this.kinetic.kcal;

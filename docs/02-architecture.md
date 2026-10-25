@@ -391,6 +391,7 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `CAM_REQ_W` / `CAM_REQ_H` / `CAM_REQ_FPS` | 1280 / 720 / 30 | `getUserMedia` request |
 | `INFER_W` / `INFER_H` | 640 / 360 | Frame size sent to the worker for hands |
 | `POSE_W` / `POSE_H` | 320 / 180 | Downscale inside the worker for pose + mask |
+| `POSE_EVERY_N_FRAMES` | 2 | Pose + mask inference cadence in processed frames; hand-only frames repeat the last pose/mask |
 | `MASK_W` / `MASK_H` | 320 / 180 | Mask resolution posted to main |
 | `TRACK_TARGET_HZ` | 30 | Worker processes at most this rate |
 | `TRACKING_LOST_PAUSE_MS` | 1500 | Auto-pause threshold |

@@ -1,0 +1,257 @@
+{
+  "startedAt": "2026-10-24T23:56:08.915Z",
+  "source": "30572bb9cdbe345b79e8e48279019bd7d8b59877",
+  "environment": {
+    "platform": "win32",
+    "node": "v26.8.1",
+    "browser": {
+      "protocolVersion": "1.3",
+      "product": "Chrome/155.0.8059.86",
+      "revision": "@804d6b05f089b27af8342622a36558c49401a1d4",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+      "jsVersion": "15.5.35.25"
+    },
+    "headless": true,
+    "renderer": "SwiftShader",
+    "muted": true,
+    "origin": "http://127.0.0.1:56313",
+    "stats": false
+  },
+  "input": "Native UI actions start synthetic-performer logic replay; no camera/person/model.",
+  "captures": [
+    {
+      "file": "docs/images/player-menu.webp",
+      "at": "2026-10-24T23:56:14.622Z",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "bytes": 84334,
+      "sha256": "96a3af795ce3f902d3417f11373fe5d08c4164ff205f6be3857bf3213045d54f",
+      "bodyText": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your music\nP\nPamgaea\nKevin MacLeod\n2:48 · Tempo unclear\n✓\nE\nElectro Cabello\nKevin MacLeod\n3:10 · 117 BPM\nC\nCipher\nKevin MacLeod\n3:51 · 150 BPM\n←\nPrevious\nChoose your music\n1 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nP\nSELECTED TRACK\nPamgaea\n\n2:48 · 178 notes · Kevin MacLeod\n\nTempo unclear · mapped to onsets\nDIFFICULTY\nEasy\nNormal\nHard\nPreview\nWatch auto-play\nDemo run\nPlay level\n80-second cut\n\nSound enabled.\n\n←\nPrevious\nReady when you are\n1 of 6\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click",
+      "snapshot": null
+    },
+    {
+      "file": "docs/images/player-performer.webp",
+      "at": "2026-10-24T23:56:26.852Z",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "bytes": 102404,
+      "sha256": "8bc3da578fd93646a8278639278eb69b4b7979427495a50ba6171f7542538654",
+      "bodyText": "SIGN SABER\nPlaying\nMouse / keyboard to browse · Esc to pause\nSCORE\n398\nCOMBO\n×1\n4\nACCURACY\n100.0%\nLeft hand\nNo gesture\n0%\nBeam charge\nRight hand\nNo gesture\n0%\nBeam charge\nPERFECT\n0:05\n1:20",
+      "snapshot": null
+    },
+    {
+      "file": "docs/images/player-results.webp",
+      "at": "2026-10-24T23:57:45.954Z",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "bytes": 71576,
+      "sha256": "f073d3a92c4dfeca0a30c5b1047cbc0a96a23c07712824cdff8ee729c33dca7b",
+      "bodyText": "SIGN SABER\nPlaying\nMouse / keyboard to browse · Esc to pause\nYOUR PERFORMANCE\nPamgaea — 80.0s arrangement\n\nNormal\n\nRANK\nSS\nScore\n54,700\nAccuracy\n100.0%\nBest combo\n84\n←\nPrevious\nYour performance\n1 of 2\n→\nNext\n\n· 76.7 s\n\nPlay again\nSongs\nJUDGEMENTS\nPerfect\n84\nGreat\n0\nGood\n0\nMiss\n0\nBad cut\n0\n\nRun complete.\n\n←\nPrevious\nPlay again\n1 of 3\n→\nNext\n\nMouse/keyboard to pause or quit",
+      "snapshot": null
+    },
+    {
+      "file": "docs/images/player-menu-compact.webp",
+      "at": "2026-10-24T23:57:47.683Z",
+      "viewport": {
+        "width": 1024,
+        "height": 640
+      },
+      "bytes": 53316,
+      "sha256": "965e38f73ee907fa6f65aa530351865025d1ffb7e70a74125f149a0dcf124ce3",
+      "bodyText": "SIGN SABER\nCamera not set up\nChoose your music\n1 of 2\n←\nPrevious\nP\nPamgaea\nARRANGEMENT READY\n✓\nE\nElectro Cabello\n3:10\nC\nCipher\n3:51\n→\nNext\n\nIllustrative upper body · camera not set up\n\nPamgaea — 80.0s arrangement · Normal · 1:20\n\nArrangement ready · 1:20\n\nPlay\n1 of 7\n←\nPrevious\nPreview\nPlay level\n80-second cut\nWatch auto-play\nDemo run\n→\nNext\n\nChoose music when you are ready.",
+      "snapshot": null
+    }
+  ],
+  "results": {
+    "summary": {
+      "Score": "54,700",
+      "Accuracy": "100.0%",
+      "Best combo": "84"
+    },
+    "judgements": {
+      "Perfect": 84,
+      "Great": 0,
+      "Good": 0,
+      "Miss": 0,
+      "Bad cut": 0
+    }
+  },
+  "console": [
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+    }
+  ],
+  "status": "passed-with-warnings",
+  "harnessAdjustments": [
+    "Initial label equality assertion included the Demo run button caption; corrected to match the visible action text prefix."
+  ],
+  "limitations": [
+    "No webcam or human calibration evidence.",
+    "No audible synchronization, accessibility, comfort or GPU-performance acceptance."
+  ],
+  "diagnosticPreflight": {
+    "startedAt": "2026-10-24T23:54:05.364Z",
+    "finishedAt": "2026-10-24T23:55:48.869Z",
+    "source": "30572bb9cdbe345b79e8e48279019bd7d8b59877",
+    "environment": {
+      "platform": "win32",
+      "node": "v26.8.1",
+      "browser": {
+        "protocolVersion": "1.3",
+        "product": "Chrome/155.0.8059.86",
+        "revision": "@804d6b05f089b27af8342622a36558c49401a1d4",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+        "jsVersion": "15.5.35.25"
+      },
+      "headless": true,
+      "renderer": "SwiftShader",
+      "muted": true,
+      "origin": "http://127.0.0.1:65382"
+    },
+    "status": "failed",
+    "failure": "AssertionError [ERR_ASSERTION]: No console errors/warnings or page exceptions\n+ actual - expected\n\n+ [\n+   {\n+     text: 'THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed.',\n+     type: 'warning'\n+   }\n+ ]\n- []\n\n    at file:///C:/Users/Junaid/AppData/Local/Temp/sign-saber-guide-refresh-305.mjs:62:10",
+    "results": {
+      "score": 54700,
+      "maxScore": 55200,
+      "accuracy": 1,
+      "rank": "SS",
+      "maxCombo": 84,
+      "counts": {
+        "perfect": 84,
+        "great": 0,
+        "good": 0,
+        "miss": 0,
+        "badcut": 0,
+        "obstaclesHit": 0,
+        "obstaclesDodged": 7
+      },
+      "byType": {
+        "slash": {
+          "hits": 40,
+          "total": 40
+        },
+        "smash": {
+          "hits": 39,
+          "total": 39
+        },
+        "beam": {
+          "hits": 5,
+          "total": 5
+        }
+      },
+      "kineticJoules": 289.8404230001903,
+      "kcal": 0.27709409464645346,
+      "peakComboSongTimeMs": 77525.8146666612
+    },
+    "console": [
+      {
+        "type": "warning",
+        "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+      }
+    ],
+    "evidence": {
+      "schema": 2,
+      "lane": "synthetic-performer-logic-replay",
+      "releaseEvidence": false,
+      "performerTrial": {
+        "synthetic": true,
+        "camera": false,
+        "plannedUnplayableNotes": 0
+      },
+      "arrangement": {
+        "sourceStartMs": 72000,
+        "sourceEndMs": 152000,
+        "outputDurationMs": 80000,
+        "fadeIn": {
+          "startMs": 0,
+          "endMs": 10000
+        },
+        "highlight": {
+          "startMs": 10000,
+          "endMs": 70000
+        },
+        "fadeOut": {
+          "startMs": 70000,
+          "endMs": 80000
+        },
+        "selectionReason": "energy-onset-window-low-tempo-confidence",
+        "tempoConfidence": 0,
+        "beatAligned": false,
+        "shortTrack": false,
+        "score": {
+          "meanEnergy": 0.736102124291105,
+          "onsetEvidencePerSecond": 3.1887417450547217,
+          "activeFraction": 1,
+          "combined": 0.9935765699271047
+        },
+        "warnings": [
+          "arrangementNotBeatLocked"
+        ],
+        "version": 1,
+        "sourceTitle": "Pamgaea",
+        "sourceArtist": "Kevin MacLeod",
+        "sourceKind": "bundled",
+        "sourceAudioSha256": "9f0ad72567c49d9e1ab895937bef03058a6fc1cfcc20ba7fdd4b681f3c7b5586",
+        "sourceDurationMs": 168510.6349206349,
+        "sourceStartSample": 3175200,
+        "sourceEndSample": 6703200,
+        "sampleRate": 44100,
+        "channels": 2,
+        "outputTitle": "Pamgaea — 80.0s arrangement",
+        "outputAudioSha256": "8d437bfcd862e9cc02462e5655bdcf8de656a68b2a12f0edd1f20f79b90019c1",
+        "outputCanonicalPcmSha256": "1c772f3bdf379510c46d6cd14843bc66d44994da674867a446a649d8ffd861b8",
+        "fadeCurve": "raised-cosine-amplitude",
+        "continuity": "one-continuous-source-window",
+        "oldChartReused": false,
+        "changes": "Selected one continuous source excerpt, applied raised-cosine amplitude fades to silence, and encoded unchanged-channel float32 WAV. A new map must be generated from these exact derivative file bytes."
+      },
+      "results": {
+        "score": 54700,
+        "maxScore": 55200,
+        "accuracy": 1,
+        "rank": "SS",
+        "maxCombo": 84,
+        "counts": {
+          "perfect": 84,
+          "great": 0,
+          "good": 0,
+          "miss": 0,
+          "badcut": 0,
+          "obstaclesHit": 0,
+          "obstaclesDodged": 7
+        },
+        "byType": {
+          "slash": {
+            "hits": 40,
+            "total": 40
+          },
+          "smash": {
+            "hits": 39,
+            "total": 39
+          },
+          "beam": {
+            "hits": 5,
+            "total": 5
+          }
+        },
+        "kineticJoules": 289.8404230001903,
+        "kcal": 0.27709409464645346,
+        "peakComboSongTimeMs": 77525.8146666612
+      },
+      "limitations": [
+        "No consented human/hardware acceptance recorded",
+        "GPU and motion-to-photon timing unavailable"
+      ]
+    },
+    "note": "Diagnostic preflight used stats=1; its four images were superseded by the normal-interface capture run below. The console-empty gate failed on the retained upstream Three.js warning; no application fix or warning suppression was made."
+  },
+  "buildIndexSha256": "93ad4251a262fa977c55a0c704d9f4ebca48437a657d9e9a15131fae1cbdc9b4",
+  "finishedAt": "2026-10-24T23:57:47.693Z"
+}

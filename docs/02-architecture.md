@@ -619,7 +619,6 @@ Menu defaults are initial unmeasured values; tune with held-out menu fixtures an
 | `ASSET_MODEL_MAX_BYTES` / `MAX_LIVE_OBSTACLES` | 1048576 / 8 | Model admission and pooled wall capacity |
 | `GRAVITY_MPS2` / `GLYPH_FACE_OFFSET_M` | 9.8 / 0.31 | Cosmetic ballistic gravity and block-front glyph plane |
 | `ARENA_REACTIVE_GAIN` / `SIL_HEAD_RADIUS_M` | 2 / 0.11 | Actual audio-energy emission gain / nose-anchored head marker |
-| `SCENERY_PER_SIDE` / `SCENERY_SPACING_M` / `SCENERY_X_M` | 8 / 8 / 4.2 | Dim lane-side light posts that scroll with `travelMps` and wrap; frozen in Calm |
 
 These are implementation defaults and development-fixture tuning, not held-out quality results. `BodyCalibration` additionally carries a current `identity` string covering camera/crop/player/mapping and `capturedAt` on the main performance timeline; its presence alone never establishes readiness.
 

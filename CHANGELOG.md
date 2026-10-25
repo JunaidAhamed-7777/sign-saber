@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T11:21:00Z — Harden isolated Blender authoring startup
+
+- Changed: Cancel the pinned add-on's automatic update timer, disable Tripo/Meshy alongside the other optional asset services, and reject failed server startup rather than printing a misleading READY marker. Added five isolated bootstrap regression tests.
+- Why: Authoring should stay local and reproducible, and unavailable GUI/display access must be reported honestly.
+- Validation: `python scripts/test_blender_bootstrap.py` passed 5/5 offline mocked cases, including hash/open-scene/dirty-scene rejection and startup failure. Documentation tests passed 2/2; local link check passed.
+- Limits: The mocked tests do not establish GUI compatibility. Separate cloud GUI integration successfully returned actual scene information and baseline preview renders through the pinned official MCP add-on.
+
 ## 2026-10-25T11:13:00Z — Keep avatar placement coherent during motion
 
 - Changed: Recompute the avatar placement anchor from smoothed, parent-first bone transforms, including clavicle motion and tracking-loss recovery. Added lean, asymmetric shoulder and compound head-orientation regressions.

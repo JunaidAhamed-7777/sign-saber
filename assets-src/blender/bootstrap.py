@@ -42,11 +42,17 @@ addon = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = addon
 spec.loader.exec_module(addon)
 addon.register()
+# This pinned, isolated authoring session must not phone home for updates.
+update_timer = getattr(addon, '_addon_update_check_on_startup', None)
+if update_timer and bpy.app.timers.is_registered(update_timer):
+    bpy.app.timers.unregister(update_timer)
 bpy.context.scene.blendermcp_auto_start_server = False
-for name in ('blendermcp_use_polyhaven', 'blendermcp_use_hyper3d', 'blendermcp_use_sketchfab', 'blendermcp_use_hunyuan3d', 'blendermcp_use_polypizza'):
+for name in ('blendermcp_use_polyhaven', 'blendermcp_use_hyper3d', 'blendermcp_use_sketchfab', 'blendermcp_use_hunyuan3d', 'blendermcp_use_polypizza', 'blendermcp_use_tripo', 'blendermcp_use_meshy'):
     if hasattr(bpy.context.scene, name):
         setattr(bpy.context.scene, name, False)
 server = addon.BlenderMCPServer(host='127.0.0.1', port=args.port)
 bpy.types.blendermcp_server = server
 server.start()
+if not server.running:
+    raise RuntimeError('Blender MCP bridge did not start; use a GUI or isolated virtual display, not background mode')
 print('SIGN_SABER_BLENDER_MCP_READY', bpy.app.version_string, str(asset_file), args.port, flush=True)

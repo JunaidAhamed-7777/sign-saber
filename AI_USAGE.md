@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Isolated Blender bridge safeguards
+
+- Codex tightened bootstrap privacy/readiness behavior and added five offline mocked regression tests. Actual Blender MCP scene inspection and baseline asset renders were exercised separately in a dedicated cloud authoring scene.
+
 ## 2026-10-25 — Avatar motion alignment
 
 - Codex corrected root-anchor drift during smoothed torso motion and tracking-loss recovery using pooled forward kinematics, and added shoulder-transition and compound head-orientation regressions. Verification is automated; no new browser or live-camera evidence is claimed.

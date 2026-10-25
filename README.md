@@ -18,7 +18,7 @@
 
 *Real browser footage. Synthetic auto-play uses the game's input pipeline and scoring rules.*
 
-[Play locally](#quick-start) · [Enter the arena](#the-arena) · [See the proof](#numbers) · [Under the hood](#how-it-works) · [Track 4 submission](#submission)
+[Play locally](#quick-start) · [Play with your camera](#play-with-your-camera) · [Built to feel smooth](#built-to-feel-smooth) · [Enter the arena](#the-arena) · [See the proof](#numbers) · [Under the hood](#how-it-works) · [Track 4 submission](#submission)
 
 </div>
 
@@ -58,7 +58,6 @@ For the prepared production app, run `npm run build`, then `npm run preview` ins
 <summary><strong>Camera setup, your own music and recovery</strong></summary>
 
 - **Your own music:** page the library to **Choose your own audio**. Upload MP3, WAV, OGG or M4A; decode, analysis and chart generation happen in the browser. The source song remains available after preparing a cut.
-- **Optional webcam:** run `npm run models`, then `npm run build` in `app/`. Choose **Set up camera**, keep head, shoulders, hands and hips in view, and complete matching calibration. **Play with camera** requires fresh tracking. Camera frames stay on the device.
 - **No sound:** use **Enable sound** again and check Settings volume. Browser audio requires a native user action.
 - **A song fails:** choose **Retry track**, or another song. Invalid audio shows a useful error; the library stays available.
 - **Storage unavailable:** generated music stays playable with an explicit not-saved warning.
@@ -67,6 +66,35 @@ For the prepared production app, run `npm run build`, then `npm run preview` ins
 The [player guide](docs/player-guide.md) walks through the complete flow; [troubleshooting](docs/troubleshooting.md) explains exact messages and recovery.
 
 </details>
+
+## Play with your camera
+
+1. Run `npm run models` once inside `app/` (downloads the pinned MediaPipe hand and pose models), then `npm run dev`.
+2. Pick a song, click **Enable sound**, then **Set up camera** and allow the webcam.
+3. Step back until your **head and shoulders** are in view and stay still for a second. Setup confirms itself and the round counts in — no walking back to the mouse.
+4. Swing through cyan and magenta blocks, point 👆 to fire at gold orbs, and lean around walls.
+
+A **live tracking window** in the bottom-left corner shows your mirrored camera with the MediaPipe skeleton, both hands, the gesture each hand is read as, tracking rate and inference time. Camera frames never leave your machine.
+
+## Built to feel smooth
+
+Webcam tracking is slower than a controller, so the game is tuned around it:
+
+| What you feel | How |
+| --- | --- |
+| Time to react | Blocks travel **2.17× slower** than the authored chart approach, absorbing camera and inference delay |
+| Forgiving hits | Contact zones are **2.5× the visible block**; any moving hand (≥ 0.3 m/s) breaks slash and smash blocks — no wrong-gesture bad cuts |
+| No body clipping | Lanes sit wide of the torso (±1.2 m / ±2.15 m), so arms reach away from the body where tracking is clean |
+| Effortless beams | A held point **auto-aims at the next visible orb** |
+| Walls don't end runs | Touching a wall only costs **100 points**; it never breaks the combo or pauses the game |
+| Fluid motion | Hand cursors, trails and the avatar **ease and extrapolate between tracking samples** for 60 fps display; scoring still uses capture-time samples |
+| Faster hand updates | MediaPipe runs on the **CPU in a worker** (no GPU contention with the arena), and the pose model runs **every other frame** while hands run every frame |
+| No flicker | The figure, HUD hands and setup checks **hold through slow frames** (700 ms) instead of blinking out |
+| Hands-free start | Calibration needs only head and shoulders, **auto-confirms after 1 s** and counts the round in |
+| Robust capture | A tracking stall **restarts capture automatically** before reporting an error |
+| Lighter frames | The static arena's transforms are baked once; pixel ratio is capped and bloom renders at reduced resolution |
+
+Every value is a single named constant in [`app/src/core/constants.ts`](app/src/core/constants.ts), registered in [docs/02](docs/02-architecture.md#constants). Add `?tracker=gpu` to compare GPU tracking or `?confirm=manual` to restore click-to-confirm setup.
 
 ## The arena
 
@@ -97,8 +125,8 @@ Score, accuracy, best combo and judgement counts come from the completed session
 | --- | --- | --- |
 | Moving hand through a cyan block | Slice | Swing-plane cut, capped halves and blade ribbons |
 | Moving hand through a magenta block | Smash | Authored fracture pieces and a distinct impact sound |
-| Point + hold for 500 ms | Charge and fire a beam | Gold target and charge feedback |
-| Lean sideways | Dodge | Move your torso clear of the wall |
+| Point 👆 and hold | Charge and auto-fire at the next visible orb | Gold target and charge feedback |
+| Lean sideways | Dodge | Touching a wall costs 100 points; the run continues |
 | Open palm, then deliberate point | Move and confirm in menus | Optional calibrated hand navigation |
 | Mouse / Tab / Enter | Navigate | Song, difficulty, sound, settings and run actions |
 | Esc / Space during play | Pause | Resume or Quit to music |
@@ -228,6 +256,7 @@ server/        Optional companion stub, outside the working core
 - [x] Synthetic auto-play through the actual input and scoring pipeline.
 - [x] Polished desktop music rails, geometric covers and shared native/hand controls.
 - [x] Reproducible all-chart replay, asset hashes, bundle limits and browser recovery evidence.
+- [x] Hands-free camera setup, live tracking overlay and latency-tolerant gameplay tuning.
 - [ ] Consenting live-webcam calibration, scored hits and complete gesture/menu trials.
 - [ ] Independent music-quality, comfort, accessibility and flashing review.
 - [ ] Repeatable performance/soak measurements and the disconnected venue drill.

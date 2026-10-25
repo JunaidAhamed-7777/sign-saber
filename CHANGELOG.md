@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T08:20:00+05:30 — README: camera play and smoothness
+
+- Changed: README gains "Play with your camera" (models, hands-free setup, corner tracking view) and "Built to feel smooth" (slower approach, 2.5× zones, wide lanes, beam auto-aim, wall penalty, display easing, CPU tracking with alternate-frame pose, flicker hold, stall restart, baked arena transforms), plus refreshed controls/roadmap rows.
+- Why: User asked to document the smoothness work and improve the README.
+- Validation: Documentation checks passed.
+- Limits: No FPS or latency measurement is claimed.
+
 ## 2026-10-25 06:53 +05:30 — Smooth display of hand cursors and avatar between tracking samples
 
 - **Changed:** `app/src/render/renderer.ts` now eases drawn hand cursors, guide lines and trail/blade inputs each frame toward `predictCursor` (capped by `EXTRAPOLATE_MAX_MS`) using new display-only `HAND_DISPLAY_SMOOTH_MS = 45`; `AVATAR_SMOOTH_MS` 55→85 and `AVATAR_ROOT_SMOOTH_MS` 70→95 (`app/src/core/constants.ts`, `docs/02-architecture.md`).

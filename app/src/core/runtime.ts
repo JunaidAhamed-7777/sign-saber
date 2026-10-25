@@ -1,4 +1,5 @@
 /** Lifecycle integrator: semantic UI commands own resources, scoring only consumes fresh captures. */
+import type { BeatmapV1 } from '../beatmap/types';
 import { StateMachine } from './stateMachine';
 import type { PauseReason } from './stateMachine';
 import { readFlags } from './flags';
@@ -37,6 +38,7 @@ import {
   CALIB_AUTO_CONFIRM_MS,
   COUNTDOWN_STEPS,
   FIGURE_HOLD_MS,
+  APPROACH_SLOWDOWN,
   MENU_TRACK_MAX_AGE_MS,
   POP_LIFETIME_MS,
   RESUME_COUNTDOWN_MS,
@@ -47,6 +49,10 @@ import {
   TARGET_FPS,
 } from './constants';
 
+/** Blocks travel longer than the chart's authored approach so tracking delay leaves time to react. */
+function slowedMap(map: BeatmapV1): BeatmapV1 {
+  return { ...map, approachMs: Math.round(map.approachMs * APPROACH_SLOWDOWN) };
+}
 export class GameRuntime {
   readonly machine = new StateMachine();
   readonly pointer = new MenuPointerController();
@@ -695,7 +701,7 @@ export class GameRuntime {
       });
       this.machine.transition(retry ? 'results:retry' : 'select:start', { ready: true });
       this.player!.prepare(this.buffer!);
-      const map = useStore.getState().map!;
+      const map = slowedMap(useStore.getState().map!);
       this.renderer.setApproachMs(map.approachMs);
       this.trace.reset(
         `${source === 'performer' ? 'synthetic-performer-logic-replay' : 'dataset-static-annotation-trial'} epoch ${this.machine.epoch}`,
@@ -996,7 +1002,7 @@ export class GameRuntime {
       return;
     }
     const state = useStore.getState(),
-      map = state.map!,
+      map = slowedMap(state.map!),
       player = this.player!;
     const confident = !state.warnings.includes('lowTempoConfidence');
     this.countdownStepMs = confident ? 60000 / map.song.bpm : START_COUNTDOWN_MS / COUNTDOWN_STEPS;

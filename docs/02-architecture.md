@@ -289,7 +289,7 @@ This is the shared constants registry. `core/constants.ts` now exports these nam
 | `PLAY_W` | 5.33 m | Play plane width (16:9 with `PLAY_H`) |
 | `PLAY_H` | 3.0 m | Play plane height |
 | `PLAY_CENTER_Y` | 1.5 m | Play plane vertical centre |
-| `LANE_X` | `[-1.8, -0.6, 0.6, 1.8]` | Column centres (m) |
+| `LANE_X` | `[-2.15, -1.2, 1.2, 2.15]` | Column centres (m); wide of the torso so reaching arms stay clear of the body for tracking |
 | `LANE_Y` | `[0.75, 1.5, 2.25]` | Row centres (m) |
 | `BLOCK_SIZE` | 0.6 m | Cube edge |
 | `LANE_PITCH_DEG` | 6° | Lane inclination |
@@ -427,6 +427,7 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `LEAN_TILT_ASSIST_DEG` | 15 | Optional shoulder-tilt assist, with translation evidence |
 | `DUCK_HYSTERESIS` | 0.03 | Normalized nose-height hysteresis [STRETCH] |
 | `CALIB_SAMPLE_MS` / `CALIB_HAND_SEEN_MS` | 500 / 2000 | Rest-pose averaging and recent-hand visibility windows |
+| `APPROACH_SLOWDOWN` | 1.4 | Runtime multiplier on chart approach time so blocks travel slower and absorb camera/inference delay |
 | `FIGURE_HOLD_MS` | 700 | Display/readiness hold for the tracked figure, HUD hands and setup checks across slow inference frames (scoring keeps `INPUT_MAX_AGE_MS`) |
 | `GESTURE_EXT_RATIO` / `GESTURE_CURL_RATIO` | 1.55 / 1.3 | 3D wrist→tip ÷ wrist→MCP: straight at or above, folded at or below (orientation-independent Open/Fist/Point) |
 | `TRACK_DEFAULT_DELEGATE` | `cpu` | MediaPipe delegate without `?tracker=`; CPU avoids GPU contention with the arena and the ~8 s GPU warm-up |

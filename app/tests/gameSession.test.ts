@@ -107,7 +107,7 @@ describe('capture-only deterministic session', () => {
     run.consume(980, [cursor(980, -0.4)]);
     run.tick(1230);
     expect(run.session.stats.counts.miss).toBe(0);
-    run.consume(1020, [cursor(1020, 1.6)], body(1020), 1240);
+    run.consume(1020, [cursor(1020, LANE_X[2] + 1)], body(1020), 1240);
     expect(run.session.stats.counts.perfect).toBe(1);
     expect(run.session.score).toBe(100);
     const duplicate: SessionInput = {
@@ -141,9 +141,9 @@ describe('capture-only deterministic session', () => {
     const run = fixture(map([note(0, 1000)]));
     run.consume(-10, [cursor(-10)]);
     expect(run.session.score).toBe(0);
-    run.consume(970, [cursor(970, -0.4)]);
+    run.consume(970, [cursor(970, LANE_X[2] - 1)]);
     run.consume(990, []);
-    run.consume(1020, [cursor(1020, 1.6)]);
+    run.consume(1020, [cursor(1020, LANE_X[2] + 1)]);
     expect(run.session.score).toBe(0);
     expect(run.consume(1050, [cursor(1050)], body(1050), 1301)).toBe(false);
     run.tick(1451);
@@ -154,8 +154,8 @@ describe('capture-only deterministic session', () => {
     const bad = cursor(1000);
     bad.pos.x = NaN;
     expect(run.consume(1000, [bad])).toBe(false);
-    run.consume(750, [cursor(750, -3)]);
-    run.consume(950, [cursor(950, 2)]);
+    run.consume(750, [cursor(750, LANE_X[2] - 3.6)]);
+    run.consume(950, [cursor(950, LANE_X[2] + 1.4)]);
     expect(run.session.stats.counts.good).toBe(1);
     expect(run.session.stats.counts.perfect).toBe(0);
   });
@@ -206,7 +206,7 @@ describe('capture-only deterministic session', () => {
   });
   it('drops paused inputs and resets the sweep and capture epoch boundary at resume', () => {
     const run = fixture(map([note(0, 1000)]));
-    run.consume(970, [cursor(970, -0.4)]);
+    run.consume(970, [cursor(970, LANE_X[2] - 1)]);
     run.session.pause();
     run.session.freezeAt(1010);
     expect(run.session.latestTime).toBe(1010);
@@ -215,7 +215,7 @@ describe('capture-only deterministic session', () => {
     expect(run.consume(990, [cursor(990)])).toBe(false);
     run.session.resume(1000);
     expect(run.consume(995, [cursor(995)])).toBe(false);
-    run.consume(1020, [cursor(1020, 1.6)]);
+    run.consume(1020, [cursor(1020, LANE_X[2] + 1)]);
     expect(run.session.score).toBe(0);
   });
   it('replays identical captures at 30/60/120 Hz and across a render stall with identical ordered results', () => {
@@ -224,7 +224,7 @@ describe('capture-only deterministic session', () => {
       const run = fixture(chart);
       const samples = [
         { time: 980, hand: cursor(980, -0.4) },
-        { time: 1020, hand: cursor(1020, 1.6) },
+        { time: 1020, hand: cursor(1020, LANE_X[2] + 1) },
         { time: 1980, hand: { ...cursor(1980, -1.6), gesture: 'fist' as const } },
         { time: 2020, hand: { ...cursor(2020, 0.4), gesture: 'fist' as const } },
         { time: 2980, hand: cursor(2980, -0.4) },

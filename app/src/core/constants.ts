@@ -2,7 +2,8 @@
 export const PLAY_W = 5.33,
   PLAY_H = 3,
   PLAY_CENTER_Y = 1.5;
-export const LANE_X = [-1.8, -0.6, 0.6, 1.8] as const;
+/** Lanes sit wide of the body so hands reach out to hit, keeping arms clear of the torso for tracking. */
+export const LANE_X = [-2.15, -1.2, 1.2, 2.15] as const;
 export const LANE_Y = [0.75, 1.5, 2.25] as const;
 export const BLOCK_SIZE = 0.6,
   LANE_PITCH_DEG = 6,
@@ -14,6 +15,8 @@ export const CAM_FOV_DEG = 55,
   BEAM_HOVER_Z = -14,
   BEAM_HOVER_Y_OFFSET = 0.6;
 export const APPROACH_MS = { easy: 2600, normal: 2000, hard: 1600 } as const;
+/** Runtime multiplier on chart approach time: slower blocks absorb camera/inference delay. */
+export const APPROACH_SLOWDOWN = 1.4;
 export const WINDOW_PERFECT_MS = 60,
   WINDOW_GREAT_MS = 120,
   WINDOW_GOOD_MS = 200;

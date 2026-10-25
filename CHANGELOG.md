@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T07:30:00+05:30 — Slower blocks and wider lanes
+
+- Changed: Blocks approach 1.4× slower at runtime (`APPROACH_SLOWDOWN`, applied to the session and renderer for every mode). Lane centres moved outward from ±0.6/±1.8 m to ±1.2/±2.15 m so hits happen away from the torso. Session tests now position cursors relative to the lanes.
+- Why: User live testing — MediaPipe delay made blocks arrive too fast to react, and hits near the body clipped into the torso where tracking struggles.
+- Validation: Full `npm run check` passed (567 tests), including the performer replay on all nine charts with the wider lanes.
+- Limits: Not yet felt on the user's webcam; both values are single constants to tune.
+
 ## 2026-10-25T07:10:00+05:30 — Hands-free camera setup, steadier tracking, better gestures, beam auto-aim
 
 - Changed: Setup calibrates on head and shoulders only (hips and hands optional, wider shoulder-size range), auto-confirms after 1 s and starts the round when a song and sound are ready (`?confirm=manual` keeps clicks). The figure, HUD hands, captions and readiness hold for `FIGURE_HOLD_MS` across slow frames. MediaPipe now defaults to the CPU delegate (`?tracker=gpu` to compare). Open/Fist/Point use orientation-independent 3D finger ratios, so an open palm facing the camera and a 👆 point register. A charged point auto-fires at the next visible beam target (Good outside the timing windows). The corner camera view moved to the bottom left and the left rail/compact row make room for it.

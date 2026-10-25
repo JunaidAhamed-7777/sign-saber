@@ -16,6 +16,13 @@ The development workflow also occasionally includes collaboration with **Devin**
 
 - Codex wrote and independently reviewed guides against current UI/runtime sources, exact recovery messages and the constants/evidence contracts. It captured and inspected four actual production-app WebPs, including a complete labelled synthetic-performer run, and refreshed the wording/captures after concurrent main updates. No gameplay implementation or live-camera evidence is attributed to this documentation work.
 - After the first documentation milestone, Codex normally integrated main through `52e9c81`, rechecked the exact live-play label and dataset-camera distinction, refreshed all captures (including the corrected performer footer) and repeated the full application/browser checks before opening the issue PR.
+## 2026-10-25 — PR audit and sequential integration
+
+- Codex reviewed PR #6 against current main, repaired CI budget enforcement and split the existing postprocessing dependency after measuring the oversized integrated entry. Full application/docs checks and a real production-menu browser smoke were run; live and release gates remain open.
+
+## 2026-10-25 — Issue #1 bundle budget
+
+- Codex measured the unchanged bundle and browser requests, configured Rolldown chunk groups, implemented the dependency-free emitted-byte gate and regression tests, and documented actual sizes/waterfalls and production-preview dataset/synthetic results. No gameplay changes or runtime performance gains are claimed. After new renderer work landed on main, Codex normally integrated it and repeated the actual bundle/browser checks and full 367-assertion application check, then repeated final checks after the camera-source integration and the generator-v3/target-asset integration (424 assertions), preserving the real warning and optional Windows cleanup failure.
 ## 2026-10-25 — Showcase README and real demo captures
 
 - Codex rewrote the project README using the requested showcase structure. Parallel agents captured actual production-browser auto-play, independently measured tests/charts/assets/build bytes and reviewed product facts, architecture and current button labels. The integrator reviewed media and kept dataset, synthetic, research and unverified webcam evidence explicit.

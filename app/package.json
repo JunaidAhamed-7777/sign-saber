@@ -19,7 +19,8 @@
     "test:watch": "vitest",
     "models": "node ../scripts/download-models.mjs",
     "beatmaps": "node ../scripts/generate-beatmaps.mjs",
-    "check": "npm run typecheck && npm run lint && npm run test && npm run build",
+    "check": "npm run typecheck && npm run lint && npm run test && npm run build && npm run bundle:check",
+    "bundle:check": "node --test ../scripts/check-bundle.test.mjs && node ../scripts/check-bundle.mjs",
     "fonts": "node ../scripts/acquire-fonts.mjs",
     "music": "node ../scripts/acquire-starter-music.mjs"
   },

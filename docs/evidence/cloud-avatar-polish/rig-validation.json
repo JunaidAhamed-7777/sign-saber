@@ -1,0 +1,21 @@
+{
+  "file": "app/public/assets/models/avatar.glb",
+  "bytes": 529672,
+  "triangles": 15820,
+  "triangleBudget": 16000,
+  "vertices": 7941,
+  "skinnedMeshes": 5,
+  "bones": 43,
+  "anchors": 21,
+  "materials": [
+    "avatar_suit",
+    "avatar_skin",
+    "avatar_accent",
+    "avatar_eye",
+    "avatar_hair"
+  ],
+  "maxWeightError": 5.21540641784668e-8,
+  "maxBindDrift": 2.7766175015742616e-7,
+  "referenceRestCompared": true,
+  "evidence": "Offline structural/CPU skin validation only; not browser, visual deformation or camera evidence."
+}

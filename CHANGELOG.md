@@ -6,6 +6,14 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T11:36:00Z — Refine the rear-facing avatar through Blender MCP
+
+- Changed: Smoother suit surface, fine rear shoulder-yoke and waist seams, explicit pre-rig topology repair, and hard pre-rig/export triangle guards. Regenerated source `.blend`, runtime GLB and exact manifest in a dedicated cloud Blender 4.3.2 GUI through the pinned official MCP bridge. Preserved the 43-bone rest/anchor contract, materials, upper-body scope and scoring inputs.
+- Quality: Final avatar is 15,820 triangles / 529,672 bytes; two invalid suit faces are repaired before weighting, with no exporter invalid-mesh warning. Actual EEVEE back/side/extreme-pose renders were compared with the original; existing shoulder/elbow stress folds remain.
+- Validation: Full application gate passed 574 tests, typecheck, lint, production build and bundle budgets. Avatar loader/retarget tests passed 21/21 against the exact candidate before copy; 12 structural/corruption tests, five bootstrap tests and two docs-checker tests passed. Final app formatting and local documentation links passed. The seven unchanged arena GLBs passed their structural gate.
+- Additional evidence: Khronos validation has zero errors and one inherited skinned-parent hierarchy warning, also present in the original. Repeated meshes have identical coordinates, weights and canonical oriented topology but different polygon storage order; no byte-identical export claim. New asset/bootstrap gates are enforced in CI.
+- Limits: Blender previews are not gameplay screenshots. No new runtime-browser, live-camera, human comfort or performance claim; see the cloud avatar evidence record for hashes, captures and exact limits.
+
 ## 2026-10-25T11:21:00Z — Harden isolated Blender authoring startup
 
 - Changed: Cancel the pinned add-on's automatic update timer, disable Tripo/Meshy alongside the other optional asset services, and reject failed server startup rather than printing a misleading READY marker. Added five isolated bootstrap regression tests.

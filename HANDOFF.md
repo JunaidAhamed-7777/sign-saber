@@ -2,6 +2,12 @@
 
 The user requested this checkpoint and is handing the repository to another agent. History is preserved; only the integrator committed and pushed. Start with git status, AGENTS.md, README.md, ROADMAP.md, DESIGN.md, docs/README.md and relevant numbered specs. No P0–P5 release gate is declared complete.
 
+## Later cloud refinement — 2026-10-25
+
+The avatar root anchor now follows smoothed shoulder/clavicle transforms, fixing torso-transition and tracking-loss drift without changing capture-time scoring. The avatar source/GLB was regenerated through the official Blender MCP bridge in a dedicated cloud Blender 4.3.2 instance: smoother suit surface, fine rear seams, explicit pre-rig mesh cleanup, and unchanged 43-bone/rest-anchor contract. See [cloud authoring evidence](docs/evidence/2026-10-25-cloud-avatar-polish.md) for exact artifact hashes and validation limits. The historical checkpoints below remain historical; no release gate is newly declared passed.
+
+Additional CI commands: `node --test scripts/check-avatar.test.mjs`, `node scripts/check-avatar.mjs`, and `python scripts/test_blender_bootstrap.py` (from the repository root after app dependencies are installed). The isolated authoring bootstrap now refuses failed startup and disables optional update/service callbacks.
+
 ## Latest round (2026-10-25, seven parallel agents, integrated on main)
 
 What now works end to end without a camera:

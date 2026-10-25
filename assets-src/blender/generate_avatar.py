@@ -29,6 +29,8 @@ ROOT = SOURCE.parents[2]
 OUT = ROOT / 'app' / 'public' / 'assets' / 'models'
 TAG = 'sign_saber_avatar_owned'
 RIG_VERSION = 1
+TRIANGLE_BUDGET = 16000
+MESH_REPAIRS = {}
 
 # ---------------------------------------------------------------------------------------
 # Clean previous generated data (only objects/data carrying our tag).
@@ -815,7 +817,7 @@ def relax_project(obj, ops, h, rounds=2, factor=0.35):
     mesh.update()
 
 
-def build_part(name, ops, lo, hi, h, slot, target, symmetric=True, method='decimate'):
+def build_part(name, ops, lo, hi, h, slot, target, symmetric=True, method='decimate', relax_rounds=4):
     verts, quads = polygonise(name, ops, lo, hi, h)
     obj = new_mesh_object(name, verts, quads, slot)
     clean_largest(obj)
@@ -835,7 +837,16 @@ def build_part(name, ops, lo, hi, h, slot, target, symmetric=True, method='decim
             poly.use_smooth = True
     else:
         decimate(obj, target, symmetric)
-    relax_project(obj, ops, h, rounds=4, factor=0.45)
+    relax_project(obj, ops, h, rounds=relax_rounds, factor=0.45)
+    # Validate post-relaxation topology before weighting instead of letting the
+    # exporter silently repair it. Record only the repairs actually observed.
+    before = {'vertices': len(obj.data.vertices), 'triangles': triangle_count(obj)}
+    if obj.data.validate(verbose=True):
+        MESH_REPAIRS[name] = {'before': before, 'after': {
+            'vertices': len(obj.data.vertices), 'triangles': triangle_count(obj)}}
+        print('SIGN_SABER_MESH_REPAIR ' + json.dumps({name: MESH_REPAIRS[name]}))
+    if obj.data.validate():
+        raise RuntimeError('Mesh remains invalid after validation: ' + name)
     return obj
 
 
@@ -957,6 +968,13 @@ def accent_curves(ops):
         curves.append(('accent_chest_' + side, resample(catmull(chest, 8), 0.018), r_line, False))
         side_pts = [v3(0.150 * sg, 0.400, 0.000), v3(0.150 * sg, 0.300, 0.000), v3(0.140 * sg, 0.200, 0.000), v3(0.150 * sg, 0.110, 0.000)]
         curves.append(('accent_side_' + side, resample(catmull(side_pts, 8), 0.02), r_line, False))
+        # The game shows the rear of the performer. A finer shoulder yoke and
+        # tailored lumbar seam make the back readable without another bright belt
+        # or a change to the silhouette. These follow the same suit weights.
+        rear_yoke = [v3(0.145 * sg, 0.510, -0.085), v3(0.105 * sg, 0.465, -0.120), v3(0.050 * sg, 0.405, -0.120), v3(0, 0.382, -0.120)]
+        rear_contour = [v3(0.125 * sg, 0.420, -0.090), v3(0.108 * sg, 0.320, -0.090), v3(0.084 * sg, 0.220, -0.080), v3(0.085 * sg, 0.120, -0.090)]
+        for role, ctrl in (('yoke', rear_yoke), ('contour', rear_contour)):
+            curves.append(('accent_back_' + role + '_' + side, resample(catmull(ctrl, 8), 0.023), 0.0022, False))
     return curves
 
 
@@ -1004,7 +1022,9 @@ def build_eyes():
 timings = {}
 t0 = datetime.now()
 suit_ops_list = suit_ops()
-suit = build_part('avatar_suit_part', suit_ops_list, (-0.64, -0.09, -0.16), (0.64, 0.64, 0.15), 0.004, 'suit', 4300)
+# Redistribute the reduced suit surface tangentially without flattening its
+# authored anatomy; other parts retain their established relaxation settings.
+suit = build_part('avatar_suit_part', suit_ops_list, (-0.64, -0.09, -0.16), (0.64, 0.64, 0.15), 0.004, 'suit', 4600, relax_rounds=8)
 timings['suit'] = (datetime.now() - t0).total_seconds()
 head_ops_list = head_ops()
 head = build_part('avatar_head_part', head_ops_list, (-0.12, 0.46, -0.14), (0.12, 0.90, 0.145), 0.002, 'skin', 3500, symmetric=False)
@@ -1019,6 +1039,8 @@ timings['total'] = (datetime.now() - t0).total_seconds()
 parts = [suit, head, hair, hands['L'], hands['R']] + eyes + accents
 summary = {obj.name: triangle_count(obj) for obj in parts}
 summary['total'] = sum(triangle_count(obj) for obj in parts)
+if summary['total'] > TRIANGLE_BUDGET:
+    raise RuntimeError('Avatar exceeds triangle budget before rigging: ' + str(summary['total']))
 print('SIGN_SABER_AVATAR_SHAPE ' + json.dumps({'triangles': summary, 'seconds': timings}))
 
 
@@ -1270,6 +1292,10 @@ def rig_and_export(parts):
 
 
 def export(rig, body, fixed, summary):
+    if body.data.validate():
+        raise RuntimeError('Joined avatar mesh required unexpected repair; refusing export')
+    if triangle_count(body) > TRIANGLE_BUDGET:
+        raise RuntimeError('Avatar exceeds triangle budget; refusing export')
     path = OUT / 'avatar.glb'
     bpy.ops.object.select_all(action='DESELECT')
     rig.select_set(True)
@@ -1317,6 +1343,7 @@ def export(rig, body, fixed, summary):
         'construction': 'Signed-distance primitives (smooth unions/subtractions) polygonised by surface nets, projected onto the field, collapse-decimated, relaxed and re-projected; accent seams are tubes on projected curves.',
         'weights': 'Bone-heat for suit and hands (unweighted fallback to nearest bone), procedural head/neck blend, rigid hair/eyes, accents copy nearest suit weights; max 4 influences, normalised.',
         'unweightedFallbackVertices': fixed,
+        'meshRepairsBeforeRigging': MESH_REPAIRS,
         'mesh': 'avatar_body',
         'armature': 'avatar_rig',
         'bones': bones,
@@ -1325,7 +1352,7 @@ def export(rig, body, fixed, summary):
         'parts': summary,
         'triangles': sum(len(p.vertices) - 2 for p in body.data.polygons),
         'vertices': len(body.data.vertices),
-        'triangleBudget': 16000,
+        'triangleBudget': TRIANGLE_BUDGET,
         'bytes': len(data),
         'sha256': hashlib.sha256(data).hexdigest(),
         'anchors': anchors(),

@@ -21,6 +21,9 @@ jobs:
           cache-dependency-path: app/package-lock.json
       - run: npm ci
       - run: npm run check
+      - run: node --test ../scripts/check-avatar.test.mjs
+      - run: node ../scripts/check-avatar.mjs
+      - run: python ../scripts/test_blender_bootstrap.py
 
   docs:
     name: docs — paths and heading fragments

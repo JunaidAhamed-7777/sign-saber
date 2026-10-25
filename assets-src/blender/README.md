@@ -34,3 +34,13 @@ The [structural validation report](../../app/public/assets/models/validation.jso
 ## Isolated bridge checks
 
 The bootstrap cancels the pinned add-on’s automatic update timer, disables all optional third-party asset services and refuses to report readiness when the loopback server fails to start. Run `python scripts/test_blender_bootstrap.py` from the repository root for five offline safety checks. These use mocks and require neither Blender nor network access; they do not replace actual GUI/bridge verification.
+
+## Rear-facing avatar refinement — 2026-10-25
+
+The avatar alone was regenerated in a separate **Blender 4.3.2** cloud GUI instance through the same checksum-pinned official MCP add-on and its JSON/TCP `execute_code` route. The arena/target pack retains its earlier tool/version provenance. No external meshes, textures or asset-service calls were used.
+
+`generate_avatar.py` adds fine rear shoulder-yoke and lumbar seams, allocates 4,600 pre-cleanup triangles to the suit, and applies eight tangential relaxation/reprojection rounds to that surface only. Post-relaxation mesh validation removes two invalid suit faces before skinning, records the repair in `avatar-manifest.json`, and rejects residual or joined-mesh repairs. Both pre-rig and pre-export 16,000-triangle guards are enforced. The final exported avatar has 15,820 triangles, 7,941 vertices and 529,672 bytes; its rig, rest anchors and runtime material slots are unchanged.
+
+Run `node --test scripts/check-avatar.test.mjs` and `node scripts/check-avatar.mjs` from the repository root after installing the app dependencies. An optional second GLB path compares rest transforms and anchors against a reference. CI runs these checks alongside the application gate and offline bootstrap safety tests.
+
+The [evidence record](../../docs/evidence/2026-10-25-cloud-avatar-polish.md) retains actual rendered comparisons, structural and Khronos outcomes, source hashes and limitations. This avatar pass does not claim byte-identical exports, perfect deformation, new browser appearance verification or live-camera performance.

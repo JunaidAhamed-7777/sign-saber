@@ -150,6 +150,8 @@ Fresh verification at integrated application source **`8f0e318a9077b1a06f80cf19a
 | Authored arena/target pack | **7 GLBs · 5,996 triangles · 352,056 bytes** | Original geometry, separate from the avatar |
 | Rigged holographic avatar | **43 bones · 15,134 triangles · 507,252 bytes** | Upper-body skinning and retargeting asset |
 
+**Later avatar refinement (2026-10-25):** the rear-facing suit now has finer shoulder/back seams and a smoother surface, and root placement follows the smoothed shoulder pose. The new avatar is **15,820 triangles / 529,672 bytes** with the same 43-bone rig and landmark anchors. [Cloud authoring and validation evidence](docs/evidence/2026-10-25-cloud-avatar-polish.md) separates Blender renders and automated checks from browser/live-camera evidence; the historical metrics above retain their original source revision.
+
 Across the installed charts: **2,348 slices · 1,811 smashes · 288 beams · 324 walls**. Easy density is **0.48–0.61 notes/s**, Normal **0.84–1.10**, and Hard **1.15–1.47**. Every chart reports **zero unplayable notes** in the current planner. Reproduce with `node scripts/chart-report.mjs`.
 
 <details>

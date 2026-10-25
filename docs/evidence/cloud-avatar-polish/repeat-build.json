@@ -1,0 +1,10 @@
+{
+  "maxCoordinateDelta": 0.0,
+  "rawPolygonOrderEqual": false,
+  "canonicalOrientedFacesEqual": true,
+  "canonicalFaceMaterialAssignmentsEqual": true,
+  "canonicalOrientedTriangulationEqual": true,
+  "maxWeightDelta": 0.0,
+  "verticesWithDifferentWeights": 0,
+  "vertices": 7941
+}

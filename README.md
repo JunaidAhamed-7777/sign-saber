@@ -12,44 +12,31 @@
 [![Three.js](https://img.shields.io/badge/Three.js-WebGL-black?logo=threedotjs)](app/src/render/renderer.ts)
 [![MediaPipe](https://img.shields.io/badge/MediaPipe-local_tracking-FFC32B)](app/src/tracking/tracking.worker.ts)
 
-![Real Sign Saber auto-play: holographic avatar, neon arena and scored hits](docs/media/hero.gif)
+![Real Sign Saber auto-play: a holographic avatar dodges walls, slices targets and fires beams](docs/media/hero.gif)
 
-*Actual browser capture · synthetic auto-play through the real scoring rules · no webcam input.*
+**8 songs · 24 charts · 4,447 replay hits · 569 passing tests · 28 original SFX**
 
-**481 tests · 9 full charts · 1,643 Perfect replay hits · 28 original SFX**
+*Real browser footage. Synthetic auto-play uses the game's input pipeline and scoring rules.*
 
-[Quick start](#quick-start) · [See the mechanics](#the-arena) · [Measured numbers](#numbers) · [Architecture](#how-it-works) · [Roadmap](#roadmap)
+[Play locally](#quick-start) · [Enter the arena](#the-arena) · [See the proof](#numbers) · [Under the hood](#how-it-works) · [Track 4 submission](#submission)
 
 </div>
 
-Sign Saber is an experimental browser rhythm game built with **TypeScript, React, Three.js and MediaPipe**. A rigged holographic avatar stands inside a neon arena, seen from behind. Open palms become blades, fists break fractured cubes, and a held point charges a beam. Music analysis generates the chart; Web Audio drives the clock and synthesizes the effects.
+Sign Saber turns music into upper-body rhythm combat. A rigged holographic avatar stands inside an authored neon arena. Sweep through cyan slabs, break magenta cubes, charge gold beams and lean around incoming walls. Your movement becomes the performance; every contact feeds the score, combo, sound and destruction.
 
-<table>
-  <tr>
-    <td width="50%"><img src="docs/media/slash.gif" alt="Synthetic auto-play slicing targets with open-palm strokes" width="100%"></td>
-    <td width="50%"><img src="docs/media/beam.gif" alt="Synthetic auto-play charging and firing a beam at a gold orb" width="100%"></td>
-  </tr>
-  <tr>
-    <td><strong>Open palm → slice.</strong> A fast stroke cuts the target along the swing plane.</td>
-    <td><strong>Point + hold → beam.</strong> Charge, aim and fire at distant gold orbs.</td>
-  </tr>
-</table>
+Choose from **25 minutes of credited local music**, or bring your own audio. The browser builds an **80-second arrangement**—a 10-second fade in, 60-second highlight and 10-second fade out—and generates a new chart from those exact edited samples. Music analysis, playback, rendering and optional camera tracking run locally.
 
-*Both clips are real application footage of synthetic auto-play, not camera recognition. All screenshots and GIFs on this page were captured from the running game; none are mock-ups or generated images. [Capture details](docs/media/README.md).*
+## Choose your track
 
-## Try it today
+![The current desktop music menu: geometric song sleeves, clear difficulty and play controls, and a protected central player stage](docs/media/menu.png)
 
-**Watch auto-play is the showcase mode.** A chart-planned performer moves the avatar's hands through the same input pipeline and contact-based judge used by the game. Slashes, smashes, beams, combos and results come from actual scored events.
+**Music on the left. Your next move on the right. You in the centre.** Eight full songs, three difficulties, explicit preview and large shared controls surround the upper-body stage. The new geometric sleeves, quieter track rows and restrained cyan actions give the arena its own control booth.
 
-**Play level is the dataset trial.** It runs an 80-second arrangement using [real COCO upper-body annotations](app/public/assets/fixtures/coco-upper-body-trial.json). These independent still poses contain no hand-gesture labels or recorded swings, so notes register as misses by design.
-
-The optional webcam path uses MediaPipe. Choose **Set up camera** on the main music menu; matching calibration enables **Play with camera**. A consenting person's calibrated, scored webcam session is still an open milestone. The `training/` research model is separate and is **not used by the game**.
+**Watch auto-play** is the fastest way to experience the complete game. A chart-planned performer moves through the real input pipeline, contact judge, effects and results. **Play level** runs the separate COCO annotation trial. **Set up camera** opens the optional live path from the same music menu.
 
 ## Quick start
 
-New here? Read the [Player guide](docs/player-guide.md) for setup, moves and no-camera trials, [Troubleshooting](docs/troubleshooting.md) for recovery, or the [Contributor guide](docs/contributor-guide.md) for code flow, checks and evidence rules.
-
-Use **Node.js 22 or newer** and a current Chrome or Edge. After cloning and installing dependencies, the bundled demo needs no webcam, account or model download.
+Use **Node.js 22+** and current desktop Chrome or Edge with WebGL2 and hardware acceleration. The bundled showcase needs no webcam, account or tracking-model download.
 
 ```powershell
 git clone https://github.com/JunaidAhamed-7777/sign-saber.git
@@ -60,30 +47,24 @@ npm run dev
 
 Open [localhost:5173](http://localhost:5173):
 
-1. Pick one of the eight local songs (use Next/Previous to browse), then Easy, Normal or Hard.
-2. Click **Enable sound** with your mouse or keyboard.
-3. Click **Watch auto-play**. The app prepares its 80-second cut and a fresh chart, then performs it.
-4. **Esc / Space** pauses. **Resume** continues, **Quit to music** returns to the menu, and **Play again** restarts from results.
+1. Choose a song and **Easy**, **Normal** or **Hard**. Previous/Next exposes the rest of the eight-song library.
+2. Click **Enable sound** with your mouse or keyboard. Use **Preview** to listen first.
+3. Click **Watch auto-play**. The game prepares the arrangement, generates the chart and performs it.
+4. **Esc / Space** pauses. **Resume** continues, **Quit to music** returns, and **Play again** restarts from results.
 
-For a production preview, run inside `app/`:
-
-```powershell
-npm run build
-npm run preview
-```
-
-Open [127.0.0.1:4173](http://127.0.0.1:4173). Music, charts, fonts and authored geometry are served locally. The prepared server applies a same-origin Content Security Policy and supports audio range requests. The [automated camera-free release drill](docs/evidence/pr-audit-release-drill-fixed/2026-10-25-release-drill.md) verifies one synthetic offline journey; the full disconnected manual/live-camera P5 venue exercise remains open.
-
-Recovery checks now cover two non-camera failures: unavailable/full chart storage leaves generated music playable with a visible not-saved warning; a lost WebGL context stops the run/capture and shows a Retry/reload error instead of continuing invisible scoring.
+For the prepared production app, run `npm run build`, then `npm run preview` inside `app/` and open [127.0.0.1:4173](http://127.0.0.1:4173).
 
 <details>
-<summary><strong>Troubleshooting and optional camera setup</strong></summary>
+<summary><strong>Camera setup, your own music and recovery</strong></summary>
 
-- **No sound:** click Enable sound again and check the Settings volume. Browsers require a native user action to unlock audio.
-- **Port 5173 is busy:** stop the existing server or use the production preview. The development server uses a fixed port.
-- **A track fails to load:** choose its Retry track action; the other songs stay available.
-- **Optional camera assets:** from `app/`, run `npm run models`, then `npm run build`. Use **Set up camera** on the main music menu for setup and positioning preview; **Play with camera** requires matching calibration and fresh tracking. Keep head, shoulders, hands and hips visible. Raw webcam pixels stay local.
-- **Dataset camera testing:** from the root, `node scripts/prepare-dataset-camera.mjs --coco training/data/coco2017` prepares local, ignored photos. The `?camera=dataset` testing route streams them through MediaPipe. It is separate from the annotation-based Play level mode; see the [camera trial and its limits](docs/evidence/2026-10-25-dataset-camera-trial.md).
+- **Your own music:** page the library to **Choose your own audio**. Upload MP3, WAV, OGG or M4A; decode, analysis and chart generation happen in the browser. The source song remains available after preparing a cut.
+- **Optional webcam:** run `npm run models`, then `npm run build` in `app/`. Choose **Set up camera**, keep head, shoulders, hands and hips in view, and complete matching calibration. **Play with camera** requires fresh tracking. Camera frames stay on the device.
+- **No sound:** use **Enable sound** again and check Settings volume. Browser audio requires a native user action.
+- **A song fails:** choose **Retry track**, or another song. Invalid audio shows a useful error; the library stays available.
+- **Storage unavailable:** generated music stays playable with an explicit not-saved warning.
+- **Graphics lost:** the run stops and exposes Retry/reload recovery.
+
+The [player guide](docs/player-guide.md) walks through the complete flow; [troubleshooting](docs/troubleshooting.md) explains exact messages and recovery.
 
 </details>
 
@@ -91,205 +72,191 @@ Recovery checks now cover two non-camera failures: unavailable/full chart storag
 
 <table>
   <tr>
-    <td width="33%"><img src="docs/media/slice.png" alt="Actual game screenshot of a cyan blade target being sliced" width="100%"><br><strong>Slice</strong><br>Thin cyan slabs, swing-plane cuts, glowing caps and blade ribbons.</td>
-    <td width="33%"><img src="docs/media/smash.png" alt="Actual game screenshot of a magenta cube shattering" width="100%"><br><strong>Smash</strong><br>Cracked magenta cubes burst into their authored fracture pieces.</td>
-    <td width="33%"><img src="docs/media/beam.png" alt="Actual game screenshot of a beam hitting a distant gold orb" width="100%"><br><strong>Beam</strong><br>Aim feedback, charge cues and a distinct orb-collapse effect.</td>
+    <td width="50%"><img src="docs/media/slash.gif" alt="Real synthetic auto-play slicing cyan targets and smashing magenta blocks" width="100%"></td>
+    <td width="50%"><img src="docs/media/beam.gif" alt="Real synthetic auto-play charging and firing a gold beam" width="100%"></td>
   </tr>
-</table>
-
-<table>
   <tr>
-    <td width="50%"><img src="docs/media/menu.png" alt="Sign Saber song menu framing the holographic upper-body avatar" width="100%"><br><strong>A stage for the performer</strong><br>Local songs, three difficulties and mouse/keyboard navigation around a clear central avatar.</td>
-    <td width="50%"><img src="docs/media/results.png" alt="Actual auto-play results with score and judgement breakdown" width="100%"><br><strong>Every hit has an outcome</strong><br>Score, accuracy, combo and gesture breakdown come from the completed session.</td>
+    <td><strong>Cut. Crush. Keep the rhythm.</strong><br>A swing defines the cut plane. Cyan slabs split into capped halves; magenta cubes burst along authored fractures.</td>
+    <td><strong>Charge the next release.</strong><br>Point-and-hold feedback builds toward a gold beam, followed by its own orb-collapse effect.</td>
   </tr>
 </table>
 
-*Gameplay and results images show synthetic auto-play. The menu avatar is illustrative.*
+The arena reacts with **blade ribbons, pooled sparks, light, bloom and original synthesized sound**. A **43-bone upper-body avatar** carries the performance. Calm visuals offer a quieter presentation, and the figure ends at the hips throughout menu, play, pause and results.
 
-Beyond the targets: audio-reactive lighting, bloom, pooled sparks, original sound design and Calm visuals. The avatar ends at the hips throughout menu, play, pause and results.
+The three gameplay GIFs are preserved from the original real browser recording. Menu and results screenshots are fresh captures of the polished desktop interface. [Media provenance and reproduction](docs/media/README.md) identify each source.
 
-## Controls and gestures
+### Every hit has an outcome
 
-These are the implemented gesture rules. Auto-play supplies synthetic hands; webcam recognition and human comfort still need live validation.
+![Fresh results from a complete run in the polished desktop interface, with rank, score, combo and judgement breakdown](docs/media/results.png)
 
-| Input | Action | Target / feedback |
+Score, accuracy, best combo and judgement counts come from the completed session. The saved figure belongs to that run. Retry, pause/resume and returning to music share the same guarded lifecycle.
+
+### Controls and gestures
+
+| Input | Action | Feedback |
 | --- | --- | --- |
-| Open palm + fast swipe | Slice | Cyan blade slab; the swing determines the cut plane |
-| Fist + punch | Smash | Magenta cracked cube; fragments follow the fracture mesh |
-| Point + hold for 500 ms | Charge and fire a beam | Distant gold orb; aim and charge feedback |
+| Moving hand through a cyan block | Slice | Swing-plane cut, capped halves and blade ribbons |
+| Moving hand through a magenta block | Smash | Authored fracture pieces and a distinct impact sound |
+| Point + hold for 500 ms | Charge and fire a beam | Gold target and charge feedback |
 | Lean sideways | Dodge | Move your torso clear of the wall |
 | Open palm, then deliberate point | Move and confirm in menus | Optional calibrated hand navigation |
-| Mouse / Tab / Enter | Navigate app controls | Song, difficulty, sound, settings and run actions |
+| Mouse / Tab / Enter | Navigate | Song, difficulty, sound, settings and run actions |
 | Esc / Space during play | Pause | Resume or Quit to music |
-| Esc from pause/results | Return to Songs | Leave the current run |
-| Enter on results | Retry | Unless a focused button handles the key |
+| Esc from pause/results | Return to music | Leave the current run |
+| Enter on results | Retry | A focused button keeps its own key action |
+
+The current forgiving contact mode accepts slash/smash contact from **any hand shape at 0.3 m/s or faster**, with **2.5× contact zones**. Open palms still activate blade visuals; point-and-hold remains the beam input. [Gesture rules](docs/06-gesture-recognition.md) and [scoring contracts](docs/07-hit-detection-and-scoring.md) describe the exact behavior.
 
 ## Numbers
 
-Measured at application source **`30572bb9cdbe345b79e8e48279019bd7d8b59877`** on 2026-10-25. [Raw verification receipt](docs/evidence/2026-10-25-readme-metrics.json) records commands, environment and exact values. Replay, dataset inference and research results have different scopes.
+Fresh verification at integrated application source **`8f0e318a9077b1a06f80cf19ab17c83b5c4ca03a`**, on **2026-10-25**. The [machine-readable receipt](docs/evidence/2026-10-25-readme-refresh-metrics.json) includes commands, chart outcomes, hashes and source attribution.
 
-| Evidence | Result | What it establishes |
+| Verified system | Result | Evidence |
 | --- | --- | --- |
-| Automated application checks | **481 tests · 55 files** | Typecheck, lint, asserted tests and production build via `npm run check` |
-| Full bundled-chart performer replay | **1,643 / 1,643 Perfect hits · 9 / 9 charts** | Synthetic hands through the real input pipeline and judge; zero bad cuts or collisions across 129 walls |
-| Original sound design | **28 synthesized SFX**, each with a Calm variant | 56 deterministic full/Calm renders pinned by PCM hashes; no recorded SFX |
-| Arena and target geometry | **7 GLBs · 5,996 triangles · 352,056 bytes** | Authored pack, excluding the avatar |
-| Holographic avatar | **43 bones · 15,134 triangles · 507,252 bytes** | Separate rigged upper-body asset |
-| Production JavaScript entry | **1,373,350 bytes raw · 412,107 bytes gzip** | Fresh production build; gzip level 9, excluding other chunks/assets; large-chunk warning remains |
-| Short arrangements | **10 s fade in + 60 s highlight + 10 s fade out** | A new WAV and new chart from the edited audio; original songs remain available |
-| Dataset-camera pose detection | **24 / 24 COCO photos** | Each photo detected in ≥50% of its attributed frames through the live pipeline; still-photo evidence |
-| Dataset-camera joint error | **0.118 shoulder widths** | Median of per-photo mean labelled-joint errors in the recorded sweep |
-| Research model, held-out PCK@0.2 | **0.3337 · 3,776 people** | Partial COCO + MPII training, with ground-truth person crops; not the runtime tracker |
+| Full application gate | **569 tests · 55 files** | Typecheck, lint, asserted tests, production build and bundle budget |
+| All-chart performer replay | **4,447 hits · 24/24 charts · zero misses** | Synthetic landmarks through `InputPipeline` and `GameSession` at 30 Hz |
+| Contact and wall coverage | **Zero bad cuts · zero wall collisions across 324 walls** | All 24 full charts; zero unreachable notes in the planner |
+| Local music | **8 full songs · 24 charts · 25m 50.6s** | Hash-pinned original audio and three difficulties per song |
+| Original sound design | **28 SFX · 56 verified full/Calm renders** | Every deterministic PCM hash matches |
+| Production JavaScript | **10 chunks · largest 370,024 bytes** | Every emitted JS chunk passes the enforced 500,000-byte cap |
+| Authored arena/target pack | **7 GLBs · 5,996 triangles · 352,056 bytes** | Original geometry, separate from the avatar |
+| Rigged holographic avatar | **43 bones · 15,134 triangles · 507,252 bytes** | Upper-body skinning and retargeting asset |
 
-The [performer tests](app/tests/performer.test.mjs) replay all nine full charts at 30 Hz through `InputPipeline` and `GameSession`, checking contact, timing, bad cuts and wall hits. The regression requires at least 98% of hits inside the ±60 ms Perfect window on each chart; this run achieved 100% Perfect. These synthetic logic results do not measure webcam accuracy, physical latency or human playability.
+Across the installed charts: **2,348 slices · 1,811 smashes · 288 beams · 324 walls**. Easy density is **0.48–0.61 notes/s**, Normal **0.84–1.10**, and Hard **1.15–1.47**. Every chart reports **zero unplayable notes** in the current planner. Reproduce with `node scripts/chart-report.mjs`.
 
-### Chart density and gesture mix
+<details>
+<summary><strong>What the verification measures</strong></summary>
 
-Run `node scripts/chart-report.mjs` from the root to inspect every installed chart. Generator v4 budgets each hand's recovery, spaces gesture changes and leaves room around walls.
+The [performer suite](app/tests/performer.test.mjs) replays all 24 full charts through the normal input and judgement path. With the current forgiving contact volumes, the aggregate is **288 Perfect + 4,159 Good = 4,447 hits**, with zero misses, bad cuts or wall collisions. These are synthetic logic outcomes, separate from webcam recognition, audible synchronization and human playability.
 
-| Difficulty | Measured notes / second across the three songs | On-screen cap |
-| --- | --- | --- |
-| Easy | 0.48–0.61 | 3 |
-| Normal | 0.84–1.06 | 4 |
-| Hard | 1.15–1.47 | 5 |
+The [frontend browser receipt](docs/evidence/2026-10-25-frontend-polish.json) records native keyboard/mouse actions, sound preview, error recovery, Calm/reduced motion and layout checks. The [lifecycle evidence](docs/evidence/2026-10-25-lifecycle-notes.md) includes the complete eight-scenario run and 20 measured lifecycle cycles on their recorded source revisions. The [clean-clone release drill](docs/evidence/pr-audit-release-drill-fixed/2026-10-25-release-drill.md) records a camera-free offline browser journey. Later partial reruns retain their own scope.
 
-Across all nine maps: **812 slices · 716 smashes · 115 beams · 129 walls**, with **zero unplayable notes** reported by the planner. Densities above are displayed to two decimal places; the receipt retains exact values. Electro Cabello and Cipher use confident beat tracking; Pamgaea retains its disclosed onset-only fallback. See the [music registry](app/public/assets/tracks/README.md) for per-chart counts, hashes and analysis provenance. Independent music annotations and player comfort checks remain open.
+Separate dataset-camera evidence detected **24/24 attributed COCO still photos** in at least half their frames, with median per-photo joint error **0.118 shoulder widths**. It tests the MediaPipe path using still photos. [Dataset-camera receipt](docs/evidence/2026-10-25-dataset-camera-trial.md).
 
-The current library adds five songs for eight originals and 24 charts; the numbers above retain their explicitly dated three-song source. See the [eight-song receipt](docs/evidence/2026-10-25-eight-song-library.md) for that expansion and its separate checks.
+The optional `training/` research model is separate from the game. Its partial CPU run reached held-out PCK@0.2 **0.3337** across **3,776 people** with ground-truth crops. **The runtime uses MediaPipe.** [Research status](training/STATUS.md).
+
+</details>
 
 ## How it works
 
 ```mermaid
 flowchart LR
-  Music["Local music / upload"] --> DSP["Decode · 80-second arrangement · DSP worker"]
+  Music["Local music / upload"] --> DSP["Decode · arrange · DSP worker"]
   DSP --> Map["BeatmapV1"]
   Clock["Web Audio · SongClock"] --> Game["GameSession · capture-time judgement"]
   Map --> Game
-  Camera["Optional webcam"] --> MP["MediaPipe tracking worker"]
+  Camera["Optional webcam"] --> MP["MediaPipe worker"]
   MP --> Frame["TrackingFrame"]
-  Auto["Synthetic auto-play"] --> Frame
-  Dataset["COCO still annotations"] --> Frame
+  Auto["Synthetic performer"] --> Frame
+  Dataset["COCO annotations"] --> Frame
   Frame --> Pipeline["InputPipeline"]
   Pipeline --> Hands["HandCursor · BodyState"]
   Hands --> Game
-  Game --> Events["note:hit · misses · results"]
+  Game --> Events["Hits · misses · results"]
   Events --> Render["Three.js arena + avatar"]
   Events --> UI["React HUD"]
-  Events --> SFX["Web Audio synthesized SFX"]
+  Events --> SFX["Synthesized SFX"]
 ```
 
-**Capture time decides the score.** Each sample is judged once against the audio clock; visual prediction cannot create a hit. `game/` stays independent of Three.js. Renderers, HUD and SFX consume events, while menu actions pass through the state machine. Application-owned hot-path buffers and effects are pooled, and the camera pipeline keeps bounded work in flight.
+**Capture time decides the score.** Each captured sample is consumed once against the audio clock. Visual prediction cannot create a hit. The game stays independent of Three.js; presentation consumes events, and menu actions go through the state machine. Application-owned hot-path buffers and effects are pooled, and camera inference keeps bounded work in flight.
 
-**Your music stays local.** Upload, decode, analysis and chart generation run in the browser. The arrangement selects one continuous energy/onset-supported highlight with fades; it does not claim to identify a chorus. Bundled audio and charts carry integrity hashes. Read the [architecture contracts](docs/02-architecture.md) and [scoring rules](docs/07-hit-detection-and-scoring.md).
+**The soundtrack becomes playable data.** A worker resamples audio, analyzes spectral flux, estimates tempo, tracks beats and assigns gestures with recovery/reach constraints. A continuous energy/onset-supported highlight becomes the 80-second arrangement. The edited WAV and its new chart share a time base; the original song remains available. Bundled songs and maps carry integrity hashes.
 
-For deeper implementation detail, browse [the specification index](docs/README.md), [design context](DESIGN.md) and [contributor guide](AGENTS.md).
-
-## Tech stack
+**The room stays yours.** Upload, decode and chart generation happen locally. The optional tracker keeps camera pixels on the device. Mouse and keyboard remain a complete path through app-owned controls, alongside calibrated hand navigation.
 
 | Layer | Tools |
 | --- | --- |
 | App | TypeScript · React 19 · Zustand · Vite |
 | Arena | Three.js · WebGL · postprocessing · GLSL |
-| Tracking | MediaPipe Tasks Vision · Web Workers · local WASM/models |
-| Music | Web Audio · local DSP/FFT analysis · generated beatmaps |
-| Sound | Deterministic procedural PCM synthesis · original full/Calm recipes |
-| Assets | Blender-authored GLBs · skinned upper-body avatar · local OFL fonts |
-| Verification | Vitest · ESLint · TypeScript · Node test runner · browser evidence harnesses |
-| Research only | PyTorch · MobileNetV3-Small · ONNX · COCO + MPII |
-
-## Project structure
-
-```text
-app/src/
-  audio/        Playback clock, arrangements, synthesis and audio analysis
-  beatmap/      DSP, chart assignment, validation and caching
-  core/         Contracts, constants, state machine and runtime
-  game/         Framework-independent contact, judgement and scoring
-  gestures/     Open/fist/point classification, blades and hand navigation
-  performer/    Chart choreography and synthetic TrackingFrame generation
-  tracking/     Camera, MediaPipe worker, filters and input pipeline
-  render/       Arena, avatar retargeting, cuts, shards and effects
-  ui/           React menu, HUD, pause and results
-app/public/     Local music, charts, fonts, fixtures and GLBs
-app/tests/      Asserted logic, integration and asset suites
-assets-src/     Blender sources and synthesized-audio receipts
-docs/           Numbered specifications, evidence and real demo media
-scripts/        Content tools, asset checks and browser harnesses
-training/       Separate pose-model research; no game runtime dependency
-server/         Optional companion stub; outside the working core
-```
+| Tracking | MediaPipe Tasks Vision · workers · local WASM/models |
+| Music | Web Audio · DSP/FFT · arrangements · generated beatmaps |
+| Sound | Original deterministic PCM synthesis · full/Calm recipes |
+| Assets | Blender-authored GLBs · skinned avatar · local OFL fonts |
+| Verification | Vitest · ESLint · TypeScript · Node tests · Chrome evidence harnesses |
 
 ## Development and verification
 
-Inside `app/`:
+From `app/`:
 
 ```powershell
 npm run check
-npm run bundle:check
-npm run beatmaps
 ```
 
-`check` runs typecheck → lint → asserted Vitest suites → production build → the enforced [bundle-size budget](docs/16-performance-budget.md#bundle-size-budget). `bundle:check` reruns the budget tests and checks an existing build, rejecting any emitted JS chunk over 500000 bytes. `beatmaps` regenerates and validates bundled charts using the shared DSP; it requires ffmpeg. Generated, hash-pinned chart files should only change deliberately. `npm run music` and `npm run fonts` verify/reacquire the pinned source assets when needed.
+This runs **typecheck → lint → tests → production build → bundle budget**. `npm run bundle:check` checks an existing build. `npm run beatmaps` deliberately regenerates/validates bundled charts and requires ffmpeg; `npm run music` and `npm run fonts` verify or reacquire pinned content.
 
-From the repository root:
+From the root:
 
 ```powershell
 node --test scripts/check-docs.test.mjs
 node scripts/check-docs.mjs
-node --test scripts/serve.test.mjs
-node --test scripts/check-model-assets.test.mjs
-node --test scripts/prepare-dataset-camera.test.mjs
-node scripts/check-model-assets.mjs
 node scripts/chart-report.mjs
 node scripts/render-sfx.mjs --check
-node scripts/check-audio-resampling.mjs
-node scripts/check-audio-resampling.mjs --arrangement
-
-node --test scripts/lifecycle-helpers.test.mjs
-node scripts/lifecycle-qa.mjs
-
-node --test scripts/release-drill.test.mjs
-node --test scripts/release-drill.browser.test.mjs
-node scripts/release-drill.mjs
-
 ```
 
-The lifecycle harness requires Node 22+, installed `app/` dependencies and Chrome (or `BROWSER_BINARY`). It builds the production app, uses an isolated browser profile and original synthesized WAVs, and writes dated JSON/Markdown under `docs/evidence/`. Each scenario can be repeated with `--scenario upload`, `cancel`, `invalid`, `cache`, `context`, `cycles`, `hidden` or `tiers` (comma-separated selections work). A partial run exits with an incomplete result. Native UI actions drive generation and planned performer scoring; native CDP resource counts after explicit warm-up/GC cover all 20 lifecycle cycles. See the [dated results, failures and source checkpoints](docs/evidence/2026-10-25-lifecycle-notes.md). This is separate from camera, audible-sync and performance acceptance.
+The [script guide](scripts/README.md) documents the audio, asset, lifecycle and clean-clone browser checks, their prerequisites and outputs. The [contributor guide](docs/contributor-guide.md) maps code, contracts and evidence. Start with the [specification index](docs/README.md), [architecture](docs/02-architecture.md), [design context](DESIGN.md) and [working agreement](AGENTS.md).
 
-The numeric browser-audio harness needs Chrome (or `BROWSER_BINARY`) and ffmpeg. It checks audio/map correctness, separately from audible sync or webcam evidence. Capture commands and media provenance are in [docs/media](docs/media/README.md).
+<details>
+<summary><strong>Source map</strong></summary>
 
-`node scripts/release-drill.mjs` checks out the current committed SHA in a fresh temporary clone, runs `npm ci`, `npm run check` and `npm run build`, then drives the prepared production UI in isolated headless Chrome. Non-loopback requests are blocked while a selected song plays through **Watch auto-play**, genuine results, Play again, pause and Songs. Dated JSON/Markdown evidence and command logs go to `docs/evidence/`; failures exit nonzero and are recorded. Installation needs npm registry access; the browser stage runs with local requests only. Use `BROWSER_BINARY` or `--browser <path>` for Chrome, and `--output-dir <path>` for a separate evidence folder. `--inject-missing-asset` removes the catalog only from the temporary build to verify failure reporting. Camera paths and other manual P5 gates are excluded. See [the browser QA protocol](docs/17-testing-and-qa.md#3-browser-integration-smoke-test-core).
+```text
+app/src/
+  audio/       Playback clock, arrangements, synthesis and analysis
+  beatmap/     DSP, assignment, validation and caching
+  core/        Contracts, constants, state machine and runtime
+  game/        Framework-independent contact, judgement and scoring
+  gestures/    Classification, blades and hand navigation
+  performer/   Chart choreography and synthetic TrackingFrame generation
+  tracking/    Camera, MediaPipe, filters and input pipeline
+  render/      Arena, avatar retargeting, cuts, shards and effects
+  ui/          Music menu, HUD, pause and results
+app/public/    Local music, charts, fonts, fixtures and geometry
+app/tests/     Asserted logic, integration and asset suites
+assets-src/    Blender sources and synthesized-audio receipts
+docs/          Specifications, evidence and captured demo media
+scripts/       Content tools, checks and browser harnesses
+training/      Separate pose-model research
+server/        Optional companion stub, outside the working core
+```
+
+</details>
 
 ## Roadmap
 
-- [x] Local eight-song library, 24 generated difficulty charts and fresh 80-second arrangements.
-- [x] Slice, smash, beam and lean judgement; scores, combos, pause/retry and results.
-- [x] Rigged holographic avatar, distinct target families, authored arena and synthesized SFX.
-- [x] Synthetic auto-play through the real input and scoring pipeline.
-- [x] Dataset photos exercised through the live MediaPipe path, with retained failures and source labels.
+- [x] Eight full local songs, 24 charts and fresh 80-second arrangements.
+- [x] Slice, smash, beam and lean judgement; scores, combos, pause/retry and real results.
+- [x] Rigged holographic avatar, authored arena/targets and original synthesized SFX.
+- [x] Synthetic auto-play through the actual input and scoring pipeline.
+- [x] Polished desktop music rails, geometric covers and shared native/hand controls.
+- [x] Reproducible all-chart replay, asset hashes, bundle limits and browser recovery evidence.
 - [ ] Consenting live-webcam calibration, scored hits and complete gesture/menu trials.
-- [ ] Independent music-quality evaluation, comfort, accessibility and flashing review.
-- [ ] Repeatable performance measurements, resource soak and disconnected venue drill.
-- [ ] Tested release, demo recording and submission details.
+- [ ] Independent music-quality, comfort, accessibility and flashing review.
+- [ ] Repeatable performance/soak measurements and the disconnected venue drill.
+- [ ] Tested release, final demo recording and submission metadata.
 
-These are implementation checkpoints; **P0–P5 release gates remain open**. The [roadmap](ROADMAP.md) owns acceptance order, [HANDOFF.md](HANDOFF.md) records the latest working direction, and [the evidence protocol](docs/24-benchmark-and-evidence.md) defines what a release claim needs. No measured FPS or motion-to-photon claim is made.
-
-### Pose-model research
-
-The separate `training/` pipeline trained a 13-joint upper-body model on COCO and MPII. Its partial CPU run stopped at **1,800 of 7,210 planned steps**. Held-out pooled PCK@0.2 was **0.3337** using ground-truth crops; wrists/elbows remain too weak for gameplay, and there is no integrated detector or browser runtime. ONNX parity checks numerical export, not tracking accuracy. **The game uses MediaPipe.** [Training status and limitations](training/STATUS.md).
+These are implemented checkpoints. The [roadmap](ROADMAP.md) owns P0–P5 acceptance; [HANDOFF.md](HANDOFF.md) records the working direction. Camera-free replay, still-photo inference and live human play remain distinct evidence categories. No measured FPS or motion-to-photon claim is made.
 
 ## Credits and licenses
 
-**Code, original geometry and synthesized sound effects:** [MIT](LICENSE). All 28 SFX are generated from original code, with no third-party recordings; [recipes and measured receipts](assets-src/audio/sfx-receipt.json).
+**Code, original geometry and synthesized SFX:** [MIT](LICENSE). All 28 sounds are generated from original code, with no third-party recordings. [Recipes and measured receipts](assets-src/audio/sfx-receipt.json).
 
-**Music:** “Pamgaea”, “Electro Cabello”, “Cipher”, “Chipper Doodle v2”, “Funkorama”, “Cut and Run”, “Rhinoceros” and “Marty Gots a Plan” — Kevin MacLeod ([incompetech.com](https://incompetech.com/)), licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/). Original bundled MP3s are unchanged. In-app arrangements select a continuous excerpt and apply fades; screenshots/GIFs contain no audio. [Full per-track credits, sources and changes](app/public/assets/tracks/README.md).
+**Music:** “Pamgaea”, “Electro Cabello”, “Cipher”, “Chipper Doodle v2”, “Funkorama”, “Cut and Run”, “Rhinoceros” and “Marty Gots a Plan” — Kevin MacLeod ([incompetech.com](https://incompetech.com/)), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Bundled MP3s are unchanged; in-app arrangements select an excerpt and apply fades. GIFs are silent. [Per-track credits, sources and changes](app/public/assets/tracks/README.md).
 
-**Fonts:** Orbitron and Rajdhani, [SIL Open Font License 1.1; retained notices](app/public/assets/fonts/README.md).
+**Fonts:** Orbitron and Rajdhani, [SIL OFL 1.1 with retained notices](app/public/assets/fonts/README.md).
 
-**Data and models:** [COCO annotation attribution](app/public/assets/fixtures/ATTRIBUTION.txt), [research dataset rights](training/DATASETS.json), and [MediaPipe preparation](app/public/models/README.md). Raw research photos and weights stay local/ignored. MPII research restrictions do not become an MIT asset license.
+**Data/models:** [COCO annotation attribution](app/public/assets/fixtures/ATTRIBUTION.txt), [research dataset rights](training/DATASETS.json), [MediaPipe preparation](app/public/models/README.md). Raw research photos and weights stay local/ignored. Runtime dependency licenses remain their own; local notices travel with the build.
 
-Built on [Three.js](https://github.com/mrdoob/three.js), [React](https://github.com/facebook/react), [Zustand](https://github.com/pmndrs/zustand), [Vite](https://github.com/vitejs/vite), [postprocessing](https://github.com/pmndrs/postprocessing) and [MediaPipe](https://github.com/google-ai-edge/mediapipe). Runtime dependency licenses remain their own; local asset notices travel with the build.
+Built on [Three.js](https://github.com/mrdoob/three.js), [React](https://github.com/facebook/react), [Zustand](https://github.com/pmndrs/zustand), [Vite](https://github.com/vitejs/vite), [postprocessing](https://github.com/pmndrs/postprocessing) and [MediaPipe](https://github.com/google-ai-edge/mediapipe).
 
 ## Submission
 
-Track 4 basically lol
+> **4. Make Room for Play:** Build something people would want to experience, not just get work done with. Create a new way to play, make music, tell stories or interact with other people.
+
+**Sign Saber makes the player part of the instrument.** A song becomes a field of physical decisions: sweep, strike, charge, dodge. The avatar carries your presence into the arena, the targets give the rhythm a shape, and each interaction answers with light, fracture, sound and score. Listening becomes something you can step into.
+
+That is the heart of **Make Room for Play**. A familiar laptop, local music and room to move become the ingredients for an expressive game. Players can discover a bundled track, bring their own soundtrack, watch the performer reveal the choreography, then explore the camera-controlled experience. The central stage belongs to the person; the interface makes space for the performance.
+
+**The spectacle has an engine behind it.** This is a playable rhythm system with worker-based music analysis, fresh audio arrangements, capture-time judgement, a rigged holographic avatar, authored destruction and original procedural sound. Its current verification includes **569 passing tests, 24 full-chart replays and 4,447 scored hits with zero misses**. Human reviewers can see the experience in real footage; automated reviewers can follow the [source-attributed results and hashes](docs/evidence/2026-10-25-readme-refresh-metrics.json).
+
+**Press play. Become the controller. Turn a song into a physical performance.**
+
+Release SHA, final demo link, actual team and submission channel will be recorded here when confirmed. The [roadmap](ROADMAP.md) keeps the remaining live-camera and release acceptance explicit.

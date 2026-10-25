@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Desktop README, evidence and Track 4 submission
+
+- Codex rewrote the README around the real game, current desktop captures and the user's supplied Make Room for Play track. Parallel agents refreshed related guides/scoring specifications, audited claims and produced current-source chart/SFX/bundle receipts. Codex normally integrated concurrent gameplay work, rechecked all 569 tests, recorded a complete genuine browser run, preserved gameplay GIF hashes and removed superseded still images. Exact grades and open release limits remain in the evidence; no live recognition or performance result was invented.
+
 ## 2026-10-25 — Frontend refinement
 
 - Codex refined the shared menu hierarchy, song sleeves, icons and narrow layouts while preserving gameplay/input contracts. A parallel agent reviewed the UI, authored geometric sleeve variations, synchronized design specifications and added pause/results status regressions. Full application checks passed 569 tests; production browser checks and a source-hashed menu capture record the actual outcome and remaining limits.

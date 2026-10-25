@@ -1,0 +1,1578 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-25T01:14:12.667Z",
+  "displayTimezone": "Asia/Calcutta",
+  "applicationSourceCommit": "8f0e318a9077b1a06f80cf19ab17c83b5c4ca03a",
+  "applicationSourceTree": "fb6012b7cdc5221415a9824d0bb8cd043e78582f",
+  "lockfileSha256": "66dc1547569b921b18b85ab19b6e22fc3166133573d1f10764aea146b0bc2bb1",
+  "scope": "Fresh deterministic synthetic logic replay, installed-content diagnostics, PCM-hash verification and production bundle size checks. No webcam recognition, human performance, physical latency, audible-sync, GPU speed or FPS claim.",
+  "commands": [
+    {
+      "command": "npm exec -- vitest run tests/performer.test.mjs --reporter=verbose --silent=false",
+      "cwd": "app",
+      "exitCode": 0,
+      "testsPassed": 28,
+      "chartsReplayed": 24,
+      "stdoutSha256": "9658b62d9e88c085fb31cb37fef684e84cf89d4252b161f3f79266beb6936d40",
+      "result": "All 24 chart diagnostics parsed from actual stdout on integrated source."
+    },
+    {
+      "command": "node scripts/chart-report.mjs",
+      "cwd": ".",
+      "exitCode": 0,
+      "chartsReported": 24,
+      "stdout": "pamgaea           easy    notes 89  slash 45 smash 34 beam 10  walls 8  nps 0.53  on-screen max 3  unplayable 0 (0.0%)\npamgaea           normal  notes 178  slash 97 smash 69 beam 12  walls 16  nps 1.06  on-screen max 4  unplayable 0 (0.0%)\npamgaea           hard    notes 230  slash 112 smash 100 beam 18  walls 20  nps 1.36  on-screen max 4  unplayable 0 (0.0%)\nelectro-cabello   easy    notes 117  slash 57 smash 51 beam 9  walls 11  nps 0.61  on-screen max 3  unplayable 0 (0.0%)\nelectro-cabello   normal  notes 176  slash 104 smash 64 beam 8  walls 11  nps 0.92  on-screen max 3  unplayable 0 (0.0%)\nelectro-cabello   hard    notes 281  slash 132 smash 135 beam 14  walls 15  nps 1.47  on-screen max 4  unplayable 0 (0.0%)\ncipher            easy    notes 111  slash 59 smash 41 beam 11  walls 9  nps 0.48  on-screen max 3  unplayable 0 (0.0%)\ncipher            normal  notes 195  slash 98 smash 82 beam 15  walls 17  nps 0.84  on-screen max 3  unplayable 0 (0.0%)\ncipher            hard    notes 266  slash 108 smash 140 beam 18  walls 22  nps 1.15  on-screen max 5  unplayable 0 (0.0%)\nchipper-doodle-v2  easy    notes 89  slash 45 smash 35 beam 9  walls 7  nps 0.52  on-screen max 3  unplayable 0 (0.0%)\nchipper-doodle-v2  normal  notes 161  slash 92 smash 58 beam 11  walls 15  nps 0.94  on-screen max 3  unplayable 0 (0.0%)\nchipper-doodle-v2  hard    notes 218  slash 115 smash 90 beam 13  walls 19  nps 1.27  on-screen max 4  unplayable 0 (0.0%)\nfunkorama         easy    notes 112  slash 53 smash 46 beam 13  walls 10  nps 0.56  on-screen max 3  unplayable 0 (0.0%)\nfunkorama         normal  notes 211  slash 117 smash 80 beam 14  walls 10  nps 1.05  on-screen max 4  unplayable 0 (0.0%)\nfunkorama         hard    notes 257  slash 118 smash 117 beam 22  walls 26  nps 1.28  on-screen max 4  unplayable 0 (0.0%)\ncut-and-run       easy    notes 123  slash 75 smash 42 beam 6  walls 11  nps 0.57  on-screen max 3  unplayable 0 (0.0%)\ncut-and-run       normal  notes 236  slash 159 smash 71 beam 6  walls 12  nps 1.10  on-screen max 4  unplayable 0 (0.0%)\ncut-and-run       hard    notes 309  slash 176 smash 125 beam 8  walls 15  nps 1.44  on-screen max 4  unplayable 0 (0.0%)\nrhinoceros        easy    notes 114  slash 63 smash 43 beam 8  walls 6  nps 0.56  on-screen max 3  unplayable 0 (0.0%)\nrhinoceros        normal  notes 214  slash 117 smash 88 beam 9  walls 13  nps 1.05  on-screen max 4  unplayable 0 (0.0%)\nrhinoceros        hard    notes 296  slash 145 smash 137 beam 14  walls 17  nps 1.45  on-screen max 4  unplayable 0 (0.0%)\nmarty-gots-a-plan  easy    notes 93  slash 49 smash 35 beam 9  walls 6  nps 0.55  on-screen max 3  unplayable 0 (0.0%)\nmarty-gots-a-plan  normal  notes 161  slash 98 smash 50 beam 13  walls 12  nps 0.96  on-screen max 4  unplayable 0 (0.0%)\nmarty-gots-a-plan  hard    notes 210  slash 114 smash 78 beam 18  walls 16  nps 1.25  on-screen max 4  unplayable 0 (0.0%)",
+      "stdoutSha256": "1930b4318fc7def84b97864d30316826dda99534d8de3c48fed4bbcbbe4fcf6f",
+      "unplayableNotes": 0
+    },
+    {
+      "command": "npm run check",
+      "cwd": "app",
+      "exitCode": 0,
+      "attribution": "Verified by parent agent /root on integrated source 8f0e318a9077b1a06f80cf19ab17c83b5c4ca03a at approximately 2026-10-25T06:44+05:30; this evidence agent read and hashed the final dist files after that successful build.",
+      "testFilesPassed": 55,
+      "testsPassed": 569,
+      "stages": [
+        "typecheck",
+        "lint",
+        "Vitest",
+        "production build",
+        "bundle regression tests",
+        "bundle budget"
+      ],
+      "bundleRegressionTestsPassed": 3,
+      "emittedJsChunks": 10,
+      "largestChunkBytes": 370024
+    }
+  ],
+  "library": {
+    "manifestPath": "app/public/assets/tracks/manifest.json",
+    "manifestSha256": "c0d70d68751eb90593e9b8c55fca15a3a6611ef91e1f7e4a5c5a8760cbfc460a",
+    "songs": 8,
+    "charts": [
+      {
+        "slug": "pamgaea",
+        "difficulty": "easy",
+        "durationMs": 168510.6575963719,
+        "notes": 89,
+        "slash": 45,
+        "smash": 34,
+        "beam": 10,
+        "walls": 8,
+        "notesPerSecond": 0.5281565051700101,
+        "mapSha256": "dbde4e9a4bee2b3dc4312e696f7805706d315f530e74e315186c868bdf60f2ed",
+        "performer": {
+          "hits": 89,
+          "judgements": {
+            "good": 79,
+            "perfect": 10
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "pamgaea",
+        "difficulty": "normal",
+        "durationMs": 168510.6575963719,
+        "notes": 178,
+        "slash": 97,
+        "smash": 69,
+        "beam": 12,
+        "walls": 16,
+        "notesPerSecond": 1.0563130103400202,
+        "mapSha256": "332a345ed404f3c92ef5ba53f01c1b467cf4253f2d5234eec1994e03a02b5432",
+        "performer": {
+          "hits": 178,
+          "judgements": {
+            "good": 166,
+            "perfect": 12
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "pamgaea",
+        "difficulty": "hard",
+        "durationMs": 168510.6575963719,
+        "notes": 230,
+        "slash": 112,
+        "smash": 100,
+        "beam": 18,
+        "walls": 20,
+        "notesPerSecond": 1.3648988335854195,
+        "mapSha256": "c93c9a19adbf038cb0df556a3917d15f4779a409330c30b15495e89be7ab8b94",
+        "performer": {
+          "hits": 230,
+          "judgements": {
+            "good": 212,
+            "perfect": 18
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "electro-cabello",
+        "difficulty": "easy",
+        "durationMs": 190769.75056689343,
+        "notes": 117,
+        "slash": 57,
+        "smash": 51,
+        "beam": 9,
+        "walls": 11,
+        "notesPerSecond": 0.6133047805132709,
+        "mapSha256": "e55f85c5170fa5fd1ae4774484f52bcb3f27cc4192db2eba9c01133bd464acfc",
+        "performer": {
+          "hits": 117,
+          "judgements": {
+            "good": 108,
+            "perfect": 9
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "electro-cabello",
+        "difficulty": "normal",
+        "durationMs": 190769.75056689343,
+        "notes": 176,
+        "slash": 104,
+        "smash": 64,
+        "beam": 8,
+        "walls": 11,
+        "notesPerSecond": 0.9225781313703904,
+        "mapSha256": "85a7b8fdb3962c99780def9c5d1fdf33100449a5044cf8fbd8e4bb843d5d6820",
+        "performer": {
+          "hits": 176,
+          "judgements": {
+            "good": 168,
+            "perfect": 8
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "electro-cabello",
+        "difficulty": "hard",
+        "durationMs": 190769.75056689343,
+        "notes": 281,
+        "slash": 132,
+        "smash": 135,
+        "beam": 14,
+        "walls": 15,
+        "notesPerSecond": 1.4729798574720436,
+        "mapSha256": "d0633c8a71c4b0c837909f5392f8cb2d78638738bce335b396b42b87780f1780",
+        "performer": {
+          "hits": 281,
+          "judgements": {
+            "good": 267,
+            "perfect": 14
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "cipher",
+        "difficulty": "easy",
+        "durationMs": 231200,
+        "notes": 111,
+        "slash": 59,
+        "smash": 41,
+        "beam": 11,
+        "walls": 9,
+        "notesPerSecond": 0.4801038062283737,
+        "mapSha256": "ae9a54f7c748df50da6bef5ed879f6c6c1b769309701eb0c82bdb2713a762887",
+        "performer": {
+          "hits": 111,
+          "judgements": {
+            "good": 100,
+            "perfect": 11
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "cipher",
+        "difficulty": "normal",
+        "durationMs": 231200,
+        "notes": 195,
+        "slash": 98,
+        "smash": 82,
+        "beam": 15,
+        "walls": 17,
+        "notesPerSecond": 0.8434256055363322,
+        "mapSha256": "da2ee89e2b2eec813cb740a2ed098b5f70d2f109af7faba90047792773bbb3da",
+        "performer": {
+          "hits": 195,
+          "judgements": {
+            "perfect": 15,
+            "good": 180
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "cipher",
+        "difficulty": "hard",
+        "durationMs": 231200,
+        "notes": 266,
+        "slash": 108,
+        "smash": 140,
+        "beam": 18,
+        "walls": 22,
+        "notesPerSecond": 1.1505190311418685,
+        "mapSha256": "16380fc5bd751a3c1e771b5494c566d5840427dbd21d15f4c83d4fceb2d0a301",
+        "performer": {
+          "hits": 266,
+          "judgements": {
+            "good": 248,
+            "perfect": 18
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "chipper-doodle-v2",
+        "difficulty": "easy",
+        "durationMs": 172173.92290249432,
+        "notes": 89,
+        "slash": 45,
+        "smash": 35,
+        "beam": 9,
+        "walls": 7,
+        "notesPerSecond": 0.5169191623193865,
+        "mapSha256": "49ff4fc238ab6b4f20c3dae7518979297560e7fb6ff0bfe22a4d5a52eb151abe",
+        "performer": {
+          "hits": 89,
+          "judgements": {
+            "good": 80,
+            "perfect": 9
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "chipper-doodle-v2",
+        "difficulty": "normal",
+        "durationMs": 172173.92290249432,
+        "notes": 161,
+        "slash": 92,
+        "smash": 58,
+        "beam": 11,
+        "walls": 15,
+        "notesPerSecond": 0.9351009565552947,
+        "mapSha256": "2a15fb267a46101db541150f3db6ce582e76a6683d645b5aef85ba21f751e5b2",
+        "performer": {
+          "hits": 161,
+          "judgements": {
+            "good": 150,
+            "perfect": 11
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "chipper-doodle-v2",
+        "difficulty": "hard",
+        "durationMs": 172173.92290249432,
+        "notes": 218,
+        "slash": 115,
+        "smash": 90,
+        "beam": 13,
+        "walls": 19,
+        "notesPerSecond": 1.266161543658722,
+        "mapSha256": "57820d358a89373661015bd1e7810504281e951d4549e24018325bd2389a48d2",
+        "performer": {
+          "hits": 218,
+          "judgements": {
+            "good": 205,
+            "perfect": 13
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "funkorama",
+        "difficulty": "easy",
+        "durationMs": 201386.16780045352,
+        "notes": 112,
+        "slash": 53,
+        "smash": 46,
+        "beam": 13,
+        "walls": 10,
+        "notesPerSecond": 0.5561454454557021,
+        "mapSha256": "8b198883b2c027799a398898563514af4229c661d92077b7033e481ace77f151",
+        "performer": {
+          "hits": 112,
+          "judgements": {
+            "good": 99,
+            "perfect": 13
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "funkorama",
+        "difficulty": "normal",
+        "durationMs": 201386.16780045352,
+        "notes": 211,
+        "slash": 117,
+        "smash": 80,
+        "beam": 14,
+        "walls": 10,
+        "notesPerSecond": 1.0477382945638674,
+        "mapSha256": "c9e4e23dbba2b566ab44de9a9480926ddd50450926a10717b5ed04c0495bcbb0",
+        "performer": {
+          "hits": 211,
+          "judgements": {
+            "good": 197,
+            "perfect": 14
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "funkorama",
+        "difficulty": "hard",
+        "durationMs": 201386.16780045352,
+        "notes": 257,
+        "slash": 118,
+        "smash": 117,
+        "beam": 22,
+        "walls": 26,
+        "notesPerSecond": 1.2761551739474593,
+        "mapSha256": "a96fe2806d0fc56d07fecc1a49981247551d11c5b3089c2f2bdbe2d159018426",
+        "performer": {
+          "hits": 257,
+          "judgements": {
+            "good": 235,
+            "perfect": 22
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "cut-and-run",
+        "difficulty": "easy",
+        "durationMs": 214766.39455782314,
+        "notes": 123,
+        "slash": 75,
+        "smash": 42,
+        "beam": 6,
+        "walls": 11,
+        "notesPerSecond": 0.5727152995851211,
+        "mapSha256": "62e9ffc331bf09d0b7c6f4ca9f2f238293edfcb4331f1e43a2d1f0ca78548899",
+        "performer": {
+          "hits": 123,
+          "judgements": {
+            "good": 117,
+            "perfect": 6
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "cut-and-run",
+        "difficulty": "normal",
+        "durationMs": 214766.39455782314,
+        "notes": 236,
+        "slash": 159,
+        "smash": 71,
+        "beam": 6,
+        "walls": 12,
+        "notesPerSecond": 1.098868379691777,
+        "mapSha256": "cfb8c32b88a84726b6e096ba281e3dbbf0584e34bad08e1e3219d2ce8d1a5e4b",
+        "performer": {
+          "hits": 236,
+          "judgements": {
+            "good": 230,
+            "perfect": 6
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "cut-and-run",
+        "difficulty": "hard",
+        "durationMs": 214766.39455782314,
+        "notes": 309,
+        "slash": 176,
+        "smash": 125,
+        "beam": 8,
+        "walls": 15,
+        "notesPerSecond": 1.4387725818845725,
+        "mapSha256": "d71cce4a2668b3ce595cbd77f27b23a50e337b277977bb419a5ab579d1b859f0",
+        "performer": {
+          "hits": 309,
+          "judgements": {
+            "good": 301,
+            "perfect": 8
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "rhinoceros",
+        "difficulty": "easy",
+        "durationMs": 203809.5238095238,
+        "notes": 114,
+        "slash": 63,
+        "smash": 43,
+        "beam": 8,
+        "walls": 6,
+        "notesPerSecond": 0.5593457943925234,
+        "mapSha256": "d81b64092c242c4ae99403f41ea8cfaad57c40cc519701804964acd7a980d3b1",
+        "performer": {
+          "hits": 114,
+          "judgements": {
+            "good": 106,
+            "perfect": 8
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "rhinoceros",
+        "difficulty": "normal",
+        "durationMs": 203809.5238095238,
+        "notes": 214,
+        "slash": 117,
+        "smash": 88,
+        "beam": 9,
+        "walls": 13,
+        "notesPerSecond": 1.05,
+        "mapSha256": "4849ef0cc3ee466795802411e48f9c5f6b76b291a400e5ed9fe776309c5dae9c",
+        "performer": {
+          "hits": 214,
+          "judgements": {
+            "good": 205,
+            "perfect": 9
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "rhinoceros",
+        "difficulty": "hard",
+        "durationMs": 203809.5238095238,
+        "notes": 296,
+        "slash": 145,
+        "smash": 137,
+        "beam": 14,
+        "walls": 17,
+        "notesPerSecond": 1.452336448598131,
+        "mapSha256": "90c1ce957cf9d93e8c4d056116957513861a8effbf0d792d470d74def35b0e46",
+        "performer": {
+          "hits": 296,
+          "judgements": {
+            "good": 282,
+            "perfect": 14
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "marty-gots-a-plan",
+        "difficulty": "easy",
+        "durationMs": 168000,
+        "notes": 93,
+        "slash": 49,
+        "smash": 35,
+        "beam": 9,
+        "walls": 6,
+        "notesPerSecond": 0.5535714285714286,
+        "mapSha256": "b1f1347fd0a7680d82f0060c20a2d44e8b09ac9f11bfa5368cdf76ac23f5d25a",
+        "performer": {
+          "hits": 93,
+          "judgements": {
+            "good": 84,
+            "perfect": 9
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "marty-gots-a-plan",
+        "difficulty": "normal",
+        "durationMs": 168000,
+        "notes": 161,
+        "slash": 98,
+        "smash": 50,
+        "beam": 13,
+        "walls": 12,
+        "notesPerSecond": 0.9583333333333334,
+        "mapSha256": "3e3175bbbc6aff1b1a0d46b44741522acff770c99a9d189be4eb8c2fd20edb3e",
+        "performer": {
+          "hits": 161,
+          "judgements": {
+            "good": 148,
+            "perfect": 13
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      },
+      {
+        "slug": "marty-gots-a-plan",
+        "difficulty": "hard",
+        "durationMs": 168000,
+        "notes": 210,
+        "slash": 114,
+        "smash": 78,
+        "beam": 18,
+        "walls": 16,
+        "notesPerSecond": 1.25,
+        "mapSha256": "d107e80b546c77e4bf68ad1b2d2da44c66b552e8703b8202ee73419feda9501e",
+        "performer": {
+          "hits": 210,
+          "judgements": {
+            "good": 192,
+            "perfect": 18
+          },
+          "badcuts": 0,
+          "unplayable": 0,
+          "obstacleHits": 0,
+          "missedPlayable": []
+        }
+      }
+    ],
+    "notes": 4447,
+    "slash": 2348,
+    "smash": 1811,
+    "beam": 288,
+    "walls": 324,
+    "musicDurationMs": 1550616.41723356,
+    "originalAudioBytes": 59226733,
+    "musicDurationSeconds": 1550.61641723356
+  },
+  "performerTotals": {
+    "charts": 24,
+    "notes": 4447,
+    "hits": 4447,
+    "perfect": 288,
+    "badcuts": 0,
+    "unplayable": 0,
+    "walls": 324,
+    "obstacleHits": 0,
+    "allChartsAllPerfect": false,
+    "inputPipeline": "InputPipeline + GameSession",
+    "sampleRateHz": 30,
+    "timingScope": "Capture-time contact judgement on full installed charts; synthetic choreography and landmarks.",
+    "judgements": {
+      "good": 4159,
+      "perfect": 288
+    },
+    "missedNotes": 0,
+    "summary": "Every note was hit. Contact-only slash/smash judgement differs from the earlier a72fe32 source; only beam notes are Perfect in this integrated replay."
+  },
+  "densityByDifficulty": {
+    "easy": {
+      "minNotesPerSecond": 0.4801038062283737,
+      "maxNotesPerSecond": 0.6133047805132709
+    },
+    "normal": {
+      "minNotesPerSecond": 0.8434256055363322,
+      "maxNotesPerSecond": 1.098868379691777
+    },
+    "hard": {
+      "minNotesPerSecond": 1.1505190311418685,
+      "maxNotesPerSecond": 1.4729798574720436
+    }
+  },
+  "sound": {
+    "originalRecipes": 28,
+    "totalFullAndCalmRenders": 56,
+    "sampleRate": 48000,
+    "receiptPath": "assets-src/audio/sfx-receipt.json",
+    "receiptSha256": "336a25330e02ec8b7daccdd53077039e051a879f3685ae421818a1edd0a42bb1",
+    "hashMeaning": "SHA-256 of little-endian float32 PCM, channels concatenated. Hashes pin the recipes at this rate and voicing; runtime renders at the device rate and the estimated track tonic.",
+    "renders": [
+      {
+        "id": "slash",
+        "sha256": "263c82d5b71561acead968dc9ee97d6ba95b5777c1010bb25c14cfd574e47e86",
+        "seconds": 0.34,
+        "channels": 1
+      },
+      {
+        "id": "smash",
+        "sha256": "ad0396d3f79a5242f9c683cf26a0aa1e87b3244d518ea3a9e3f7f487b925d602",
+        "seconds": 0.5,
+        "channels": 1
+      },
+      {
+        "id": "zap",
+        "sha256": "a77cd882fe05d6996b7a937779c590cb1647824129c934145c0a0c19278dd5f3",
+        "seconds": 0.36,
+        "channels": 1
+      },
+      {
+        "id": "poof",
+        "sha256": "16e6e6fdc14599409b53c1c83b01d2580ac1558a61c57d713d0b3c0273bc2937",
+        "seconds": 0.4,
+        "channels": 1
+      },
+      {
+        "id": "sparkle",
+        "sha256": "aef6d032ea61291b70c4527620cb9e0f1edb0c3e272d970d77e38939da23e366",
+        "seconds": 0.6,
+        "channels": 2
+      },
+      {
+        "id": "glint",
+        "sha256": "acb206a545288cb2b63bebcc39cccb95b415a12a72c7ad5b1777e8744fde466a",
+        "seconds": 0.25,
+        "channels": 1
+      },
+      {
+        "id": "badcut",
+        "sha256": "554eab07a869aaf57ab82d8a7261baf7808c30ecdb59833042350e92c25c4507",
+        "seconds": 0.42,
+        "channels": 1
+      },
+      {
+        "id": "miss",
+        "sha256": "bc39be62654a4c3483b7d41e8696e6a70b139f3600d24f6c8937a646c4b2ab9d",
+        "seconds": 0.2,
+        "channels": 1
+      },
+      {
+        "id": "wallWarn",
+        "sha256": "4fd273c93ffd81ed9655c93c8eabe73f9c47df9b2790b39681b5de72383f6a18",
+        "seconds": 0.64,
+        "channels": 1
+      },
+      {
+        "id": "wallHit",
+        "sha256": "3d34b6f82fcf00059d414718f8c92cb4c0adc4d215ae7e4228e49fe1a48afd09",
+        "seconds": 0.55,
+        "channels": 1
+      },
+      {
+        "id": "dodge",
+        "sha256": "eef5551788b6a2a5900e6d3a7afad57fe6d29f34b1a617414299537e0dd0e44a",
+        "seconds": 0.45,
+        "channels": 1
+      },
+      {
+        "id": "combo",
+        "sha256": "cff03a86afe93481e3f97ef2bf0e891abfaaa0e49549249cb51f3a1676c79c97",
+        "seconds": 0.75,
+        "channels": 2
+      },
+      {
+        "id": "milestone",
+        "sha256": "4708f046093ea8259a40117ae85440ea68c8a10ee12461ed4da12aabaf7a074c",
+        "seconds": 1,
+        "channels": 2
+      },
+      {
+        "id": "comboBreak",
+        "sha256": "cdb4a3b9f540650aab45f967dadfa56098a8b6ebdb9270714ddbe2f2bbb1315e",
+        "seconds": 0.38,
+        "channels": 1
+      },
+      {
+        "id": "drop",
+        "sha256": "e3f67d8ae0ad2915cf44d28be50a7b3b03e1dfc50e6286070873a6ec43c566d1",
+        "seconds": 1.1,
+        "channels": 2
+      },
+      {
+        "id": "count",
+        "sha256": "983931fd0df9b1c926b6c023c699434acb0bb6da496290a9af6fab369a2e05a2",
+        "seconds": 0.14,
+        "channels": 1
+      },
+      {
+        "id": "countGo",
+        "sha256": "fd257a076828a5708d9cb05159f4cd7d3316e2fce2bcfa9eb19e579f38cb5150",
+        "seconds": 0.3,
+        "channels": 1
+      },
+      {
+        "id": "countNeutral",
+        "sha256": "3a9a56e6afd7ed9a2068adfaf52d28ba5d22b85386b0833d55ad46d58865cffe",
+        "seconds": 0.1,
+        "channels": 1
+      },
+      {
+        "id": "charge",
+        "sha256": "ae9aa42dc7f9f00b2e9f18b49e33a1f4fd9f5f0131b1020aa44b5ed799905ef2",
+        "seconds": 0.62,
+        "channels": 1
+      },
+      {
+        "id": "resultsHigh",
+        "sha256": "e18e9adcb1af290924fb14d55718598f05679dda3af0d277c060964db545c913",
+        "seconds": 2.4,
+        "channels": 2
+      },
+      {
+        "id": "resultsLow",
+        "sha256": "433648b3e7fd62bff7f6044d379a263d03633a07763a334f1b93de6d818b8ed1",
+        "seconds": 2.2,
+        "channels": 2
+      },
+      {
+        "id": "resume",
+        "sha256": "05d24fffa5deba45ac95e4b920d72a10d9bc864de8208fcfec62d432f3dbba76",
+        "seconds": 0.32,
+        "channels": 1
+      },
+      {
+        "id": "uiHover",
+        "sha256": "0d18f70307bccdba2dbb0b1751bca5a274b8edb7dc3369cdb0ac02b0bf7239d2",
+        "seconds": 0.06,
+        "channels": 1
+      },
+      {
+        "id": "uiConfirm",
+        "sha256": "2d41b789a57837f7dccf3adfcf8fa6cc1260d2a944bd40e6e246974106402afa",
+        "seconds": 0.22,
+        "channels": 1
+      },
+      {
+        "id": "uiBack",
+        "sha256": "04d8a97a960582d107f71293ae6c25782e53f536abdf9b2d93cc0fc274a44156",
+        "seconds": 0.24,
+        "channels": 1
+      },
+      {
+        "id": "uiSelect",
+        "sha256": "f37e7253c56a7c0bfc2c49b007b756c5d1eef8fd97dd2f041de993fd774dc97d",
+        "seconds": 0.18,
+        "channels": 1
+      },
+      {
+        "id": "uiArm",
+        "sha256": "caf95a0c50df8b632214acb3b7df973b5356f961517471a91ca6e1884b409f75",
+        "seconds": 0.16,
+        "channels": 1
+      },
+      {
+        "id": "uiEnable",
+        "sha256": "080863cb2d5d791a371f7346700bc0ef9019d0453d687afc17e4c889ee5e6fd6",
+        "seconds": 0.7,
+        "channels": 2
+      },
+      {
+        "id": "slash.calm",
+        "sha256": "a5d9e763fcbdaca249031b2785ab2f67608948622eb0493533419de1b8b70c0b",
+        "seconds": 0.34,
+        "channels": 1
+      },
+      {
+        "id": "smash.calm",
+        "sha256": "33b52b4d913b9b0326e580575b35c0a1f564157b0258cb75ef81c99bac070381",
+        "seconds": 0.5,
+        "channels": 1
+      },
+      {
+        "id": "zap.calm",
+        "sha256": "a3b8483a883841cfcc701552bbc8950ad2cffb02014b06a08d594968d82501ab",
+        "seconds": 0.36,
+        "channels": 1
+      },
+      {
+        "id": "poof.calm",
+        "sha256": "2989aad6be0628366a31a4c8dc08e39fda72fc8caffb50d2497ecd6adf7915e9",
+        "seconds": 0.4,
+        "channels": 1
+      },
+      {
+        "id": "sparkle.calm",
+        "sha256": "518ee22e26ff8959353ae701fc2792f96826b361f471548e30cbcb42b3a3f320",
+        "seconds": 0.6,
+        "channels": 2
+      },
+      {
+        "id": "glint.calm",
+        "sha256": "10aec1b284a889c352a7ef79ad68be1fac0709677a79db3a0801ae98081220be",
+        "seconds": 0.25,
+        "channels": 1
+      },
+      {
+        "id": "badcut.calm",
+        "sha256": "084eebdb7509f88abfe1810d13319e4d74bcf532d7b8ed28bf77ff34240233f4",
+        "seconds": 0.42,
+        "channels": 1
+      },
+      {
+        "id": "miss.calm",
+        "sha256": "546750ffcea3878f512e5905d9fa218c6753a3ba7926cd455df6e9494a4b8832",
+        "seconds": 0.2,
+        "channels": 1
+      },
+      {
+        "id": "wallWarn.calm",
+        "sha256": "d2d607e0293aa505291f182cf29bdc4bf84040923a2a2155c5a0ed4aa32661d4",
+        "seconds": 0.64,
+        "channels": 1
+      },
+      {
+        "id": "wallHit.calm",
+        "sha256": "4c833352d455643ef7ed9e36271f50ee4afcf4de4c6b7dd311325cbc0b41572d",
+        "seconds": 0.55,
+        "channels": 1
+      },
+      {
+        "id": "dodge.calm",
+        "sha256": "c9881e948af6e44ef279149f8459e070b7ccb9502a9a2c7a72e49b21b87f0ca5",
+        "seconds": 0.45,
+        "channels": 1
+      },
+      {
+        "id": "combo.calm",
+        "sha256": "80fbfa30abdfedea26516e1cdb27a140709159782989472a2b6beb7c6a9602f3",
+        "seconds": 0.75,
+        "channels": 2
+      },
+      {
+        "id": "milestone.calm",
+        "sha256": "607d0fe92bd2a8287778c99353dcd56b18276995159328b9df0b54c14bbfd890",
+        "seconds": 1,
+        "channels": 2
+      },
+      {
+        "id": "comboBreak.calm",
+        "sha256": "1d43b720e5aba866ad3aeb45ce60ea422c76b8e9c02380be4481d268c32cf0fd",
+        "seconds": 0.38,
+        "channels": 1
+      },
+      {
+        "id": "drop.calm",
+        "sha256": "dfafb18f0ae15ef36f33c595cae059b2256562b97cc34a8228c60500f3f122c8",
+        "seconds": 1.1,
+        "channels": 2
+      },
+      {
+        "id": "count.calm",
+        "sha256": "4daf4301825ecdf26ab368df04c8cd81ea4ff1ae493d0b883813997b495ad59e",
+        "seconds": 0.14,
+        "channels": 1
+      },
+      {
+        "id": "countGo.calm",
+        "sha256": "19ffb64a576ad100cfcfc5f415509c9ea9d7277671465cf82ff785cc024f01e9",
+        "seconds": 0.3,
+        "channels": 1
+      },
+      {
+        "id": "countNeutral.calm",
+        "sha256": "2a35309cee60b1422ed4319585f0f58b51c69100d61597708a81e4211092d232",
+        "seconds": 0.1,
+        "channels": 1
+      },
+      {
+        "id": "charge.calm",
+        "sha256": "1c2aa8c671cc75b660806449f8ce9b8ba2befac7d8eea54e1d13f069013d7eb7",
+        "seconds": 0.62,
+        "channels": 1
+      },
+      {
+        "id": "resultsHigh.calm",
+        "sha256": "299035bf9f2a0b61383aa98d8230bfd4691c4674b0317683ccdbc4c7f7b43cd6",
+        "seconds": 2.4,
+        "channels": 2
+      },
+      {
+        "id": "resultsLow.calm",
+        "sha256": "a82073dcfa5a432e53a60089f80c249cd8d69d97b6a02c2f74ba9af4f6f9ab3b",
+        "seconds": 2.2,
+        "channels": 2
+      },
+      {
+        "id": "resume.calm",
+        "sha256": "590b29283144bea0e73d744bb6280ce1efb0e6fb97ce3ed169fecdf1ebbbc0d7",
+        "seconds": 0.32,
+        "channels": 1
+      },
+      {
+        "id": "uiHover.calm",
+        "sha256": "441ab4486c7944a750475478b832c1c4ed6e421e0ce03aedc126b4b1262066c8",
+        "seconds": 0.06,
+        "channels": 1
+      },
+      {
+        "id": "uiConfirm.calm",
+        "sha256": "5a4327b0571a6e3a6dc1c3c5d25a55d7b1bc50036964ca8b0c769f428fb4e909",
+        "seconds": 0.22,
+        "channels": 1
+      },
+      {
+        "id": "uiBack.calm",
+        "sha256": "748a462d6220fd707dc7ab4bddc33ffb7e65bedb90e4021c5d9db511cf6900c8",
+        "seconds": 0.24,
+        "channels": 1
+      },
+      {
+        "id": "uiSelect.calm",
+        "sha256": "57d33ca5509a6d4c06097ff6be8c6ac9e041309bde4060315e3988396f49b529",
+        "seconds": 0.18,
+        "channels": 1
+      },
+      {
+        "id": "uiArm.calm",
+        "sha256": "4cc73e7eba7c4769e4172ac9cf8bcbe99c0e227d698671acd654c3e9292ddb8f",
+        "seconds": 0.16,
+        "channels": 1
+      },
+      {
+        "id": "uiEnable.calm",
+        "sha256": "e33daf37437cf5d1647975280645a7959232c6cdc266e6b726ebdfed15de8f3f",
+        "seconds": 0.7,
+        "channels": 2
+      }
+    ],
+    "measuredSourceCommit": "a72fe327825fb606a526ed8e4e4513191868e636",
+    "integrationStatus": "Not rerun after gameplay-only merge; retained prior-source PCM-hash verification."
+  },
+  "productionJavaScript": {
+    "measuredSourceCommit": "8f0e318a9077b1a06f80cf19ab17c83b5c4ca03a",
+    "budgetBytesPerChunk": 500000,
+    "chunks": [
+      {
+        "name": "generator.worker-DvUGyHl4.js",
+        "bytes": 26028,
+        "gzipLevel9Bytes": 10527,
+        "sha256": "4cf70a2938035f417126e5ffd7fbbb55788b1d0bbe5ab34ee146c039fa5feb1c"
+      },
+      {
+        "name": "index-DPir-f52.js",
+        "bytes": 370024,
+        "gzipLevel9Bytes": 117302,
+        "sha256": "39f1550bd6dbd6f421f22764b25bf0efcb97ee7c41b31305e12c12b11e2c193d"
+      },
+      {
+        "name": "postprocessing-BH5msiTw.js",
+        "bytes": 167101,
+        "gzipLevel9Bytes": 75378,
+        "sha256": "3a9f50d3fcd3d7804e41d48b65e256067ca3b1394d078185f3118a1aba5022df"
+      },
+      {
+        "name": "react-CTym4sTV.js",
+        "bytes": 218790,
+        "gzipLevel9Bytes": 67419,
+        "sha256": "fd74ab2b67c81653c40b8989ea6bdeadf5aeaf115a386d9cc369c628b525eea0"
+      },
+      {
+        "name": "rolldown-runtime-WkwZ5CU-.js",
+        "bytes": 599,
+        "gzipLevel9Bytes": 368,
+        "sha256": "2629f2ad3cb75a57d98de697127f5af7d777ef572bbcdfa6e3ce8f438cd4527e"
+      },
+      {
+        "name": "sfxRender.worker-BfMz86U3.js",
+        "bytes": 21764,
+        "gzipLevel9Bytes": 7945,
+        "sha256": "1ea5e51b5c03787885b65550bbd964447128011606336a44c8d6aa54b22f828e"
+      },
+      {
+        "name": "three-BtMhuEOU.js",
+        "bytes": 352339,
+        "gzipLevel9Bytes": 84019,
+        "sha256": "485e2434ad8eba1200b9058d4c2d996481b23583a68b2c69e5565ba71356acfd"
+      },
+      {
+        "name": "three-CtILIWwi.js",
+        "bytes": 48977,
+        "gzipLevel9Bytes": 14183,
+        "sha256": "f00a2ca9ac27d187ccb5e7a83d7ac6663acda8edadd5c9ed01bff06893c4f29a"
+      },
+      {
+        "name": "three-CZu3cChN.js",
+        "bytes": 224173,
+        "gzipLevel9Bytes": 59142,
+        "sha256": "286ce01a209087a2a6652e437ac44adaf963799fe32c4757591d22f5c386ea18"
+      },
+      {
+        "name": "tracking.worker-KnkdkfXB.js",
+        "bytes": 161250,
+        "gzipLevel9Bytes": 47837,
+        "sha256": "a5f811e70d837d8cccdcd207f5abdcad10b21e7c972f27ff827bc047dcb938eb"
+      }
+    ],
+    "largestChunkBytes": 370024,
+    "totalRawBytes": 1591045,
+    "totalGzipLevel9Bytes": 484120,
+    "gzipScope": "Independent level-9 gzip size for each emitted JS file; excludes CSS, maps, music, WASM/models, fonts and GLBs. The bundle-check console reports its own compression settings separately. This is size evidence, not load-time measurement.",
+    "parentBundleCheckEntry": {
+      "name": "index-DPir-f52.js",
+      "bytes": 370024,
+      "gzipBytes": 117622,
+      "attribution": "Parent npm run check / bundle:check console output"
+    }
+  },
+  "authoredAssets": {
+    "arenaAndTargets": {
+      "glbs": 7,
+      "triangles": 5996,
+      "bytes": 352056,
+      "manifestPath": "app/public/assets/models/manifest.json"
+    },
+    "avatar": {
+      "bones": 43,
+      "triangles": 15134,
+      "bytes": 507252,
+      "manifestPath": "app/public/assets/models/avatar-manifest.json"
+    }
+  },
+  "warnings": [
+    "Node v26.8.1 emits DEP0205 for the existing module.register-based TypeScript loader. Checks still exit 0."
+  ],
+  "limits": [
+    "The integrated full application gate is attributed to parent agent /root verification. This evidence agent independently reran performer/chart checks and read/hash-measured final dist output; it did not rerun the full gate.",
+    "Earlier lifecycle, release-drill, dataset-camera and research evidence retain their original source SHAs; none were rerun for this receipt.",
+    "Deterministic sound hashes pin committed recipes at the receipt rate and voicing; runtime renders at device sample rate and estimated tonic."
+  ],
+  "priorSourceMeasurements": {
+    "applicationSourceCommit": "a72fe327825fb606a526ed8e4e4513191868e636",
+    "recordedAt": "2026-10-25T01:13:41.792Z",
+    "checks": [
+      {
+        "command": "npm exec -- vitest run tests/performer.test.mjs --reporter=verbose --silent=false",
+        "cwd": "app",
+        "exitCode": 0,
+        "testsPassed": 28,
+        "chartsReplayed": 24,
+        "result": "All 24 chart diagnostics parsed from actual test stdout; every chart had hits === notes and judgements.perfect === notes."
+      },
+      {
+        "command": "node scripts/chart-report.mjs",
+        "cwd": ".",
+        "exitCode": 0,
+        "chartsReported": 24,
+        "unplayableNotes": 0
+      },
+      {
+        "command": "node scripts/render-sfx.mjs --check",
+        "cwd": ".",
+        "exitCode": 0,
+        "rendersVerified": 56,
+        "result": "All 56 renders match the receipt."
+      },
+      {
+        "command": "node scripts/check-bundle.mjs",
+        "cwd": ".",
+        "exitCode": 0,
+        "emittedJsChunks": 10,
+        "budgetBytesPerChunk": 500000,
+        "largestChunkBytes": 370186
+      },
+      {
+        "command": "npm run check",
+        "cwd": "app",
+        "exitCode": 0,
+        "attribution": "Verified by parent agent /root in this same task before source commit a72fe32; this evidence agent did not rerun the full gate.",
+        "testFilesPassed": 55,
+        "testsPassed": 569,
+        "stages": [
+          "typecheck",
+          "lint",
+          "Vitest",
+          "production build",
+          "bundle regression tests",
+          "bundle budget"
+        ],
+        "bundleRegressionTestsPassed": 3
+      }
+    ],
+    "sound": {
+      "originalRecipes": 28,
+      "totalFullAndCalmRenders": 56,
+      "sampleRate": 48000,
+      "receiptPath": "assets-src/audio/sfx-receipt.json",
+      "receiptSha256": "336a25330e02ec8b7daccdd53077039e051a879f3685ae421818a1edd0a42bb1",
+      "hashMeaning": "SHA-256 of little-endian float32 PCM, channels concatenated. Hashes pin the recipes at this rate and voicing; runtime renders at the device rate and the estimated track tonic.",
+      "renders": [
+        {
+          "id": "slash",
+          "sha256": "263c82d5b71561acead968dc9ee97d6ba95b5777c1010bb25c14cfd574e47e86",
+          "seconds": 0.34,
+          "channels": 1
+        },
+        {
+          "id": "smash",
+          "sha256": "ad0396d3f79a5242f9c683cf26a0aa1e87b3244d518ea3a9e3f7f487b925d602",
+          "seconds": 0.5,
+          "channels": 1
+        },
+        {
+          "id": "zap",
+          "sha256": "a77cd882fe05d6996b7a937779c590cb1647824129c934145c0a0c19278dd5f3",
+          "seconds": 0.36,
+          "channels": 1
+        },
+        {
+          "id": "poof",
+          "sha256": "16e6e6fdc14599409b53c1c83b01d2580ac1558a61c57d713d0b3c0273bc2937",
+          "seconds": 0.4,
+          "channels": 1
+        },
+        {
+          "id": "sparkle",
+          "sha256": "aef6d032ea61291b70c4527620cb9e0f1edb0c3e272d970d77e38939da23e366",
+          "seconds": 0.6,
+          "channels": 2
+        },
+        {
+          "id": "glint",
+          "sha256": "acb206a545288cb2b63bebcc39cccb95b415a12a72c7ad5b1777e8744fde466a",
+          "seconds": 0.25,
+          "channels": 1
+        },
+        {
+          "id": "badcut",
+          "sha256": "554eab07a869aaf57ab82d8a7261baf7808c30ecdb59833042350e92c25c4507",
+          "seconds": 0.42,
+          "channels": 1
+        },
+        {
+          "id": "miss",
+          "sha256": "bc39be62654a4c3483b7d41e8696e6a70b139f3600d24f6c8937a646c4b2ab9d",
+          "seconds": 0.2,
+          "channels": 1
+        },
+        {
+          "id": "wallWarn",
+          "sha256": "4fd273c93ffd81ed9655c93c8eabe73f9c47df9b2790b39681b5de72383f6a18",
+          "seconds": 0.64,
+          "channels": 1
+        },
+        {
+          "id": "wallHit",
+          "sha256": "3d34b6f82fcf00059d414718f8c92cb4c0adc4d215ae7e4228e49fe1a48afd09",
+          "seconds": 0.55,
+          "channels": 1
+        },
+        {
+          "id": "dodge",
+          "sha256": "eef5551788b6a2a5900e6d3a7afad57fe6d29f34b1a617414299537e0dd0e44a",
+          "seconds": 0.45,
+          "channels": 1
+        },
+        {
+          "id": "combo",
+          "sha256": "cff03a86afe93481e3f97ef2bf0e891abfaaa0e49549249cb51f3a1676c79c97",
+          "seconds": 0.75,
+          "channels": 2
+        },
+        {
+          "id": "milestone",
+          "sha256": "4708f046093ea8259a40117ae85440ea68c8a10ee12461ed4da12aabaf7a074c",
+          "seconds": 1,
+          "channels": 2
+        },
+        {
+          "id": "comboBreak",
+          "sha256": "cdb4a3b9f540650aab45f967dadfa56098a8b6ebdb9270714ddbe2f2bbb1315e",
+          "seconds": 0.38,
+          "channels": 1
+        },
+        {
+          "id": "drop",
+          "sha256": "e3f67d8ae0ad2915cf44d28be50a7b3b03e1dfc50e6286070873a6ec43c566d1",
+          "seconds": 1.1,
+          "channels": 2
+        },
+        {
+          "id": "count",
+          "sha256": "983931fd0df9b1c926b6c023c699434acb0bb6da496290a9af6fab369a2e05a2",
+          "seconds": 0.14,
+          "channels": 1
+        },
+        {
+          "id": "countGo",
+          "sha256": "fd257a076828a5708d9cb05159f4cd7d3316e2fce2bcfa9eb19e579f38cb5150",
+          "seconds": 0.3,
+          "channels": 1
+        },
+        {
+          "id": "countNeutral",
+          "sha256": "3a9a56e6afd7ed9a2068adfaf52d28ba5d22b85386b0833d55ad46d58865cffe",
+          "seconds": 0.1,
+          "channels": 1
+        },
+        {
+          "id": "charge",
+          "sha256": "ae9aa42dc7f9f00b2e9f18b49e33a1f4fd9f5f0131b1020aa44b5ed799905ef2",
+          "seconds": 0.62,
+          "channels": 1
+        },
+        {
+          "id": "resultsHigh",
+          "sha256": "e18e9adcb1af290924fb14d55718598f05679dda3af0d277c060964db545c913",
+          "seconds": 2.4,
+          "channels": 2
+        },
+        {
+          "id": "resultsLow",
+          "sha256": "433648b3e7fd62bff7f6044d379a263d03633a07763a334f1b93de6d818b8ed1",
+          "seconds": 2.2,
+          "channels": 2
+        },
+        {
+          "id": "resume",
+          "sha256": "05d24fffa5deba45ac95e4b920d72a10d9bc864de8208fcfec62d432f3dbba76",
+          "seconds": 0.32,
+          "channels": 1
+        },
+        {
+          "id": "uiHover",
+          "sha256": "0d18f70307bccdba2dbb0b1751bca5a274b8edb7dc3369cdb0ac02b0bf7239d2",
+          "seconds": 0.06,
+          "channels": 1
+        },
+        {
+          "id": "uiConfirm",
+          "sha256": "2d41b789a57837f7dccf3adfcf8fa6cc1260d2a944bd40e6e246974106402afa",
+          "seconds": 0.22,
+          "channels": 1
+        },
+        {
+          "id": "uiBack",
+          "sha256": "04d8a97a960582d107f71293ae6c25782e53f536abdf9b2d93cc0fc274a44156",
+          "seconds": 0.24,
+          "channels": 1
+        },
+        {
+          "id": "uiSelect",
+          "sha256": "f37e7253c56a7c0bfc2c49b007b756c5d1eef8fd97dd2f041de993fd774dc97d",
+          "seconds": 0.18,
+          "channels": 1
+        },
+        {
+          "id": "uiArm",
+          "sha256": "caf95a0c50df8b632214acb3b7df973b5356f961517471a91ca6e1884b409f75",
+          "seconds": 0.16,
+          "channels": 1
+        },
+        {
+          "id": "uiEnable",
+          "sha256": "080863cb2d5d791a371f7346700bc0ef9019d0453d687afc17e4c889ee5e6fd6",
+          "seconds": 0.7,
+          "channels": 2
+        },
+        {
+          "id": "slash.calm",
+          "sha256": "a5d9e763fcbdaca249031b2785ab2f67608948622eb0493533419de1b8b70c0b",
+          "seconds": 0.34,
+          "channels": 1
+        },
+        {
+          "id": "smash.calm",
+          "sha256": "33b52b4d913b9b0326e580575b35c0a1f564157b0258cb75ef81c99bac070381",
+          "seconds": 0.5,
+          "channels": 1
+        },
+        {
+          "id": "zap.calm",
+          "sha256": "a3b8483a883841cfcc701552bbc8950ad2cffb02014b06a08d594968d82501ab",
+          "seconds": 0.36,
+          "channels": 1
+        },
+        {
+          "id": "poof.calm",
+          "sha256": "2989aad6be0628366a31a4c8dc08e39fda72fc8caffb50d2497ecd6adf7915e9",
+          "seconds": 0.4,
+          "channels": 1
+        },
+        {
+          "id": "sparkle.calm",
+          "sha256": "518ee22e26ff8959353ae701fc2792f96826b361f471548e30cbcb42b3a3f320",
+          "seconds": 0.6,
+          "channels": 2
+        },
+        {
+          "id": "glint.calm",
+          "sha256": "10aec1b284a889c352a7ef79ad68be1fac0709677a79db3a0801ae98081220be",
+          "seconds": 0.25,
+          "channels": 1
+        },
+        {
+          "id": "badcut.calm",
+          "sha256": "084eebdb7509f88abfe1810d13319e4d74bcf532d7b8ed28bf77ff34240233f4",
+          "seconds": 0.42,
+          "channels": 1
+        },
+        {
+          "id": "miss.calm",
+          "sha256": "546750ffcea3878f512e5905d9fa218c6753a3ba7926cd455df6e9494a4b8832",
+          "seconds": 0.2,
+          "channels": 1
+        },
+        {
+          "id": "wallWarn.calm",
+          "sha256": "d2d607e0293aa505291f182cf29bdc4bf84040923a2a2155c5a0ed4aa32661d4",
+          "seconds": 0.64,
+          "channels": 1
+        },
+        {
+          "id": "wallHit.calm",
+          "sha256": "4c833352d455643ef7ed9e36271f50ee4afcf4de4c6b7dd311325cbc0b41572d",
+          "seconds": 0.55,
+          "channels": 1
+        },
+        {
+          "id": "dodge.calm",
+          "sha256": "c9881e948af6e44ef279149f8459e070b7ccb9502a9a2c7a72e49b21b87f0ca5",
+          "seconds": 0.45,
+          "channels": 1
+        },
+        {
+          "id": "combo.calm",
+          "sha256": "80fbfa30abdfedea26516e1cdb27a140709159782989472a2b6beb7c6a9602f3",
+          "seconds": 0.75,
+          "channels": 2
+        },
+        {
+          "id": "milestone.calm",
+          "sha256": "607d0fe92bd2a8287778c99353dcd56b18276995159328b9df0b54c14bbfd890",
+          "seconds": 1,
+          "channels": 2
+        },
+        {
+          "id": "comboBreak.calm",
+          "sha256": "1d43b720e5aba866ad3aeb45ce60ea422c76b8e9c02380be4481d268c32cf0fd",
+          "seconds": 0.38,
+          "channels": 1
+        },
+        {
+          "id": "drop.calm",
+          "sha256": "dfafb18f0ae15ef36f33c595cae059b2256562b97cc34a8228c60500f3f122c8",
+          "seconds": 1.1,
+          "channels": 2
+        },
+        {
+          "id": "count.calm",
+          "sha256": "4daf4301825ecdf26ab368df04c8cd81ea4ff1ae493d0b883813997b495ad59e",
+          "seconds": 0.14,
+          "channels": 1
+        },
+        {
+          "id": "countGo.calm",
+          "sha256": "19ffb64a576ad100cfcfc5f415509c9ea9d7277671465cf82ff785cc024f01e9",
+          "seconds": 0.3,
+          "channels": 1
+        },
+        {
+          "id": "countNeutral.calm",
+          "sha256": "2a35309cee60b1422ed4319585f0f58b51c69100d61597708a81e4211092d232",
+          "seconds": 0.1,
+          "channels": 1
+        },
+        {
+          "id": "charge.calm",
+          "sha256": "1c2aa8c671cc75b660806449f8ce9b8ba2befac7d8eea54e1d13f069013d7eb7",
+          "seconds": 0.62,
+          "channels": 1
+        },
+        {
+          "id": "resultsHigh.calm",
+          "sha256": "299035bf9f2a0b61383aa98d8230bfd4691c4674b0317683ccdbc4c7f7b43cd6",
+          "seconds": 2.4,
+          "channels": 2
+        },
+        {
+          "id": "resultsLow.calm",
+          "sha256": "a82073dcfa5a432e53a60089f80c249cd8d69d97b6a02c2f74ba9af4f6f9ab3b",
+          "seconds": 2.2,
+          "channels": 2
+        },
+        {
+          "id": "resume.calm",
+          "sha256": "590b29283144bea0e73d744bb6280ce1efb0e6fb97ce3ed169fecdf1ebbbc0d7",
+          "seconds": 0.32,
+          "channels": 1
+        },
+        {
+          "id": "uiHover.calm",
+          "sha256": "441ab4486c7944a750475478b832c1c4ed6e421e0ce03aedc126b4b1262066c8",
+          "seconds": 0.06,
+          "channels": 1
+        },
+        {
+          "id": "uiConfirm.calm",
+          "sha256": "5a4327b0571a6e3a6dc1c3c5d25a55d7b1bc50036964ca8b0c769f428fb4e909",
+          "seconds": 0.22,
+          "channels": 1
+        },
+        {
+          "id": "uiBack.calm",
+          "sha256": "748a462d6220fd707dc7ab4bddc33ffb7e65bedb90e4021c5d9db511cf6900c8",
+          "seconds": 0.24,
+          "channels": 1
+        },
+        {
+          "id": "uiSelect.calm",
+          "sha256": "57d33ca5509a6d4c06097ff6be8c6ac9e041309bde4060315e3988396f49b529",
+          "seconds": 0.18,
+          "channels": 1
+        },
+        {
+          "id": "uiArm.calm",
+          "sha256": "4cc73e7eba7c4769e4172ac9cf8bcbe99c0e227d698671acd654c3e9292ddb8f",
+          "seconds": 0.16,
+          "channels": 1
+        },
+        {
+          "id": "uiEnable.calm",
+          "sha256": "e33daf37437cf5d1647975280645a7959232c6cdc266e6b726ebdfed15de8f3f",
+          "seconds": 0.7,
+          "channels": 2
+        }
+      ],
+      "measuredSourceCommit": "a72fe327825fb606a526ed8e4e4513191868e636",
+      "integrationStatus": "Not rerun after gameplay-only merge; retained prior-source PCM-hash verification."
+    },
+    "productionJavaScript": {
+      "budgetBytesPerChunk": 500000,
+      "chunks": [
+        {
+          "name": "generator.worker-DvUGyHl4.js",
+          "bytes": 26028,
+          "gzipLevel9Bytes": 10527,
+          "sha256": "4cf70a2938035f417126e5ffd7fbbb55788b1d0bbe5ab34ee146c039fa5feb1c"
+        },
+        {
+          "name": "index-BQ_li7Il.js",
+          "bytes": 370186,
+          "gzipLevel9Bytes": 117319,
+          "sha256": "a90423c0ca3e24483d25101ea962c1e34494d2bdea59e24410dd580e4e714d83"
+        },
+        {
+          "name": "postprocessing-BH5msiTw.js",
+          "bytes": 167101,
+          "gzipLevel9Bytes": 75378,
+          "sha256": "3a9f50d3fcd3d7804e41d48b65e256067ca3b1394d078185f3118a1aba5022df"
+        },
+        {
+          "name": "react-CTym4sTV.js",
+          "bytes": 218790,
+          "gzipLevel9Bytes": 67419,
+          "sha256": "fd74ab2b67c81653c40b8989ea6bdeadf5aeaf115a386d9cc369c628b525eea0"
+        },
+        {
+          "name": "rolldown-runtime-WkwZ5CU-.js",
+          "bytes": 599,
+          "gzipLevel9Bytes": 368,
+          "sha256": "2629f2ad3cb75a57d98de697127f5af7d777ef572bbcdfa6e3ce8f438cd4527e"
+        },
+        {
+          "name": "sfxRender.worker-BfMz86U3.js",
+          "bytes": 21764,
+          "gzipLevel9Bytes": 7945,
+          "sha256": "1ea5e51b5c03787885b65550bbd964447128011606336a44c8d6aa54b22f828e"
+        },
+        {
+          "name": "three-BtMhuEOU.js",
+          "bytes": 352339,
+          "gzipLevel9Bytes": 84019,
+          "sha256": "485e2434ad8eba1200b9058d4c2d996481b23583a68b2c69e5565ba71356acfd"
+        },
+        {
+          "name": "three-CtILIWwi.js",
+          "bytes": 48977,
+          "gzipLevel9Bytes": 14183,
+          "sha256": "f00a2ca9ac27d187ccb5e7a83d7ac6663acda8edadd5c9ed01bff06893c4f29a"
+        },
+        {
+          "name": "three-CZu3cChN.js",
+          "bytes": 224173,
+          "gzipLevel9Bytes": 59142,
+          "sha256": "286ce01a209087a2a6652e437ac44adaf963799fe32c4757591d22f5c386ea18"
+        },
+        {
+          "name": "tracking.worker-KnkdkfXB.js",
+          "bytes": 161250,
+          "gzipLevel9Bytes": 47837,
+          "sha256": "a5f811e70d837d8cccdcd207f5abdcad10b21e7c972f27ff827bc047dcb938eb"
+        }
+      ],
+      "largestChunkBytes": 370186,
+      "totalRawBytes": 1591207,
+      "totalGzipLevel9Bytes": 484137,
+      "gzipScope": "Independent level-9 gzip size for each emitted JS file; excludes CSS, maps, music, WASM/models, fonts and GLBs. This is size evidence, not load-time measurement.",
+      "measuredSourceCommit": "a72fe327825fb606a526ed8e4e4513191868e636",
+      "integrationStatus": "Prior-source bundle measurement; parent is running the integrated production build."
+    }
+  },
+  "integration": "Normal merge of concurrent gameplay commit 8fd22f6: wider contact zones and contact-only slash/smash. Fresh performer/chart commands below ran after this merge.",
+  "fullApplicationGate": {
+    "status": "pass",
+    "applicationSourceCommit": "8f0e318a9077b1a06f80cf19ab17c83b5c4ca03a",
+    "attribution": "Parent agent /root npm run check verification",
+    "testsPassed": 569,
+    "testFilesPassed": 55,
+    "bundleRegressionTestsPassed": 3
+  },
+  "sourceUnchangedDuringCommands": true,
+  "finalizedAt": "2026-10-25T01:14:51.172Z"
+}

@@ -6,7 +6,7 @@ Scope: `game/` — the spawner, the live-object simulation, contact tests betwee
 
 Design basis: [ADR-006](03-decisions.md#adr-006--contact-based-hits-with-timing-judgement-derived-from-note-depth) — a hit is a geometric contact on the play plane while the note is inside a *timing* window; the judgement comes from how early or late the contact is.
 
-These are planned rules, not tested gameplay. Build the replayable slash-only slice first (P1), then complete smash/beam/obstacles (P2), then tune from held-out input and real playtests (P4) as described in [the roadmap](../ROADMAP.md).
+**Current contact behavior — 2026-10-25:** slash/smash contact is shape-independent at `CONTACT_MIN_SPEED = 0.3` play-plane m/s. The contact footprint and palm radius both use `HIT_ZONE_SCALE = 2.5`; the visible block size and timing windows do not grow. Wrong-shape Bad Cuts are no longer produced by these contacts. Classification remains relevant to feedback, blade extension, menu actions and Point beam charge. These implemented rules supersede the earlier strict Open/Fist gating; synthetic assertions are separate from human/hardware acceptance in [the roadmap](../ROADMAP.md).
 
 ## 1. Spawner (`game/spawner.ts`)
 
@@ -21,6 +21,8 @@ Per frame with `songTime`:
 5. On `results:retry` the cursors reset to 0 and all live objects are released to their pools.
 
 Pool sizes: `MAX_LIVE_NOTES`; the validator checks simultaneous unresolved objects, including late-input grace, before play. If a runtime invariant still exhausts the pool, pause with a useful map-capacity error and diagnostics. Do not turn an implementation resource failure into a player's miss or silently skip content.
+
+The runtime supplies a session map with `approachMs` multiplied by `APPROACH_SLOWDOWN` (currently 2.17). This slows approach without changing note timestamps; the spawner and live positions use that same session value.
 
 ```ts
 interface LiveNote {
@@ -54,7 +56,7 @@ speed    = SPAWN_DISTANCE / approachMs · 1000                    // m/s along d
 
 Since `|d.z| = cos 6° ≈ 0.9945`, `pos.z ≈ −SPAWN_DISTANCE · (1 − progress) · 0.9945`; `pos.z = 0` exactly when `songTime = t`.
 
-Obstacles: `target.x` is the wall centre (`wallLeft`: `(LANE_X[0] + LANE_X[1]) / 2 = −1.2`; `wallRight`: `+1.2`), `target.y = PLAY_CENTER_Y`. The wall's depth extent is `durationMs · speed / 1000`; its leading face is at the position computed for `t`, the trailing face at the position for `t + durationMs`. Per frame compute `zFront` (leading face z) and `zBack = zFront − depth · d.z`.
+Obstacles: `target.x` is the wall centre (`wallLeft`: `(LANE_X[0] + LANE_X[1]) / 2`; `wallRight`: `(LANE_X[2] + LANE_X[3]) / 2`), `target.y = PLAY_CENTER_Y`. The wall's depth extent is `durationMs · speed / 1000`; its leading face is at the position computed for `t`, the trailing face at the position for `t + durationMs`. Per frame compute `zFront` (leading face z) and `zBack = zFront − depth · d.z`.
 
 ### 2.2 Beam targets
 
@@ -73,13 +75,13 @@ Fade-in alpha over the first 300 ms is the renderer's concern. If `songTime > es
 | unresolved travelling note whose capture-time window and bounded delivery grace have closed | `note:miss`; `state = 'missed'`; combo breaks |
 | `pos.z > DESPAWN_Z` | renderer may cull the mesh; retain unresolved gameplay state until judgement is terminal |
 | beam `live` and its latest valid hit window plus grace has closed | `note:miss`; visual escape begins no later than `escapeAt` |
-| obstacle trailing capture-time evaluation closes without contact | `obstacle:dodged`, provided its span had valid body observations |
+| obstacle trailing capture-time evaluation closes without contact | terminal `obstacle:dodged`; valid safe body observations earn dodge points, while an unobserved wall emits zero points and adds no dodge count |
 
-The miss is declared by **capture time plus bounded delivery grace**, never by `MISS_Z`. At Normal travel speed `MISS_Z` is reached about 50 ms after `t`, while the default late Good window remains open to 200 ms; those are materially different deadlines. A visual despawn at `DESPAWN_Z` likewise cannot release an unresolved judgement record.
+The miss is declared by **capture time plus bounded delivery grace**, never by `MISS_Z`. Travel speed changes with the session approach time; visual clearance and the default late Good window of 200 ms are separate deadlines. A visual despawn at `DESPAWN_Z` likewise cannot release an unresolved judgement record.
 
 ## 3. Hit zone and timing error
 
-A note is in the hit zone when `|timingErrorMs| ≤ WINDOW_GOOD_MS · WINDOW_SCALE`. Contact outside that zone is ignored entirely (not a bad cut). `WINDOW_SCALE` is frozen in the session configuration and included in results/replay metadata; changing difficulty/assistance cannot silently alter a ranked run halfway through.
+A slash/smash note is temporally eligible when `|timingErrorMs| ≤ WINDOW_GOOD_MS · WINDOW_SCALE`. Contact outside that interval is ignored entirely. `HIT_ZONE_SCALE` changes spatial tolerance, not these timing windows. `WINDOW_SCALE` is frozen in the session configuration and included in results/replay metadata; changing difficulty/assistance cannot silently alter a ranked run halfway through. Current auto-targeted beams have the separate fire/scoring rule in §8.
 
 ```
 songTimeAtCapture = songClock.fromPerformanceTime(cursor.tCapture)     // [15 §SongClock]
@@ -98,13 +100,13 @@ Tracking inference is asynchronous, so a sample captured inside a window can arr
 
 All contact tests are performed in the play plane's x–y coordinates. The depth is handled by the timing window (§3); geometrically the note is treated as its x–y footprint at `target`, not at its current `pos`. This is intentional: the player aims at *where the block is going*, which is where their cursor lives.
 
-Block footprint: axis-aligned square `[target.x ± h, target.y ± h]` with `h = BLOCK_SIZE / 2`. The cosmetic idle rotation is ignored by the hit test (blocks rotate ≤ 10°, invisible to the player at these speeds). If a future map rotates blocks, convert the OBB test by rotating the cursor into block space.
+Block contact footprint: axis-aligned square `[target.x ± h, target.y ± h]` with `h = BLOCK_SIZE · HIT_ZONE_SCALE / 2`. With `BLOCK_SIZE = 0.6` and `HIT_ZONE_SCALE = 2.5`, the contact square is 1.5 m wide; the visible block remains 0.6 m wide. Palm tolerance is also scaled: `r = HAND_HIT_RADIUS · HIT_ZONE_SCALE = 0.55` m. This is a 2.5× linear spatial scale, not a timing multiplier. Cosmetic idle rotation is ignored by the hit test. The low-level geometry helpers default to scale 1; `GameSession` explicitly passes the runtime scale for both palm and blade contacts.
 
 ### 4.1 Palm sphere vs block
 
 ```
 closest = (clamp(pos.x, bx − h, bx + h), clamp(pos.y, by − h, by + h))
-contact = dist(pos.xy, closest) ≤ HAND_HIT_RADIUS
+contact = dist(pos.xy, closest) ≤ r
 ```
 
 ### 4.2 Swept palm (continuous collision)
@@ -112,7 +114,7 @@ contact = dist(pos.xy, closest) ≤ HAND_HIT_RADIUS
 At 10 m/s the palm moves 0.33 m per 33 ms tracking frame — more than half a block — so a point test alone tunnels. Use the capsule swept by the palm sphere from `prevPos` to `pos`:
 
 ```
-contact = segmentToAABBDistance2D(prevPos.xy, pos.xy, box) ≤ HAND_HIT_RADIUS
+contact = segmentToAABBDistance2D(prevPos.xy, pos.xy, box) ≤ r
 ```
 
 `segmentToAABBDistance2D` = 0 if the segment intersects the box (Liang–Barsky clip), else the minimum of point-to-box distance at the endpoints and segment-to-edge distances (4 edges). `prevPos` is the cursor position from the previous valid `TrackingFrame` of the same hand identity, never the previous render frame or a prediction. Return the earliest contact fraction `α` along the sweep into reusable scratch output. Judge at `contactPerf = prevCapture + α · (capture − prevCapture)`; clip the sweep to the eligible time interval before testing. Do not connect samples across loss, pause, identity reassignment or an over-age gap.
@@ -127,26 +129,26 @@ contact = segIntersectsAABB(bladePrev) || segIntersectsAABB(bladeNow)
        || segIntersectsAABB(bladePrev.base → bladeNow.base)         // = the palm sweep
 ```
 
-The four edge tests alone miss the case where the entire block footprint lies inside the swept quad. Also test box-corner containment in the quad's two triangles, or use a tested convex polygon–AABB intersection. Keep a documented interpolation rule for the earliest contact fraction. The blade has no thickness in the test; the palm sphere provides tolerance. Cover rotation and containment cases in replay/unit fixtures instead of assuming 30 Hz makes the approximation safe.
+The four edge tests alone miss the case where the entire block footprint lies inside the swept quad. The implementation solves the earliest linearly interpolated blade endpoint/box and segment/corner contact, including footprint containment. The blade tests the same scaled square and has no additional thickness; the scaled palm sphere supplies tolerance. Blade activation still depends on Open/speed feedback, but a blade is optional for either block type: moving palm contact remains valid with `open`, `fist`, `point` or `none`.
 
 ### 4.4 Which notes are tested
 
 Per newly accepted sample with a present cursor, test unresolved notes whose eligible interval overlaps the measured sweep. Usually only a few qualify; measure before adding a spatial index. A cached hand sample is never re-evaluated on every render frame.
 
-## 5. Gesture requirements and bad cuts
+## 5. Moving-hand requirement and retained Bad Cut contract
 
-| Note type | Valid destruction | Bad cut (contact with…) | Ignored (contact with…) |
+| Note type | Valid destruction | Bad Cut | Ignored |
 | --- | --- | --- | --- |
-| `slash` | `gesture === 'open'` and `speed ≥ SLASH_MIN_SPEED` (blade or palm sweep) | `fist` or `point` at `speed ≥ SMASH_MIN_SPEED` | `open` below `SLASH_MIN_SPEED`; `none`; slow `fist`/`point` |
-| `smash` | `gesture === 'fist'` and `speed ≥ SMASH_MIN_SPEED` | `open` at `speed ≥ SLASH_MIN_SPEED` | everything slower; `point`; `none` |
-| `beam` | beam fire only (§6) | hand contact never happens (it hovers at `BEAM_HOVER_Z`) | — |
+| `slash` | Present hand at `speed ≥ CONTACT_MIN_SPEED`, with eligible measured palm/blade contact; any classified shape | None from current contact rules | Below the motion floor, absent/invalid/stale input, no spatial contact or outside the timing interval |
+| `smash` | Same moving-hand rule as slash; any classified shape | None from current contact rules | Same exclusions as slash |
+| `beam` | Confident Point charge and automatic target resolution (§8) | Palm contact never produces a Bad Cut | Palm/blade contact does not fire a beam |
 
 Rules:
 
-1. A slow hand drifting through a block does nothing (P3: no accidental bad cuts while resting).
-2. A bad cut emits `note:badcut { note, hand, gesture }`, sets `state = 'badcut'`, resets combo (`combo:change { broke: true }`), scores 0 and counts in `counts.badcut`. The block is not destroyed; the renderer deflects it ([11](11-rendering-blocks-and-destruction.md)). It will not later count as a miss (its state is terminal).
+1. A hand below `CONTACT_MIN_SPEED` does nothing. At or above the floor, even a low-confidence or `none` classification may score if the present cursor passes finite-data, capture-age, geometry and timing guards. This threshold is a current initial setting, not proof of a safe resting-hand false-hit rate.
+2. `ContactOutcome` retains `badcut` and the event/scoring contract for compatibility, but current `contactOutcome` returns only `hit` or `ignore`. If another supported producer supplies a Bad Cut, `note:badcut { note, hand, gesture }` remains terminal, resets combo, awards 0 and increments `counts.badcut`; it cannot later become a miss. Do not describe wrong Open/Fist shape as a current player penalty.
 3. A valid hit emits `note:hit` and sets `state = 'hit'` in the same frame; a note can be hit exactly once.
-4. Collect both hands' candidates for the same sample before resolving the note. Prefer a valid hit over a conflicting bad cut, then earliest contact time, then left/right for an exact tie. Apply notes in `(capture time, note.t, note.id)` order. A wrong left-hand gesture must not beat a simultaneous valid right-hand strike merely because the loop visits left first.
+4. Collect both hands' candidates for the same sample before resolving the note. Resolve earliest contact time, then left/right for an exact tie. Apply notes in `(capture time, note.t, note.id)` order. The retained generic resolver also prefers `hit` over `badcut`, though the current shape-independent contact producer cannot create that conflict.
 5. Hand lost mid-swing: no contact is evaluated for an absent cursor; the note is judged normally when its zone closes.
 
 ## 6. Judgement
@@ -164,6 +166,8 @@ Rules:
 - `cutPlane` (slash only): see §7.
 - `scoreDelta`, `combo`, `multiplier`: after applying §8.
 
+For current auto-targeted beam fire, the same timing buckets apply when available; fire outside them scores Good while the target is spawned and unresolved (§8). This exception does not permit out-of-window slash/smash hits.
+
 ## 7. Cut plane construction (for the slicer)
 
 The slice must follow the swing ([ADR-008](03-decisions.md#adr-008--real-plane-cut-slicing-for-a-convex-cube-pre-fractured-glb-for-smashing-no-physics-engine)).
@@ -180,16 +184,15 @@ The plane contains the swing direction and the lane direction, so a horizontal s
 
 ## 8. Beam resolution
 
-Runs on a newly accepted sample after note contacts, per hand with `present`, confident stable pointing, `charge ≥ 1` and capture-song time beyond `chargeLockUntil`. Full charge can wait; appearing early is not permission to fire.
+Runs on a newly accepted sample after note contacts, per hand with `present`, confident stable pointing, `charge ≥ 1` and the session's lock/recharge deadlines satisfied. This describes the existing automatic-target behavior; the shape-independent slash/smash change does not remove Point/hold from beams.
 
-1. **Aim projection.** Aim at the target's **screen-aligned footprint on the play plane**, not its raw distant world x/y. For baseline camera `C = CAM_POS` and fixed beam hover centre `B`, compute `aimTarget = C + (B − C) · ((0 − C.z) / (B.z − C.z))`. Compare measured `tip.xy` to `aimTarget.xy`. This is the camera ray through the fingertip, not a parallel `−z` ray. `pointDir` remains cosmetic.
-2. **Candidates.** Unresolved beam notes that have appeared, whose fixed projected footprint is within `BEAM_AIM_RADIUS`, **and whose capture-time error is inside `WINDOW_GOOD_MS · WINDOW_SCALE`**. Use the unbobbing centre and baseline camera. Renderer reticles share this projection and distinguish charging, ready/waiting and eligible states.
-3. **Priority.** Pick the candidate with the smallest absolute timing error including `inputOffsetMs`, then note `t`/`id`. If both hands target it, resolve the deterministic winner once; the other hand retains its charge and does not emit a duplicate shot.
-4. **Fire.** Recheck the candidate is unresolved, emit `beam:fire { hand, from: tip, to: note.pos, note }`, then exactly one `note:hit` using §6's judgement. `beam:fire` starts the line/flash; `note:hit` alone starts destruction. Apply the late-result policy before any render-time escape finalizes gameplay.
-5. **Wait.** With no eligible aimed candidate, do not fire, reset charge or start lockout. Keep full charge while a visible target is too early or no target is aimed. A precharged point held over the target fires on the first eligible input sample; aiming later can improve the timing judgement. Expired targets follow the normal miss deadline, never a repeating auto-whiff cycle.
-6. **Reset only after a committed shot.** Set charge to 0 and `chargeLockUntil = songTimeAtCapture + BEAM_REFIRE_LOCK_MS`. The nullable `beam:fire.note` contract is defensive: if an already committed shot loses its target before authoritative resolution, render a line/whiff with `note: null` and no `note:hit`/points. Normal synchronous play checks target state before commitment and does not manufacture this event for early aiming or a losing second hand.
+1. **Candidates.** Consider spawned unresolved beam notes. Current gameplay does not gate this set by `BEAM_AIM_RADIUS`, fingertip position or `pointDir`; projection/aim helpers remain available to presentation and geometry tests.
+2. **Priority.** Choose the earliest note `t`, then smallest `id`. Process logical hands in stable left/right order; once one destroys the target, a second hand cannot destroy it again.
+3. **Fire.** Emit `beam:fire { hand, from: tip, to: note.pos, note }`, then exactly one `note:hit`. Use normal Perfect/Great/Good timing when inside a bucket, otherwise Good while the target is still spawned and unresolved. `beam:fire` starts the line/flash; `note:hit` starts destruction.
+4. **Wait.** With no spawned unresolved beam candidate, do not fire, reset charge or start lockout. Full charge waits until a target exists. An early visible candidate can fire immediately; the old aimed-window wait rule is superseded by this behavior.
+5. **Recharge.** A committed shot resets the cursor charge through its owning input state. The session sets its song-time refire deadline by `BEAM_REFIRE_LOCK_MS` and its capture-time recharge deadline by `BEAM_CHARGE_MS`. These guards prevent a retained full-charge sample from firing a succession of targets immediately. The nullable `beam:fire.note` event shape remains supported for defensive consumers; the normal resolver emits a real unresolved target.
 
-The target appears before it becomes eligible so the player can aim and charge comfortably. `BEAM_LEAD_MS` is preparation time; it is not an automatic-fire window. No new click/release/manual-fire action is required.
+`BEAM_LEAD_MS` determines target appearance. Point and hold remains the deliberate action; no click, release or precision aim is required. Synthetic tests establish this code path, not recognition reliability or live human timing.
 
 ## 9. Obstacles vs body (`game/hit.ts`, obstacle section)
 
@@ -203,11 +206,11 @@ An obstacle **spans the hit plane** while `zFront > 0 ≥ zBack`: the hit plane 
 
 Rules:
 
-1. Evaluate new body samples at capture-song time during the obstacle span, after grace. The first observed unsafe state produces `obstacle:hit`, `state = 'hit'`, combo reset, `counts.obstaclesHit++`. Exactly once per obstacle. Render fps does not create additional body observations.
-2. If `BodyState.present === false`, do not fabricate a collision or award a free dodge. Pause with a tracking reason when a required obstacle judgement has no usable body evidence; resume only after tracking is stable. A lost camera cannot farm dodge points.
+1. Evaluate new body samples at capture-song time during the obstacle span, after grace. The first observed unsafe state produces `obstacle:hit`, `state = 'hit'`, `counts.obstaclesHit++` and a `SCORE_WALL_PENALTY` point deduction, capped by the current score. Combo and play continue. Exactly once per obstacle. Render fps does not create additional body observations.
+2. If `BodyState.present === false`, do not fabricate a collision or award a free dodge. Current wall judgement does not request a tracking pause; an unobserved wall passes with no penalty or reward. This supersedes the earlier wall-triggered pause rule. Other lifecycle pause guards remain separate.
 3. `lean` already carries hysteresis (`LEAN_ON` / `LEAN_OFF`, [05 §5](05-tracking-pipeline.md#5-body-metrics-trackingbodyts--bodystate)); no extra debounce here.
 4. Grace: the first `OBSTACLE_GRACE_MS` after `zFront` crosses 0 are not evaluated, so a player who is *in the act* of leaning when the wall arrives is not punished for tracking latency. Default 120 ms.
-5. After the obstacle's trailing capture interval and bounded delivery grace close, if all evaluated body samples were safe and valid evidence exists, emit `obstacle:dodged { scoreDelta: SCORE_DODGE · multiplier }` and increment `counts.obstaclesDodged`. Dodging does not increase combo but is multiplied. `MISS_Z` may delay visual clearance; it does not decide whether a body sample was safe.
+5. After the obstacle's trailing capture interval and bounded delivery grace close, if all evaluated body samples were safe and valid evidence exists, emit `obstacle:dodged { scoreDelta: SCORE_DODGE · multiplier }` and increment `counts.obstaclesDodged`. With no body samples, emit the terminal event with `scoreDelta: 0` without incrementing the dodge count. Dodging does not increase combo but is multiplied. `MISS_Z` may delay visual clearance; it does not decide whether a body sample was safe.
 
 ## 10. Scoring (`game/score.ts`)
 
@@ -215,7 +218,8 @@ Rules:
 
 ```
 on valid note hit:      combo++;  multiplier = ladder(combo)
-on miss / badcut / obstacle hit:  combo = 0; multiplier = 1; emit combo:change { broke: true }
+on miss / retained badcut: combo = 0; multiplier = 1; emit combo:change { broke: true }
+on obstacle hit:        score -= min(score, SCORE_WALL_PENALTY); combo/multiplier unchanged
 ladder(c) = largest m such that c ≥ threshold, from MULTIPLIER_LADDER   // 0→1, 5→2, 15→4, 30→8
 ```
 
@@ -270,30 +274,31 @@ Arithmetic example under the assumed masses and efficiency: a 4 m/s proxy peak y
 | Case | Behaviour |
 | --- | --- |
 | Two hands contact one block in one sample | Valid-hit priority, then earliest contact and deterministic hand tie-break; exactly one terminal event |
-| Hand present with `gesture === 'none'` sweeping fast through a block | Ignored (no bad cut without a committed gesture) |
+| Hand present with `gesture === 'none'` moving through a block | Hits at `speed ≥ CONTACT_MIN_SPEED` when scaled geometry and timing pass; never a wrong-shape Bad Cut |
 | Hand lost mid-swing, reappears after the zone | Note missed normally |
 | Chord (two notes with `|Δt| < 20 ms`) | Both testable; one blade sweep can hit both in one frame (both score) |
 | Note and obstacle at the same time in different columns | Allowed by the validator; evaluated independently |
 | `inputOffsetMs` moves a contact outside the zone | Ignored contact; no bad cut |
 | Pause during a live note | `songTime` frozen; nothing is judged; resume continues exactly |
 | Beam charged with no target for a long time | Held at 1; the HUD pulses; no timeout |
-| Beam already charged when an early target appears | Hold charge; fire only once an aimed sample is inside the scaled timing window |
+| Beam already charged when an early target appears | Confident Point auto-targets the earliest spawned unresolved beam; outside timing buckets the hit is Good |
 | Note pool exhausted | Pause with map-capacity fault; no fabricated player miss |
 
 ## 14. Unit tests (`tests/unit/judge.test.ts`, `hit.test.ts`, `score.test.ts`)
+
+Current synthetic assertions are in [judge.test.ts](../app/tests/unit/judge.test.ts), [hit.test.ts](../app/tests/unit/hit.test.ts), [score.test.ts](../app/tests/unit/score.test.ts) and [gameSession.test.ts](../app/tests/gameSession.test.ts). The table defines required coverage; it is not evidence that every listed boundary or human interaction has been exercised. In particular, the low-level geometry tests' default scale 1 is distinct from runtime scale 2.5.
 
 | Test | Expectation |
 | --- | --- |
 | Lane equation | `pos.z = 0` at `songTime = t` (±1e-6); `pos` at `progress = 0` is `SPAWN_DISTANCE` from target |
 | Timing buckets | `e = ±59 → perfect`, `±61 → great`, `±121 → good`, `±201 → outside zone` |
-| Palm sphere test | Points at box edge ± `HAND_HIT_RADIUS` ± ε flip correctly |
-| Swept palm | A 0.6 m step across a 0.6 m block in one frame registers contact; a parallel pass 0.3 m away does not |
+| Palm sphere test | Unscaled helper and runtime-scaled square/radius boundaries flip correctly at ± ε, including rounded corners |
+| Swept palm | Crossings test the square plus circular palm tolerance; scaled gameplay uses `HIT_ZONE_SCALE` for both, without a false expanded-square corner hit |
 | Blade sweep | A blade of 1.2 m rotating 40° between frames across a block registers |
-| Gesture gating | `open` at 2.4 m/s on slash → nothing; at 2.6 → hit; `fist` at 2.6 on slash → bad cut |
-| Beam | Full charge + aimed eligible sample → one hit; early target → charge held, no shot/lockout; actual fire applies `BEAM_REFIRE_LOCK_MS` |
-| Precharged beam | Aim from `t − BEAM_LEAD_MS`: no repeated whiffs, first eligible sample fires once; two aimed hands cannot destroy the same target twice |
-| Defensive beam whiff | Inject target invalidation after a shot is committed: nullable event renders a whiff, with zero hit events/points; ordinary early aim never takes this route |
-| Obstacles | `wallLeft` with `lean='right'` → dodged; `lean='center'` for one frame after grace → hit once; absent body → no hit |
+| Moving-hand eligibility | Each of `open`, `fist`, `point`, `none` hits slash/smash at `CONTACT_MIN_SPEED`; below the floor is ignored; no wrong-shape Bad Cut |
+| Beam | Full-charge confident Point fires at the next spawned unresolved target without fingertip aim; outside timing buckets is Good; locks/recharge follow a committed shot |
+| Precharged beam | First spawned candidate fires once; two charged hands cannot destroy the same target twice; no candidate means charge waits |
+| Obstacles | `wallLeft` with `lean='right'` → dodged; unsafe body after grace → one capped point penalty with combo preserved; absent body → no hit, no wall pause, no reward |
 | Combo ladder | combos 4,5,14,15,29,30 → multipliers 1,2,2,4,4,8 |
 | maxScore | hand-computed for a 40-note, 2-obstacle map |
 | Accuracy | All-Perfect short map with an early wall reaches 1; combo resets do not change base points already earned; empty map rejected |
@@ -307,13 +312,13 @@ Arithmetic example under the assumed masses and efficiency: a 4 m/s proxy peak y
 
 - [ ] P4 playtests record first-time and practiced players' accuracy separately, with sample size and configuration. Initial usability goals are ≥ 60% and ≥ 85% respectively; a miss can indicate chart reachability, unclear feedback, tracking or sync, so investigate those causes before widening timing windows.
 - [ ] Judgement distribution on a deliberately on-beat test (metronome track, hits synced to a click) is centred on Perfect with `inputOffsetMs = 0` ± 30; otherwise record the bias and set `INPUT_OFFSET_DEFAULT_MS`.
-- [ ] No hit is registered outside `WINDOW_GOOD_MS · WINDOW_SCALE`; no block is destroyed twice; no bad cut without a committed gesture.
+- [ ] No slash/smash hit is registered outside `WINDOW_GOOD_MS · WINDOW_SCALE`; no block is destroyed twice; no current slash/smash contact produces a wrong-shape Bad Cut. Beam timing follows its explicit auto-target exception.
 - [ ] Fast slashes (> 8 m/s play-plane) never tunnel through blocks (verified with the debug overlay drawing swept segments).
 - [ ] Walls are dodgeable by leaning with hysteresis: no flicker between hit/dodged; grace period hides tracking latency.
-- [ ] A player can precharge and hold over an early visible beam target through eligibility without wasting the charge. Input replay proves exactly one hit and no earlier automatic whiffs; targeting late is judged with the normal scaled windows.
+- [ ] Point/hold reliably charges and fires at the next spawned unresolved beam target; no precision aim is required. Input replay proves one terminal hit per target, normal in-window timing and the out-of-window Good fallback, with refire/recharge guards.
 - [ ] `maxScore` ceiling, unmultiplied accuracy and rank agree with hand calculations on short/long maps, early walls, ties, misses and bad cuts.
 - [ ] All unit tests in §14 pass; `game/` has no DOM or `three` imports.
 
 ## Constants required
 
-All constants used here are in the [02 constants table](02-architecture.md#constants), including the gameplay additions `OBSTACLE_GRACE_MS` (§9 rule 4), `BEAM_REFIRE_LOCK_MS` (§8 step 6), `SWING_MIN_SPEED` / `TORSO_SWING_MIN_SPEED` (§11), `HIGHLIGHT_DEBOUNCE_MS` and `HIGHLIGHT_MIN_COMBO` (§12), and `WINDOW_SCALE` (a multiplier applied to all `WINDOW_*_MS`, default 1.0; see [21 R09](21-risks-and-fallbacks.md)).
+All constants used here are in the [02 constants table](02-architecture.md#constants), including `HIT_ZONE_SCALE`, `CONTACT_MIN_SPEED`, `APPROACH_SLOWDOWN`, `OBSTACLE_GRACE_MS` (§9 rule 4), `SCORE_WALL_PENALTY` (§9 rule 1), `BEAM_REFIRE_LOCK_MS` (§8 step 5), `SWING_MIN_SPEED` / `TORSO_SWING_MIN_SPEED` (§11), `HIGHLIGHT_DEBOUNCE_MS` and `HIGHLIGHT_MIN_COMBO` (§12), and `WINDOW_SCALE` (a multiplier applied to all `WINDOW_*_MS`, default 1.0; see [21 R09](21-risks-and-fallbacks.md)).

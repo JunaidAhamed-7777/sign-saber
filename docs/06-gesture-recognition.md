@@ -2,6 +2,8 @@
 
 Scope: turning a filtered `HandRaw` into a `HandCursor` ([02 §Contracts](02-architecture.md#input-pipeline--game-handcursor-bodystate)): the Open / Fist / Point classifier, its hysteresis, play-plane position and velocity, the blade state, the beam charge and `pointDir`. Hit testing that consumes the cursor is in [07](07-hit-detection-and-scoring.md). This is a rule-based classifier by decision ([ADR-005](03-decisions.md#adr-005--geometric-gesture-classifier-on-landmarks-with-hysteresis)): deterministic, testable from fixtures, tunable live.
 
+**Current contact behavior — 2026-10-25:** slash and smash blocks accept any present moving hand at `speed ≥ CONTACT_MIN_SPEED` (0.3 play-plane m/s), including classified `none`. They no longer require Open/Fist or produce a wrong-shape Bad Cut. Their square contact footprint and palm radius both use `HIT_ZONE_SCALE = 2.5`; timing windows and capture-time guards remain separate. The classifier still supplies gesture feedback, the open-hand blade extension, deliberate Open → Point menu actions and confident Point beam charging. These are implemented rules with synthetic assertions; they do not establish live recognition accuracy or comfortable human reach.
+
 ## 1. Landmark indices
 
 MediaPipe 21-point hand model (same order in `landmarks` and `worldLandmarks`, stride 3):
@@ -77,7 +79,7 @@ palmWidth = dist2D(INDEX_MCP, PINKY_MCP) / palmSize          // ≈ 0.8–1.1 fa
 edgeOn = palmWidth < GESTURE_EDGE_ON_WIDTH
 ```
 
-When `edgeOn`, the classifier returns the previous stable gesture with low confidence for display continuity. That low-confidence evidence still increments the ambiguity counter in §4; it cannot hold a scoring gesture forever or advance beam charge.
+When `edgeOn`, the classifier returns the previous stable gesture with low confidence for display continuity. That low-confidence evidence still increments the ambiguity counter in §4; it cannot preserve confident Point/menu evidence forever or advance beam charge. A present measured hand can still contact slash/smash blocks under the shape-independent rule above.
 
 ## 3. Rules
 
@@ -119,7 +121,7 @@ Per hand: `stable: Gesture`, `candidate: Gesture`, `candidateFrames: number`, `a
 
 Output: `HandCursor.gesture = stable`, `gestureConfidence = r.confidence` (of the current frame, informational), `gestureHeldMs = tCapture − stableSince`.
 
-Fast-path exception: switching **into** `'open'` from `'none'` is allowed after 1 frame when `confidence ≥ GESTURE_FAST_OPEN_CONFIDENCE`. Players open their hand mid-swing and a 3-frame (≈ 100 ms) delay would turn fast slashes into non-hits. Leaving `'open'` still requires the full confirm count so a blurred fast hand does not drop the blade.
+Fast-path exception: switching **into** `'open'` from `'none'` is allowed after 1 frame when `confidence ≥ GESTURE_FAST_OPEN_CONFIDENCE`. This keeps open-hand feedback and the optional blade extension responsive during a swing. Palm contact does not wait for Open classification. Leaving `'open'` still requires the full confirm count so a blurred fast hand does not drop the blade.
 
 ## 5. Position, velocity, `pointDir`
 
@@ -136,7 +138,7 @@ vel = (pos[n] − pos[n − VEL_WINDOW_FRAMES]) / (t[n] − t[n − VEL_WINDOW_F
 speed = |vel|
 ```
 
-With fewer samples (hand just appeared) use whatever span exists; with one sample `vel = 0`. Because positions were One Euro-filtered, no additional smoothing is applied to `vel`; the window averages the remaining jitter. Velocity is in play-plane metres per second. Gameplay `*_SPEED` thresholds use that unit; `SWING_MIN_SPEED` and `TORSO_SWING_MIN_SPEED` are physical-proxy speeds for the separate motion estimate ([07](07-hit-detection-and-scoring.md)). Reject nonpositive sample `dt`; reset the window across loss, pause or an over-age gap rather than calculating an enormous reacquisition velocity.
+With fewer samples (hand just appeared) use whatever span exists; with one sample `vel = 0`. Because positions were One Euro-filtered, no additional smoothing is applied to `vel`; the window averages the remaining jitter. Velocity is in play-plane metres per second. `CONTACT_MIN_SPEED` controls slash/smash eligibility, while `BLADE_*_SPEED` controls the open-hand blade extension. The retained `SLASH_MIN_SPEED` / `SMASH_MIN_SPEED` constants do not gate current block scoring. `SWING_MIN_SPEED` and `TORSO_SWING_MIN_SPEED` are physical-proxy speeds for the separate motion estimate ([07](07-hit-detection-and-scoring.md)). Reject nonpositive sample `dt`; reset the window across loss, pause or an over-age gap rather than calculating an enormous reacquisition velocity.
 
 ### 5.3 Extrapolation
 
@@ -148,7 +150,7 @@ Extrapolation is **render-only**. Derive a display position from the immutable l
 pointDir = normalize(mapToPlayPlane(INDEX_TIP) − mapToPlayPlane(INDEX_MCP)).xy
 ```
 
-Used for the HUD charge indicator and cosmetic beam direction; aiming uses fingertip position ([07 §Beam resolution](07-hit-detection-and-scoring.md#8-beam-resolution)). When the finger points at the camera the 2D vector is short and noisy; if its pre-normalised length is below `POINT_DIR_MIN_M`, keep the previous valid `pointDir`. With no previous direction, use a stable display default and treat classification confidence independently.
+Used for the HUD charge indicator and cosmetic beam direction. Current beam resolution auto-targets a spawned unresolved beam note; neither `pointDir` nor fingertip aim gates the shot ([07 §Beam resolution](07-hit-detection-and-scoring.md#8-beam-resolution)). When the finger points at the camera the 2D vector is short and noisy; if its pre-normalised length is below `POINT_DIR_MIN_M`, keep the previous valid `pointDir`. With no previous direction, use a stable display default and treat classification confidence independently.
 
 ### 5.5 History
 
@@ -164,7 +166,7 @@ bladeLength = bladeActive
   : 0
 ```
 
-The renderer smooths `bladeLength` visually ([12](12-rendering-hands-trails.md)); the game uses the raw value for the swept segment. A gesture change to `'fist'` or `'point'` retracts the blade immediately (the player has closed their hand).
+The renderer smooths `bladeLength` visually ([12](12-rendering-hands-trails.md)); the game uses the raw value for the optional swept segment. A gesture change to `'fist'` or `'point'` retracts the blade immediately. This does not disable the palm sweep: slash and smash notes still accept a moving hand of any classified shape, subject to the contact/timing rules in [07](07-hit-detection-and-scoring.md#5-moving-hand-requirement-and-retained-bad-cut-contract).
 
 ## 7. Beam charge
 
@@ -174,7 +176,7 @@ if (gesture === 'point' && confident) charge = min(1, charge + dt / BEAM_CHARGE_
 else                                 charge = max(0, charge − BEAM_CHARGE_DECAY · dt / BEAM_CHARGE_MS)
 ```
 
-- `charge` reaching 1 means **ready**, not an unconditional shot. Hold full charge while no aimed target is inside its capture-time eligibility window; an early visible target must not consume charge in a repeating whiff cycle ([07 §Beam resolution](07-hit-detection-and-scoring.md#8-beam-resolution)). After an actual fire, reset charge and lock charging for `BEAM_REFIRE_LOCK_MS`, using capture-song time. The owning cursor state processes the fire/reset command; renderer/UI subscribers never modify charge.
+- `charge` reaching 1 means **ready**. With a spawned unresolved beam target, a confident Point fires at the earliest target automatically; it does not require fingertip aim. With no target, full charge waits. After an actual fire, the owning cursor resets charge, while the session enforces `BEAM_REFIRE_LOCK_MS` and a new `BEAM_CHARGE_MS` recharge interval; renderer/UI subscribers never modify charge. See [07 §Beam resolution](07-hit-detection-and-scoring.md#8-beam-resolution).
 - The configured decay permits a short ambiguous sample without an instant reset. Hand loss, pause, stale input or identity reassignment resets charge and velocity immediately; missing samples do not accrue charging time.
 - The HUD shows `charge` as a ring around the hand indicator; the renderer draws the charging beam from `tip` ([12](12-rendering-hands-trails.md)).
 
@@ -188,13 +190,13 @@ else                                 charge = max(0, charge − BEAM_CHARGE_DECA
 
 The same Open/Point evidence also drives [25 — Menu & Hand Navigation](25-menu-and-hand-navigation.md). A filtered mirrored-image palm centroid moves the menu pointer; an armed transition into pointing activates its target once. This consumer works before body/play-plane calibration and uses its own named confidence/timing guards. It does not reuse `HandCursor.tip`, `pointDir`, blade history or beam charge as UI coordinates/click state.
 
-Route input by state/surface: menu commands are enabled only on the allowed app-owned controls; PLAYING disables the menu driver and uses gestures for gameplay. Reset menu latches and gameplay charge/sweep history across that boundary so pointing at Start cannot become an opening beam shot. A held Point never repeats menu clicks. The short Open → ambiguous → Point shape transition may retain the armed candidate within `MENU_TRANSITION_GRACE_MS`, but never activates until fresh confident Point confirmation passes. Tracking loss or prolonged ambiguity disarms it.
+Route input by state/surface: menu commands are enabled only on the allowed app-owned controls; PLAYING disables the menu driver, accepts moving-hand contact for slash/smash and retains confident Point charging for beams. Reset menu latches and gameplay charge/sweep history across that boundary so pointing at Start cannot become an opening beam shot. A held Point never repeats menu clicks. The short Open → ambiguous → Point shape transition may retain the armed candidate within `MENU_TRANSITION_GRACE_MS`, but never activates until fresh confident Point confirmation passes. Tracking loss or prolonged ambiguity disarms it.
 
 Share classifier output and stable hand identity instead of running a second incompatible classifier in React. Camera setup can provide a labelled live preview and menu input before committing `BodyCalibration`; an illustrative placeholder never supplies hands or gesture evidence. [14](14-ui-ux.md#input-handling) defines equivalent mouse/keyboard controls and native-browser exceptions.
 
-## 9. Unit tests (`tests/unit/classifier.test.ts`)
+## 9. Classifier verification
 
-Fixtures are recorded `HandRaw` sequences in `tests/fixtures/hands/*.json` (`{ label, frames: HandRaw[] }`).
+Current synthetic assertions live in [gestures.test.ts](../app/tests/gestures.test.ts); shape-independent block eligibility is asserted separately in [judge.test.ts](../app/tests/unit/judge.test.ts). The recorded `HandRaw` fixture matrix below remains a verification target, not a claim that `tests/fixtures/hands/*.json` or a completed human evaluation exists. Its proposed format is `{ label, frames: HandRaw[] }`.
 
 | Test | Expectation |
 | --- | --- |
@@ -203,8 +205,8 @@ Fixtures are recorded `HandRaw` sequences in `tests/fixtures/hands/*.json` (`{ l
 | `point_up / point_side.json` | ≥ 90 % `point`; report camera-facing/foreshortened cases separately and coach a clearer pose if they fail |
 | `slash_sequence.json` | hysteresis: stable gesture becomes `open` within 2 frames of the hand opening and never flickers to `none` during the 12 fast frames |
 | `edge_on_flip.json` | short edge-on interval preserves display continuity; sustained ambiguity reaches `none` after the documented drop count and does not charge |
-| `charge_hold.json` (0.6 s point) | `charge` reaches 1 near `BEAM_CHARGE_MS` within one input sample; holds full while target is too early; releasing follows the sample-time decay formula |
-| precharged early target | A hand charged before target appearance keeps charge until the first aimed, eligible sample; no repeated early `beam:fire` events or lockout cycle |
+| `charge_hold.json` (0.6 s point) | `charge` reaches 1 near `BEAM_CHARGE_MS` within one input sample; holds full without a target; releasing follows the sample-time decay formula |
+| precharged target | A hand charged before target appearance fires once at the earliest spawned unresolved beam target; aim is not required, and a consumed target cannot fire twice |
 | synthetic velocity (positions on a straight line at 6 m/s) | `speed` within 5 % of 6; blade turns on; length matches the formula |
 | far hand (`palmSize` 0.01) | `none`, confidence 0, no throw |
 
@@ -216,6 +218,7 @@ Fixtures are recorded `HandRaw` sequences in `tests/fixtures/hands/*.json` (`{ l
 - [ ] Relaxed hand (half-open) classifies `none`, not `open` or `fist`; the player must deliberately open or close.
 - [ ] Crossing hands in front of the body does not swap gesture state between hands (identity tracking from [05 §3.2](05-tracking-pipeline.md#32-hand-identity)).
 - [ ] All unit tests in §9 pass; the classifier is a pure function with no `three` or DOM imports.
+- [ ] Shape-independent slash/smash contact remains available when a present hand classifies as `none`; classifier uncertainty still cannot charge a beam or confirm a menu action.
 
 ## Constants required
 

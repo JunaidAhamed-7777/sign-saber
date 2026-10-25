@@ -1,6 +1,6 @@
 # Sign Saber — Documentation Index
 
-Sign Saber is a planned webcam-controlled rhythm game with a neon body silhouette, gesture-specific destruction and local music analysis. **The repository now includes implemented core logic, local content, authored assets and a browser-exercised dataset trial. Release/live-camera gates remain open.** A MUST describes a build requirement; it does not assert that the requirement has shipped.
+Sign Saber is an experimental upper-body rhythm game with a holographic avatar, gesture-specific destruction and local music analysis. **The playable browser showcase includes eight credited songs, 24 bundled difficulty charts, authored Blender assets, synthesized sound effects and chart-planned auto-play through the real scoring path.** Start with the [Player guide](player-guide.md) to see it in motion, or the [project showcase](../README.md) for gameplay captures and measured results. Live-camera and release acceptance remain separate evidence gates; a MUST describes a build requirement, not a shipped claim.
 
 Begin with **[ROADMAP.md](../ROADMAP.md)**. It is the canonical implementation order and explains what to build, where to start, how to test it and what evidence unlocks the next phase. [19 — Build Plan](19-build-plan.md) is the working checklist; [24 — Benchmark & Evidence](24-benchmark-and-evidence.md) is the measurement protocol. No deadline, team size, folder ownership or judging rubric from an earlier event is binding.
 
@@ -36,7 +36,7 @@ Begin with **[ROADMAP.md](../ROADMAP.md)**. It is the canonical implementation o
 - [12 — Hands & Trails](12-rendering-hands-trails.md): orbit particles, blade ribbon and charge feedback.
 - [13 — Environment, Camera & Post FX](13-rendering-environment-camera-postfx.md): reactive void, bounded effects, quality tiers and 2.5D highlight.
 - [14 — UI / UX](14-ui-ux.md): screen flow, HUD, copy, accessibility and resilient controls.
-- [25 — Menu, Hand Navigation & Camera Setup](25-menu-and-hand-navigation.md): central placeholder/live figure, camera-optional browsing, three-song starter library and core palm-to-point control.
+- [25 — Menu, Hand Navigation & Camera Setup](25-menu-and-hand-navigation.md): protected central figure, eight-song library, camera-optional browsing and core palm-to-point control.
 - [18 — Asset Pipeline](18-blender-mcp-asset-pipeline.md): optional Blender-assisted production, procedural fallback and asset budgets.
 
 ## Proof and execution
@@ -55,13 +55,13 @@ Begin with **[ROADMAP.md](../ROADMAP.md)**. It is the canonical implementation o
 - **Scope:** `[CORE]` is the complete release requirement, delivered incrementally; P1 is deliberately smaller. `[POLISH]` begins after the P2 core gate. `[STRETCH]` waits until P4 targets and core checks are green. A feature in a numbered doc is not automatically `[CORE]`; use [01](01-vision.md) and the roadmap for scope.
 - **Units:** world space in metres; time in milliseconds except Web Audio values and explicit `*Sec` fields; prose angles in degrees and code angles in radians; speeds in metres per second.
 - **Coordinates:** image space, mirrored image space, play plane, world and screen have the meanings in [02](02-architecture.md#coordinate-frames). Mirroring occurs once. Capture-time inputs and predicted visual cursors serve different purposes.
-- **Constants:** [02 §Constants](02-architecture.md#constants) is the shared registry; linked render/UI tables are explicit sub-registries. Export centrally during P0. Do not infer working exports from the current `export {}` stub.
+- **Constants:** [02 §Constants](02-architecture.md#constants) is the shared registry; linked render/UI tables are explicit sub-registries. Its implemented exports live in `app/src/core/constants.ts`; keep registry, code and consumers synchronized.
 - **Identifiers:** use documented names verbatim; update both sides of a changed contract together.
 - **Evidence:** budgets and targets are not measurements. Replays prove reproducibility, live camera checks prove the camera path, and external measurements establish motion-to-photon latency.
 
 ## Current paths and maintenance
 
-`docs/` contains the specification; `app/` the web scaffold; `server/` the optional service stub; `scripts/` the downloader and documentation checker; `assets-src/` the proposed source-asset area. This layout can evolve. Keep links and source headers accurate when it changes.
+`docs/` contains contracts, player/contributor guides and retained evidence; `app/` contains the game; `server/` the optional service scaffold; `scripts/` contains asset preparation, chart/audio diagnostics, production serving and browser QA; `assets-src/` holds authored asset sources. This layout can evolve. Keep links and source headers accurate when it changes.
 
 From the root run `node --test scripts/check-docs.test.mjs` and `node scripts/check-docs.mjs`. These check the checker itself and local Markdown paths/fragments, including this index. They do not prove runtime behavior, remote link availability or benchmark results.
 

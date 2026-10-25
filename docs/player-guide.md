@@ -1,6 +1,6 @@
 # Play Sign Saber
 
-Sign Saber is an experimental desktop rhythm game: cut blocks with open hands, smash with fists, hold a point for beams and lean away from walls. Your figure stops at the hips. You can browse music and try the game without a camera.
+Sign Saber is an experimental desktop rhythm game: sweep through cyan blocks, crush magenta blocks, hold a point for beams and lean away from walls. Your figure stops at the hips. You can browse music and try the game without a camera.
 
 Live gesture play is implemented, but a completed consenting-person calibration and a verified live scored hit are still open release checks. The no-camera trials below let you see the current game without implying that those checks have passed.
 
@@ -20,37 +20,35 @@ For a prepared production build, run `npm run build`, then `npm run preview` fro
 
 ## First try, without a camera
 
-1. Choose a song card in **Choose your music**. Wait for its duration and note count to appear in **Selected track**.
+1. Choose a song row in **Choose your music**. The eight-song local library has three difficulty charts per song. Wait for the chosen title, artist, duration and note count to appear in the action rail.
 2. Choose **Easy**, **Normal** or **Hard**. Easy gives more approach time and fewer notes; Hard gives less approach time and denser patterns. The timing judgement windows stay the same.
 3. Choose **Enable sound** with your mouse or keyboard. A hand gesture cannot unlock browser audio. **Preview** then lets you listen before starting; **Stop preview** stops it.
 4. Choose **Watch auto-play** to watch the avatar perform planned motion and hit notes, or **Play level** to inspect the level with annotated still poses. These actions use synthetic or dataset input, as explained below.
 5. After the pre-roll, the level plays to real results. **Play again** retries; **Songs** returns to music selection.
 
-![The desktop menu with Pamgaea selected, difficulty controls, Watch auto-play and Play level.](images/player-menu.webp)
+![The polished desktop music menu with geometric song sleeves, difficulty controls and Play level.](media/menu.png)
 
 Desktop menu after choosing music and enabling sound (1440 × 900).
 
-The library and action rails have **Previous / Next** pages. On compact windows they move above and below the figure; look for the **Play** and **Difficulty** pages. Mouse and keyboard remain available throughout: Tab moves focus, Enter/Space activates a focused button, and Esc or Space pauses during play. Choose **Resume** to continue or **Quit to music** to leave. Hiding the tab pauses play; returning does not resume it automatically.
+The library and action rails have **Previous / Next** pages. Selected music has a check and tinted row; the geometric sleeve is decoration, while the whole row selects the song. The action rail keeps **Play level** prominent, with **Preview**, **Set up camera** and **Watch auto-play** alongside it. Page forward for **Make 80-second cut**, **Sound & visuals**, camera options and credits. The centre stays clear of controls so the upper-body figure remains the focus. Play on a desktop laptop/monitor with a clear, comfortable space around you.
 
-![A compact music menu with the library above the figure and paged Play controls below it.](images/player-menu-compact.webp)
-
-Compact menu after returning from a trial; the prepared arrangement remains selected (1024 × 640).
+Mouse and keyboard remain available throughout: Tab moves focus, Enter/Space activates a focused button, and Esc or Space pauses during play. Choose **Resume** to continue or **Quit to music** to leave. Hiding the tab pauses play; returning does not resume it automatically.
 
 ### What the two trials show
 
 **Watch auto-play** plans motion for the selected chart and sends synthetic landmarks through the real input and scoring path. The back-facing avatar follows that motion. Hits, combo and results come from that path. This synthetic-performer trial shows game logic and rendering; it uses no person, camera pixels or recognition model.
 
-![The back-facing avatar during a synthetic-performer run, with score and hand feedback.](images/player-performer.webp)
+![The back-facing avatar during a synthetic-performer run, with score and hand feedback.](media/hero.gif)
 
-A real synthetic-input run started with **Watch auto-play**. The current interface omits the source banner; this capture does not show a live player.
+Preserved real gameplay footage from **Watch auto-play**. It shows synthetic input; the current menu and results are pictured separately above and below.
 
 **Play level** uses independent COCO upper-body still annotations. These poses have no recorded motion or hand-gesture labels, so missing gesture input produces genuine misses. It shows audio, level rendering and lifecycle behavior. Its score cannot measure a player's skill or tracking accuracy.
 
 Neither trial establishes webcam accuracy, real-world latency, human comfort or musical chart quality. The motion proxy in results is also not a fitness or calorie measurement. Diagnostic exports retain the input source even though the current run screens use neutral labels. See the [dataset attribution](../app/public/assets/fixtures/ATTRIBUTION.txt) and [evidence rules](24-benchmark-and-evidence.md). A separate developer dataset-camera path feeds prepared images through inference; it is distinct from the menu's still-annotation trial and is not needed for these steps.
 
-![Synthetic performer results with rank, score, judgement counts, Play again and Songs controls.](images/player-results.webp)
+![Synthetic performer results with rank, score, judgement counts, Play again and Songs controls.](media/results.png)
 
-Actual results from the Pamgaea Normal 80-second arrangement using synthetic-performer input.
+Actual results from an 80-second arrangement using synthetic-performer input. The [media record](media/README.md) identifies the capture and run.
 
 ## The 80-second cut and your own audio
 
@@ -74,12 +72,11 @@ After tracking is ready, an open palm moves the menu pointer. Point deliberately
 
 ## Moves and judgements
 
-- **Open hand → slash.** Sweep through a slash block as it reaches the hit plane. A slow resting hand does not count as a cut.
-- **Fist → smash.** Strike a smash block with a closed fist. A fast wrong gesture can cause **Bad cut**, worth zero points and breaking combo.
-- **Point and hold → beam.** Aim your index fingertip at the beam target and hold the point to charge (500 ms at the current default). Full charge waits until an aimed target enters its eligible timing window; it does not fire merely because a distant target appears. Charge resets after a shot.
+- **Moving hand → slash or smash.** Sweep through cyan slash blocks and strike magenta smash blocks as they reach the hit plane. Either hand shape can hit either block: the current forgiving contact rule needs movement of at least 0.3 m/s, not an open palm or fist classification. The judged contact zone is 2.5 times the visible block/palm footprint; blocks also approach more slowly than the original charts. Open-palm blade and fist feedback still show the intended moves, but there are no wrong-gesture Bad cuts for these contacts. A resting hand does not count as a hit.
+- **Point and hold → beam.** Hold a confidently tracked point to charge (500 ms at the current default). A full charge automatically fires at the earliest available gold target. Charge resets after a shot.
 - **Lean → dodge.** Lean right for a wall on the left, and left for a wall on the right. Keep your torso visible. There is no leg, jumping or ducking requirement in the current core game.
 
-Timing uses the captured input sample, not the displayed frame. At the current `WINDOW_SCALE = 1`, the absolute early/late error is **Perfect: up to 60 ms**, **Great: over 60 through 120 ms**, and **Good: over 120 through 200 ms**. A valid gesture/contact is still required. An unresolved note becomes **Miss** after its eligible window and bounded late-input allowance close. Difficulty changes chart density and approach time, not these windows. The [scoring specification](07-hit-detection-and-scoring.md#6-judgement) explains the rules.
+Timing uses the captured input sample, not the displayed frame. At the current `WINDOW_SCALE = 1`, the absolute early/late error is **Perfect: up to 60 ms**, **Great: over 60 through 120 ms**, and **Good: over 120 through 200 ms**. Slash/smash hits require contact inside those windows. Charged beams can fire outside the normal window and receive Good in the current mode. An unresolved note becomes **Miss** after its eligible window and bounded late-input allowance close. Difficulty changes chart density and approach time, not these windows. The current contact defaults are registered in [Architecture → Constants](02-architecture.md#constants), and the [scoring specification](07-hit-detection-and-scoring.md#6-judgement) explains timing and score.
 
 The HUD shows score, combo, multiplier, accuracy, progress and each hand's gesture/beam charge. Missing hand data is labelled rather than replaced with pretend input. Results show judgement counts and best combo; accuracy is based on unmultiplied earned points, so it need not equal score divided by maximum score.
 
@@ -89,4 +86,4 @@ Page to **Settings → Sound & visuals** and toggle **Standard visuals** to **Ca
 
 For missing sound, unavailable tracks, camera errors or low frame rate, see [Troubleshooting](troubleshooting.md). Stop if movement hurts, and keep the space around you clear.
 
-The screenshots were captured on 2026-10-25 from a production build of [main commit 30572bb](https://github.com/JunaidAhamed-7777/sign-saber/commit/30572bb) in headless Chrome 155.0.8059.86 on Windows, using SwiftShader with muted output. The [capture record](evidence/2026-10-25-guide-capture-30572bb.json) identifies the source, image hashes, native actions, actual results and retained warning. They are actual app captures encoded as WebP; they are not live-camera, audible-sync, accessibility or GPU-performance evidence.
+The menu is a real production capture of the refined interface; its source hashes, native actions and browser checks are in the [frontend receipt](evidence/2026-10-25-frontend-polish.json). The results capture is documented in the [media record](media/README.md). The gameplay still retains its original [capture record](evidence/2026-10-25-guide-capture-30572bb.json). These are actual app captures, with synthetic input where labelled; they are not live-camera, audible-sync, accessibility or GPU-performance evidence.

@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "sourceSha": "8f0e318a9077b1a06f80cf19ab17c83b5c4ca03a",
+  "capturedAt": "2026-10-25T01:14:53.110Z",
+  "applicationDiffFromSourceSha": false,
+  "description": "Real desktop production screenshots from native UI actions. Existing gameplay GIF files preserved byte-for-byte.",
+  "song": "pamgaea",
+  "difficulty": "normal",
+  "viewport": {
+    "width": 1440,
+    "height": 900,
+    "dpr": 1
+  },
+  "actions": [
+    {
+      "id": "song:pamgaea",
+      "at": "2026-10-25T01:14:54.857Z"
+    },
+    {
+      "id": "audio",
+      "at": "2026-10-25T01:14:55.441Z"
+    },
+    {
+      "id": "performer-trial",
+      "at": "2026-10-25T01:14:56.865Z"
+    }
+  ],
+  "media": [
+    {
+      "filename": "menu.png",
+      "bytes": 480792,
+      "sha256": "d14bd83d887ecd8e0f497da2365301633c5d68f3bdf388b46169e9c079ca8fef",
+      "capturedAt": "2026-10-25T01:14:56.831Z"
+    },
+    {
+      "filename": "results.png",
+      "bytes": 415998,
+      "sha256": "74e0fa281ee140148369d1a92443a59930cc79daa7670072173f561076f1e238",
+      "capturedAt": "2026-10-25T01:16:25.586Z"
+    }
+  ],
+  "limits": [
+    "Synthetic performer, no webcam or human performance.",
+    "No game clocks, scores, hits or state injected.",
+    "Capture cadence is not a performance measurement."
+  ],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/155.0.8059.86",
+    "revision": "@804d6b05f089b27af8342622a36558c49401a1d4",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+    "jsVersion": "15.5.35.25"
+  },
+  "resultsText": "SIGN SABER\nYour performance\nMouse / keyboard to browse · Esc to pause\nPamgaea — 80.0s arrangement\n\nYour performance · Normal\n\nRANK\nD\nScore\n25,060\nAccuracy\n45.8%\nBest combo\n84\nPrevious\nYour performance\n1 of 2\nNext\n\n· 76.6 s\n\nPlay again\nSongs\nJudgements\nPerfect\n5\nGreat\n0\nGood\n79\nMiss\n0\nBad cut\n0\n\nRun complete.\n\nPrevious\nPlay again\n1 of 3\nNext\n\nMouse/keyboard to pause or quit",
+  "console": [
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+    }
+  ],
+  "finishedAt": "2026-10-25T01:16:25.587Z",
+  "preservedGifs": [
+    {
+      "filename": "hero.gif",
+      "sha256": "7cf579132e1d733c0f7ffa547c56e4a425c50f9eefa1207c2eba4e8ab2d7d267",
+      "unchanged": true
+    },
+    {
+      "filename": "slash.gif",
+      "sha256": "f437ae0c5e6a1c761c73b65444804098e9025c7d28440c1bc532e086e855078e",
+      "unchanged": true
+    },
+    {
+      "filename": "beam.gif",
+      "sha256": "598ec22e73c30eb927c1a12e946c18d2a8e0560307b64f07a177e75997f32adb",
+      "unchanged": true
+    }
+  ]
+}

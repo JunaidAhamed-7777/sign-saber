@@ -10,7 +10,7 @@ Start the server from `app/` with `npm run dev` and use [localhost:5173](http://
 
 ## Camera access
 
-Camera setup is in the menu's **Settings → Camera & live play** page. Camera failure does not prevent native-input song browsing or the no-camera trials.
+Choose **Set up camera** on the main music menu, or page to **Settings → Camera & live play**. The main action is available before choosing music. Camera failure does not prevent native-input song browsing or the no-camera trials.
 
 - **“Camera permission was denied. Allow the camera in browser site settings, then retry. Music browsing still works.”** Allow camera access for this exact local origin, then use **Set up camera** again. The development and preview origins have separate permissions.
 - **“No camera found. Connect a webcam and retry. Music browsing still works.”** Reconnect or enable your webcam, then retry setup.
@@ -55,6 +55,10 @@ For local uploads, check the file is 5 seconds to 5 minutes and at most 60 MiB. 
 In **Settings → Sound & visuals**, toggle **Standard visuals** to **Calm visuals**, close competing GPU/video tasks and reduce the browser window size. To request a fixed cosmetic tier, open [low](http://localhost:5173/?tier=low), [medium](http://localhost:5173/?tier=medium) or [high](http://localhost:5173/?tier=high); use the same query on your preview origin if applicable. Medium is the default. `?contrast=1` enables the implemented mask contrast setting for the camera figure.
 
 Tiers change drawing scale and cosmetic budgets, not scoring or audio time. HDR bloom and tier antialiasing now run when renderable half-float targets are available; unsupported contexts use the direct rendering path. Automatic tier selection and the complete hand-trail/particle system remain unimplemented. Selecting High does not enable missing features or prove a frame-rate target. Calm follows the system's reduced-motion preference, so **“Calm visuals follow your system reduced-motion preference.”** explains why Standard cannot override it.
+
+## Find music, settings and credits
+
+Use the large **Previous / Next** controls within the desktop library and action rails. The eight songs span multiple library pages; the last music page exposes local audio upload. Page through the action rail for **Make 80-second cut**, **Sound & visuals**, **Camera & live play** and **Credits & diagnostics**. Mouse wheel scrolling and Tab can reach content within a rail while the central figure stays clear.
 
 ## Report a repeatable problem
 

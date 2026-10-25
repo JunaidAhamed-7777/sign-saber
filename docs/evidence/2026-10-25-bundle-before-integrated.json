@@ -1,0 +1,198 @@
+{
+  "recordedAt": "2026-10-24T22:32:24.737Z",
+  "label": "before-integrated",
+  "sha": "74325fa783b0fadac7a96d704f87a0abfe39b7ac",
+  "dirty": true,
+  "node": "v26.8.1",
+  "os": "win32",
+  "cacheDisabled": true,
+  "networkThrottling": "none; local loopback",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "chunks": [
+    {
+      "file": "generator.worker-B6OPcKR7.js",
+      "bytes": 22449,
+      "gzipBytes": 9056
+    },
+    {
+      "file": "index-ClNtYw27.js",
+      "bytes": 1283738,
+      "gzipBytes": 383171
+    },
+    {
+      "file": "tracking.worker-DeV5KsxN.js",
+      "bytes": 160846,
+      "gzipBytes": 47741
+    }
+  ],
+  "requests": [
+    {
+      "phase": "first-load",
+      "url": "/",
+      "type": "Document",
+      "startMs": 0,
+      "initiator": "other",
+      "status": 200,
+      "mime": "text/html",
+      "endMs": 4547.01,
+      "encodedBytes": 2027
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/index-ClNtYw27.js",
+      "type": "Script",
+      "startMs": 4566.72,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 5096.78,
+      "encodedBytes": 1284370
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/index-E86us2r9.css",
+      "type": "Stylesheet",
+      "startMs": 4567.48,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/css",
+      "endMs": 4728.6,
+      "encodedBytes": 35755
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/fonts/orbitron.ttf",
+      "type": "Font",
+      "startMs": 4735.54,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "font/ttf",
+      "endMs": 4962.11,
+      "encodedBytes": 39184
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/armor.glb",
+      "type": "Fetch",
+      "startMs": 5487.77,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 5623.07,
+      "encodedBytes": 57957
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/beam_ring.glb",
+      "type": "Fetch",
+      "startMs": 5495.84,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 5622.9,
+      "encodedBytes": 39413
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/glyphs.glb",
+      "type": "Fetch",
+      "startMs": 5496.01,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 5623.2,
+      "encodedBytes": 58829
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/pylon.glb",
+      "type": "Fetch",
+      "startMs": 5496.18,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 5623.32,
+      "encodedBytes": 7456
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/block_fractured.glb",
+      "type": "Fetch",
+      "startMs": 5496.32,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 5629.31,
+      "encodedBytes": 35813
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/arena_environment.glb",
+      "type": "Fetch",
+      "startMs": 5496.45,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 5683.03,
+      "encodedBytes": 134546
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/block_shell.glb",
+      "type": "Fetch",
+      "startMs": 5496.6,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 5721.44,
+      "encodedBytes": 11733
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/tracks/manifest.json",
+      "type": "Fetch",
+      "startMs": 5529.9,
+      "initiator": "script",
+      "status": 200,
+      "mime": "application/json",
+      "endMs": 5747.04,
+      "encodedBytes": 5753
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/fonts/rajdhani.ttf",
+      "type": "Font",
+      "startMs": 6624.43,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "font/ttf",
+      "endMs": 6848.4,
+      "encodedBytes": 384957
+    },
+    {
+      "phase": "first-load",
+      "url": "/favicon.ico",
+      "type": "Other",
+      "startMs": 6714.71,
+      "initiator": "other",
+      "status": 404,
+      "mime": "text/plain",
+      "endMs": 6988.75,
+      "encodedBytes": 624
+    }
+  ],
+  "security": [],
+  "steps": [
+    {
+      "step": "menu",
+      "pass": true
+    }
+  ],
+  "browser": "Chrome/155.0.8059.86",
+  "firstLoadText": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your music\nP\nPamgaea\nKevin MacLeod\n2:48 · Tempo unclear\nE\nElectro Cabello\nKevin MacLeod\n3:10 · Tempo unclear\nC\nCipher\nKevin MacLeod\n3:51 · Tempo unclear\n←\nPrevious\nChoose your music\n1 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nSELECTED TRACK\nSelect a track\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nWatch synthetic performer\nPlanned motion · no camera\nTry level with dataset\nAnnotated poses · no webcam\n\nChoose a track to begin.\n\n←\nPrevious\nReady when you are\n1 of 5\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click\n\nMouse and keyboard always work",
+  "console": [],
+  "passed": true
+}

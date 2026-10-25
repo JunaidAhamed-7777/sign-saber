@@ -6,6 +6,12 @@ Begin with **[ROADMAP.md](../ROADMAP.md)**. It is the canonical implementation o
 
 [DESIGN.md](../DESIGN.md) preserves the figure-centred visual direction and maps the UI palette/font roles; docs14/25 own screen and input behavior. They define the implemented visual/behavioral contract; specific browser evidence and open release gates are recorded separately.
 
+## Player and contributor guides
+
+- [Player guide](player-guide.md): first run, music/menu controls, gestures, timing, Calm and the two no-camera trials.
+- [Troubleshooting](troubleshooting.md): exact app messages, camera/model/audio/track recovery and fixed quality tiers.
+- [Contributor guide](contributor-guide.md): source map, data-flow diagram, current checks, tunable registry and honest evidence/commit conventions.
+
 ## Product and contracts
 
 - [01 — Vision & Pillars](01-vision.md): the player promise, core release and deliberate limits.

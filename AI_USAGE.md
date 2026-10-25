@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Audited PR lifecycle integration
+
+- Codex normally integrated the merged bundle, guide and eight-song changes into PR #11, preserved both paging and failure regressions, and verified the full application and bundle gates before freezing the browser-rerun source.
+
 ## 2026-10-25 — PR lifecycle audit correction
 
 - Codex reviewed PR #11, hid the stale hand cursor on fatal recovery with a rendered regression, normally integrated current main camera/menu/scoring changes, and reran application and documentation checks. Historical browser evidence was preserved without attributing it to the new integration.
@@ -35,6 +39,32 @@ The development workflow also occasionally includes collaboration with **Devin**
 ## 2026-10-25 — Lifecycle recovery fixes (issue #4)
 
 - Codex reproduced cache-warning and WebGL-loss failures in the production app using original synthesized audio and native UI actions, then added scoped recovery behavior, read-only diagnostics and runtime/UI regressions. A separate lifecycle-harness/evidence increment is still in progress; no unrun scenario is represented as passed.
+## 2026-10-25 — PR audit: eight-song integration
+
+- Codex independently checked all music/chart hashes, receipt identities, official attribution pages and planner validation. The integrator preserved current camera/menu behavior and historical README evidence while combining the larger catalog with main; full application and documentation checks passed.
+
+## 2026-10-25 — Eight-song licensed library (issue #2)
+
+- Codex verified the official CC-BY 4.0 acquisition templates, packaged five unchanged full songs with source/hash receipts, regenerated all 24 maps using the current main generator, and extended integrity, gapless, loader and paging assertions. After the awaited upstream chart branch landed, it integrated generator changes normally, regenerated the entire pack, and expanded upstream readability/performer checks and diagnostics to every song. The final acceptance freeze uses generator v4 from upstream 09671b7. Later upstream asset work was preserved with a normal merge and full revalidation. Actual local-browser selection/credits outcomes are recorded separately in the issue's evidence; no music-quality or live-camera proof is inferred.
+## 2026-10-25 — PR audit: current player controls and guide links
+
+- Codex reviewed PR #7 against current main, normally integrated its showcase README/camera changes, corrected player control and cancellation instructions, repaired the removed README fragment and revalidated local documentation. The integrator then merged PR #6 normally and made the documented check sequence current. Existing screenshots remain explicitly tied to their recorded source; no new runtime or live-camera evidence is claimed.
+
+## 2026-10-25 — Guide label and avatar capture refresh at main 30572bb
+
+- Codex normally integrated the requested source checkpoint into the existing guide PR, corrected the affected button/source captions while retaining synthetic-input limits, and captured/inspected four new production-app WebPs through native UI actions. It recorded actual current results, hashes, Chrome provenance and the upstream warning/failed initial harness gate, then ran the required application/documentation checks. No application code or live-camera result was authored for this maintenance.
+
+## 2026-10-25 — Player, troubleshooting and contributor guides (issue #5)
+
+- Codex wrote and independently reviewed guides against current UI/runtime sources, exact recovery messages and the constants/evidence contracts. It captured and inspected four actual production-app WebPs, including a complete labelled synthetic-performer run, and refreshed the wording/captures after concurrent main updates. No gameplay implementation or live-camera evidence is attributed to this documentation work.
+- After the first documentation milestone, Codex normally integrated main through `52e9c81`, rechecked the exact live-play label and dataset-camera distinction, refreshed all captures (including the corrected performer footer) and repeated the full application/browser checks before opening the issue PR.
+## 2026-10-25 — PR audit and sequential integration
+
+- Codex reviewed PR #6 against current main, repaired CI budget enforcement and split the existing postprocessing dependency after measuring the oversized integrated entry. Full application/docs checks and a real production-menu browser smoke were run; live and release gates remain open.
+
+## 2026-10-25 — Issue #1 bundle budget
+
+- Codex measured the unchanged bundle and browser requests, configured Rolldown chunk groups, implemented the dependency-free emitted-byte gate and regression tests, and documented actual sizes/waterfalls and production-preview dataset/synthetic results. No gameplay changes or runtime performance gains are claimed. After new renderer work landed on main, Codex normally integrated it and repeated the actual bundle/browser checks and full 367-assertion application check, then repeated final checks after the camera-source integration and the generator-v3/target-asset integration (424 assertions), preserving the real warning and optional Windows cleanup failure.
 ## 2026-10-25 — Showcase README and real demo captures
 
 - Codex rewrote the project README using the requested showcase structure. Parallel agents captured actual production-browser auto-play, independently measured tests/charts/assets/build bytes and reviewed product facts, architecture and current button labels. The integrator reviewed media and kept dataset, synthetic, research and unverified webcam evidence explicit.

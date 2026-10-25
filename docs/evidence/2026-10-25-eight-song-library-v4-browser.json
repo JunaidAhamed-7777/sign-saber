@@ -1,0 +1,93 @@
+{
+  "recordedAt": "2026-10-24T23:20:00.788Z",
+  "gitHead": "cc382d366b0c19220de3f290ea09c191fd32afb8",
+  "mergingMain": "09671b7b6f5a6f1d89fa756cd6c825f58abd4bba",
+  "frozenUpstream": "09671b7b6f5a6f1d89fa756cd6c825f58abd4bba",
+  "dirtyTree": true,
+  "generatorVersion": 4,
+  "manifestSha256": "c0d70d68751eb90593e9b8c55fca15a3a6611ef91e1f7e4a5c5a8760cbfc460a",
+  "scope": "Frozen generator-v4: native offline selection of all eight songs/all24 difficulty maps, original preview, exact credits and paging at both issue2 viewports.",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 900,
+      "selectedSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "difficultyMapsSelected": 24,
+      "originalPreviewStartedAndStopped": true,
+      "creditSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "exactAttributions": true,
+      "cspViolations": [],
+      "consoleErrors": [],
+      "musicHttpFailures": [],
+      "httpFailures": [
+        {
+          "url": "http://127.0.0.1:52920/favicon.ico",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:52920/favicon.ico",
+          "status": 404
+        }
+      ],
+      "requestCount": 79
+    },
+    {
+      "width": 1024,
+      "height": 640,
+      "selectedSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "difficultyMapsSelected": 24,
+      "originalPreviewStartedAndStopped": true,
+      "creditSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "exactAttributions": true,
+      "cspViolations": [],
+      "consoleErrors": [],
+      "musicHttpFailures": [],
+      "httpFailures": [
+        {
+          "url": "http://127.0.0.1:52920/favicon.ico",
+          "status": 404
+        }
+      ],
+      "requestCount": 78
+    }
+  ],
+  "outsideRequests": [],
+  "browser": "Chrome/155.0.8059.86",
+  "passed": true
+}

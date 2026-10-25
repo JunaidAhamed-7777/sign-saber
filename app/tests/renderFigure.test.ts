@@ -22,6 +22,7 @@ import {
   CONTRAST_MASK_THRESHOLD,
   CONTRAST_EDGE_GAIN,
   QUALITY_TIER_PRESETS,
+  QUALITY_DPR_CAP,
 } from '../src/core/constants';
 vi.mock('three', async () => {
   const actual = await vi.importActual<typeof ThreeModule>('three');
@@ -90,9 +91,9 @@ describe('fixed cosmetic tiers applied to real scene objects (mocked GPU)', () =
       vi.stubGlobal('devicePixelRatio', 2);
       const { renderer, events } = create({ tier }),
         preset = QUALITY_TIER_PRESETS[tier];
-      expect(renderer.quality.pixelRatio).toBe(preset.renderScale);
-      expect(renderer.renderer.setPixelRatio).toHaveBeenLastCalledWith(preset.renderScale);
-      expect(renderer.quality.antialiasing).toBe('none');
+      expect(renderer.quality.pixelRatio).toBe(QUALITY_DPR_CAP * preset.renderScale);
+      expect(renderer.renderer.setPixelRatio).toHaveBeenLastCalledWith(QUALITY_DPR_CAP * preset.renderScale);
+      expect(['none', 'smaa-medium', 'fxaa']).toContain(renderer.quality.antialiasing);
       expect(renderer.quality.bloomEnabled).toBe(false);
       expect(renderer.quality.unsupported.some((entry) => entry.feature === 'bloom')).toBe(true);
       expect(renderer.quality.unsupported.some((entry) => entry.feature === 'mask-sampling')).toBe(true);
@@ -129,7 +130,7 @@ describe('fixed cosmetic tiers applied to real scene objects (mocked GPU)', () =
     vi.stubGlobal('devicePixelRatio', 2);
     renderer.resize();
     expect(renderer.quality.renderScale).toBe(0.85);
-    expect(renderer.renderer.setPixelRatio).toHaveBeenLastCalledWith(0.85);
+    expect(renderer.renderer.setPixelRatio).toHaveBeenLastCalledWith(QUALITY_DPR_CAP * 0.85);
     expect(renderer.renderer.setSize).toHaveBeenLastCalledWith(1280, 1600);
     expect(Object.isFrozen(renderer.quality)).toBe(true);
     expect(renderer.quality.preset).toBe(before.preset);

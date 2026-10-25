@@ -573,7 +573,7 @@ export const BEAM_ESCAPE_RISE_M = 3,
 export const SIL_JOINT_RADIUS_M = 0.045;
 
 // QUALITY_*: single canonical cosmetic preset registry (docs16 §Quality tiers).
-export const QUALITY_DPR_CAP = 1,
+export const QUALITY_DPR_CAP = 1.5,
   QUALITY_MEDIUM_TALL_HEIGHT_PX = 1440,
   QUALITY_MEDIUM_TALL_RENDER_SCALE = 0.85;
 export const QUALITY_TIER_PRESETS = Object.freeze({
@@ -612,7 +612,7 @@ export const QUALITY_TIER_PRESETS = Object.freeze({
     bloomMipLevels: 5,
     bloomIntensity: 1,
     chromaticAberration: 'off',
-    antialiasing: 'fxaa',
+    antialiasing: 'smaa-medium',
     trailParticlesPerHand: 160,
     ribbonLayers: 2,
     ribbonCoreWidened: false,

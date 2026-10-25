@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T08:50:00+05:30 — Anti-aliasing on by default
+
+- Changed: Medium (default) tier uses SMAA instead of FXAA, the device-pixel-ratio cap rose from 1 to 1.5 for sharper edges on high-DPI desktop screens, and the canvas requests MSAA for direct draws. Quality/render tests follow the constant.
+- Why: User asked for anti-aliasing; edges were visibly jagged.
+- Validation: Full `npm run check` passed (569 tests).
+- Limits: No frame-time measurement; drop QUALITY_DPR_CAP back if the GPU struggles.
+
 ## 2026-10-25T08:20:00+05:30 — README: camera play and smoothness
 
 - Changed: README gains "Play with your camera" (models, hands-free setup, corner tracking view) and "Built to feel smooth" (slower approach, 2.5× zones, wide lanes, beam auto-aim, wall penalty, display easing, CPU tracking with alternate-frame pose, flicker hold, stall restart, baked arena transforms), plus refreshed controls/roadmap rows.

@@ -112,7 +112,7 @@ export function resolveQuality(tier: QualityTier, options: QualityOptions): Acti
     'pylons',
   ];
   if (preset.antialiasing === 'smaa-medium') requested.push('smaa');
-  else if (preset.antialiasing === 'fxaa') requested.push('fxaa');
+  else if ((preset.antialiasing as string) === 'fxaa') requested.push('fxaa');
   if (preset.tipSparks) requested.push('tip-sparks');
   if (preset.beamNoiseOctaves > 0) requested.push('beam-noise');
   if (preset.maskTemporalBlend) requested.push('mask-temporal-blend');

@@ -359,8 +359,8 @@ export class ArenaRenderer {
       this.activeQuality.preset.smashGeometry === 'complete-eight-octant-fallback' ? fallbackShards() : null;
     for (const shard of this.lowShards ?? []) this.assets.ownedGeometries.add(shard.geometry);
     this.renderer = new THREE.WebGLRenderer({
-      // Requested SMAA/FXAA are not implemented yet; report them as unsupported, never as MSAA.
-      antialias: false,
+      // MSAA covers direct draws; the HDR composer adds SMAA/FXAA per tier.
+      antialias: true,
       alpha: false,
       powerPreference: 'high-performance',
     });

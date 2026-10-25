@@ -13,11 +13,11 @@ const viewport = { viewportHeightCss: 1080, devicePixelRatio: 2, hdrSupported: t
 
 describe('canonical fixed cosmetic quality', () => {
   it.each([
-    ['high', 2160, 2, 1],
-    ['medium', 1440, 2, 1],
-    ['medium', 1441, 2, 0.85],
+    ['high', 2160, 2, 1.5],
+    ['medium', 1440, 2, 1.5],
+    ['medium', 1441, 2, 1.275],
     ['medium', 2160, 0.8, 0.68],
-    ['low', 1080, 2, 0.75],
+    ['low', 1080, 2, 1.125],
     ['low', 1080, 0.8, 0.6],
   ] as const)('resolves %s at CSS height %s and DPR %s to %s', (tier, height, dpr, expected) => {
     const settings = resolveQuality(tier, {
@@ -56,7 +56,7 @@ describe('canonical fixed cosmetic quality', () => {
       implemented: ['bloom', 'smaa', 'render-scale', 'smaa'],
     });
     expect(settings.tier).toBe('high');
-    expect(settings.pixelRatio).toBe(1);
+    expect(settings.pixelRatio).toBe(1.5);
     expect(settings.bloomEnabled).toBe(false);
     expect(settings.antialiasing).toBe('smaa-medium');
     expect(settings.implemented).toEqual(['render-scale', 'smaa']);
@@ -64,12 +64,12 @@ describe('canonical fixed cosmetic quality', () => {
   });
 
   it('uses only the requested tier AA, and enables bloom only when declared and supported', () => {
-    const settings = resolveQuality('medium', { ...viewport, implemented: ['bloom', 'smaa'] });
+    const settings = resolveQuality('medium', { ...viewport, implemented: ['bloom', 'fxaa'] });
     expect(settings.bloomEnabled).toBe(true);
     expect(settings.antialiasing).toBe('none');
-    expect(settings.implemented).not.toContain('smaa');
-    expect(settings.unsupported).toContainEqual({ feature: 'fxaa', reason: 'not-implemented' });
-    expect(resolveQuality('medium', { ...viewport, implemented: ['fxaa'] }).antialiasing).toBe('fxaa');
+    expect(settings.implemented).not.toContain('fxaa');
+    expect(settings.unsupported).toContainEqual({ feature: 'smaa', reason: 'not-implemented' });
+    expect(resolveQuality('medium', { ...viewport, implemented: ['smaa'] }).antialiasing).toBe('smaa-medium');
     expect(resolveQuality('low', { ...viewport, implemented: ['fxaa', 'smaa'] }).antialiasing).toBe('none');
   });
 

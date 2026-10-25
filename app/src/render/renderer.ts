@@ -13,6 +13,8 @@ import { SlicePool } from './slices';
 import { PoofPool } from './poof';
 import { TerminalNoteVisuals } from './failures';
 import { ArenaAtmosphere } from './environment';
+import { buildReflections } from './reflections';
+import type { Reflections } from './reflections';
 import { HandTrails } from './trails';
 import { SparkPool } from './sparks';
 import { CameraRig } from './cameraRig';
@@ -158,6 +160,7 @@ export class ArenaRenderer {
   readonly assets = new AssetRegistry();
   private assetPending = false;
   private disposed = false;
+  private readonly reflections: Reflections;
   private readonly armorMaterial = new THREE.MeshStandardMaterial({
     color: 0x2a2238,
     emissive: 0x411336,
@@ -383,6 +386,8 @@ export class ArenaRenderer {
     const light = new THREE.DirectionalLight(0xffffff, 3);
     light.position.set(2, 6, 3);
     this.scene.add(light);
+    this.reflections = buildReflections();
+    this.scene.add(this.reflections.group);
     this.scene.add(
       this.armor,
       this.beamRings,
@@ -1424,6 +1429,7 @@ export class ArenaRenderer {
     this.shatter.dispose();
     this.slices.dispose();
     this.poofs.dispose();
+    this.reflections.dispose();
     this.renderedNotes = [];
     for (const off of this.unsubscribe) off();
     this.unsubscribe = [];

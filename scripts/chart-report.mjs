@@ -6,12 +6,14 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 register("./beatmap-typescript-loader.mjs", import.meta.url);
-const { planPerformance } = await import("../app/src/performer/choreography.ts");
+const { planPerformance } =
+  await import("../app/src/performer/choreography.ts");
 const { APPROACH_MS } = await import("../app/src/core/constants.ts");
 const root = fileURLToPath(
   new URL("../app/public/assets/tracks/", import.meta.url),
 );
-for (const slug of ["pamgaea", "electro-cabello", "cipher"])
+const manifest = JSON.parse(await readFile(`${root}manifest.json`, "utf8"));
+for (const { slug } of manifest.tracks)
   for (const difficulty of ["easy", "normal", "hard"]) {
     const map = JSON.parse(
       await readFile(`${root}${slug}/${difficulty}.json`, "utf8"),

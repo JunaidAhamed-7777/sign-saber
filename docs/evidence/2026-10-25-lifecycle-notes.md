@@ -44,3 +44,9 @@ Current screenshots were captured from the actual app at [1440 × 900](2026-10-2
 ## Limits
 
 Chrome 155.0.8059.86 on Windows, Node 26.8.1, muted headless SwiftShader. Audio files are original deterministic pulse/tone/noise WAVs; motion is the planned synthetic performer through actual scoring. This proves non-camera functionality and resource ownership at declared boundaries. It establishes no webcam recognition, audible sync, human comfort, GPU speed, FPS or musical-quality benchmark. Forced GC/resource instrumentation is separate from release-performance measurement. The existing large-bundle warning remains outside issue #4.
+
+## Final PR-audit camera integration recheck
+
+The [current summary](pr-audit-lifecycle-current/2026-10-25-lifecycle-qa.md) and [raw JSON](pr-audit-lifecycle-current/2026-10-25-lifecycle-qa.json) identify clean source `ce300c80536de1b004252884057c3b6efd492622`, including concurrent main camera-view/stall-recovery work and both audited harnesses. Graphics loss passed 12 checks (loaded avatar, menu/play loss, fatal recovery/reload); hidden-tab recovery passed seven. The two desktop/compact graphics-error screenshots are retained with that report. Cleanup recorded no errors.
+
+The six other scenarios are explicitly not-run, so this focused report intentionally exits 1/incomplete. It supplements the earlier source-attributed matrix and cache subset; it does not turn those older runs into evidence for new camera behavior. Full application checks passed 567 tests, typecheck/lint/build and three bundle regressions before freezing this source. The final main integration after PR #9 changed only contribution logs; its application and script trees match this tested source. Webcam, audible-sync, performance and remaining manual release gates stay open.

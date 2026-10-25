@@ -13,6 +13,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: Full `npm run check` passed. Live webcam behaviour still needs the user's hands-on test.
 - Limits: No consented live session has been recorded by the agent.
 
+## 2026-10-25T05:55:36+05:30 — Record final PR #11 integration checks
+
+- Changed: Preserved current-source graphics/visibility receipts and two recovery screenshots; linked exact scope from lifecycle notes and docs17. Normally integrated main after PR #9 merged; application/scripts are unchanged from tested clean ce300c80536de1b004252884057c3b6efd492622.
+- Validation: Graphics context loss passed 12 checks and hidden-tab recovery passed seven; cleanup recorded no errors. Six scenarios were not run, so expected partial exit 1 is recorded honestly. The tested application tree passed 567 tests, typecheck/lint/build and three bundle regressions (largest chunk 368401 bytes). Thirteen helper/docs tests and local-link/whitespace checks passed and are repeated before this evidence commit.
+- Limits: Prior full-matrix, cache and clean-clone reports retain their own source IDs. No live-camera, audible-sync, performance or full release acceptance is inferred.
+
 ## 2026-10-25T05:54:04+05:30 — Preserve camera updates with fatal recovery
 
 - Changed: Normally integrated concurrent main 5cacf9b into the audited lifecycle/release tree. Resolved App.tsx by retaining the new CameraPip and the fatal-screen pointer guard; preserved graphicsFailed guards, capture cancellation and camera stall recovery.

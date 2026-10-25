@@ -40,6 +40,9 @@ import {
   HORIZON_GLOW_Z,
   LANE_X,
   QUALITY_TIER_PRESETS,
+  SCENERY_PER_SIDE,
+  SCENERY_SPACING_M,
+  SCENERY_X_M,
 } from '../core/constants';
 
 export type ArenaBand = 'low' | 'mid' | 'high';
@@ -135,6 +138,9 @@ export class ArenaAtmosphere {
   private readonly slow = { low: 0, mid: 0, high: 0 };
   readonly response = { low: 0, mid: 0, high: 0 };
   private scroll = 0;
+  private readonly sceneryMaterial = new THREE.MeshBasicMaterial({ name: 'arena_scenery', color: 0x1a3a66, fog: true });
+  private readonly scenery: THREE.InstancedMesh;
+  private readonly sceneryMatrix = new THREE.Matrix4();
   private time = 0;
 
   constructor(private preset: QualityPreset) {
@@ -280,7 +286,12 @@ export class ArenaAtmosphere {
     this.dust.frustumCulled = false;
     this.dust.renderOrder = -19;
     this.dust.name = 'arena_dust';
-    this.group.add(glow, grid, this.dust);
+    // Lane-side light posts that travel with the notes and wrap to the far end (frozen with scroll in Calm).
+    this.scenery = new THREE.InstancedMesh(new THREE.BoxGeometry(0.05, 3.2, 0.05).translate(0, 1.6, 0), this.sceneryMaterial, SCENERY_PER_SIDE * 2);
+    this.scenery.frustumCulled = false;
+    this.scenery.name = 'arena_scenery';
+    this.updateScenery();
+    this.group.add(glow, grid, this.dust, this.scenery);
     this.applyPreset(preset);
   }
 
@@ -346,12 +357,26 @@ export class ArenaAtmosphere {
     dust.uTime!.value = this.time;
     dust.uTravel!.value = (this.scroll * DUST_SPEED_FRACTION) % DUST_BOX_D_M;
     dust.uHigh!.value = this.response.high;
+    this.updateScenery();
     dust.uScale!.value = calm ? 0.4 : 1;
     this.pylonMaterial.uniforms.uStrip!.value = ARENA_NEON_BASE + ARENA_BAND_GAIN * this.response.mid;
     for (const binding of this.neon) {
       const gain = ARENA_NEON_BASE + ARENA_BAND_GAIN * this.response[binding.band];
       binding.material.color.copy(binding.base).multiplyScalar(gain);
     }
+  }
+
+  private updateScenery(): void {
+    const offset = this.scroll % SCENERY_SPACING_M;
+    for (let i = 0; i < SCENERY_PER_SIDE; i++) {
+      // Posts span z ∈ (-(n-0.5)·spacing, 0.5·spacing]; the modulo wraps the nearest one to the far end.
+      const z = offset - (i + 0.5) * SCENERY_SPACING_M;
+      for (let side = 0; side < 2; side++) {
+        this.sceneryMatrix.makeTranslation(side === 0 ? -SCENERY_X_M : SCENERY_X_M, GRID_Y, z);
+        this.scenery.setMatrixAt(i * 2 + side, this.sceneryMatrix);
+      }
+    }
+    this.scenery.instanceMatrix.needsUpdate = true;
   }
 
   /** Perspective point-size factor for the dust: drawing-buffer height / (2·tan(fov/2)). */
@@ -370,6 +395,7 @@ export class ArenaAtmosphere {
     this.glowMaterial.dispose();
     this.dustMaterial.dispose();
     this.pylonMaterial.dispose();
+    this.sceneryMaterial.dispose();
     for (const binding of this.neon) binding.material.dispose();
     this.neon.length = 0;
   }

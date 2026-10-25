@@ -708,6 +708,9 @@ export const DUST_BOX_W_M = 12,
   DUST_SIZE_MIN_M = 0.02,
   DUST_SIZE_MAX_M = 0.05,
   DUST_ALPHA = 0.25;
+export const SCENERY_PER_SIDE = 8,
+  SCENERY_SPACING_M = 8,
+  SCENERY_X_M = 4.2;
 // --- Synthetic performer: labelled trial input only, never live-camera evidence (docs/17) ---
 export const PERFORMER_SHOULDER_WIDTH_NORM = 0.24,
   PERFORMER_SHOULDER_V = 0.36,

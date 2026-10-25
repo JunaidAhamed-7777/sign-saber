@@ -36,7 +36,7 @@ import {
   CALIB_PRESENCE_MS,
   CALIB_AUTO_CONFIRM_MS,
   COUNTDOWN_STEPS,
-  INPUT_MAX_AGE_MS,
+  FIGURE_HOLD_MS,
   MENU_TRACK_MAX_AGE_MS,
   POP_LIFETIME_MS,
   RESUME_COUNTDOWN_MS,
@@ -122,6 +122,7 @@ export class GameRuntime {
 
   constructor(container: HTMLElement) {
     // Chrome may stop video-frame callbacks for a detached <video>; keep it in the page, invisible.
+    this.camera.client.preferCpu = this.flags.tracker === 'cpu';
     if (typeof this.video.setAttribute === 'function' && typeof document !== 'undefined' && document.body) {
       this.video.setAttribute('aria-hidden', 'true');
       Object.assign(this.video.style, {
@@ -861,6 +862,10 @@ export class GameRuntime {
       error: null,
       status: this.cameraLabel(strings.cameraReady),
     });
+    // No walk back to the mouse: with a song and sound ready, go straight to the count-in.
+    const state = useStore.getState();
+    if (this.flags.confirm === 'auto' && state.map && state.audioReady && !state.loading)
+      void this.begin(false);
   }
   private cancelSetup(): void {
     if (this.machine.state !== 'SELECT' || useStore.getState().camera.mode !== 'camera-setup') return;
@@ -921,13 +926,12 @@ export class GameRuntime {
       calibrationReady: false,
     });
   }
+  /** Readiness for setup/start/resume; scoring applies its own INPUT_MAX_AGE_MS per sample. */
   private fresh(now = performance.now()): boolean {
     return (
-      now - this.lastTracking <= INPUT_MAX_AGE_MS &&
+      now - this.lastTracking <= FIGURE_HOLD_MS &&
       now >= this.lastTracking &&
-      this.pipeline.result.body.present &&
-      this.pipeline.result.hands.length === 2 &&
-      this.pipeline.result.hands.every((hand) => hand.present)
+      this.pipeline.result.body.present
     );
   }
   private matchingCalibration(): boolean {
@@ -1344,6 +1348,7 @@ export class GameRuntime {
     if (!this.fresh(now)) this.readySince = this.freshSince = Infinity;
     // A standing player cannot reach the mouse: hold a steady, framed pose to confirm setup and start.
     const steady =
+      this.flags.confirm === 'auto' &&
       !this.dataset &&
       Number.isFinite(this.readySince) &&
       now - this.readySince >= CALIB_AUTO_CONFIRM_MS &&
@@ -1354,7 +1359,8 @@ export class GameRuntime {
     } else if (steady && state === 'CALIBRATION' && !this.session && !this.transitionBusy)
       void this.countIn();
     if (now - this.lastTracking > MENU_TRACK_MAX_AGE_MS) this.pointer.cancel(now);
-    if (now - this.lastTracking > INPUT_MAX_AGE_MS && state !== 'PAUSED' && state !== 'RESULTS')
+    // Presentation holds the last figure briefly; scoring freshness stays at INPUT_MAX_AGE_MS.
+    if (now - this.lastTracking > FIGURE_HOLD_MS && state !== 'PAUSED' && state !== 'RESULTS')
       this.renderer?.hideTracking();
     if (
       state === 'PLAYING' &&
@@ -1431,7 +1437,7 @@ export class GameRuntime {
         handsFresh =
           (!this.dataset || this.dataset instanceof PerformerTrial) &&
           now >= this.lastTracking &&
-          now - this.lastTracking <= INPUT_MAX_AGE_MS,
+          now - this.lastTracking <= FIGURE_HOLD_MS,
         left = result.hands.find((hand) => hand.hand === 'left'),
         right = result.hands.find((hand) => hand.hand === 'right'),
         leftPresent = handsFresh && !!left?.present,
@@ -1439,7 +1445,7 @@ export class GameRuntime {
       if (this.pops.prune(now)) display({ pops: this.pops.list() });
       display({
         trackingReady: this.fresh(now),
-        figureAvailable: now - this.lastTracking <= INPUT_MAX_AGE_MS && result.body.present,
+        figureAvailable: now - this.lastTracking <= FIGURE_HOLD_MS && result.body.present,
         maskAvailable: this.renderer?.hasMaskFrame ?? false,
         calibrationReady: result.calibrationReady && this.fresh(now),
         pointer: { ...this.pointer.state },

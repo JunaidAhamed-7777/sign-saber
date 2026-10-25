@@ -17,8 +17,6 @@ export function Calibration({ runtime }: { runtime: GameRuntime }) {
   const ready = useStore((s) => s.calibrationReady && s.trackingReady);
   const countdown = useStore((s) => s.countdown);
   const body = useStore((s) => s.figureAvailable);
-  const left = useStore((s) => s.hud.leftPresent);
-  const right = useStore((s) => s.hud.rightPresent);
   const steady = useStore((s) => s.calibrationReady);
   useStore((s) => s.status);
   const armed = runtime.startArmed;
@@ -42,8 +40,6 @@ export function Calibration({ runtime }: { runtime: GameRuntime }) {
   );
   const checks = [
     [t.checkBody, body],
-    [t.checkLeft, left],
-    [t.checkRight, right],
     [t.checkSteady, steady],
   ] as const;
   const checklist = replay ? null : (

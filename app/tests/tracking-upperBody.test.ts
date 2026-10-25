@@ -80,7 +80,8 @@ describe('upper-body retention boundary (synthetic only)', () => {
     expect(mask.data.every((value) => value === 0)).toBe(true);
     const pipeline = new InputPipeline();
     const result = pipeline.process(syntheticFrame(1, 0, undefined, pose), 20);
-    expect(result!.body.present).toBe(false);
+    // Hips are optional for body tracking (close/desk play); the mask still never falls back unrestricted.
+    expect(result!.body.present).toBe(true);
     expect(result!.calibrationReady).toBe(false);
   });
   it('removes leg data from fixture parsing, replay delivery and explicit recorder export', () => {

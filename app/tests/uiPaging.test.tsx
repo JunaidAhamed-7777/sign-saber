@@ -159,9 +159,10 @@ describe('figure-centred paged menu structure', () => {
         ids = targets(html);
       expect(ids).toEqual(expect.arrayContaining(['camera-confirm', 'camera-cancel']));
       expect(html).toMatch(/data-target="camera-confirm"[^>]*disabled/);
-      expect(html.match(/<li class="ok">/g)).toHaveLength(2);
-      expect(html).toContain('Right hand<span class="visually-hidden"> · not yet');
-      expect(html).toContain('Hold still with shoulders and both hands visible.');
+      // Only head/shoulders and steadiness gate setup; hands are not required.
+      expect(html.match(/<li class="ok">/g)).toHaveLength(1);
+      expect(html).not.toContain('Right hand<span');
+      expect(html).toContain('Stand where the camera can see your head and shoulders.');
       expect(html).not.toContain('<video');
     }
     compact = false;

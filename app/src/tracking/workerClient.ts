@@ -49,6 +49,8 @@ export function cameraCrop(
   return { sx: (width - sw) / 2, sy: (height - sh) / 2, sw, sh };
 }
 export class TrackingClient {
+  /** Run MediaPipe on the CPU (WASM) instead of sharing the GPU with the game renderer. */
+  preferCpu = false;
   latest: TrackingFrame | null = null;
   readonly stats: TrackingStats = {
     hz: 0,
@@ -183,7 +185,11 @@ export class TrackingClient {
           this.onError(messageText);
         } else if (message.type === 'dropped') this.inFlight = false;
       };
-      this.post({ type: 'init', mainTimeOrigin: performance.timeOrigin });
+      this.post({
+        type: 'init',
+        mainTimeOrigin: performance.timeOrigin,
+        ...(this.preferCpu ? { preferredDelegate: 'CPU' as const } : {}),
+      });
     });
   }
   start(video: HTMLVideoElement): void {

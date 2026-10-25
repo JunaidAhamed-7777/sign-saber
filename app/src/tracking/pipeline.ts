@@ -3,7 +3,6 @@ import type { BodyCalibration, HandRaw, PoseRaw, TrackingFrame } from '../core/t
 import type { MenuHandSample } from '../core/menuInput';
 import {
   CALIB_ASSUMED_SHOULDER_M,
-  CALIB_HAND_SEEN_MS,
   CALIB_SAMPLE_MS,
   CALIB_SHOULDER_MAX,
   CALIB_SHOULDER_MIN,
@@ -19,7 +18,7 @@ import {
 import { CursorProcessor } from '../gestures/cursor';
 import { LandmarkFilters } from './filters';
 import { BodyProcessor } from './body';
-import { copyUpperBodyPose, upperBodyHipLine } from './upperBody';
+import { copyUpperBodyPose } from './upperBody';
 const HANDS = ['left', 'right'] as const;
 const SAMPLE_CAPACITY = Math.ceil((CALIB_SAMPLE_MS / 1000) * TRACK_TARGET_HZ) + 2;
 class HandSlot {
@@ -183,8 +182,8 @@ export class InputPipeline {
       m.visibility >= CALIB_VISIBILITY_MIN &&
       m.shoulderWidthNorm >= CALIB_SHOULDER_MIN &&
       m.shoulderWidthNorm <= CALIB_SHOULDER_MAX;
-    const upperBodyValid =
-      upperBodyHipLine(this.pose.landmarks) !== null && this.pose.landmarks[3]! >= CALIB_VISIBILITY_MIN;
+    // Head and shoulders are enough to calibrate; hips and hands are optional (desk/close play).
+    const upperBodyValid = this.pose.landmarks[3]! >= CALIB_VISIBILITY_MIN;
     if (!valid || !upperBodyValid) {
       this.calibCount = 0;
       this.calibIndex = 0;
@@ -202,8 +201,7 @@ export class InputPipeline {
     }
     let oldest = t;
     for (let i = 0; i < this.calibCount; i++) oldest = Math.min(oldest, this.calibTimes[i]!);
-    this.result.calibrationReady =
-      t - oldest >= CALIB_SAMPLE_MS && this.slots.every((s) => t - s.lastSeen <= CALIB_HAND_SEEN_MS);
+    this.result.calibrationReady = t - oldest >= CALIB_SAMPLE_MS;
   }
   private validFrame(f: TrackingFrame): boolean {
     if (

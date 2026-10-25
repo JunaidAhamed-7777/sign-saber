@@ -140,6 +140,7 @@ function Legend({ replay }: { replay: boolean }) {
   );
 }
 export function App({ runtime }: { runtime: GameRuntime }) {
+  const cameraOn = useStore((s) => s.camera.state !== 'not-set-up');
   const state = useStore((s) => s.state);
   const calm = useStore((s) => s.calm);
   const credits = useStore((s) => s.credits);
@@ -150,7 +151,9 @@ export function App({ runtime }: { runtime: GameRuntime }) {
     document.documentElement.dataset.motion = calm ? 'calm' : 'standard';
   }, [calm]);
   return (
-    <div className={`application state-${state.toLowerCase()}${credits ? ' showing-credits' : ''}`}>
+    <div
+      className={`application state-${state.toLowerCase()}${credits ? ' showing-credits' : ''}${cameraOn ? ' camera-on' : ''}`}
+    >
       <header className="app-header">
         <a className="wordmark" href="/" aria-label={t.title}>
           <svg viewBox="0 0 32 32" aria-hidden="true">

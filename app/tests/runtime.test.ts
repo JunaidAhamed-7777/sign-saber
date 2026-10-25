@@ -97,7 +97,7 @@ import { useStore } from '../src/state/store';
 import { strings } from '../src/ui/strings';
 import { DatasetTrial, validateDatasetTrial } from '../src/tracking/datasetTrial';
 import datasetFixture from '../public/assets/fixtures/coco-upper-body-trial.json';
-import { COUNTDOWN_STEPS, START_COUNTDOWN_MS } from '../src/core/constants';
+import { COUNTDOWN_STEPS, FIGURE_HOLD_MS, START_COUNTDOWN_MS } from '../src/core/constants';
 
 let now = 0;
 let nextRaf = 0;
@@ -380,7 +380,8 @@ beforeEach(() => {
   vi.stubGlobal('document', document);
   vi.stubGlobal('HTMLElement', Element);
   vi.stubGlobal('HTMLButtonElement', Element);
-  vi.stubGlobal('location', { search: '' });
+  // These lifecycle tests exercise the explicit click-to-confirm path.
+  vi.stubGlobal('location', { search: '?confirm=manual' });
   vi.stubGlobal('matchMedia', () => ({ matches: false }));
   vi.stubGlobal('innerWidth', 1280);
   vi.stubGlobal('innerHeight', 720);
@@ -403,12 +404,12 @@ afterEach(() => {
 });
 
 describe('runtime browser lifecycle (mocked boundaries)', () => {
-  it('reports each hand only while its capture is fresh', async () => {
+  it('reports each hand only while its capture is within the display hold', async () => {
     await prepare();
     await play();
     advance(100);
     expect(useStore.getState().hud).toMatchObject({ leftPresent: true, rightPresent: true });
-    step(now + 300);
+    step(now + FIGURE_HOLD_MS + 50);
     expect(useStore.getState().hud).toMatchObject({
       leftPresent: false,
       rightPresent: false,

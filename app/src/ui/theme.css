@@ -2508,16 +2508,16 @@ button:disabled,
   transition: none !important;
 }
 
-/* Corner camera view with live tracking overlay (local only). */
+/* Corner camera view with live tracking overlay (local only), bottom left above the legend. */
 .camera-pip {
   position: fixed;
-  right: 16px;
-  bottom: 64px;
+  left: 16px;
+  bottom: 60px;
   z-index: 40;
-  width: 320px;
-  max-width: 34vw;
+  width: 240px;
+  max-width: 30vw;
   border: 1px solid var(--cyan);
-  border-radius: 8px;
+  border-radius: 6px;
   overflow: hidden;
   background: var(--void);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
@@ -2527,4 +2527,11 @@ button:disabled,
   display: block;
   width: 100%;
   height: auto;
+}
+/* Keep the left rail's controls clear of the camera view. */
+.camera-on .left-rail {
+  margin-bottom: 150px;
+}
+.camera-on .compact-bottom {
+  margin-left: 256px;
 }

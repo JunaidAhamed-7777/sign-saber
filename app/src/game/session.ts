@@ -13,7 +13,6 @@ import type { BodyState, Gesture, Hand, HandCursor, SessionStats, Vec3 } from '.
 import type { GameEvents } from '../core/events';
 import {
   BEAM_CHARGE_MS,
-  BEAM_LEAD_MS,
   BEAM_REFIRE_LOCK_MS,
   GESTURE_CONFIDENCE_MIN,
   HIGHLIGHT_DEBOUNCE_MS,
@@ -30,8 +29,6 @@ import { finite3, clamp, lerp } from '../utils/math';
 import { contactOutcome, judgeTiming, timingError } from './judge';
 import type { ContactOutcome } from './judge';
 import {
-  beamAimTarget,
-  beamAimed,
   makeCutPlane,
   obstacleSafe,
   sweptBladeContact,
@@ -408,9 +405,16 @@ export class GameSession {
       this.hit(live, cursor, candidate.songTime, impactPoint);
     }
   }
-  private hit(live: LiveNote, cursor: HandCursor, songTime: number, measuredImpact = cursor.pos): void {
+  private hit(
+    live: LiveNote,
+    cursor: HandCursor,
+    songTime: number,
+    measuredImpact = cursor.pos,
+    anyTime = false,
+  ): void {
     const error = timingError(songTime, live.note.t, this.inputOffsetMs);
-    const judgement = judgeTiming(error, this.windowScale);
+    // Auto-aimed beams may fire any time the target is visible; outside the windows they score Good.
+    const judgement = judgeTiming(error, this.windowScale) ?? (anyTime ? 'good' : null);
     if (!judgement || live.state !== 'live') return;
     const oldMax = this.scoring.maxCombo;
     const scoreDelta = this.scoring.hit(judgement, live.note.type);
@@ -462,36 +466,23 @@ export class GameSession {
         cursor.tCapture < this.beamReady[hand]
       )
         continue;
-      let best: LiveNote | null = null,
-        bestError = Infinity;
+      // Auto-aim: a charged point fires at the earliest beam target that is on screen.
+      let best: LiveNote | null = null;
       for (const live of this.notes) {
+        if (!live.spawned || live.state !== 'live' || live.note.type !== 'beam') continue;
         if (
-          !live.spawned ||
-          live.state !== 'live' ||
-          live.note.type !== 'beam' ||
-          songTime < live.note.t - BEAM_LEAD_MS
+          !best ||
+          live.note.t < best.note.t ||
+          (live.note.t === best.note.t && live.note.id < best.note.id)
         )
-          continue;
-        const error = Math.abs(timingError(songTime, live.note.t, this.inputOffsetMs));
-        if (!judgeTiming(error, this.windowScale)) continue;
-        beamAimTarget(live.note, this.scratch.aim);
-        if (!beamAimed(cursor.tip, this.scratch.aim)) continue;
-        if (
-          error < bestError ||
-          (error === bestError &&
-            best !== null &&
-            (live.note.t < best.note.t || (live.note.t === best.note.t && live.note.id < best.note.id)))
-        ) {
           best = live;
-          bestError = error;
-        }
       }
       if (!best) continue;
       updateLiveNote(best, songTime, this.map.approachMs);
       this.beamLocks[hand] = songTime + BEAM_REFIRE_LOCK_MS;
       this.beamReady[hand] = cursor.tCapture + BEAM_CHARGE_MS;
       this.onEvent('beam:fire', { hand, from: { ...cursor.tip }, to: { ...best.pos }, note: best.note });
-      this.hit(best, cursor, songTime);
+      this.hit(best, cursor, songTime, cursor.pos, true);
     }
   }
   private resolveObstacles(body: BodyState | null, songTime: number): void {

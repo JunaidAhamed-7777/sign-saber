@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T07:10:00+05:30 — Hands-free camera setup, steadier tracking, better gestures, beam auto-aim
+
+- Changed: Setup calibrates on head and shoulders only (hips and hands optional, wider shoulder-size range), auto-confirms after 1 s and starts the round when a song and sound are ready (`?confirm=manual` keeps clicks). The figure, HUD hands, captions and readiness hold for `FIGURE_HOLD_MS` across slow frames. MediaPipe now defaults to the CPU delegate (`?tracker=gpu` to compare). Open/Fist/Point use orientation-independent 3D finger ratios, so an open palm facing the camera and a 👆 point register. A charged point auto-fires at the next visible beam target (Good outside the timing windows). The corner camera view moved to the bottom left and the left rail/compact row make room for it.
+- Why: Live testing by the user: setup checklist flickered and needed walking back to click; tracking felt like it stopped in game; open palm only registered facing the floor and pointing did not register.
+- Validation: Full `npm run check` passed (560 tests). In real Chrome with the dataset camera, CPU and GPU tracking both ran at about 9–10 Hz / 85–100 ms; GPU needed about 8 s before its first result.
+- Limits: Gesture thresholds are not yet tuned on the user's webcam.
+
 ## 2026-10-25T06:30:00+05:30 — Corner camera view and steadier live tracking
 
 - Changed: Added a corner camera view (bottom right) that shows the mirrored webcam with MediaPipe pose and hand landmarks, hand labels/gestures, tracking rate, inference time and drops. The camera `<video>` is now attached to the page (invisibly) so frame callbacks keep flowing; a stall first restarts capture (up to `TRACK_STALL_RESTARTS`) and the stall window is 3 s instead of 1 s. Removed GPU/delegate wording from setup status, the GPU line from diagnostics, and the dataset-camera settings page (`?camera=dataset` still works for testing). Dev builds expose `window.signSaber` for console debugging.

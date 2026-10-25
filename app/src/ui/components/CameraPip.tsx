@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react';
 import type { GameRuntime } from '../../core/runtime';
 import { useStore } from '../../state/store';
-import { CAMERA_PIP_W, CAMERA_PIP_H } from '../../core/constants';
+import { CAMERA_PIP_W, CAMERA_PIP_H, FIGURE_HOLD_MS } from '../../core/constants';
 
 const POSE_EDGES: readonly [number, number][] = [
   [11, 12],
@@ -70,7 +70,7 @@ export function CameraPip({ runtime }: { runtime: GameRuntime }) {
         ctx.restore();
       }
       const view = runtime.liveView;
-      if (performance.now() - view.at < 500) {
+      if (performance.now() - view.at < FIGURE_HOLD_MS) {
         ctx.lineWidth = 2;
         if (view.hasPose) {
           const p = view.pose;

@@ -427,8 +427,11 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `LEAN_TILT_ASSIST_DEG` | 15 | Optional shoulder-tilt assist, with translation evidence |
 | `DUCK_HYSTERESIS` | 0.03 | Normalized nose-height hysteresis [STRETCH] |
 | `CALIB_SAMPLE_MS` / `CALIB_HAND_SEEN_MS` | 500 / 2000 | Rest-pose averaging and recent-hand visibility windows |
+| `FIGURE_HOLD_MS` | 700 | Display/readiness hold for the tracked figure, HUD hands and setup checks across slow inference frames (scoring keeps `INPUT_MAX_AGE_MS`) |
+| `GESTURE_EXT_RATIO` / `GESTURE_CURL_RATIO` | 1.55 / 1.3 | 3D wrist→tip ÷ wrist→MCP: straight at or above, folded at or below (orientation-independent Open/Fist/Point) |
+| `TRACK_DEFAULT_DELEGATE` | `cpu` | MediaPipe delegate without `?tracker=`; CPU avoids GPU contention with the arena and the ~8 s GPU warm-up |
 | `CAMERA_PIP_W` / `CAMERA_PIP_H` | 320 / 180 px | Corner camera view with live tracking overlay |
-| `CALIB_AUTO_CONFIRM_MS` | 1500 | Steady framed time that confirms camera setup and starts the live count-in without a click |
+| `CALIB_AUTO_CONFIRM_MS` | 1000 | Steady framed time that confirms camera setup and starts the live count-in without a click |
 | `CALIB_ASSUMED_SHOULDER_M` | 0.40 | Assumed shoulder span for the playful physical-speed proxy; not a measurement |
 | `SWING_REFRACTORY_MS` / `SWING_TROUGH_RATIO` | 150 / 0.5 | Motion-proxy peak separation and trough rule |
 

@@ -439,8 +439,6 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
     );
     const checks = [
       [t.checkBody, s.figureAvailable],
-      [t.checkLeft, s.leftPresent],
-      [t.checkRight, s.rightPresent],
       [t.checkSteady, s.calibrationReady],
     ] as const;
     const checklist = (

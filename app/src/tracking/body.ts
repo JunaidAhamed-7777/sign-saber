@@ -18,7 +18,6 @@ import {
   TRACK_CONFIDENCE_MIN,
 } from '../core/constants';
 import { OneEuroFilter } from './filters';
-import { upperBodyHipLine } from './upperBody';
 export const enum POSE_LM {
   NOSE = 0,
   LEFT_SHOULDER = 11,
@@ -59,7 +58,6 @@ export class BodyProcessor {
     if (
       !lm ||
       lm.length !== 132 ||
-      upperBodyHipLine(lm) === null ||
       Math.min(lm[POSE_LM.LEFT_SHOULDER * 4 + 3]!, lm[POSE_LM.RIGHT_SHOULDER * 4 + 3]!) < TRACK_CONFIDENCE_MIN
     ) {
       this.reset();

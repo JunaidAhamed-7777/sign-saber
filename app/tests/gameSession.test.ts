@@ -3,7 +3,6 @@ import { GameSession } from '../src/game/session';
 import type { GameEventHandler, SessionInput } from '../src/game/session';
 import type { BeatmapV1, Note } from '../src/beatmap/types';
 import type { BodyState, HandCursor } from '../src/core/types';
-import { beamAimTarget } from '../src/game/hit';
 import { LANE_X, LANE_Y } from '../src/core/constants';
 
 const note = (id: number, time: number, type: Note['type'] = 'slash', col: Note['col'] = 2): Note => ({
@@ -169,24 +168,19 @@ describe('capture-only deterministic session', () => {
     expect(run.consume(1000, [absent, cursor(1000)])).toBe(true);
     expect(run.session.stats.counts.perfect).toBe(1);
   });
-  it('keeps an early charged beam ready, fires only at eligibility and never doubles a target', () => {
+  it('auto-aims a charged point at the next visible beam target and never doubles it', () => {
     const beam = note(0, 1000, 'beam');
     const run = fixture(map([beam]));
+    // Aim is irrelevant: the hand points anywhere.
     const point = (time: number, hand: HandCursor['hand'] = 'right'): HandCursor => ({
-      ...cursor(time, LANE_X[2], hand),
+      ...cursor(time, LANE_X[0], hand),
       gesture: 'point',
       charge: 1,
       speed: 0,
-      tip: beamAimTarget(beam),
     });
-    run.consume(400, [point(400)]);
-    expect(run.session.score).toBe(0);
-    expect(run.events).toEqual([]);
-    run.consume(799, [point(799)]);
-    expect(run.session.score).toBe(0);
     run.consume(800, [point(800), point(800, 'left')]);
-    expect(run.session.stats.counts.good).toBe(1);
     expect(run.events.filter(([kind]) => kind === 'beam:fire')).toHaveLength(1);
+    expect(run.session.stats.counts.good).toBe(1);
     run.consume(1000, [point(1000)]);
     expect(run.events.filter(([kind]) => kind === 'note:hit')).toHaveLength(1);
   });

@@ -75,6 +75,9 @@ export const LEAN_ON = 0.55,
 export const GESTURE_PALM_SIZE_MIN = 0.015,
   GESTURE_EDGE_ON_WIDTH = 0.35,
   GESTURE_TIP_REACH_MARGIN = 0.15;
+/** 3D wrist→tip / wrist→MCP ratios: at or above EXT a finger is straight, at or below CURL it is folded. */
+export const GESTURE_EXT_RATIO = 1.55,
+  GESTURE_CURL_RATIO = 1.3;
 export const GESTURE_CURL_REACH_MAX = 1.15,
   GESTURE_THUMB_OUT_MIN = 1.3,
   GESTURE_THUMB_IN_INDEX_MAX = 0.6,
@@ -98,8 +101,8 @@ export const MASK_W = 320,
   TRACK_TARGET_HZ = 30,
   TRACKING_LOST_PAUSE_MS = 1500;
 export const CALIB_PRESENCE_MS = 800,
-  CALIB_SHOULDER_MIN = 0.14,
-  CALIB_SHOULDER_MAX = 0.4;
+  CALIB_SHOULDER_MIN = 0.08,
+  CALIB_SHOULDER_MAX = 0.6;
 export const CONTRAST_MASK_THRESHOLD = 0.65,
   CONTRAST_EDGE_GAIN = 1.5,
   LOW_LIGHT_MASK_MEAN = 0.55,
@@ -113,7 +116,7 @@ export const COUNTDOWN_STEPS = 3,
   RESUME_COUNTDOWN_MS = 1500,
   SONG_TAIL_MS = 1500;
 export const TRACK_CONFIDENCE_MIN = 0.5,
-  CALIB_VISIBILITY_MIN = 0.6,
+  CALIB_VISIBILITY_MIN = 0.5,
   HAND_RESET_FRAMES = 2,
   HAND_IDENTITY_GRACE_MS = 300;
 export const HAND_IDENTITY_MATCH_DIST = 0.15,
@@ -130,7 +133,9 @@ export const BODY_FILTER_BETA = 0.02,
   LEAN_TILT_ASSIST_DEG = 15,
   DUCK_HYSTERESIS = 0.03;
 /** Steady, framed time after which camera setup confirms and live play counts in without a click. */
-export const CALIB_AUTO_CONFIRM_MS = 1500;
+export const CALIB_AUTO_CONFIRM_MS = 1000;
+/** Display-only hold for the tracked figure, HUD hands and captions across slow inference frames. */
+export const FIGURE_HOLD_MS = 700;
 /** Corner camera view canvas size (px, 16:9). */
 export const CAMERA_PIP_W = 320,
   CAMERA_PIP_H = 180;
@@ -487,6 +492,8 @@ export const UPPER_BODY_LAST_LANDMARK = 24,
 export const TRACK_FIRST_RESULT_TIMEOUT_MS = 15000;
 /** Capture restarts attempted after a stall before camera setup reports a failure. */
 export const TRACK_STALL_RESTARTS = 3;
+/** MediaPipe delegate when no `?tracker=` flag is given. */
+export const TRACK_DEFAULT_DELEGATE: 'gpu' | 'cpu' = 'cpu';
 export const ARRANGEMENT_VERSION = 1,
   ARRANGEMENT_TOTAL_MS = 80000,
   ARRANGEMENT_FADE_MS = 10000,

@@ -6,6 +6,12 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:50:47+05:30 — Verify PR #9 from a fresh committed clone
+
+- Changed: Retained the initial old-banner harness failure and corrected clean-clone drill receipts under docs/evidence/pr-audit-release-drill and pr-audit-release-drill-fixed; linked current evidence from README and docs17. This documentation commit records tested application/harness source 886f7beb990af721bd2faf4292cc9260c97379fb.
+- Validation: Clean clone/checkout, npm ci, full npm run check (560 application tests and three bundle tests), production build, offline menu/audio unlock, 84 Perfect synthetic hits, Retry, pause and Songs all passed. All 24 observed requests were local; no console/runtime/CSP errors, external attempts or cleanup failure. Unit tests 6 and docs tests 2 passed; documentation links are rechecked before commit.
+- Limits: Initial source 810bf67 reached real results but failed its stale source-banner check; that failure remains recorded. Neither run proves live-camera recognition, audible sync, physical latency or a complete manual release gate.
+
 ## 2026-10-25T05:46:45+05:30 — Keep the release drill aligned with neutral run screens
 
 - Changed: Normally integrated merged PRs #7/#8. The release drill now uses the existing stats diagnostics to assert the synthetic-performer evidence lane and camera-free provenance instead of requiring a removed source banner. Native UI actions and DOM judgement counts still drive the journey.

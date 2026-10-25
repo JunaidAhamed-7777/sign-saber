@@ -72,7 +72,7 @@ npm run build
 npm run preview
 ```
 
-Open [127.0.0.1:4173](http://127.0.0.1:4173). Music, charts, fonts and authored geometry are served locally. The prepared server applies a same-origin Content Security Policy and supports audio range requests. The [automated camera-free release drill](docs/evidence/2026-10-25-release-drill.md) verifies one synthetic offline journey; the full disconnected manual/live-camera P5 venue exercise remains open.
+Open [127.0.0.1:4173](http://127.0.0.1:4173). Music, charts, fonts and authored geometry are served locally. The prepared server applies a same-origin Content Security Policy and supports audio range requests. The [automated camera-free release drill](docs/evidence/pr-audit-release-drill-fixed/2026-10-25-release-drill.md) verifies one synthetic offline journey; the full disconnected manual/live-camera P5 venue exercise remains open.
 
 <details>
 <summary><strong>Troubleshooting and optional camera setup</strong></summary>

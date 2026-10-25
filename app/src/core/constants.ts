@@ -34,7 +34,9 @@ export const OBSTACLE_GRACE_MS = 120,
 export const SCORE_PERFECT = 100,
   SCORE_GREAT = 70,
   SCORE_GOOD = 40,
-  SCORE_DODGE = 50;
+  SCORE_DODGE = 50,
+  /** Points removed when the body touches a wall; walls never end or pause the run. */
+  SCORE_WALL_PENALTY = 100;
 export const MULTIPLIER_LADDER = [
   [0, 1],
   [5, 2],

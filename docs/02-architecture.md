@@ -330,6 +330,7 @@ This is the shared constants registry. `core/constants.ts` now exports these nam
 | --- | --- |
 | `SCORE_PERFECT` / `SCORE_GREAT` / `SCORE_GOOD` | 100 / 70 / 40 |
 | `SCORE_DODGE` | 50 |
+| `SCORE_WALL_PENALTY` | 100 | Points removed (never below zero) when the body touches a wall; walls never break the combo, pause or end the run |
 | `MULTIPLIER_LADDER` | `[[0,1],[5,2],[15,4],[30,8]]` (combo ≥ threshold → multiplier) |
 | `RANK_THRESHOLDS` | SS ≥ 0.95, S ≥ 0.90, A ≥ 0.80, B ≥ 0.65, C ≥ 0.50, else D (accuracy uses unmultiplied base points; see [07]) |
 | `HAND_MASS_KG` | 2.5 (hand + forearm effective mass for kinetic energy) |

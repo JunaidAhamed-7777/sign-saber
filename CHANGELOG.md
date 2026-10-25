@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:45:00+05:30 — Walls only cost points
+
+- Changed: A wall hit now deducts `SCORE_WALL_PENALTY` (100, floored at zero) and no longer breaks the combo. Walls never pause or stop the run: frames without a body cannot hit a wall, and an unobserved wall passes with neither penalty nor reward. Merged the remote README showcase (#10) with the user's local README edit.
+- Why: User direction — touching a red wall should just reduce points. The old body-tracking pause during walls made live play feel like it ended whenever tracking flickered.
+- Validation: Full `npm run check` passed (482 tests), including new score and session assertions.
+- Limits: No live-camera play yet; that integration follows.
+
 ## 2026-10-25T05:35:00+05:30 — README quick start
 
 - Changed: Rewrote the README run section as a quick start: requirements, clone/install/run commands, the play flow (pick song, Enable sound, Watch auto-play or Play level, pause), gesture summary, command table and troubleshooting.

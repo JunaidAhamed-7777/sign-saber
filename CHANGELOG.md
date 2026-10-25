@@ -6,6 +6,12 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:42:41+05:30 — Integrate the merged bundle gate into PR #7
+
+- Changed: Normally merged main after PR #6 and made the contributor check sequence describe the current bundle gate.
+- Validation: Repeated documentation checker tests and local-link validation; no application behavior changed. CI runs the full integrated application check.
+- Limits: Guide evidence retains its recorded historical source; no live-camera or release gate is claimed.
+
 ## 2026-10-25T05:40:37+05:30 — Audit player guides against current main
 
 - Changed: Normally integrated main `97bf0d3`, preserving its showcase README and restoring links to the player, troubleshooting and contributor guides. Updated the live button to **Play with camera**, documented the main-menu camera actions and steady-framing auto-confirmation, distinguished camera setup Cancel from pre-play Esc, and replaced a removed README fragment with the player guide's camera setup link. The contributor guide explicitly identifies the pending bundle-budget check integration.

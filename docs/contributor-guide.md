@@ -47,7 +47,7 @@ Run before every application milestone, from `app/`:
 npm run check
 ```
 
-This runs `typecheck`, `lint`, `test` and `build` in sequence. Once the bundle-budget change is integrated, `bundle:check` follows the production build and validates the emitted JavaScript chunks. Vitest runs asserted suites without a no-tests-success flag; keep meaningful assertions as implementation changes. For focused development, each is also a real command: `npm run typecheck`, `npm run lint`, `npm run test`, `npm run test:watch`, `npm run build`. `npm run format:check` checks source formatting. Avoid mass formatting generated/hash-pinned assets; regenerate them instead.
+This runs `typecheck`, `lint`, `test`, `build` and `bundle:check` in sequence. The final step validates the emitted JavaScript chunks. Vitest runs asserted suites without a no-tests-success flag; keep meaningful assertions as implementation changes. For focused development, each is also a real command: `npm run typecheck`, `npm run lint`, `npm run test`, `npm run test:watch`, `npm run build`. `npm run format:check` checks source formatting. Avoid mass formatting generated/hash-pinned assets; regenerate them instead.
 
 For documentation changes, run from the root:
 

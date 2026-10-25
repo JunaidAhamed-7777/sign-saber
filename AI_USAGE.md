@@ -6,7 +6,7 @@ The development workflow also occasionally includes collaboration with **Devin**
 
 ## 2026-10-25 — PR audit: current player controls and guide links
 
-- Codex reviewed PR #7 against current main, normally integrated its showcase README/camera changes, corrected player control and cancellation instructions, repaired the removed README fragment and revalidated local documentation. Existing screenshots remain explicitly tied to their recorded source; no new runtime or live-camera evidence is claimed.
+- Codex reviewed PR #7 against current main, normally integrated its showcase README/camera changes, corrected player control and cancellation instructions, repaired the removed README fragment and revalidated local documentation. The integrator then merged PR #6 normally and made the documented check sequence current. Existing screenshots remain explicitly tied to their recorded source; no new runtime or live-camera evidence is claimed.
 
 ## 2026-10-25 — Guide label and avatar capture refresh at main 30572bb
 

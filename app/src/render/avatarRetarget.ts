@@ -1061,7 +1061,24 @@ export class AvatarSolver {
         .toArray(local, i * 4);
       this.state.stretch[i] =
         this.state.stretch[i]! + (this.targetStretch[i]! - this.state.stretch[i]!) * alpha;
+      // Placement must follow the rendered pose, not the unsmoothed IK target. Otherwise
+      // a torso lean/shrug moves the root immediately while the shoulders are still easing.
+      // Reuse the solver's parent-first FK scratch; the next solve rebuilds its target pose.
+      const bone = this.rig.bones[i]!;
+      if (bone.parent < 0) {
+        this.worldQ[i]!.copy(q1);
+        this.worldP[i]!.copy(bone.localPos);
+      } else {
+        this.worldQ[i]!.copy(this.worldQ[bone.parent]!).multiply(q1);
+        this.worldP[i]!.copy(bone.localPos)
+          .multiplyScalar(this.state.stretch[i]!)
+          .applyQuaternion(this.worldQ[bone.parent]!)
+          .add(this.worldP[bone.parent]!);
+      }
     }
+    this.state.anchor
+      .addVectors(this.worldP[this.arms.L.upper]!, this.worldP[this.arms.R.upper]!)
+      .multiplyScalar(0.5);
   }
 }
 

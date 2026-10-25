@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T11:13:00Z — Keep avatar placement coherent during motion
+
+- Changed: Recompute the avatar placement anchor from smoothed, parent-first bone transforms, including clavicle motion and tracking-loss recovery. Added lean, asymmetric shoulder and compound head-orientation regressions.
+- Why: The old target-space anchor moved the body before the rendered joints caught up; the lean regression reproduces a 0.217 m mismatch on the old implementation.
+- Validation: Full application check passed 574 tests, typecheck, lint, production build and all bundle budgets; focused avatar suite passed 21 tests. Formatting passed. Documentation checker tests passed 2/2; 68 Markdown files and 709 local links checked with zero errors.
+- Limits: Display-only correction; no scoring/input changes or new live-camera, browser appearance or performance claims.
+
 ## 2026-10-25T08:50:00+05:30 — Anti-aliasing on by default
 
 - Changed: Medium (default) tier uses SMAA instead of FXAA, the device-pixel-ratio cap rose from 1 to 1.5 for sharper edges on high-DPI desktop screens, and the canvas requests MSAA for direct draws. Quality/render tests follow the constant.

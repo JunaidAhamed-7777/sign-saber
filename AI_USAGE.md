@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Avatar motion alignment
+
+- Codex corrected root-anchor drift during smoothed torso motion and tracking-loss recovery using pooled forward kinematics, and added shoulder-transition and compound head-orientation regressions. Verification is automated; no new browser or live-camera evidence is claimed.
+
 ## 2026-10-25 — Desktop README, evidence and Track 4 submission
 
 - Codex rewrote the README around the real game, current desktop captures and the user's supplied Make Room for Play track. Parallel agents refreshed related guides/scoring specifications, audited claims and produced current-source chart/SFX/bundle receipts. Codex normally integrated concurrent gameplay work, rechecked all 569 tests, recorded a complete genuine browser run, preserved gameplay GIF hashes and removed superseded still images. Exact grades and open release limits remain in the evidence; no live recognition or performance result was invented.

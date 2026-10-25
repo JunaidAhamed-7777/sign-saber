@@ -193,6 +193,58 @@ describe('avatar retargeting', () => {
     expect(p[idx('hand.L')]!.y).toBeLessThan(p[idx('upper_arm.L')]!.y - 0.4);
   });
 
+  it('keeps the placement anchor on the rendered shoulders throughout a lean and tracking loss', () => {
+    const solver = new AvatarSolver(rig);
+    const t = neutralTargets(rig, createTargets());
+    solver.update(t, 0, 0);
+    const turn = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI / 6);
+    for (let j = 0; j < JOINT_COUNT; j++) put(t, j, vec(t, j).applyQuaternion(turn));
+    const expectRenderedAnchor = () => {
+      const p = posedPositions(rig, solver.state.local, solver.state.stretch);
+      const shoulderMid = p[idx('upper_arm.L')]!.clone().add(p[idx('upper_arm.R')]!).multiplyScalar(0.5);
+      expect(solver.state.anchor.distanceTo(shoulderMid)).toBeLessThan(1e-6);
+    };
+    for (let frame = 1; frame <= 30; frame++) {
+      solver.update(t, frame * 16, 16);
+      expectRenderedAnchor();
+    }
+    // Loss recovery also changes the torso, and must not leave the old anchor behind.
+    t.valid.fill(0);
+    for (let frame = 31; frame <= 90; frame++) {
+      solver.update(t, frame * 16, 16);
+      expectRenderedAnchor();
+    }
+  });
+
+  it('anchors asymmetric shoulder reaches after clavicle solving, including snap updates', () => {
+    const solver = new AvatarSolver(rig);
+    const t = neutralTargets(rig, createTargets());
+    t.joints[J.SHOULDER_L * 3 + 1]! += 0.08;
+    solver.update(t, 0, 0);
+    const p = posedPositions(rig, solver.state.local, solver.state.stretch);
+    const shoulderMid = p[idx('upper_arm.L')]!.clone().add(p[idx('upper_arm.R')]!).multiplyScalar(0.5);
+    expect(solver.state.anchor.distanceTo(shoulderMid)).toBeLessThan(1e-6);
+  });
+
+  it.each([
+    ['pitch', new THREE.Vector3(1, 0, 0)],
+    ['yaw', new THREE.Vector3(0, 1, 0)],
+    ['roll', new THREE.Vector3(0, 0, 1)],
+  ] as const)('preserves the authored head basis during a combined torso turn and head %s', (_name, axis) => {
+    const solver = new AvatarSolver(rig);
+    const t = restTargets(rig, createTargets());
+    const torso = new THREE.Quaternion().setFromEuler(new THREE.Euler(0.1, 0.15, -0.1));
+    const head = new THREE.Quaternion().setFromAxisAngle(axis, Math.PI / 9);
+    const centre = vec(t, J.EAR_L).add(vec(t, J.EAR_R)).multiplyScalar(0.5);
+    for (const j of [J.NOSE, J.EAR_L, J.EAR_R, J.EYE_L, J.EYE_R])
+      put(t, j, vec(t, j).sub(centre).applyQuaternion(head).add(centre));
+    for (let j = 0; j < JOINT_COUNT; j++) put(t, j, vec(t, j).applyQuaternion(torso));
+    solver.update(t, 0, 0);
+    const actual = posedRotations(rig, solver.state.local)[idx('head')]!;
+    const expected = torso.clone().multiply(head).multiply(rig.bones[idx('head')]!.worldQuat);
+    expect(quatAngle(actual.clone().invert().multiply(expected))).toBeLessThan(1e-3);
+  });
+
   it('turns the head toward the tracked nose and limits extreme rotations', () => {
     const solver = new AvatarSolver(rig),
       t = restTargets(rig, createTargets());

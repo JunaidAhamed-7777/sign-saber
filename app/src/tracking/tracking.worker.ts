@@ -20,6 +20,7 @@ import {
   TRACK_CONFIDENCE_MIN,
   ASSET_TEXT_MAX_CHARS,
   UPPER_BODY_LAST_LANDMARK,
+  POSE_EVERY_N_FRAMES,
 } from '../core/constants';
 import {
   allocateTrackingBuffers,
@@ -45,6 +46,12 @@ const handCanvas = new OffscreenCanvas(INFER_W, INFER_H);
 const poseCanvas = new OffscreenCanvas(POSE_W, POSE_H);
 const downscale = new OffscreenCanvas(POSE_W, POSE_H);
 const poseCtx = downscale.getContext('2d', { alpha: false });
+// Worker-owned copy of the last pose/mask so hand-only frames can repeat it
+// without re-running pose (pose runs every POSE_EVERY_N_FRAMES processed frames).
+const lastPose = allocateTrackingBuffers();
+let lastPoseValid = false;
+let lastMaskValid = false;
+let poseCountdown = 0;
 function send(message: FromTrackingWorker, transfers: Transferable[] = []): void {
   worker.postMessage(message, transfers);
 }
@@ -151,23 +158,45 @@ function processFrame(message: Extract<ToTrackingWorker, { type: 'frame' }>): vo
       pose: null,
       mask: null,
     };
-    poseCtx.drawImage(message.bitmap, 0, 0, POSE_W, POSE_H);
-    pose.detectForVideo(downscale, timestamp, (result) => {
-      const lm = result.landmarks[0];
-      const world = result.worldLandmarks[0];
-      if (lm && world) {
-        mirrorLandmarks(lm, buffers.poseLm, 4, false, UPPER_BODY_LAST_LANDMARK + 1);
-        mirrorLandmarks(world, buffers.poseWorld, 3, true, UPPER_BODY_LAST_LANDMARK + 1);
-        frame.pose = { landmarks: buffers.poseLm, worldLandmarks: buffers.poseWorld };
-        const mask = result.segmentationMasks?.[0];
-        if (mask) {
-          copyMirroredMask(mask.getAsFloat32Array(), mask.width, mask.height, buffers.mask);
-          const packedMask = { width: MASK_W, height: MASK_H, data: buffers.mask };
-          if (maskUpperBody(packedMask, buffers.poseLm)) frame.mask = packedMask;
+    if (poseCountdown <= 0) {
+      poseCountdown = POSE_EVERY_N_FRAMES;
+      lastPoseValid = lastMaskValid = false;
+      poseCtx.drawImage(message.bitmap, 0, 0, POSE_W, POSE_H);
+      pose.detectForVideo(downscale, timestamp, (result) => {
+        const lm = result.landmarks[0];
+        const world = result.worldLandmarks[0];
+        if (lm && world) {
+          mirrorLandmarks(lm, buffers.poseLm, 4, false, UPPER_BODY_LAST_LANDMARK + 1);
+          mirrorLandmarks(world, buffers.poseWorld, 3, true, UPPER_BODY_LAST_LANDMARK + 1);
+          frame.pose = { landmarks: buffers.poseLm, worldLandmarks: buffers.poseWorld };
+          const mask = result.segmentationMasks?.[0];
+          if (mask) {
+            copyMirroredMask(mask.getAsFloat32Array(), mask.width, mask.height, buffers.mask);
+            const packedMask = { width: MASK_W, height: MASK_H, data: buffers.mask };
+            if (maskUpperBody(packedMask, buffers.poseLm)) frame.mask = packedMask;
+          }
         }
+        // Callback results are task-owned; no MPMask escapes its documented lifetime.
+      });
+      if (frame.pose) {
+        lastPose.poseLm.set(buffers.poseLm);
+        lastPose.poseWorld.set(buffers.poseWorld);
+        lastPoseValid = true;
       }
-      // Callback results are task-owned; no MPMask escapes its documented lifetime.
-    });
+      if (frame.mask) {
+        lastPose.mask.set(buffers.mask);
+        lastMaskValid = true;
+      }
+    } else if (lastPoseValid) {
+      buffers.poseLm.set(lastPose.poseLm);
+      buffers.poseWorld.set(lastPose.poseWorld);
+      frame.pose = { landmarks: buffers.poseLm, worldLandmarks: buffers.poseWorld };
+      if (lastMaskValid) {
+        buffers.mask.set(lastPose.mask);
+        frame.mask = { width: MASK_W, height: MASK_H, data: buffers.mask };
+      }
+    }
+    poseCountdown--;
     frame.inferenceMs = performance.now() - start;
     frame.tInferDone = performance.timeOrigin + performance.now() - mainTimeOrigin;
     send({ type: 'result', frame, buffers, dropped, allocs: 0 }, trackingTransfers(buffers));

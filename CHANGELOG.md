@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T06:50:36+05:30 — Run pose every other tracking frame
+
+- Changed: `app/src/tracking/tracking.worker.ts` runs pose + segmentation only every `POSE_EVERY_N_FRAMES` (2) processed frames; in-between frames run hands only and repeat the last pose/mask from a worker-owned copy into the recycled transfer buffers. New constant registered in `app/src/core/constants.ts` and `docs/02-architecture.md`.
+- Why: CPU-delegate inference measured ~85–100 ms per frame (hands then pose), giving ~9–10 Hz with most camera frames dropped as busy; halving pose work should raise hand update rate.
+- Validation: `npm run check` in `app/`; `node scripts/check-docs.mjs`.
+- Limits: no new hardware measurement yet; pose/mask may lag hands by one processed frame. `TrackingFrame` shape and buffer recycling unchanged.
+
 ## 2026-10-25T06:47:25+05:30 — Showcase the desktop experience and Track 4 submission
 
 - Changed: Rebuilt README around preserved gameplay GIFs, full-width fresh desktop menu/results, current local content, concise setup, architecture, reproducible evidence and the supplied **Make Room for Play** track. Updated the documentation index, player/contributor/troubleshooting guides, scripts guide and gesture/scoring specifications after normally integrating concurrent gameplay commit `8fd22f6`. Removed superseded interface WebPs and old gameplay stills; retained historical receipts and all three GIFs unchanged.

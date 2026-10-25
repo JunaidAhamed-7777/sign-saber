@@ -1317,6 +1317,13 @@ export class ArenaRenderer {
       this.environment.traverse((object) => object.layers.set(0));
       this.atmosphere.bind(this.environment);
       this.scene.add(this.environment);
+      // The authored arena never moves: bake its world matrices once instead of recomputing every
+      // node's local/world matrix on each render (pylon culling only toggles visibility).
+      this.environment.updateMatrixWorld(true);
+      this.environment.traverse((object) => {
+        object.matrixAutoUpdate = false;
+        object.matrixWorldAutoUpdate = false;
+      });
     }
     this.configurePylons();
   }

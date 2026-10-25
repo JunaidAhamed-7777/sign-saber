@@ -13,6 +13,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: Full `npm run check` passed. Live webcam behaviour still needs the user's hands-on test.
 - Limits: No consented live session has been recorded by the agent.
 
+## 2026-10-25T05:52:44+05:30 — Integrate the audited release drill with lifecycle recovery
+
+- Changed: Normally integrated PR #9 source db80a29 into PR #11, retaining both harness commands/protocols, source-attributed reports, current camera guidance and fatal-pointer recovery.
+- Validation: Full npm run check passed 567 application tests, typecheck/lint/build and three bundle regressions; all ten chunks pass. Thirteen lifecycle/release/doc helper tests and the local-link checker passed. Earlier browser reports remain tied to their exact sources.
+- Limits: Concurrent new camera work on main is integrated and revalidated separately; no new live-camera or full release claim is made.
+
 ## 2026-10-25T05:48:56+05:30 — Record audited recovery subset and correct camera menu guidance
 
 - Changed: Preserved the selected browser report, raw JSON and four desktop/compact screenshots under `docs/evidence/pr-audit-lifecycle/`; lifecycle notes identify the exact clean tested source `670291c`. README now names the current main-menu **Set up camera** and **Play with camera** controls instead of saying camera work is paused or setup is only in Settings.
@@ -34,6 +40,32 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: Full `npm run check` passed (482 tests), including new score and session assertions.
 - Limits: No live-camera play yet; that integration follows.
 
+## 2026-10-25T05:50:47+05:30 — Verify PR #9 from a fresh committed clone
+
+- Changed: Retained the initial old-banner harness failure and corrected clean-clone drill receipts under docs/evidence/pr-audit-release-drill and pr-audit-release-drill-fixed; linked current evidence from README and docs17. This documentation commit records tested application/harness source 886f7beb990af721bd2faf4292cc9260c97379fb.
+- Validation: Clean clone/checkout, npm ci, full npm run check (560 application tests and three bundle tests), production build, offline menu/audio unlock, 84 Perfect synthetic hits, Retry, pause and Songs all passed. All 24 observed requests were local; no console/runtime/CSP errors, external attempts or cleanup failure. Unit tests 6 and docs tests 2 passed; documentation links are rechecked before commit.
+- Limits: Initial source 810bf67 reached real results but failed its stale source-banner check; that failure remains recorded. Neither run proves live-camera recognition, audible sync, physical latency or a complete manual release gate.
+
+## 2026-10-25T05:46:45+05:30 — Keep the release drill aligned with neutral run screens
+
+- Changed: Normally integrated merged PRs #7/#8. The release drill now uses the existing stats diagnostics to assert the synthetic-performer evidence lane and camera-free provenance instead of requiring a removed source banner. Native UI actions and DOM judgement counts still drive the journey.
+- Why: Current main intentionally uses neutral run copy; the old banner predicate would reject a successful synthetic session.
+- Validation: The initial clean clone installed and passed the full 560-test application check and bundle gate. Release-drill unit tests and documentation checks are run before this fix commit. The initial old-harness browser attempt and corrected end-to-end run are recorded separately after completion.
+- Limits: Full corrected browser validation is still pending here; no live-camera, audible-sync or performance claim is added.
+
+## 2026-10-25T05:43:08+05:30 — Record missing-browser release-drill failures
+
+- Changed: Normally integrated current main into the release-drill branch, preserving the README showcase and release-drill instructions. `scripts/cdp-client.mjs` now rejects browser spawn errors through its awaited startup path; `scripts/release-drill.test.mjs` covers a missing executable.
+- Why: An invalid `--browser` path previously emitted an unhandled child-process error, bypassing the drill's failure report and temporary-clone cleanup.
+- Validation: Release-drill unit tests passed 6/6, the real worker/network browser regression passed 1/1, documentation tests passed 2/2, and the local Markdown checker passed (56 files, 600 links).
+- Limits: This patch verifies browser-launch failure handling and worker isolation. The final integrated application check and clean-clone/offline journey are performed separately; live camera, human QA and release gates remain open.
+
+## 2026-10-25T05:03:12+05:30 — Verify the PR's prepared integration build
+
+- Changed: Retained separately labelled prepared-build JSON/Markdown and linked them from docs17. The exact tracked browser journey was reused on committed integration `f68f84e933bb6495bc66f80da455f7b3ae5e3fd8` (main `db45982`); the earlier clean-clone and missing-asset artifacts keep their own tested SHAs. This publication changes documentation only.
+- Why: The opened PR needed a newer normal integration. Verify its actual presentation/audio/game flow without relabelling earlier installation evidence or duplicating a browser driver.
+- Validation: The integrated source passed full `npm run check` (481 assertions/55 suites/build). Its prepared production build passed BOOT → selection → native sound enable → real 80-second synthetic performer → Results (84 Perfect, zero misses, 54,700 score) → Retry → play → pause → Songs. Runtime/console, CSP and interception errors were zero; cleanup succeeded. Root documentation tests/checker passed for these artifacts.
+- Limits: This supplemental run is explicitly not a new clone/install exercise. Camera/models, people, recognition, audible sync and performance targets remain outside its scope. The separately recorded clean-clone pass and intentional catalog-404 failure remain the release-drill control evidence; later main commits are outside this frozen integration.
 ## 2026-10-25T05:44:14+05:30 — Audit PR #8 and preserve current menu integration
 
 - Changed: Normally merged main including PR #6, preserved current README and camera-on-first-page behavior, retained bounded eight-song paging assertions, and updated current README library/credit counts while leaving historical measurements source-labelled.
@@ -103,6 +135,19 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: All eight cases passed on clean `ca7eefe`, including all 20 cycles with a fixed 110-geometry/14-texture/188-DOM-listener/two-worker baseline and at most eleven native AudioNodes. Every measured quit had zero active SFX and disconnected native buffer sources. The new read-only field/harness guard passed required typecheck, lint, 488 tests in 55 files and production build; root docs/helper tests passed 7/7; checker found 50 Markdown files/547 local links and zero errors; whitespace passed. All four current recovery screenshots were inspected.
 - Limits: The loaded-avatar context-only supplemental run is next and will be recorded separately; intentionally unrun cases in that subset must remain incomplete. Canonical all-eight evidence remains attributed to `ca7eefe`, with the earlier `96aa536` report and failed baselines preserved. Synthetic muted software-rendered input proves no camera, audible-sync or performance acceptance.
 
+## 2026-10-25T04:59:57+05:30 — Resolve the release-drill PR's newer main integration
+
+- Changed: Normally integrated main `db45982567a217f861cd94e576d4629201a84a13` after the PR was opened; preserved its HUD/projection, camera-reel, training and historical work. Exported the existing browser journey unchanged so the post-integration prepared-build smoke check reuses the actual driver rather than duplicating it. The default release command still performs its fresh clone/install/check/build sequence.
+- Why: GitHub reported the focused PR needed integration with newer main. Keep the clean-clone evidence at its real `10bca5e` SHA and exercise the changed presentation path separately.
+- Validation: The integrated application passed typecheck, lint, 481 assertions in 55 suites and production build. Documentation validation passed. The exact browser journey follows on the committed prepared build; the earlier positive/negative clean-clone proof remains intact.
+- Limits: The supplemental prepared-build run is not a new clean-clone/install result and is labelled separately. No camera, person, recognition, audible-sync or performance claim is added.
+
+## 2026-10-25T04:51:52+05:30 — Verify the normally integrated release-drill snapshot
+
+- Changed: Refreshed the canonical passing JSON/Markdown from the actual committed integration `10bca5ef1aa1aada09c06b1ead5139f7f4bf11c6` (main `09671b7`), archived the previous `d14c980` pass byte-for-byte, and updated docs17 to distinguish each tested source. This final evidence publication changes documentation only.
+- Why: New charts, sound-worker/audio behavior, score/results and rendering landed on main after the first passing candidate; those changes need their own actual browser outcome rather than inheriting the earlier numbers.
+- Validation: The real release command exited 0 from a clean invoking checkout and fresh committed clone. `npm ci`, full application check (480 assertions/54 suites) and explicit production build passed. BOOT → selection → native sound unlock → the updated 80-second performer → Results yielded 84 Perfect, zero misses and 54,700 score. Retry → play → pause → Songs passed. All 17 observed app requests were local, with zero runtime/console/CSP/interception errors; temporary-directory cleanup succeeded. Earlier deliberate catalog-404 command exited 1 with failure evidence at its explicitly recorded `d14c980` SHA. The unchanged helper/browser regression coverage previously passed 6/6; root docs tests/checker passed for the publication.
+- Limits: Planned synthetic landmarks and headless Chrome, no camera/person or recognition proof. The browser is blocked from external destinations after installation; this is not an unplugged-network or audible-sync test. No performance or complete P5 gate is claimed, and later main commits are outside this frozen snapshot.
 ## 2026-10-25T05:22:18+05:30 — Showcase README with real browser media and measured evidence
 
 - Changed: Rebuilt `README.md` around real auto-play footage, a screenshot feature grid, exact run instructions, gesture controls, Mermaid architecture, measured numbers, source layout, roadmap and asset credits. Added `docs/media/`, the reusable `scripts/capture-readme.mjs` browser harness and `docs/evidence/2026-10-25-readme-metrics.json`; updated `AI_USAGE.md`. Application source is unchanged from remote main `30572bb9cdbe345b79e8e48279019bd7d8b59877`.
@@ -187,6 +232,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: Keep the PR current with main without discarding other contributors' work or expanding music scope.
 - Validation: Full npm run check passed again (typecheck, lint, 50 suites/502 assertions, production build). The existing current-v3 two-viewport/all-eight-song/all-24-map browser evidence still identifies the unchanged music manifest; no new browser/performance result is claimed for unrelated block work. Root documentation checks are rerun before this integration commit.
 - Limits: Existing large-bundle/favicon warnings and all previously stated human/camera/music-quality limits remain unchanged.
+## 2026-10-25T04:46:22+05:30 — Integrate current main before final release-drill verification
+
+- Changed: Normally integrated main `09671b7b6f5a6f1d89fa756cd6c825f58abd4bba`, preserving the new charts, avatar/target rendering, SFX worker, score/result changes and their existing history. The release harness, favicon fix and recorded failures remain scoped to issue #3.
+- Why: The user requests frequent pulls; the current main contains material application changes beyond the earlier tested candidate, so its evidence cannot be borrowed from that older SHA.
+- Validation: The integrated worktree passed `npm run check`: typecheck, lint, 480 assertions in 54 suites and production build. Root docs tests passed 2/2; 53 Markdown files / 546 links checked with zero errors. The earlier positive and negative clean-clone runs remain explicitly tied to `d14c980`.
+- Limits: This integration's actual CLI/browser run follows after committing the exact snapshot. No new webcam, human, audible-sync or performance claim is made; later remote changes are outside this frozen candidate.
 
 ## 2026-10-25T04:43:58+05:30 — Judgement pops at the hit position and combo-break note
 
@@ -209,6 +260,19 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: `npm run check` 367 tests in 48 files and build passed; docs tests 2/2 and docs checker 0 errors. Trial: canvas stream and Chrome fake webcam both reached GPU preview; pose detected on 24/24 photos; median per-photo joint error 0.118 shoulder widths; handedness agreement 369/393 under the new mapping; calibration with the declared-rule photo never framed (one hand); with the measured photo framing became ready but Confirm was not accepted under 2.6–5.5 Hz tracking.
 - Limits: whole-machine CPU was 52–100% busy before and ~100% during lanes from unrelated training/Blender/agent work, so timings are not performance evidence and the play → Results → Retry flow was not reached. Still photos only; not webcam evidence.
 
+## 2026-10-25T04:40:56+05:30 — Passing release drill and deliberate missing-asset failure
+
+- Changed: Published the real release-drill command and evidence links in `README.md` and docs17/19. Retained dated passing/missing-asset JSON and Markdown plus earlier failures. Bound the worker regression fixture to its created target ID and deliberately opened another blank page to prevent a later page from stealing the inspected session. Cleanup now has a separate useful Markdown error and bounded retries within the validated own temporary directory; it never kills unrelated Chrome processes.
+- Why: Issue #3 requires a reproducible clean-commit installation and actual offline browser journey, plus proof that a broken step yields failure evidence and a nonzero exit.
+- Validation: Both real commands tested `d14c980aca096e530586a771983edfb65ca22cdd` in fresh clones: install, full application check (367 assertions/48 suites) and explicit production build passed. The positive command exited 0 after BOOT → select → native sound enable → actual 80-second synthetic performer → Results (131 Perfect, 90,800 score) → Retry → play → pause → Songs, with 16 local requests and zero runtime/console/CSP/interception errors. The negative command removed only the cloned prepared catalog, observed its actual 404/menu error, wrote failure evidence and exited 1. Five pure-helper tests plus the real worker browser regression passed (6/6). A preceding worker-test rerun timed out because its fixture used the last ready page; the target-ID correction passed with an intentionally later blank page. Root documentation tests/checker passed.
+- Limits: These reports identify their exact tested SHA and exclude later main integrations. Installation uses network and a task-specific npm cache; only the browser stage blocks external destinations. Camera/model preparation, actual people, audible sync, performance and the remaining P5 gates are excluded. Auxiliary raw command logs are generated locally; committed JSON includes exit codes, timings and output tails. Cleanup failures remain failures with their own message and retained directory, not fabricated gameplay failures.
+
+## 2026-10-25T04:38:46+05:30 — Keep the bundle PR current with generator v3 and target assets
+
+- Changed: Normally integrated main `87032d0`, refreshed production-preview evidence and visually inspected menu/performer WebP captures. Updated docs16; application/runtime code remains unchanged by issue #1.
+- Why: Keep the open PR valid after the chart/avatar/target work landed without reusing old-source results as new proof.
+- Validation: `npm run check` passed (typecheck/lint, 424 assertions/50 suites, production build without a chunk-size warning, three budget regressions). All eight JS chunks pass; the entry is 443013 raw/161024 gzip bytes. Real dataset results: 86 Miss/0 hits; synthetic results: 86 Perfect/0 misses; Songs return passed after both. Menu and play captures show the arena. Root documentation tests/checker and whitespace checks are rerun before commit.
+- Limits/failures: Application assertions passed at `18745d446601dee57176078eef22ea87ab5d2a5c`; one upstream geometry warning and favicon 404s are retained. The temporary probe later exited 1 during optional profile cleanup (Windows EBUSY lockfile), and the profile was left safely in place. The JSON separates this cleanup failure from application results. No performance gain, live-camera or release completion is claimed. Earlier source-identified measurements remain intact.
 ## 2026-10-25T04:39:19+05:30 — Results hits by gesture
 
 - Changed: `render/blade.ts` adds per-hand blade ribbons (white-hot core plus tinted additive glow) rebuilt into preallocated buffers from the measured `HandCursor.history`, uniformly resampled by arc length, drawn length eased by a critically damped spring (`BLADE_LENGTH_SPRING_RAD_S`), reset on reacquisition and guarded against degenerate tangents. `render/trails.ts` adds tier-sized GPU particles per hand (two-ring orbit, fist knot, point cone; band-driven orbit speed, twinkle off in Calm) that elongate onto the blade spine. The renderer feeds the latest cursors (visual only) and hides trails in results/paused. Shatter pieces start at `SHATTER_PIECE_SCALE`, vanish by `SHATTER_VISIBLE_FRACTION` of the lifetime, use saturated magenta cross-sections and darker rims; the dev preview no longer has a hands toggle.
@@ -251,6 +315,13 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: All three songs disclosed low tempo confidence although their detected tempi were within 1 BPM of the catalog. Hop-quantized span refinement left the period a fraction of a BPM off (94.1/117.2/150.8), so a song-long grid drifted out of the ±35 ms tolerance and alignment confidence collapsed (0.159/0.202/0.230).
 - Validation: Refined tempi are 94.0/117.0/150.0 BPM, matching the publisher catalog (94/117/150), which the analysis never reads; confidence 0.252/0.496/0.558 against the 0.35 gate. A new syncopated 117 BPM synthetic click test fails without the search (117.2 BPM, low confidence) and passes with it; the 128 BPM, 90/180 BPM octave, noise and hum tests still pass. v4 charts: Electro Cabello 117 (57/51/9), 176 (104/64/8), 281 (132/135/14); Cipher 111 (59/41/11), 195 (98/82/15), 266 (108/140/18); Pamgaea unchanged from v3. The performer still reaches every note of all nine charts. `npm run check` passed (typecheck, lint, 376 tests in 46 files, production build); prettier on changed sources and both docs checks passed.
 - Limits: The search maximises the same alignment used for confidence, so it carries a small upward selection bias; catalog agreement is independent evidence only for these three tracks. No annotated beat fixtures or held-out beat F-measure exist yet. Pamgaea's strong onsets are mostly syncopated, so its 94.0 BPM is not claimed as confident.
+
+## 2026-10-25T04:24:06+05:30 — Correct worker blocking in the release harness
+
+- Changed: `release-drill.mjs` now applies an ordered CDP Network origin allowlist to app page/worker targets, uses Fetch interception only on page/frame targets, and excludes Chrome's internal `browser_ui` targets. Added `scripts/release-drill.browser.test.mjs`, a real isolated-Chrome regression that resumes a dedicated worker, permits its loopback fetch and verifies an external fetch is blocked by the inspector before network access. Retained the first committed-candidate failure and the previous browser attempt unchanged.
+- Why: The actual `b9b1a85` drill passed clean-clone installation, all 367 application assertions and production builds, then exposed `Fetch.enable` as unavailable on worker targets. The unsupported command left the generator paused in the harness. This was a harness defect, not an application or camera result.
+- Validation: Five pure-helper tests and the real Chrome worker regression passed (6/6 total). The worker returned `local ok` and rejected the explicitly labelled external probe with `blockedReason: inspector`. The earlier browser run had zero console/CSP errors and proved the favicon fix, menu and native sound unlock before the harness defect.
+- Limits: The corrected full synthetic journey and deliberate missing-asset acceptance are pending the next committed-snapshot run. No release, webcam, human or performance gate is declared complete.
 
 ## 2026-10-25T04:22:47+05:30 — 200% zoom and narrow compact tiers
 
@@ -315,6 +386,12 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: Fulfil issue #2's 3 → 8 licensed local library, with catalog tempo/genre variety (92–140 BPM for the additions), measured durations of 168–214.766 seconds and preserved source identity.
 - Validation: Official catalog/track-page license templates verified at acquisition; all hashes/receipts retained. Shared generation/validator passed all 24 maps. Full npm run check on cfdcc40 passed typecheck, lint, 48 suites/380 assertions and production build; scoped Prettier checks passed. Root docs tests passed 2/2 and the link checker passed. Native Chrome 155/SwiftShader at 1440×900 and 1024×640 selected all eight songs/all 24 difficulties, started/stopped the original preview, paged the library and checked all eight exact credits offline. After main's renderer/UI merge, another browser run repeated all eight Normal selections/credits/preview at both sizes. Reports and inspected screenshots are linked from docs/evidence/2026-10-25-eight-song-library.md.
 - Limits: No live-camera, human musical-quality, comfort or performance claim. The existing large-bundle warning belongs to issue #1; unrelated favicon 404 responses remain recorded. Initial shared-cache install failure, three obsolete paging assertions and two browser-driver failures are disclosed in the evidence; the corrected checks pass. Final integration with any newer remote main is recorded separately.
+## 2026-10-25T04:11:38+05:30 — Release-drill implementation and retained failures
+
+- Changed: Added `scripts/release-drill.mjs` and pure-helper tests. The drill clones the exact committed SHA, captures install/check/build command logs, serves the prepared build with the existing server, blocks external browser destinations, and observes native-input synthetic playback/results/retry/Songs. It writes dated JSON/Markdown evidence, preserves previous attempts and excludes camera/model preparation. Added a local SVG favicon declaration in `app/index.html` after the browser exposed a missing favicon request.
+- Why: Issue #3 requires repeatable clean-clone and offline release evidence with visible failures and no console/CSP errors.
+- Validation: Helper tests passed 5/5; documentation tests passed 2/2 and 521 local links checked with zero errors. A fresh clone of `ad41466` passed `npm ci`, the full application check (363 assertions) and production build. The integrated `cfdcc40` worktree plus favicon passed `npm run check` (367 assertions/48 suites/build). Main `752acf3` is now integrated for the committed-snapshot run. An earlier `5a786e5` clone failed one gapless-test timeout; its failure is retained. The first browser attempt reached the selected song and enabled sound, then exposed an incorrect harness predicate (the successful sound action replaces its button) and a real favicon 404; both were corrected.
+- Limits: The corrected committed-snapshot browser journey and injected missing-asset drill are pending the next evidence step. No complete P5, live-camera, recognition, audible-sync or performance gate is claimed. The initial failed-run filename uses its UTC date; subsequent evidence includes the local timezone/date explicitly.
 ## 2026-10-25T04:10:13+05:30 — Recheck issue #1 after the new renderer integration
 
 - Changed: Normally merged main `cfdcc40` into the issue branch, retained both new controlled build/browser receipts, and updated docs16 with the current chunk table and actual first-load waterfall. No additional application code was needed; the existing groups still satisfy the budget with the new effects.

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-24T22:12:18.000Z",
+  "commit": "5a786e544d9e2945ac318193fbcb55d36ac26c6b",
+  "passed": false,
+  "injectMissingAsset": false,
+  "environment": {
+    "node": "v26.8.1",
+    "npm": "11.19.0",
+    "os": "win32 10.0.26300 x64"
+  },
+  "steps": [
+    {
+      "name": "Clone current commit",
+      "passed": true,
+      "durationMs": 1392,
+      "exitCode": 0,
+      "log": "2026-10-24-release-drill-clone-current-commit.log",
+      "outputTail": "Cloning into 'C:\\Users\\Junaid\\AppData\\Local\\Temp\\sign-saber-release-drill-7Kp846\\repo'...\ndone.\n"
+    },
+    {
+      "name": "Checkout tested SHA",
+      "passed": true,
+      "durationMs": 1057,
+      "exitCode": 0,
+      "log": "2026-10-24-release-drill-checkout-tested-sha.log",
+      "outputTail": "HEAD is now at 5a786e5 Merge branch 'agent/interface'\n"
+    },
+    {
+      "name": "npm ci",
+      "passed": true,
+      "durationMs": 60089,
+      "exitCode": 0,
+      "log": "2026-10-24-release-drill-npm-ci.log",
+      "outputTail": "\nadded 187 packages, and audited 188 packages in 59s\n\n47 packages are looking for funding\n  run `npm fund` for details\n\nfound 0 vulnerabilities\nnpm notice\nnpm notice New major version of npm available! 11.19.0 -> 12.2.1\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1\nnpm notice To update run: npm install -g npm@12.2.1\nnpm notice\n"
+    },
+    {
+      "name": "npm run check",
+      "passed": false,
+      "durationMs": 71988,
+      "exitCode": 1,
+      "log": "2026-10-24-release-drill-npm-run-check.log",
+      "outputTail": "\n> sign-saber@0.1.0 check\n> npm run typecheck && npm run lint && npm run test && npm run build\n\nnpm notice run sign-saber@0.1.0 typecheck\nnpm notice run tsc -p tsconfig.json && tsc -p tsconfig.node.json\nnpm notice run sign-saber@0.1.0 lint\nnpm notice run eslint .\nnpm notice run sign-saber@0.1.0 test\nnpm notice run vitest run\n\n RUN  v5.0.5 C:/Users/Junaid/AppData/Local/Temp/sign-saber-release-drill-7Kp846/repo/app\n\n ❯ tests/unit/gapless.test.mjs (7 tests | 1 failed) 12177ms\n   ❯ browser gapless normalization (7)\n     × never trims a buffer the decoder already trimmed, or one of unexplained length 6825ms\n\n⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  tests/unit/gapless.test.mjs > browser gapless normalization > never trims a buffer the decoder already trimmed, or one of unexplained length\nError: Test timed out in 5000ms.\nIf this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".\n ❯ tests/unit/gapless.test.mjs:51:3\n     49|     expect(result.getChannelData(0)[0]).toBe(Math.round(trim.encoderDe…\n     50|   });\n     51|   it('never trims a buffer the decoder already trimmed, or one of unex…\n       |   ^\n     52|     const bytes = bytesOf('cipher');\n     53|     const trim = readITunSmpb(bytes);\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\n\n\n Test Files  1 failed | 44 passed (45)\n      Tests  1 failed | 334 passed (335)\n   Start at  03:44:13\n   Duration  19.16s (transform 48%, tests 42%, import 10%, worker 1%)\n\n    Isolate  45 workers spawned · ~700ms startup each (spawn + environment, per file)\n             at least ~1.40s faster with isolate: false — reuses workers across files instead of one per file\n\n"
+    }
+  ],
+  "exclusions": [
+    "camera/model preparation",
+    "live recognition",
+    "human QA",
+    "audible synchronization",
+    "P4 performance gates"
+  ],
+  "harnessSha256": "c9822dada8d7c87eec2b96c973a0c7f72f45088ff1c0b2df023ad23af43ec122",
+  "browserHelperSha256": "812867e44c1e1b53e856e6f869cc2fc9df2a5a23e4d386ade1eaf23c635d7324",
+  "invokingCheckoutDirty": true,
+  "failure": "Error: npm run check exited 1. \n> sign-saber@0.1.0 check\n> npm run typecheck && npm run lint && npm run test && npm run build\n\nnpm notice run sign-saber@0.1.0 typecheck\nnpm notice run tsc -p tsconfig.json && tsc -p tsconfig.node.json\nnpm notice run sign-saber@0.1.0 lint\nnpm notice run eslint .\nnpm notice run sign-saber@0.1.0 test\nnpm notice run vitest run\n\n RUN  v5.0.5 C:/Users/Junaid/AppData/Local/Temp/sign-saber-release-drill-7Kp846/repo/app\n\n ❯ tests/unit/gapless.test.mjs (7 tests | 1 failed) 12177ms\n   ❯ browser gapless normalization (7)\n     × never trims a buffer the decoder already trimmed, or one of unexplained length 6825ms\n\n⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  tests/unit/gapless.test.mjs > browser gapless normalization > never trims a buffer the decoder already trimmed, or one of unexplained length\nError: Test timed out in 5000ms.\nIf this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".\n ❯ tests/unit/gapless.test.mjs:51:3\n     49|     expect(result.getChannelData(0)[0]).toBe(Math.round(trim.encoderDe…\n     50|   });\n     51|   it('never trims a buffer the decoder already trimmed, or one of unex…\n       |   ^\n     52|     const bytes = bytesOf('cipher');\n     53|     const trim = readITunSmpb(bytes);\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\n\n\n Test Files  1 failed | 44 passed (45)\n      Tests  1 failed | 334 passed (335)\n   Start at  03:44:13\n   Duration  19.16s (transform 48%, tests 42%, import 10%, worker 1%)\n\n    Isolate  45 workers spawned · ~700ms startup each (spawn + environment, per file)\n             at least ~1.40s faster with isolate: false — reuses workers across files instead of one per file\n\n\n    at step (file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:255:33)\n    at async runDrill (file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:276:7)\n    at async file:///C:/Github-2/sign-saber-issue-3/scripts/release-drill.mjs:303:15",
+  "finishedAt": "2026-10-24T22:14:37.263Z"
+}

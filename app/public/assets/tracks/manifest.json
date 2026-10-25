@@ -115,6 +115,198 @@
         "attribution": "\"Cipher\" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License.",
         "changes": "Packaged original downloaded MP3 bytes unchanged. Analysis and generated maps are separate; previews use playback offsets without editing the file."
       }
+    },
+    {
+      "slug": "chipper-doodle-v2",
+      "title": "Chipper Doodle v2",
+      "artist": "Kevin MacLeod",
+      "role": "intro",
+      "audioUrl": "/assets/tracks/chipper-doodle-v2/audio.mp3",
+      "durationMs": 172173.92290249432,
+      "bpm": null,
+      "preview": {
+        "startMs": 342.2675736961451,
+        "durationMs": 15000
+      },
+      "difficultyMaps": {
+        "easy": "/assets/tracks/chipper-doodle-v2/easy.json",
+        "normal": "/assets/tracks/chipper-doodle-v2/normal.json",
+        "hard": "/assets/tracks/chipper-doodle-v2/hard.json"
+      },
+      "generatorVersion": 4,
+      "warnings": [
+        "lowTempoConfidence",
+        "humanRhythmAndComfortReviewPending"
+      ],
+      "hashes": {
+        "audioSha256": "addaad1315a5b1d3dd37ff22690941b1ca2575a7769d25fc2fa6e6b95a4d364a",
+        "canonicalPcmSha256": "2f95f8614095681cbd929b6b6dd6b4c77d88d9f7249cd44cf09b23fb8ff88421",
+        "maps": {
+          "easy": "49ff4fc238ab6b4f20c3dae7518979297560e7fb6ff0bfe22a4d5a52eb151abe",
+          "normal": "2a15fb267a46101db541150f3db6ce582e76a6683d645b5aef85ba21f751e5b2",
+          "hard": "57820d358a89373661015bd1e7810504281e951d4549e24018325bd2389a48d2"
+        }
+      },
+      "rights": {
+        "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100855",
+        "license": "CC-BY-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "\"Chipper Doodle v2\" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License.",
+        "changes": "Packaged original downloaded MP3 bytes unchanged. Analysis and generated maps are separate; previews use playback offsets without editing the file."
+      }
+    },
+    {
+      "slug": "funkorama",
+      "title": "Funkorama",
+      "artist": "Kevin MacLeod",
+      "role": "groove",
+      "audioUrl": "/assets/tracks/funkorama/audio.mp3",
+      "durationMs": 201386.16780045352,
+      "bpm": null,
+      "preview": {
+        "startMs": 315.827664399093,
+        "durationMs": 15000
+      },
+      "difficultyMaps": {
+        "easy": "/assets/tracks/funkorama/easy.json",
+        "normal": "/assets/tracks/funkorama/normal.json",
+        "hard": "/assets/tracks/funkorama/hard.json"
+      },
+      "generatorVersion": 4,
+      "warnings": [
+        "lowTempoConfidence",
+        "humanRhythmAndComfortReviewPending"
+      ],
+      "hashes": {
+        "audioSha256": "6be229815d85a0b99382b944d31098b882702c04ac7ad899e44ab7f8ba89b5ad",
+        "canonicalPcmSha256": "28d2e61ca919d88d0056a141c64ed8a60e2d679e77f6bd0802c21f57b911020c",
+        "maps": {
+          "easy": "8b198883b2c027799a398898563514af4229c661d92077b7033e481ace77f151",
+          "normal": "c9e4e23dbba2b566ab44de9a9480926ddd50450926a10717b5ed04c0495bcbb0",
+          "hard": "a96fe2806d0fc56d07fecc1a49981247551d11c5b3089c2f2bdbe2d159018426"
+        }
+      },
+      "rights": {
+        "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100474",
+        "license": "CC-BY-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "\"Funkorama\" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License.",
+        "changes": "Packaged original downloaded MP3 bytes unchanged. Analysis and generated maps are separate; previews use playback offsets without editing the file."
+      }
+    },
+    {
+      "slug": "cut-and-run",
+      "title": "Cut and Run",
+      "artist": "Kevin MacLeod",
+      "role": "groove",
+      "audioUrl": "/assets/tracks/cut-and-run/audio.mp3",
+      "durationMs": 214766.39455782314,
+      "bpm": 107,
+      "preview": {
+        "startMs": 436.3492063492064,
+        "durationMs": 15000
+      },
+      "difficultyMaps": {
+        "easy": "/assets/tracks/cut-and-run/easy.json",
+        "normal": "/assets/tracks/cut-and-run/normal.json",
+        "hard": "/assets/tracks/cut-and-run/hard.json"
+      },
+      "generatorVersion": 4,
+      "warnings": [
+        "humanRhythmAndComfortReviewPending"
+      ],
+      "hashes": {
+        "audioSha256": "ddfa5637036e97a313a2e7a01d37d00f85226469cf4df896c83da07f7f2c353e",
+        "canonicalPcmSha256": "8002e1f4f7a28635254ca65ed7ebf1c7ebfee404a46a7bc7cad6cb76fb7cbe0f",
+        "maps": {
+          "easy": "62e9ffc331bf09d0b7c6f4ca9f2f238293edfcb4331f1e43a2d1f0ca78548899",
+          "normal": "cfb8c32b88a84726b6e096ba281e3dbbf0584e34bad08e1e3219d2ce8d1a5e4b",
+          "hard": "d71cce4a2668b3ce595cbd77f27b23a50e337b277977bb419a5ab579d1b859f0"
+        }
+      },
+      "rights": {
+        "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100851",
+        "license": "CC-BY-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "\"Cut and Run\" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License.",
+        "changes": "Packaged original downloaded MP3 bytes unchanged. Analysis and generated maps are separate; previews use playback offsets without editing the file."
+      }
+    },
+    {
+      "slug": "rhinoceros",
+      "title": "Rhinoceros",
+      "artist": "Kevin MacLeod",
+      "role": "showcase",
+      "audioUrl": "/assets/tracks/rhinoceros/audio.mp3",
+      "durationMs": 203809.5238095238,
+      "bpm": 126,
+      "preview": {
+        "startMs": 1947.4376417233561,
+        "durationMs": 15000
+      },
+      "difficultyMaps": {
+        "easy": "/assets/tracks/rhinoceros/easy.json",
+        "normal": "/assets/tracks/rhinoceros/normal.json",
+        "hard": "/assets/tracks/rhinoceros/hard.json"
+      },
+      "generatorVersion": 4,
+      "warnings": [
+        "humanRhythmAndComfortReviewPending"
+      ],
+      "hashes": {
+        "audioSha256": "a73fa6059d078700c7d07d0c89343753acdaa368dc78f5c843bc23ec29036fec",
+        "canonicalPcmSha256": "a0b7110bb98873992482838181327f17623ca60f7b86070869e75aa5880eedd4",
+        "maps": {
+          "easy": "d81b64092c242c4ae99403f41ea8cfaad57c40cc519701804964acd7a980d3b1",
+          "normal": "4849ef0cc3ee466795802411e48f9c5f6b76b291a400e5ed9fe776309c5dae9c",
+          "hard": "90c1ce957cf9d93e8c4d056116957513861a8effbf0d792d470d74def35b0e46"
+        }
+      },
+      "rights": {
+        "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1500040",
+        "license": "CC-BY-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "\"Rhinoceros\" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License.",
+        "changes": "Packaged original downloaded MP3 bytes unchanged. Analysis and generated maps are separate; previews use playback offsets without editing the file."
+      }
+    },
+    {
+      "slug": "marty-gots-a-plan",
+      "title": "Marty Gots a Plan",
+      "artist": "Kevin MacLeod",
+      "role": "showcase",
+      "audioUrl": "/assets/tracks/marty-gots-a-plan/audio.mp3",
+      "durationMs": 168000,
+      "bpm": 140,
+      "preview": {
+        "startMs": 299.8639455782313,
+        "durationMs": 15000
+      },
+      "difficultyMaps": {
+        "easy": "/assets/tracks/marty-gots-a-plan/easy.json",
+        "normal": "/assets/tracks/marty-gots-a-plan/normal.json",
+        "hard": "/assets/tracks/marty-gots-a-plan/hard.json"
+      },
+      "generatorVersion": 4,
+      "warnings": [
+        "humanRhythmAndComfortReviewPending"
+      ],
+      "hashes": {
+        "audioSha256": "948e7a1253da8af51dc30b71b3c1c08deebaaf5454547367a23736d3df6a2667",
+        "canonicalPcmSha256": "29f526bcd404649d9c707afa45d6ba4fbdaf9b5eb3187b293b68116faf840876",
+        "maps": {
+          "easy": "b1f1347fd0a7680d82f0060c20a2d44e8b09ac9f11bfa5368cdf76ac23f5d25a",
+          "normal": "3e3175bbbc6aff1b1a0d46b44741522acff770c99a9d189be4eb8c2fd20edb3e",
+          "hard": "d107e80b546c77e4bf68ad1b2d2da44c66b552e8703b8202ee73419feda9501e"
+        }
+      },
+      "rights": {
+        "sourceUrl": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1500015",
+        "license": "CC-BY-4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "attribution": "\"Marty Gots a Plan\" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 4.0 License.",
+        "changes": "Packaged original downloaded MP3 bytes unchanged. Analysis and generated maps are separate; previews use playback offsets without editing the file."
+      }
     }
   ]
 }

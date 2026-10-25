@@ -60,7 +60,7 @@ npm run dev
 
 Open [localhost:5173](http://localhost:5173):
 
-1. Pick **Pamgaea**, **Electro Cabello** or **Cipher**, then Easy, Normal or Hard.
+1. Pick one of the eight local songs (use Next/Previous to browse), then Easy, Normal or Hard.
 2. Click **Enable sound** with your mouse or keyboard.
 3. Click **Watch auto-play**. The app prepares its 80-second cut and a fresh chart, then performs it.
 4. **Esc / Space** pauses. **Resume** continues, **Quit to music** returns to the menu, and **Play again** restarts from results.
@@ -152,6 +152,8 @@ Run `node scripts/chart-report.mjs` from the root to inspect every installed cha
 | Hard | 1.15–1.47 | 5 |
 
 Across all nine maps: **812 slices · 716 smashes · 115 beams · 129 walls**, with **zero unplayable notes** reported by the planner. Densities above are displayed to two decimal places; the receipt retains exact values. Electro Cabello and Cipher use confident beat tracking; Pamgaea retains its disclosed onset-only fallback. See the [music registry](app/public/assets/tracks/README.md) for per-chart counts, hashes and analysis provenance. Independent music annotations and player comfort checks remain open.
+
+The current library adds five songs for eight originals and 24 charts; the numbers above retain their explicitly dated three-song source. See the [eight-song receipt](docs/evidence/2026-10-25-eight-song-library.md) for that expansion and its separate checks.
 
 ## How it works
 
@@ -246,7 +248,7 @@ The numeric browser-audio harness needs Chrome (or `BROWSER_BINARY`) and ffmpeg.
 
 ## Roadmap
 
-- [x] Local three-song library, nine generated difficulty charts and fresh 80-second arrangements.
+- [x] Local eight-song library, 24 generated difficulty charts and fresh 80-second arrangements.
 - [x] Slice, smash, beam and lean judgement; scores, combos, pause/retry and results.
 - [x] Rigged holographic avatar, distinct target families, authored arena and synthesized SFX.
 - [x] Synthetic auto-play through the real input and scoring pipeline.
@@ -266,7 +268,7 @@ The separate `training/` pipeline trained a 13-joint upper-body model on COCO an
 
 **Code, original geometry and synthesized sound effects:** [MIT](LICENSE). All 28 SFX are generated from original code, with no third-party recordings; [recipes and measured receipts](assets-src/audio/sfx-receipt.json).
 
-**Music:** “Pamgaea”, “Electro Cabello” and “Cipher” — Kevin MacLeod ([incompetech.com](https://incompetech.com/)), licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/). Original bundled MP3s are unchanged. In-app arrangements select a continuous excerpt and apply fades; screenshots/GIFs contain no audio. [Full per-track credits, sources and changes](app/public/assets/tracks/README.md).
+**Music:** “Pamgaea”, “Electro Cabello”, “Cipher”, “Chipper Doodle v2”, “Funkorama”, “Cut and Run”, “Rhinoceros” and “Marty Gots a Plan” — Kevin MacLeod ([incompetech.com](https://incompetech.com/)), licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/). Original bundled MP3s are unchanged. In-app arrangements select a continuous excerpt and apply fades; screenshots/GIFs contain no audio. [Full per-track credits, sources and changes](app/public/assets/tracks/README.md).
 
 **Fonts:** Orbitron and Rajdhani, [SIL Open Font License 1.1; retained notices](app/public/assets/fonts/README.md).
 

@@ -30,6 +30,19 @@ describe('bundled runtime loader isolation', () => {
     await expect(loadBundledMap(manifest.tracks[0], 'easy')).rejects.toThrow('chart hash mismatch');
     expect((await loadBundledMap(manifest.tracks[1], 'easy')).song.title).toBe('Electro Cabello');
   });
+  it.each(manifest.tracks)(
+    'loads $title and each difficulty entirely from packaged assets',
+    async (entry) => {
+      localFetch();
+      for (const difficulty of ['easy', 'normal', 'hard']) {
+        const map = await loadBundledMap(entry, difficulty);
+        expect(map.song.title).toBe(entry.title);
+        expect(map.generatorVersion).toBe(entry.generatorVersion);
+      }
+      expect((await loadBundledAudioBytes(entry)).byteLength).toBeGreaterThan(100000);
+      expect(globalThis.fetch.mock.calls.every(([url]) => url.startsWith('/assets/tracks/'))).toBe(true);
+    },
+  );
   it('does not turn absent music into a fabricated playable selection', async () => {
     vi.stubGlobal(
       'fetch',

@@ -4,6 +4,13 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — PR audit: eight-song integration
+
+- Codex independently checked all music/chart hashes, receipt identities, official attribution pages and planner validation. The integrator preserved current camera/menu behavior and historical README evidence while combining the larger catalog with main; full application and documentation checks passed.
+
+## 2026-10-25 — Eight-song licensed library (issue #2)
+
+- Codex verified the official CC-BY 4.0 acquisition templates, packaged five unchanged full songs with source/hash receipts, regenerated all 24 maps using the current main generator, and extended integrity, gapless, loader and paging assertions. After the awaited upstream chart branch landed, it integrated generator changes normally, regenerated the entire pack, and expanded upstream readability/performer checks and diagnostics to every song. The final acceptance freeze uses generator v4 from upstream 09671b7. Later upstream asset work was preserved with a normal merge and full revalidation. Actual local-browser selection/credits outcomes are recorded separately in the issue's evidence; no music-quality or live-camera proof is inferred.
 ## 2026-10-25 — PR audit: current player controls and guide links
 
 - Codex reviewed PR #7 against current main, normally integrated its showcase README/camera changes, corrected player control and cancellation instructions, repaired the removed README fragment and revalidated local documentation. The integrator then merged PR #6 normally and made the documented check sequence current. Existing screenshots remain explicitly tied to their recorded source; no new runtime or live-camera evidence is claimed.

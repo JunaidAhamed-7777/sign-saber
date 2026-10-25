@@ -1,0 +1,80 @@
+{
+  "recordedAt": "2026-10-24T22:33:05.214Z",
+  "gitHead": "cfdcc408947658716222f2f48c184411917e564e",
+  "dirtyTree": true,
+  "scope": "Latest-main integration: eight-song local Normal selection, preview, exact attribution and paging after renderer/UI updates. Full 24-map browser proof is in the preceding report.",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 900,
+      "selectedSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "difficultyMapsSelected": 8,
+      "originalPreviewStartedAndStopped": true,
+      "creditSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "exactAttributions": true,
+      "cspViolations": [],
+      "consoleErrors": [],
+      "httpFailures": [
+        {
+          "url": "http://127.0.0.1:55486/favicon.ico",
+          "status": 404
+        }
+      ],
+      "musicHttpFailures": [],
+      "requestCount": 30
+    },
+    {
+      "width": 1024,
+      "height": 640,
+      "selectedSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "difficultyMapsSelected": 8,
+      "originalPreviewStartedAndStopped": true,
+      "creditSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "exactAttributions": true,
+      "cspViolations": [],
+      "consoleErrors": [],
+      "httpFailures": [],
+      "musicHttpFailures": [],
+      "requestCount": 29
+    }
+  ],
+  "outsideRequests": [],
+  "browser": "Chrome/155.0.8059.86",
+  "passed": true
+}

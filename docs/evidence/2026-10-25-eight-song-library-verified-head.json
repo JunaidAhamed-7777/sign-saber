@@ -1,0 +1,46 @@
+{
+  "recordedAt": "2026-10-24T22:51:09.228Z",
+  "codeHead": "0ec036c0474acbc7983038d239fb3e881fad72b4",
+  "scope": "Refresh actual last-song selection, music paging and all credits after main footer/ARIA updates; full24-map/eight-song evidence remains in earlier reports.",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 900,
+      "selectedSlug": "marty-gots-a-plan",
+      "creditSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "exactAttributions": true,
+      "cspViolations": [],
+      "consoleErrors": []
+    },
+    {
+      "width": 1024,
+      "height": 640,
+      "selectedSlug": "marty-gots-a-plan",
+      "creditSlugs": [
+        "pamgaea",
+        "electro-cabello",
+        "cipher",
+        "chipper-doodle-v2",
+        "funkorama",
+        "cut-and-run",
+        "rhinoceros",
+        "marty-gots-a-plan"
+      ],
+      "exactAttributions": true,
+      "cspViolations": [],
+      "consoleErrors": []
+    }
+  ],
+  "outsideRequests": [],
+  "browser": "Chrome/155.0.8059.86",
+  "passed": true
+}

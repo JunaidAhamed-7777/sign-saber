@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T07:55:00+05:30 — Forgiving contact: slower blocks, bigger hit zones, any hand shape
+
+- Changed: Blocks approach 2.17× slower than authored (another 55% on top of 1.4×). The judged contact zone is 2.5× the visible block and palm radius (`HIT_ZONE_SCALE`, applied by the session; contact geometry functions stay exact). Slash and smash blocks are hit by any hand moving at least `CONTACT_MIN_SPEED` through the zone, regardless of gesture; wrong-gesture bad cuts are gone. Beams still need a point. Tests updated (runtime count-in waits for play; lane-relative session positions; performer no longer asserts Perfect timing because larger zones register earlier).
+- Why: User live testing with webcam latency.
+- Validation: Full `npm run check` passed (567 tests); every planned performer note on all nine charts is still hit.
+- Limits: Larger zones make contact earlier, so more hits judge Great/Good; neighbouring lanes' zones can overlap.
+
 ## 2026-10-25T07:30:00+05:30 — Slower blocks and wider lanes
 
 - Changed: Blocks approach 1.4× slower at runtime (`APPROACH_SLOWDOWN`, applied to the session and renderer for every mode). Lane centres moved outward from ±0.6/±1.8 m to ±1.2/±2.15 m so hits happen away from the torso. Session tests now position cursors relative to the lanes.

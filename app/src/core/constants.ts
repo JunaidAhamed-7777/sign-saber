@@ -16,7 +16,11 @@ export const CAM_FOV_DEG = 55,
   BEAM_HOVER_Y_OFFSET = 0.6;
 export const APPROACH_MS = { easy: 2600, normal: 2000, hard: 1600 } as const;
 /** Runtime multiplier on chart approach time: slower blocks absorb camera/inference delay. */
-export const APPROACH_SLOWDOWN = 1.4;
+export const APPROACH_SLOWDOWN = 2.17;
+/** Contact zone scale over the visible block and palm radius; generous for webcam play. */
+export const HIT_ZONE_SCALE = 2.5;
+/** Minimum hand speed (m/s) for a block contact; gesture shape is not required. */
+export const CONTACT_MIN_SPEED = 0.3;
 export const WINDOW_PERFECT_MS = 60,
   WINDOW_GREAT_MS = 120,
   WINDOW_GOOD_MS = 200;

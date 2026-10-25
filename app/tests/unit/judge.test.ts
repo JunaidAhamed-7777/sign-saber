@@ -10,6 +10,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { contactOutcome, judgeTiming, timingError } from '../../src/game/judge';
+import { CONTACT_MIN_SPEED } from '../../src/core/constants';
 
 describe('capture-time judgement', () => {
   it('includes exact boundaries and rejects fractional values outside each bucket', () => {
@@ -28,15 +29,12 @@ describe('capture-time judgement', () => {
     expect(timingError(980, 1000, 30)).toBe(10);
     expect(timingError(980, 1000, -30)).toBe(-50);
   });
-  it('gates committed gesture/speed combinations and never bad-cuts resting hands', () => {
-    expect(contactOutcome('slash', 'open', 2.49)).toBe('ignore');
-    expect(contactOutcome('slash', 'open', 2.5)).toBe('hit');
-    expect(contactOutcome('slash', 'fist', 1.2)).toBe('badcut');
-    expect(contactOutcome('slash', 'point', 0)).toBe('ignore');
-    expect(contactOutcome('smash', 'fist', 1.2)).toBe('hit');
-    expect(contactOutcome('smash', 'open', 2.5)).toBe('badcut');
-    expect(contactOutcome('smash', 'point', 9)).toBe('ignore');
-    expect(contactOutcome('beam', 'point', 9)).toBe('ignore');
-    expect(contactOutcome('slash', 'none', 99)).toBe('ignore');
+  it('hits slash and smash blocks with any moving hand shape and never bad-cuts', () => {
+    for (const gesture of ['open', 'fist', 'point', 'none'] as const) {
+      expect(contactOutcome('slash', gesture, CONTACT_MIN_SPEED)).toBe('hit');
+      expect(contactOutcome('smash', gesture, CONTACT_MIN_SPEED)).toBe('hit');
+      expect(contactOutcome('slash', gesture, CONTACT_MIN_SPEED - 0.01)).toBe('ignore');
+      expect(contactOutcome('beam', gesture, 9)).toBe('ignore');
+    }
   });
 });

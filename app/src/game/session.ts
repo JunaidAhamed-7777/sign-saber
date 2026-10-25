@@ -15,6 +15,8 @@ import {
   BEAM_CHARGE_MS,
   BEAM_REFIRE_LOCK_MS,
   GESTURE_CONFIDENCE_MIN,
+  HAND_HIT_RADIUS,
+  HIT_ZONE_SCALE,
   HIGHLIGHT_DEBOUNCE_MS,
   HIGHLIGHT_MIN_COMBO,
   INPUT_MAX_AGE_MS,
@@ -28,12 +30,7 @@ import {
 import { finite3, clamp, lerp } from '../utils/math';
 import { contactOutcome, judgeTiming, timingError } from './judge';
 import type { ContactOutcome } from './judge';
-import {
-  makeCutPlane,
-  obstacleSafe,
-  sweptBladeContact,
-  sweptPalmContact,
-} from './hit';
+import { makeCutPlane, obstacleSafe, sweptBladeContact, sweptPalmContact } from './hit';
 import { createLiveNote, createLiveObstacle, updateLiveNote, updateLiveObstacle } from './liveObjects';
 import type { LiveNote, LiveObstacle } from './liveObjects';
 import { ScoreState, rankFor } from './score';
@@ -297,14 +294,11 @@ export class GameSession {
       const candidate = this.candidatePool[index]!;
       candidate.outcome = 'ignore';
       for (const cursor of input.hands) {
-        if (!cursor.present || cursor.gestureConfidence < GESTURE_CONFIDENCE_MIN) continue;
+        if (!cursor.present) continue;
         const outcome = contactOutcome(live.note.type, cursor.gesture, cursor.speed);
         if (outcome === 'ignore') continue;
         const memory = this.hands[cursor.hand];
-        const sweepValid =
-          memory.present &&
-          memory.gesture === cursor.gesture &&
-          cursor.tCapture - memory.tCapture <= INPUT_MAX_AGE_MS;
+        const sweepValid = memory.present && cursor.tCapture - memory.tCapture <= INPUT_MAX_AGE_MS;
         const previousSong = sweepValid ? memory.songTime : songTime;
         const delta = songTime - previousSong;
         const begin = live.note.t - WINDOW_GOOD_MS * this.windowScale - this.inputOffsetMs;
@@ -315,7 +309,13 @@ export class GameSession {
         const previousPos = sweepValid ? memory.pos : cursor.pos;
         this.interpolate(previousPos, cursor.pos, alphaMin, this.scratch.a);
         this.interpolate(previousPos, cursor.pos, alphaMax, this.scratch.b);
-        let fraction = sweptPalmContact(this.scratch.a, this.scratch.b, live.target);
+        let fraction = sweptPalmContact(
+          this.scratch.a,
+          this.scratch.b,
+          live.target,
+          HAND_HIT_RADIUS * HIT_ZONE_SCALE,
+          HIT_ZONE_SCALE,
+        );
         if (cursor.bladeActive) {
           const oldLength = sweepValid ? (memory.bladeActive ? memory.bladeLength : 0) : cursor.bladeLength;
           const oldVel = sweepValid && memory.bladeActive ? memory.vel : cursor.vel;
@@ -340,6 +340,7 @@ export class GameSession {
             this.scratch.b,
             this.scratch.tip1,
             live.target,
+            HIT_ZONE_SCALE,
           );
           if (blade !== null) fraction = fraction === null ? blade : Math.min(fraction, blade);
         }

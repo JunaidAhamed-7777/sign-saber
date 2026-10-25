@@ -34,7 +34,9 @@ export const OBSTACLE_GRACE_MS = 120,
 export const SCORE_PERFECT = 100,
   SCORE_GREAT = 70,
   SCORE_GOOD = 40,
-  SCORE_DODGE = 50;
+  SCORE_DODGE = 50,
+  /** Points removed when the body touches a wall; walls never end or pause the run. */
+  SCORE_WALL_PENALTY = 100;
 export const MULTIPLIER_LADDER = [
   [0, 1],
   [5, 2],
@@ -127,6 +129,8 @@ export const BODY_FILTER_BETA = 0.02,
   BODY_SPEED_EMA = 0.5,
   LEAN_TILT_ASSIST_DEG = 15,
   DUCK_HYSTERESIS = 0.03;
+/** Steady, framed time after which camera setup confirms and live play counts in without a click. */
+export const CALIB_AUTO_CONFIRM_MS = 1500;
 export const CALIB_SAMPLE_MS = 500,
   CALIB_HAND_SEEN_MS = 2000,
   CALIB_ASSUMED_SHOULDER_M = 0.4;
@@ -516,6 +520,12 @@ export const DATASET_CAMERA_MANIFEST_URL = '/dataset-camera/manifest.json',
   DATASET_CAMERA_MATCH_SHOULDER_FRACTION = 0.5,
   DATASET_CAMERA_PCK_SHOULDER_FRACTION = 0.5;
 export const JUDGEMENT_TRACE_CAPACITY = 8192;
+// Synthetic performer reel: rendered avatar in a virtual front camera (docs05 §1.3).
+export const PERFORMER_REEL_RENDER_W = 960,
+  PERFORMER_REEL_RENDER_H = 540,
+  PERFORMER_REEL_CAMERA_DISTANCE_M = 3,
+  PERFORMER_REEL_IDLE_SONG_MS = -60000,
+  PERFORMER_REEL_TRUTH_POOL = 128;
 // ── End dataset-camera / judgement-trace block ──
 
 export const POOF_POOL = 6,
@@ -702,6 +712,10 @@ export const MENU_COMPACT_MAX_WIDTH_PX = 1099,
 export const HUD_TWEEN_TAU_MS = 90;
 /** Combo counts that trigger the HUD milestone callout. */
 export const HUD_COMBO_MILESTONES = [10, 25, 50, 100] as const;
+/** Half-width (viewport fraction) of the central torso band that judgement pop text is moved out of. */
+export const HUD_POP_TORSO_CLEAR_FRACTION = 0.09;
+/** Smallest broken combo that shows the HUD “Combo ended” note; shorter streaks break silently. */
+export const HUD_COMBO_BREAK_MIN = 5;
 // --- end interface layout and HUD presentation ---
 // --- Rigged upper-body avatar (docs/10 §Avatar; docs/18 §Avatar). Retargeting/presentation only; never scoring. ---
 export const AVATAR_URL = '/assets/models/avatar.glb';
@@ -751,8 +765,10 @@ export const AVATAR_IDLE = Object.freeze({
   curlRange: 0.12,
 });
 /** Menu placeholder placement on the play plane: avatar scale and hip height (play metres). */
-export const AVATAR_PLACEHOLDER_SCALE = 2.85,
-  AVATAR_PLACEHOLDER_HIP_Y = 0.12;
+/** In the arena the avatar shows its back to the viewer (the player looks over its shoulders into the lane). */
+export const AVATAR_FACE_AWAY = true;
+export const AVATAR_PLACEHOLDER_SCALE = 4.4,
+  AVATAR_PLACEHOLDER_HIP_Y = -0.3;
 /** Holographic material: rim colours (DESIGN cyan→violet), fill, fresnel power and gains. */
 export const AVATAR_RIM_COLOR_A = 0x19f5ff,
   AVATAR_RIM_COLOR_B = 0xb36bff,
@@ -780,3 +796,13 @@ export const BLADE_LENGTH_SPRING_RAD_S = 22,
   TRAIL_PARTICLE_SIZE_MAX_M = 0.035;
 export const SHATTER_PIECE_SCALE = 0.8,
   SHATTER_VISIBLE_FRACTION = 0.6;
+// Hit spark bursts (docs11 payoff): bounded pool, closed-form motion.
+export const HIT_SPARK_POOL = 10,
+  HIT_SPARKS = 28,
+  HIT_SPARK_SPEED_MIN = 1.8,
+  HIT_SPARK_SPEED_MAX = 5.2,
+  HIT_SPARK_LIFETIME_MS = 480,
+  HIT_SPARK_SIZE_M = 0.045;
+export const CAMERA_SHAKE_HZ = 12,
+  CAMERA_BASS_FOV_DEG = 0.5;
+export const TRAUMA_PERFECT = 0.15;

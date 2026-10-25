@@ -1596,23 +1596,56 @@ button:disabled,
 }
 .judgement-layer {
   position: fixed;
-  top: 36%;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
+  inset: 0;
   pointer-events: none;
+  overflow: hidden;
+}
+/* Pooled slots positioned by translate3d at the projected impact point. */
+.pop-slot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+}
+.pop-slot .judgement {
+  position: absolute;
+  left: 0;
+  bottom: 28px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  white-space: nowrap;
+}
+.pop-slot.side-left .judgement {
+  transform: translateX(-100%);
+  align-items: flex-end;
+}
+.pop-slot.side-right .judgement {
+  transform: none;
+  align-items: flex-start;
 }
 .judgement {
   font-family: var(--display);
-  font-size: clamp(28px, 3vw, 44px);
+  font-size: clamp(20px, 1.9vw, 30px);
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--cyan);
-  text-shadow: 0 2px 16px var(--void);
-  /* POP_LIFETIME_MS = 600 */
+  text-shadow:
+    0 0 2px var(--void),
+    0 2px 12px var(--void);
+  /* POP_LIFETIME_MS = 600: rise 60 px while fading. */
   animation: pop 600ms var(--ease-out) both;
+}
+.judgement small {
+  font-family: var(--body);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  font-variant-numeric: tabular-nums;
 }
 .judgement.perfect {
   color: var(--gold);
@@ -1622,46 +1655,120 @@ button:disabled,
   color: var(--text);
 }
 .judgement.miss {
-  color: var(--muted);
-  font-size: clamp(22px, 2.2vw, 32px);
+  color: var(--muted-strong);
+  font-size: clamp(16px, 1.4vw, 22px);
 }
 .judgement.badcut {
   color: var(--danger-text);
+  animation-name: pop-badcut;
 }
 @keyframes pop {
   0% {
-    transform: translateY(8px) scale(0.92);
+    translate: 0 8px;
+    scale: 0.92;
     opacity: 0;
   }
   18% {
-    transform: translateY(0) scale(1);
+    translate: 0 0;
+    scale: 1;
     opacity: 1;
   }
   70% {
     opacity: 1;
   }
   100% {
-    transform: translateY(-60px);
+    translate: 0 -60px;
     opacity: 0;
   }
 }
 @keyframes pop-perfect {
   0% {
-    transform: translateY(8px) scale(0.9);
+    translate: 0 8px;
+    scale: 0.9;
     opacity: 0;
   }
   18% {
-    transform: translateY(0) scale(1.15);
+    translate: 0 0;
+    scale: 1.15;
     opacity: 1;
   }
   35% {
-    transform: translateY(-10px) scale(1);
+    translate: 0 -10px;
+    scale: 1;
   }
   70% {
     opacity: 1;
   }
   100% {
-    transform: translateY(-60px);
+    translate: 0 -60px;
+    opacity: 0;
+  }
+}
+@keyframes pop-badcut {
+  0% {
+    translate: 0 0;
+    opacity: 0;
+  }
+  10% {
+    translate: -4px 0;
+    opacity: 1;
+  }
+  16% {
+    translate: 4px 0;
+  }
+  22% {
+    translate: 0 0;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    translate: 0 -40px;
+    opacity: 0;
+  }
+}
+/* Combo break: a short danger tint on the ring and count, plus a fading note. No scene shake. */
+.combo-broke .hud-ring-track {
+  animation: ring-break 0.5s var(--ease-out) both;
+}
+.combo-broke .hud-combo-count {
+  animation: count-break 0.5s var(--ease-out) both;
+}
+@keyframes ring-break {
+  from {
+    stroke: var(--danger);
+  }
+}
+@keyframes count-break {
+  from {
+    color: var(--danger-text);
+    translate: 0 4px;
+  }
+}
+.hud-combo-lost {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-top: 6px;
+  translate: -50% 0;
+  font-family: var(--body);
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--danger-text);
+  animation: combo-lost 1.6s var(--ease-out) both;
+}
+@keyframes combo-lost {
+  0% {
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
     opacity: 0;
   }
 }

@@ -2,6 +2,23 @@
 
 The user requested this checkpoint and is handing the repository to another agent. History is preserved; only the integrator committed and pushed. Start with git status, AGENTS.md, README.md, ROADMAP.md, DESIGN.md, docs/README.md and relevant numbered specs. No P0–P5 release gate is declared complete.
 
+## Latest round (2026-10-25, seven parallel agents, integrated on main)
+
+What now works end to end without a camera:
+
+- **Watch synthetic performer**: a chart-planned performer (`app/src/performer/`) plays the selected chart through the real input pipeline, judge, renderer, SFX and results. Logic replay hits every planned note on all nine bundled charts (`app/tests/performer.test.mjs`). Synthetic only — not webcam evidence.
+- **Dataset camera**: `?camera=dataset` (or Settings → Use dataset camera) feeds real COCO photos, or `&reel=performer` the posed avatar, through the unchanged live camera path. Harness: `scripts/prepare-dataset-camera.mjs` then `scripts/dataset-camera-trial.mjs`. Evidence: [dataset camera trial](docs/evidence/2026-10-25-dataset-camera-trial.md). It fixed an inverted handedness mapping (~92% wrong before).
+- **Rigged 3D avatar** (Blender, `avatar.glb`) replaces the SVG/line figure in menu, setup, play, pause and results; driven by tracked or performer landmarks.
+- **Distinct targets**: slash slab, cracked smash cube, distant beam orb, each with its own break; blade ribbons, sparks, bloom, layered arena.
+- **Charts v4**: capped density (≤3/4/5 on screen), balanced slash/smash/beam, per-hand gaps; beat-confident Electro Cabello and Cipher.
+- **Original synthesized SFX** wired to gameplay/menu events; rebuilt interface with in-world judgement pops and gesture breakdown.
+- Fixes: bundled MP3s failed in embedded Chromium (gapless trim), playback decoded at 22 kHz, `ONE_EURO_BETA` lagged fast swings (0.08 → 10).
+- Training: partial COCO+MPII run (25% of steps), PCK@0.2 0.334 on oracle crops; not used by the game ([status](training/STATUS.md)).
+
+By user request the in-game avatar now faces away from the viewer, the menu buttons read **Play level** / **Watch auto-play**, and visible "dataset / synthetic / no camera" banners and captions were removed (exported diagnostics still record the source lane). Camera integration is paused until the user asks for it.
+
+Open: a consenting live-webcam session, the dataset-camera performer reaching Results on an idle machine, avatar head tilt in the natural render, listening checks for SFX, and the GitHub issues labelled `chatgpt` (#1–#5).
+
 ## Current direction
 
 Prioritize the dataset level trial, Blender assets/background and dynamic 10 s fade-in → 60 s highlight → 10 s fade-out arrangements. Camera tuning is secondary. Keep only head, arms and torso through hips in input, placeholder and every figure. Use agents with temporary boundaries and one integrator. Commit small tested increments frequently and push origin/main without force or co-author trailers.

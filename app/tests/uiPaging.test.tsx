@@ -72,7 +72,8 @@ describe('figure-centred paged menu structure', () => {
     for (const track of firstPageTracks) expect(ids).toContain(`song:${track.slug}`);
     for (const track of manifest.tracks.slice(MENU_LIBRARY_PAGE_SIZE))
       expect(ids).not.toContain(`song:${track.slug}`);
-    expect(ids).not.toContain('camera');
+    // Camera setup is a first-page action, not buried in Settings.
+    expect(ids).toContain('camera');
     expect(ids).toContain('audio');
     expect(ids).toContain('dataset-trial');
     expect(ids).toContain('performer-trial');
@@ -101,6 +102,7 @@ describe('figure-centred paged menu structure', () => {
       'ui:compact-top:next',
       'ui:compact:previous',
       'audio',
+      'camera',
       'dataset-trial',
       'performer-trial',
       'ui:compact:next',
@@ -199,7 +201,7 @@ describe('figure-centred paged menu structure', () => {
       expect.arrayContaining(['difficulty:easy', 'difficulty:normal', 'difficulty:hard']),
     );
     expect(html).not.toMatch(/data-target="dataset-trial"[^>]*disabled/);
-    expect(html).not.toContain('data-target="camera"');
+    expect(html).toContain('data-target="camera"');
   });
   it('keeps confirmation disabled until framing, then shows preparation with persistent Back when armed', () => {
     useStore.setState({

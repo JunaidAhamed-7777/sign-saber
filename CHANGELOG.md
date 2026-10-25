@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:44:14+05:30 — Audit PR #8 and preserve current menu integration
+
+- Changed: Normally merged main including PR #6, preserved current README and camera-on-first-page behavior, retained bounded eight-song paging assertions, and updated current README library/credit counts while leaving historical measurements source-labelled.
+- Why: Review verified the eight MP3s, 24 charts, acquisition/generation receipts and official attribution pages; current main's menu test expectations needed combining with the larger catalog.
+- Validation: Full npm run check passed (560 application tests, typecheck/lint/build, three bundle regressions); all ten chunks pass. Docs tests (2), link checker and whitespace check passed. Shared runtime asset validators and synthetic planner accept all 24 maps with zero unplayable notes.
+- Limits: No new human music-quality, webcam, comfort or performance gate is claimed.
+
 ## 2026-10-25T04:54:57+05:30 — Freeze all eight songs on generator v4 from main 09671b7
 
 - Changed: Froze the issue #2 acceptance checkpoint on upstream 09671b7, which adds real tempo-period refinement and generator version 4 alongside other upstream work. Normally integrated it and regenerated all 24 maps/receipts/manifest again through the shared script. Resolved generated JSON through regeneration and reconciled the music registry without losing the five additions. Updated current version/confidence docs, retained the v4 chart diagnostic/browser report, and refreshed the actual PNGs. Original audio bytes, acquisition/attribution receipts and canonical PCM hashes are unchanged.
@@ -41,12 +48,90 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: Fulfil issue #2's 3 → 8 licensed local library, with catalog tempo/genre variety (92–140 BPM for the additions), measured durations of 168–214.766 seconds and preserved source identity.
 - Validation: Official catalog/track-page license templates verified at acquisition; all hashes/receipts retained. Shared generation/validator passed all 24 maps. Full npm run check on cfdcc40 passed typecheck, lint, 48 suites/380 assertions and production build; scoped Prettier checks passed. Root docs tests passed 2/2 and the link checker passed. Native Chrome 155/SwiftShader at 1440×900 and 1024×640 selected all eight songs/all 24 difficulties, started/stopped the original preview, paged the library and checked all eight exact credits offline. After main's renderer/UI merge, another browser run repeated all eight Normal selections/credits/preview at both sizes. Reports and inspected screenshots are linked from docs/evidence/2026-10-25-eight-song-library.md.
 - Limits: No live-camera, human musical-quality, comfort or performance claim. The existing large-bundle warning belongs to issue #1; unrelated favicon 404 responses remain recorded. Initial shared-cache install failure, three obsolete paging assertions and two browser-driver failures are disclosed in the evidence; the corrected checks pass. Final integration with any newer remote main is recorded separately.
+## 2026-10-25T06:05:00+05:30 — Camera play on the main menu
+
+- Changed: **Set up camera** sits next to Enable sound on the first play page. Once calibrated, the main action becomes **Play with camera** (live play); Watch auto-play and Play level stay available. Holding a steady, framed pose for `CALIB_AUTO_CONFIRM_MS` confirms camera setup and starts the live count-in without returning to the mouse.
+- Why: User asked to integrate the camera properly; setup and live start were hidden in Settings and required mouse clicks while standing back.
+- Validation: Full `npm run check` passed. Live webcam behaviour still needs the user's hands-on test.
+- Limits: No consented live session has been recorded by the agent.
+
+## 2026-10-25T05:45:00+05:30 — Walls only cost points
+
+- Changed: A wall hit now deducts `SCORE_WALL_PENALTY` (100, floored at zero) and no longer breaks the combo. Walls never pause or stop the run: frames without a body cannot hit a wall, and an unobserved wall passes with neither penalty nor reward. Merged the remote README showcase (#10) with the user's local README edit.
+- Why: User direction — touching a red wall should just reduce points. The old body-tracking pause during walls made live play feel like it ended whenever tracking flickered.
+- Validation: Full `npm run check` passed (482 tests), including new score and session assertions.
+- Limits: No live-camera play yet; that integration follows.
+
+## 2026-10-25T05:41:22+05:30 — Audit and integrate PR #6 bundle enforcement
+
+- Changed: Normally integrated current main, preserving its README and camera/game changes. CI now runs the complete application check including bundle budgets. Added the existing postprocessing dependency to its own chunk; no dependency or runtime feature was added.
+- Why: Review found CI skipped the budget command, and the integrated application entry measured 530999 bytes, exceeding the unchanged 500000-byte limit.
+- Validation: Full npm run check passed (482 application tests, three budget regressions, typecheck/lint/build); all ten chunks pass, largest 363984 bytes. Docs checker tests (2) and local-link checker passed. A fresh headless production-menu smoke reached SELECT with three songs and a canvas, with zero runtime errors; browser cleanup is recorded separately if it fails.
+- Limits: This validates build integration and camera-free startup, not live-camera play, audible synchronization or release performance gates.
+## 2026-10-25T05:35:00+05:30 — README quick start
+
+- Changed: Rewrote the README run section as a quick start: requirements, clone/install/run commands, the play flow (pick song, Enable sound, Watch auto-play or Play level, pause), gesture summary, command table and troubleshooting.
+- Why: User asked for how-to-run instructions in the README.
+- Validation: Documentation checks passed.
+- Limits: Camera play is described as a later step; it is paused by the user.
+
+## 2026-10-25T05:25:00+05:30 — Synthetic performer reel for the dataset camera
+
+- Changed: new `tracking/performerReel.ts` renders the skinned avatar (`AvatarFigure.poseFromJoints`, natural variant, no outline) in a plain room from a virtual front camera framed to `PERFORMER_SHOULDER_WIDTH_NORM`, posed each frame from `Choreography`/`performerJoints` on the session song clock (rest pose outside a session; arm and face depth from the rig's proportions), drawn into the dataset-camera canvas. Enabled with `?camera=dataset&reel=performer`; evidence lane `dataset-camera-synthetic-performer` (reels may now declare their lane; the runtime keeps the last lane after the camera stops). `?stats=1` diagnostics expose the current dataset frame image (never for a webcam). Harness lane `performer` (low tier) saves the rendered camera frame. Registered the PERFORMER_REEL_* constants.
+- Why: exercise the real camera → MediaPipe → scoring path with a moving performer.
+- Validation: `npm run check` 424 tests in 50 files and build passed; trial: MediaPipe detected pose and both hands in 100% of rendered frames, handedness 690/690. Calibration was not accepted at 3.5 Hz / 311 ms inference under 82–86% machine load, so no notes were scored through the camera.
+- Limits: synthetic render, not a person or webcam; the avatar's head renders tilted (face error ~0.5 shoulder widths); play-to-results comparison with the logic replay still needs an idle machine.
+
+## 2026-10-25T05:22:18+05:30 — Showcase README with real browser media and measured evidence
+
+- Changed: Rebuilt `README.md` around real auto-play footage, a screenshot feature grid, exact run instructions, gesture controls, Mermaid architecture, measured numbers, source layout, roadmap and asset credits. Added `docs/media/`, the reusable `scripts/capture-readme.mjs` browser harness and `docs/evidence/2026-10-25-readme-metrics.json`; updated `AI_USAGE.md`. Application source is unchanged from remote main `30572bb9cdbe345b79e8e48279019bd7d8b59877`.
+- Why: Make the project page demonstrate its working interactions while replacing stale test/asset/training counts with source-identified evidence. Synthetic auto-play, static annotations, dataset-camera inference and separate training results retain their distinct scopes.
+- Validation: Fresh-worktree install succeeded with an isolated npm cache after the default cache failed with ENOENT/corrupt-tarball warnings. `npm run check` passed typecheck, lint, 481 tests in 55 files and production build. Targeted performer replay passed 13/13: all 1,643 notes Perfect across nine full charts, zero bad cuts/wall collisions. Chart report and asset structural checks passed; asset regressions 3/3; all 56 synthesized full/Calm renders matched the receipt. Real headless Chrome UI completed an 80-second Normal Pamgaea arrangement: 84 Perfect, zero misses/bad cuts, 100.0% accuracy, score 54,700 and rank SS. Capture script syntax and whitespace checks passed. Final documentation tests passed 2/2; 49 Markdown files and 574 local links checked with zero errors. All three GIFs/five screenshots were visually reviewed; ffprobe verified GIF dimensions/durations/frame counts, and all eight media lengths/SHA-256 hashes match the capture receipt.
+- Limits: Captures use synthetic hands through the real judge, not a webcam. Retained COCO photo and oracle-crop training measurements were not rerun. Latest main still emits a >500 kB JavaScript chunk warning; measured entry size is 1,373,350 raw / 412,107 gzip-level-9 bytes. The capture retained a Three.js non-indexed-geometry warning; no runtime exception or live-camera/FPS/latency/release claim was introduced.
+
+## 2026-10-25T05:20:00+05:30 — Back-facing avatar and neutral run labels
+
+- Changed: The arena avatar is rotated 180° so the viewer sees its back; tracking/performer joints keep their screen sides and forward reach goes into the lane (`AVATAR_FACE_AWAY`). The virtual-camera performer pose still faces the camera. Removed the visible dataset/synthetic/no-camera banner, status, captions and pre-roll copy; buttons now read **Play level** and **Watch auto-play**. Added HANDOFF summary of the multi-agent round.
+- Why: Direct user requests: avatar back turned to the player, and no on-screen "dataset instead of camera" wording. Camera integration is paused by the user.
+- Validation: Full `npm run check` passed (481 tests). Exported diagnostics still name the source lane.
+- Limits: Hand shapes on the turned avatar use reflected landmark geometry; not tuned.
+
+## 2026-10-25T04:58:00+05:30 — Rigged avatar replaces the outline and line figure
+
+- Changed: `render/renderer.ts` loads `avatar.glb` (tier `AVATAR_TIER_FIGURE`; low tier and load failure keep the line skeleton) and drives it from tracking/dataset/synthetic frames, an illustrative idle in the menu placeholder (static in Calm), a frozen pose when paused and the saved pose in results; the mask silhouette and line skeleton hide while the avatar shows. The avatar draws after the arena and before a depth-clear sentinel so all targets/effects render over it, in both the post-FX and direct paths. `MenuShell` `Figure` shows the SVG outline only when the avatar failed or is disabled and reports the placeholder state to the renderer. Fixed side mapping for ears/eyes/hand points in retargeting. Placeholder scale/height retuned.
+- Why: The user asked for a moving person model built on the tracked skeleton instead of the stick outline and thin lines.
+- Validation: typecheck and lint clean; 480/480 tests across 54 files. Embedded browser at 1440×900: menu idle shows the holographic avatar; "Watch synthetic performer" pre-roll and play show it driven by the performer with hands on the cursor rings and open/fist hand shapes, targets drawn over it.
+- Limits: No live webcam exercise; dataset-trial visual check not repeated after the merge; no GPU timing. Holographic material and proportions are a first pass.
+
 ## 2026-10-25T04:50:00+05:30 — Blade ribbons, hand particles and a cleaner shatter
 
-- Changed: `render/blade.ts` adds per-hand blade ribbons (white-hot core plus tinted additive glow) rebuilt into preallocated buffers from the measured `HandCursor.history`, uniformly resampled by arc length, drawn length eased by a critically damped spring (`BLADE_LENGTH_SPRING_RAD_S`), reset on reacquisition and guarded against degenerate tangents. `render/trails.ts` adds tier-sized GPU particles per hand (two-ring orbit, fist knot, point cone; band-driven orbit speed, twinkle off in Calm) that elongate onto the blade spine. The renderer feeds the latest cursors (visual only) and hides trails in results/paused. Shatter pieces start at `SHATTER_PIECE_SCALE`, vanish by `SHATTER_VISIBLE_FRACTION` of the lifetime, use saturated magenta cross-sections and darker rims; the dev preview no longer has a hands toggle.
-- Why: The doc 12 blade/particle look was missing and busy smash runs still filled the near field with pale pieces.
-- Validation: New `tests/renderTrails.test.ts` (4 assertions: monotone growth to the measured length, hilt on the palm, retract/reset, no NaNs on stationary history, tier draw ranges). Typecheck, lint and build pass; full vitest 364/366 — the two failures are arrangement-audio tests timing out under concurrent Blender/Chrome load (20–60 s each), unrelated to rendering. Native Chrome synthetic-performer screenshots (planned motion, no camera) inspected.
-- Limits: Tip sparks, beam-noise cylinder and hit spark bursts are not implemented; no allocation profile or GPU timing was measured.
+## 2026-10-25T04:49:34+05:30 — Partial COCO + MPII run evaluated and exported
+
+- Changed: Compact dataset storage so worker processes no longer get a pickled copy of every index row (40.5 MB down to 12.9 MB per worker; items are byte-identical on 36 checked samples). Training now uses 1 DataLoader worker, and export checks the training contract instead of the raw config hash. STATUS.md/STATUS.json, training/README.md and README.md now record the partial run.
+- Why: The user asked to wrap up. The run was stopped at step 1,800 of 7,210 while the machine was memory-thrashing.
+- Validation: Full held-out evaluation (3,776 people, oracle crops): heatmap loss 0.00416 and pooled PCK@0.2 0.334 (COCO 0.393, MPII 0.310), compared with the untrained head (0.01808 / 0.016), the 3-step preflight (0.02128 / 0.014) and a mean-pose-in-crop guess (PCK 0.093). ONNX parity passed on 16 crops (1.8e-6). Unit tests pass 12/12.
+- Limits: This is a partial run: one epoch plus 358 batches, and the schedule never annealed. Results use oracle crops, with no detector and no browser or webcam evaluation. The model was not promoted, and the game keeps MediaPipe.
+
+## 2026-10-25T04:47:08+05:30 — Browser check of the synthesized SFX in the performer trial
+
+- Changed: Documentation only (this entry).
+- Why: Record what the headless browser run of the new SFX wiring actually showed.
+- Validation: Production build served by `scripts/serve.mjs` in headless Chrome (48 kHz, reported output latency 40 ms), driven over CDP with trusted clicks: Pamgaea → Enable sound → hover three buttons → Watch synthetic performer, one Escape pause and Resume, run to results. A read-only page probe counted buffer starts by shape: uiEnable 1, uiHover 3, countNeutral 3 (scheduled exactly −2.000/−1.339/−0.673 s before song start; final tick rate 1.25), smash 69, slash 58, sparkle 130, glint 1, zap 4, poof 4, charge 4, combo 3 (rates 1–1.498), milestone 4 (rates 1–2), wallWarn 2 (scheduled ahead, panned −0.55 toward the left wall), dodge 2, resume 2, resultsHigh 1; hit pans spanned −0.55…0.55, jitter rates 1.01–1.05. Analyser taps measured peak 0.623 on the master output and 0.654 after the SFX limiter, with no full-scale samples. No console errors.
+- Limits: Headless output, nothing heard; analyser polling every 20 ms can miss short peaks. The Vite dev server could not be used for a long run because the pinned HMR socket fails and reloads the page. The second `resume` cue was not traced.
+
+## 2026-10-25T04:43:58+05:30 — Judgement pops at the hit position and combo-break note
+
+- Changed: `core/judgementPops.ts` keeps a pooled `MAX_POPS` queue of terminal judgements with world positions (impact point for hits, hit-plane note position for Miss/Bad Cut) and Great/Good timing error; the runtime pushes on `note:hit`/`note:miss`/`note:badcut`, prunes after `POP_LIFETIME_MS` at the UI tick (so Calm pops also expire) and clears outside PLAYING/PAUSED. The HUD projects each pop through `ui/projection.ts` (mirrors the static play camera: `CAM_POS`, `CAM_LOOK_AT`, `CAM_FOV_DEG`, full viewport) into six pooled slots, moving text out of the central `HUD_POP_TORSO_CLEAR_FRACTION` band; the central single judgement was removed. Breaking a combo of at least `HUD_COMBO_BREAK_MIN` briefly tints the ring/count and shows “Combo ended · N” (cleared by the next hit); no scene shake. Removed the interim `judgementSeq` field. Both constants are registered in docs02.
+- Why: Requested positional pops and readable, non-punishing combo-break feedback.
+- Validation: Typecheck, lint, 426/426 tests in 51 files (new queue test; HUD test renders a projected Great with timing), build, prettier and docs checks passed.
+- Limits: Not screenshot-verified in a browser this step; the projection must follow any future camera choreography. The compact pre-roll overlap item was not started.
+
+## 2026-10-25T04:42:00+05:30 — Hit spark bursts and subtle gameplay camera response
+
+- Changed: `render/sparks.ts` adds a bounded spark pool (`HIT_SPARK_POOL` × `HIT_SPARKS`, one additive Points draw, closed-form motion, seeded directions) for Slash hits (spray flattened into the cut plane) and Smash hits; tier count follows the poof preset and Calm halves it. `render/cameraRig.ts` adds trauma-based smooth value-noise shake (hits, perfect, bad cut, obstacle, kick, drop; capped by `SHAKE_MAX_M`/`SHAKE_MAX_ROLL_DEG`) and a `CAMERA_BASS_FOV_DEG` breath, active only in play and never in Calm.
+- Why: Hit payoff and kinetic response from docs 11–13, kept restrained per the user's playability request.
+- Validation: Lint, build and 64 render/quality/slicer assertions pass; synthetic-performer trial screenshot in native Chrome inspected (planned motion, no camera).
+- Limits: No frame-safety projection test for the shake, no GPU timing, no flashing review.
 
 ## 2026-10-25T04:41:00+05:30 — Dataset camera trial evidence and docs
 
@@ -54,6 +139,19 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: record what works and fails through the real camera path.
 - Validation: `npm run check` 367 tests in 48 files and build passed; docs tests 2/2 and docs checker 0 errors. Trial: canvas stream and Chrome fake webcam both reached GPU preview; pose detected on 24/24 photos; median per-photo joint error 0.118 shoulder widths; handedness agreement 369/393 under the new mapping; calibration with the declared-rule photo never framed (one hand); with the measured photo framing became ready but Confirm was not accepted under 2.6–5.5 Hz tracking.
 - Limits: whole-machine CPU was 52–100% busy before and ~100% during lanes from unrelated training/Blender/agent work, so timings are not performance evidence and the play → Results → Retry flow was not reached. Still photos only; not webcam evidence.
+
+## 2026-10-25T04:38:46+05:30 — Keep the bundle PR current with generator v3 and target assets
+
+- Changed: Normally integrated main `87032d0`, refreshed production-preview evidence and visually inspected menu/performer WebP captures. Updated docs16; application/runtime code remains unchanged by issue #1.
+- Why: Keep the open PR valid after the chart/avatar/target work landed without reusing old-source results as new proof.
+- Validation: `npm run check` passed (typecheck/lint, 424 assertions/50 suites, production build without a chunk-size warning, three budget regressions). All eight JS chunks pass; the entry is 443013 raw/161024 gzip bytes. Real dataset results: 86 Miss/0 hits; synthetic results: 86 Perfect/0 misses; Songs return passed after both. Menu and play captures show the arena. Root documentation tests/checker and whitespace checks are rerun before commit.
+- Limits/failures: Application assertions passed at `18745d446601dee57176078eef22ea87ab5d2a5c`; one upstream geometry warning and favicon 404s are retained. The temporary probe later exited 1 during optional profile cleanup (Windows EBUSY lockfile), and the profile was left safely in place. The JSON separates this cleanup failure from application results. No performance gain, live-camera or release completion is claimed. Earlier source-identified measurements remain intact.
+## 2026-10-25T04:39:19+05:30 — Results hits by gesture
+
+- Changed: `render/blade.ts` adds per-hand blade ribbons (white-hot core plus tinted additive glow) rebuilt into preallocated buffers from the measured `HandCursor.history`, uniformly resampled by arc length, drawn length eased by a critically damped spring (`BLADE_LENGTH_SPRING_RAD_S`), reset on reacquisition and guarded against degenerate tangents. `render/trails.ts` adds tier-sized GPU particles per hand (two-ring orbit, fist knot, point cone; band-driven orbit speed, twinkle off in Calm) that elongate onto the blade spine. The renderer feeds the latest cursors (visual only) and hides trails in results/paused. Shatter pieces start at `SHATTER_PIECE_SCALE`, vanish by `SHATTER_VISIBLE_FRACTION` of the lifetime, use saturated magenta cross-sections and darker rims; the dev preview no longer has a hands toggle.
+- Why: The doc 12 blade/particle look was missing and busy smash runs still filled the near field with pale pieces.
+- Validation: New `tests/renderTrails.test.ts` (4 assertions: monotone growth to the measured length, hilt on the palm, retract/reset, no NaNs on stationary history, tier draw ranges). Typecheck, lint and build pass; full vitest 364/366 — the two failures are arrangement-audio tests timing out under concurrent Blender/Chrome load (20–60 s each), unrelated to rendering. Native Chrome synthetic-performer screenshots (planned motion, no camera) inspected.
+- Limits: Tip sparks, beam-noise cylinder and hit spark bursts are not implemented; no allocation profile or GPU timing was measured.
 
 ## 2026-10-25T04:39:19+05:30 — Results hits by gesture
 
@@ -99,12 +197,50 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: Blender MCP regeneration (dedicated port 9878); asset checks pass (7 GLBs, 5,996 triangles, 352,056 bytes; Khronos not rerun). Typecheck, lint, 366/366 vitest assertions and production build pass. Native Chrome screenshots of the synthetic-performer trial (planned motion, no camera) were inspected at 1440×900 — trial output is visual evidence only.
 - Limits: Blade ribbons/hand particles, hit sparks and camera response are still not implemented; no GPU timing or human readability study was run.
 
+## 2026-10-25T04:17:49+05:30 — Final tested bundle checkpoint after camera-source integration
+
+- Changed: Normally integrated main `752acf3`, retained the final source-identified production-preview receipt, and updated docs16. No additional application code was required.
+- Why: Preserve the new camera-source work and verify that module splitting still satisfies issue #1's complete acceptance.
+- Validation: Full `npm run check` passed again (typecheck/lint, 367 assertions/48 suites, production build with no >500 kB warning, three budget regressions). All eight emitted JS chunks passed; the largest entry is 441521 raw/160440 gzip bytes. Actual preview completed both 80-second trials and Songs with 131 real dataset misses and 131 synthetic Perfect hits, no runtime console errors/CSP violations. Root docs tests and link checker passed before this evidence-only commit; changed-source formatting and whitespace checks passed.
+- Limits: Tested source `8da67439a6597cc02f9a9ddd557497a48725915e`; later UI/training changes on main are outside this frozen checkpoint. Browser/environment/cache and single-run limitations remain those documented above. No webcam, FPS, load-time or P0–P5 release-gate claim is made.
+
 ## 2026-10-25T04:16:00+05:30 — wip: pure avatar retargeting and avatar runtime module
 
 - Changed: Added `render/avatarRetarget.ts` (play-space targets from MediaPipe pose/hands with mirror mapping, world or limb-foreshortening depth and camera-ray placement; torso/head/clavicle solve, two-bone arm IK with bounded stretch and pronation sharing, hand frames, per-joint finger flexion/spread with limits, hold-then-ease to neutral, slerp smoothing, idle and explicit-joint inputs) and `render/avatar.ts` (GLB loading/validation, holographic skinned shader with outline hull, natural PBR variant, placement, snapshot/restore, `poseFromJoints`). Registered the `AVATAR_*` constants in `core/constants.ts` and docs02, documented the asset/retargeting in docs10 §11 and docs18 §11, and added `pose_avatar_preview.py` deformation renders.
 - Why: Drive the authored person model from tracked, dataset and synthetic skeletons instead of thin lines.
 - Validation: 16 new assertions against the actual exported GLB (rest identity, horizontal raise with hand on wrist, 90°/120° elbows, bounded stretch, fist/point/open recovered from 21-point landmarks, hold-then-ease, head turn and limit, mirroring/handedness, 2D depth, camera-ray placement, leg indices ignored, explicit joints, static Calm idle). Typecheck clean. Blender pose renders show clean fist and raised-arm deformation.
 - Limits: Not yet wired into the renderer or menu; no browser or webcam check.
+
+## 2026-10-25T04:10:13+05:30 — Recheck issue #1 after the new renderer integration
+
+- Changed: Normally merged main `cfdcc40` into the issue branch, retained both new controlled build/browser receipts, and updated docs16 with the current chunk table and actual first-load waterfall. No additional application code was needed; the existing groups still satisfy the budget with the new effects.
+- Why: New renderer/postprocessing work landed before the PR. The final combined application needed fresh proof rather than relying on the earlier source.
+- Validation: Full `npm run check` passed (typecheck/lint, 367 assertions/48 suites, build without the size warning, three budget regressions). The unsplit baseline still warns; current split bytes and gzip are below. Actual `npm run preview -- --port 4181` completed both source-labelled trials/results/Songs with empty runtime console/CSP logs. Root docs and source whitespace checks are rerun before this evidence commit.
+- Limits: Tested application source `74325fa783b0fadac7a96d704f87a0abfe39b7ac`; evidence-only follow-up commit is separate. Browser evidence uses the same Chrome155/Windows/headless SwiftShader/Node26.8.1/cache-disabled/1440×900 loopback method as the earlier entry. Single busy-host runs establish topology and functionality, not performance gains or webcam success.
+
+| Build | File | Raw bytes | Gzip bytes |
+| --- | --- | ---: | ---: |
+| Before | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| Before | `index-ClNtYw27.js` | 1283738 | 383171 |
+| Before | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+| After | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| After | `index-CqGRHEWt.js` | 441271 | 160410 |
+| After | `react-CTym4sTV.js` | 218790 | 67563 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 599 | 368 |
+| After | `three-C_uIrsIZ.js` | 352336 | 84187 |
+| After | `three-CqvON9a6.js` | 223814 | 59453 |
+| After | `three-CvPEqDHz.js` | 48975 | 14256 |
+| After | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+
+| Build | Script | Request start → finish (ms) |
+| --- | --- | ---: |
+| Before | `index-ClNtYw27.js` | 4566.72 → 5096.78 |
+| After | `index-CqGRHEWt.js` | 22.90 → 156.89 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 23.41 → 33.26 |
+| After | `react-CTym4sTV.js` | 23.49 → 165.22 |
+| After | `three-CqvON9a6.js` | 23.55 → 177.13 |
+| After | `three-C_uIrsIZ.js` | 23.65 → 212.36 |
+| After | `three-CvPEqDHz.js` | 23.71 → 159.68 |
 
 ## 2026-10-25T04:07:42+05:30 — Pause run summary, performer footer label and short-window tier
 
@@ -127,6 +263,40 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: Epoch 0 measured 1,300 s wall, mean training loss 0.009677, 29 ms mean data wait; held-out validation loss 0.004589 and pooled labelled-joint PCK@0.2 0.2379 on 3,776 COCO + MPII people. The boundary checkpoint (step 1,442, SHA-256 b96ff0b7…) was copied before any resume. Unit tests pass 12/12, including the new contract test.
 - Limits: Epoch 0 used the original 9-epoch cosine horizon; the resumed 5-epoch horizon lowers the learning-rate scale from 0.980 to about 0.935 at the boundary. This one discontinuity is recorded rather than hidden. The original manifest records dirtyTree true because report.py was being edited at launch; train.py, upper_body.py and config.json matched b17e703.
 
+## 2026-10-25T03:57:05+05:30 — Split production JavaScript and enforce its budget (#1)
+
+- Changed: `app/vite.config.ts` groups React and size-bounded Three.js modules through `build.rolldownOptions.output.codeSplitting`; the runtime remains unchanged. New dependency-free `scripts/check-bundle.mjs` reads emitted JS/worker bytes and gzip sizes, fails above the registered 500000-byte per-file limit, and rejects absent builds. `app/package.json` runs its parser/boundary/CLI tests and budget after build in `npm run check`. README documents the real command; [docs16](docs/16-performance-budget.md#bundle-size-budget) registers build-only limits and retained measurements.
+- Why: Issue #1's original 1096061-byte main chunk exceeded Vite's warning. The menu arena still loads alongside the shell; splitting permits parallel static requests without changing lifecycle, asset fallback or CSP policy.
+- Validation: The unchanged build warned and the budget command failed as expected. The controlled split build had no >500 kB warning, passed typecheck/lint/363 application assertions/build plus 3 budget tests, and completed actual `npm run preview -- --port 4181` runs: menu arena, arranged dataset results (131 Miss/0 hits), synthetic results (131 Perfect/0 misses), Songs after each, no runtime console errors/CSP log entries. After normally integrating latest main `1fa1827`, full `npm run check` passed again (363 application assertions, 3 budget tests, no build warning); the final main chunk is `index-D9QxVp5f.js` (254784 raw/79408 gzip bytes), with the other seven JS sizes unchanged. Root docs tests passed 2/2; 47 Markdown files/529 local links passed. Changed source formatting and `git diff --check` passed.
+- Limits: Both controlled runs used source `ad41466990b7e62321b835c7261df4559dc53921` with dirty worktrees, Node 26.8.1, Windows, Chrome 155.0.8059.86/headless SwiftShader, fresh profiles, disabled browser cache, 1440×900/DPR1 and unthrottled loopback. Gzip is Node `gzipSync` default. Raw [before](docs/evidence/2026-10-25-bundle-before.json)/[after](docs/evidence/2026-10-25-bundle-after.json) requests and two corrected probe mistakes ([audio unlock](docs/evidence/2026-10-25-bundle-probe-failure.json), [HUD selector](docs/evidence/2026-10-25-bundle-probe-selector-failure.json)) are retained. No FPS, load-time, webcam or release-gate improvement is claimed. Initial dependency installation failed from a corrupt shared npm cache; bundled npm 11.19.0 with an isolated cache succeeded without changing the lockfile.
+
+Measured emitted JavaScript table (bytes; source held constant for this comparison):
+
+| Build | File | Raw | Gzip |
+| --- | --- | ---: | ---: |
+| Before | `index-tWIDsd3B.js` | 1096061 | 301973 |
+| Before | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| Before | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+| After | `index-LlutNhgn.js` | 254379 | 79339 |
+| After | `react-CTym4sTV.js` | 218790 | 67563 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 599 | 368 |
+| After | `three-B_2LwjzK.js` | 222990 | 59159 |
+| After | `three-bq-AKiay.js` | 352349 | 84153 |
+| After | `three-sRmNNit9.js` | 48975 | 14216 |
+| After | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| After | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+
+Measured first-load script waterfall (CDP request start → finish, ms from document request):
+
+| Build | Script | Start → finish |
+| --- | --- | ---: |
+| Before | `index-tWIDsd3B.js` | 23.50 → 43.26 |
+| After | `index-LlutNhgn.js` | 17.73 → 65.61 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 18.23 → 48.65 |
+| After | `react-CTym4sTV.js` | 18.31 → 85.10 |
+| After | `three-B_2LwjzK.js` | 18.50 → 67.75 |
+| After | `three-bq-AKiay.js` | 18.58 → 95.75 |
+| After | `three-sRmNNit9.js` | 18.65 → 104.17 |
 ## 2026-10-25T03:52:00+05:30 — Handedness adapter follows measured COCO wrist evidence
 
 - Changed: `playerHandFromModel` now uses the pinned HandLandmarker label as the anatomical hand for raw, unmirrored input (`HAND_LABEL_MAPPING = 'raw-model-label-v2'`, also part of the calibration identity), replacing the unverified `raw-selfie-swap-v1` swap. Updated `tests/tracking.test.ts` and docs05 §2.3.

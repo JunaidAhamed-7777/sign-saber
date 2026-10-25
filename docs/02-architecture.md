@@ -330,6 +330,7 @@ This is the shared constants registry. `core/constants.ts` now exports these nam
 | --- | --- |
 | `SCORE_PERFECT` / `SCORE_GREAT` / `SCORE_GOOD` | 100 / 70 / 40 |
 | `SCORE_DODGE` | 50 |
+| `SCORE_WALL_PENALTY` | 100 | Points removed (never below zero) when the body touches a wall; walls never break the combo, pause or end the run |
 | `MULTIPLIER_LADDER` | `[[0,1],[5,2],[15,4],[30,8]]` (combo ≥ threshold → multiplier) |
 | `RANK_THRESHOLDS` | SS ≥ 0.95, S ≥ 0.90, A ≥ 0.80, B ≥ 0.65, C ≥ 0.50, else D (accuracy uses unmultiplied base points; see [07]) |
 | `HAND_MASS_KG` | 2.5 (hand + forearm effective mass for kinetic energy) |
@@ -426,6 +427,7 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `LEAN_TILT_ASSIST_DEG` | 15 | Optional shoulder-tilt assist, with translation evidence |
 | `DUCK_HYSTERESIS` | 0.03 | Normalized nose-height hysteresis [STRETCH] |
 | `CALIB_SAMPLE_MS` / `CALIB_HAND_SEEN_MS` | 500 / 2000 | Rest-pose averaging and recent-hand visibility windows |
+| `CALIB_AUTO_CONFIRM_MS` | 1500 | Steady framed time that confirms camera setup and starts the live count-in without a click |
 | `CALIB_ASSUMED_SHOULDER_M` | 0.40 | Assumed shoulder span for the playful physical-speed proxy; not a measurement |
 | `SWING_REFRACTORY_MS` / `SWING_TROUGH_RATIO` | 150 / 0.5 | Motion-proxy peak separation and trough rule |
 
@@ -568,6 +570,8 @@ These are **initial, unmeasured design defaults** used by [08](08-beatmap-genera
 | `MENU_COMPACT_MAX_WIDTH_PX` / `MENU_COMPACT_MAX_HEIGHT_PX` | 1099 / 699 — at or below either bound the side rails reflow above/below the figure stage with grouped inline pages; `ui/theme.css` mirrors both values (asserted by `tests/unit/compactBreakpoint.test.mjs`) |
 | `HUD_TWEEN_TAU_MS` | 90 — exponential damping constant for the displayed HUD score; Calm shows the exact value |
 | `HUD_COMBO_MILESTONES` | `[10, 25, 50, 100]` — unbroken combo counts that show the HUD milestone callout |
+| `HUD_POP_TORSO_CLEAR_FRACTION` | 0.09 — half-width of the central viewport band that projected judgement-pop text is moved out of, so the player's torso stays clear |
+| `HUD_COMBO_BREAK_MIN` | 5 — smallest broken combo that shows the brief HUD “Combo ended” note |
 
 Menu defaults are initial unmeasured values; tune with held-out menu fixtures and live standing-distance trials, recording changes with their test results. `DWELL_SELECT_MS` is retired: point-click navigation is CORE rather than an optional dwell mode. Runtime central exports remain a P0 implementation task.
 
@@ -600,6 +604,8 @@ Menu defaults are initial unmeasured values; tune with held-out menu fixtures an
 | `DATASET_CAMERA_SWEEP_FIRST_HOLD_MS` | 20000 | `?reel=sweep` calibration-photo hold before cycling every photo by stream time |
 | `DATASET_CAMERA_TRANSITION_GUARD_MS` / `DATASET_CAMERA_TIMELINE_CAPACITY` | 300 / 1024 | Captures this soon after a drawn-photo change are not attributed; bounded draw history |
 | `DATASET_CAMERA_MATCH_SHOULDER_FRACTION` / `DATASET_CAMERA_PCK_SHOULDER_FRACTION` | 0.5 / 0.5 | Dataset-camera evaluation: wrist-to-hand match radius and PCK threshold, in annotated shoulder widths |
+| `PERFORMER_REEL_RENDER_W` / `PERFORMER_REEL_RENDER_H` / `PERFORMER_REEL_CAMERA_DISTANCE_M` | 960 / 540 / 3 | Synthetic performer reel: avatar render size and virtual front-camera distance |
+| `PERFORMER_REEL_IDLE_SONG_MS` / `PERFORMER_REEL_TRUTH_POOL` | −60000 / 128 | Rest-pose sample time outside a session; reused truth objects for evaluation |
 | `JUDGEMENT_TRACE_CAPACITY` | 8192 | Typed judgement-trace events per session; further events are counted as explicit overflow |
 | `ASSET_MODEL_MAX_BYTES` / `MAX_LIVE_OBSTACLES` | 1048576 / 8 | Model admission and pooled wall capacity |
 | `GRAVITY_MPS2` / `GLYPH_FACE_OFFSET_M` | 9.8 / 0.31 | Cosmetic ballistic gravity and block-front glyph plane |

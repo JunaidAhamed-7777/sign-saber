@@ -17,7 +17,10 @@ import { CameraController } from '../tracking/camera';
 import { WebcamSource, type CameraSourceKind, type CameraStreamSource } from '../tracking/cameraSource';
 import { DatasetCameraSource } from '../tracking/datasetCamera';
 import { PhotoReel } from '../tracking/datasetCameraReel';
+import { PerformerReel } from '../tracking/performerReel';
 import { JudgementTraceRecorder } from './judgementTrace';
+import { JudgementPopQueue } from './judgementPops';
+import { notePosition } from '../game/liveObjects';
 import { InputPipeline } from '../tracking/pipeline';
 import { DatasetTrial } from '../tracking/datasetTrial';
 import { PerformerTrial } from '../performer/trial';
@@ -31,6 +34,7 @@ import { display, useStore } from '../state/store';
 import {
   PLAYBACK_DECODE_SR,
   CALIB_PRESENCE_MS,
+  CALIB_AUTO_CONFIRM_MS,
   COUNTDOWN_STEPS,
   INPUT_MAX_AGE_MS,
   MENU_TRACK_MAX_AGE_MS,
@@ -87,7 +91,8 @@ export class GameRuntime {
   private stats: SessionStats | null = null;
   private pop = '';
   private popUntil = 0;
-  private popSeq = 0;
+  private readonly pops = new JudgementPopQueue();
+  private readonly popScratch = { x: 0, y: 0, z: 0 };
   private countdownStepMs = START_COUNTDOWN_MS / COUNTDOWN_STEPS;
   private readonly countdownTargets: MenuTarget[] = [];
   private readonly countdownContext: MenuContext = {
@@ -131,6 +136,10 @@ export class GameRuntime {
       this.targets.surface(this.machine.epoch);
       this.pointer.cancel(performance.now());
       display({ state, epoch: this.machine.epoch, pauseReason: this.machine.pauseReason, countdown: null });
+      if (state !== 'PLAYING' && state !== 'PAUSED') {
+        this.pops.clear();
+        display({ pops: [] });
+      }
       this.renderer?.setMode(
         state === 'PLAYING' || (state === 'CALIBRATION' && !!this.session)
           ? 'play'
@@ -144,17 +153,20 @@ export class GameRuntime {
     this.machine.events.on('note:hit', (event) => {
       this.pop = event.judgement;
       this.popUntil = performance.now() + POP_LIFETIME_MS;
-      this.popSeq++;
+      this.pops.push(event.judgement, event.impactPos, performance.now(), event.timingErrorMs);
+      display({ pops: this.pops.list() });
     });
-    this.machine.events.on('note:miss', () => {
+    this.machine.events.on('note:miss', ({ note }) => {
       this.pop = 'miss';
       this.popUntil = performance.now() + POP_LIFETIME_MS;
-      this.popSeq++;
+      this.pops.push('miss', notePosition(note, note.t, 1, this.popScratch), performance.now());
+      display({ pops: this.pops.list() });
     });
-    this.machine.events.on('note:badcut', () => {
+    this.machine.events.on('note:badcut', ({ note }) => {
       this.pop = 'badcut';
       this.popUntil = performance.now() + POP_LIFETIME_MS;
-      this.popSeq++;
+      this.pops.push('badcut', notePosition(note, note.t, 1, this.popScratch), performance.now());
+      display({ pops: this.pops.list() });
     });
     this.machine.events.on('music:event', (event) => {
       if (event.kind === 'drop') this.player?.duck();
@@ -604,7 +616,7 @@ export class GameRuntime {
     display({
       loading: true,
       error: null,
-      status: source === 'performer' ? strings.performerLoading : strings.datasetLoading,
+      status: strings.runGetReady,
     });
     try {
       const data =
@@ -646,7 +658,7 @@ export class GameRuntime {
         highlightAt: null,
         cameraSource: null,
         camera: { state: 'not-set-up', mode: 'browse', calibrationValid: false, error: null },
-        status: source === 'performer' ? strings.performerLimitations : strings.datasetLimitations,
+        status: strings.runPlaying,
       });
       this.machine.transition(retry ? 'results:retry' : 'select:start', { ready: true });
       this.player!.prepare(this.buffer!);
@@ -759,7 +771,13 @@ export class GameRuntime {
   private cameraSource(kind: CameraSourceKind): CameraStreamSource {
     return kind === 'dataset'
       ? new DatasetCameraSource(
-          new PhotoReel({ mode: this.flags.reel, holdMs: this.flags.reelHoldMs, seed: this.flags.reelSeed }),
+          this.flags.reel === 'performer'
+            ? new PerformerReel(() => useStore.getState().map)
+            : new PhotoReel({
+                mode: this.flags.reel,
+                holdMs: this.flags.reelHoldMs,
+                seed: this.flags.reelSeed,
+              }),
           () => this.reelSongTime(),
         )
       : new WebcamSource();
@@ -1283,6 +1301,17 @@ export class GameRuntime {
         else void this.pause('fatal');
       }
     if (!this.fresh(now)) this.readySince = this.freshSince = Infinity;
+    // A standing player cannot reach the mouse: hold a steady, framed pose to confirm setup and start.
+    const steady =
+      !this.dataset &&
+      Number.isFinite(this.readySince) &&
+      now - this.readySince >= CALIB_AUTO_CONFIRM_MS &&
+      this.pipeline.result.calibrationReady;
+    if (steady && state === 'SELECT' && useStore.getState().camera.mode === 'camera-setup') {
+      this.confirmCamera();
+      this.readySince = Infinity;
+    } else if (steady && state === 'CALIBRATION' && !this.session && !this.transitionBusy)
+      void this.countIn();
     if (now - this.lastTracking > MENU_TRACK_MAX_AGE_MS) this.pointer.cancel(now);
     if (now - this.lastTracking > INPUT_MAX_AGE_MS && state !== 'PAUSED' && state !== 'RESULTS')
       this.renderer?.hideTracking();
@@ -1366,6 +1395,7 @@ export class GameRuntime {
         right = result.hands.find((hand) => hand.hand === 'right'),
         leftPresent = handsFresh && !!left?.present,
         rightPresent = handsFresh && !!right?.present;
+      if (this.pops.prune(now)) display({ pops: this.pops.list() });
       display({
         trackingReady: this.fresh(now),
         figureAvailable: now - this.lastTracking <= INPUT_MAX_AGE_MS && result.body.present,
@@ -1386,7 +1416,6 @@ export class GameRuntime {
           leftCharge: leftPresent ? left!.charge : 0,
           rightCharge: rightPresent ? right!.charge : 0,
           judgement: now < this.popUntil ? this.pop : '',
-          judgementSeq: this.popSeq,
         },
       });
     }
@@ -1426,7 +1455,8 @@ export class GameRuntime {
           ? 'dataset-static-annotation-trial'
           : this.flags.replay
             ? 'logic-replay'
-            : (this.camera.sourceLane ?? 'live-camera-unverified');
+            : (this.camera.sourceLane ??
+              ((this.camera.sourceEvidence() as { lane?: string } | null)?.lane || 'live-camera-unverified'));
     const calibration = this.pipeline.calibration;
     return {
       schema: 2,
@@ -1502,6 +1532,7 @@ export class GameRuntime {
         };
       },
       evidence: () => this.evidence(),
+      datasetFrame: () => this.camera.datasetFrame(),
     });
     this.listeners.push(() => delete target.__signSaberDiagnostics);
   }

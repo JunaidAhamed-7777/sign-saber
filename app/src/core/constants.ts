@@ -129,6 +129,8 @@ export const BODY_FILTER_BETA = 0.02,
   BODY_SPEED_EMA = 0.5,
   LEAN_TILT_ASSIST_DEG = 15,
   DUCK_HYSTERESIS = 0.03;
+/** Steady, framed time after which camera setup confirms and live play counts in without a click. */
+export const CALIB_AUTO_CONFIRM_MS = 1500;
 export const CALIB_SAMPLE_MS = 500,
   CALIB_HAND_SEEN_MS = 2000,
   CALIB_ASSUMED_SHOULDER_M = 0.4;

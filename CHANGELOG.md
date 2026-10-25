@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T06:05:00+05:30 — Camera play on the main menu
+
+- Changed: **Set up camera** sits next to Enable sound on the first play page. Once calibrated, the main action becomes **Play with camera** (live play); Watch auto-play and Play level stay available. Holding a steady, framed pose for `CALIB_AUTO_CONFIRM_MS` confirms camera setup and starts the live count-in without returning to the mouse.
+- Why: User asked to integrate the camera properly; setup and live start were hidden in Settings and required mouse clicks while standing back.
+- Validation: Full `npm run check` passed. Live webcam behaviour still needs the user's hands-on test.
+- Limits: No consented live session has been recorded by the agent.
+
 ## 2026-10-25T05:45:00+05:30 — Walls only cost points
 
 - Changed: A wall hit now deducts `SCORE_WALL_PENALTY` (100, floored at zero) and no longer breaks the combo. Walls never pause or stop the run: frames without a body cannot hit a wall, and an unobserved wall passes with neither penalty nor reward. Merged the remote README showcase (#10) with the user's local README edit.

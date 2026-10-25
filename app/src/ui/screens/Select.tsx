@@ -217,6 +217,34 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
       <small>{t.datasetTrialCaption}</small>
     </Button>
   );
+  const live = s.camera.calibrationValid;
+  const cameraButton = (
+    <Button
+      runtime={runtime}
+      id="camera"
+      nativeOnly={!live}
+      disabled={s.camera.state === 'setting-up'}
+      busy={s.camera.state === 'setting-up'}
+      className="with-caption"
+    >
+      <span>{live ? t.cameraReconfigure : t.cameraSetup}</span>
+      <small>{live ? t.cameraReady : t.cameraSetupCaption}</small>
+    </Button>
+  );
+  const liveStart = (
+    <Button
+      runtime={runtime}
+      id="start"
+      primary
+      disabled={!s.map || s.loading || !s.audioReady || !s.trackingReady}
+      className="hero"
+      describedBy="trial-reason"
+    >
+      <span className="hero-label">{t.startLive}</span>
+      <small>{t.startLiveCaption}</small>
+    </Button>
+  );
+  const hero = live ? liveStart : start;
   const performer = (
     <Button
       runtime={runtime}
@@ -329,9 +357,11 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
         {difficulty}
         <div className="action-pair">
           {sound}
-          {performer}
+          {cameraButton}
         </div>
-        {start}
+        {hero}
+        {performer}
+        {live && start}
         {notice}
       </>
     ),
@@ -372,7 +402,8 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
       content: (
         <>
           {sound}
-          {start}
+          {cameraButton}
+          {hero}
           {performer}
         </>
       ),

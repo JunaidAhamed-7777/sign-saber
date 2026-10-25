@@ -1,0 +1,431 @@
+{
+  "schema": 1,
+  "date": "2026-10-25",
+  "recordedAt": "2026-10-25T00:16:57.888Z",
+  "gitHead": "670291cc35b2f7c025022861cff87f7d29a1e975",
+  "dirtyTree": false,
+  "environment": {
+    "node": "v26.8.1",
+    "os": "win32 10.0.26300",
+    "logicalCpus": 16
+  },
+  "sourceHashes": {
+    "scripts/lifecycle-qa.mjs": "652d5d7f967da333ae63b846f3a85b76fa700bdfd46e2ab2b74d8d8558dc0ac3",
+    "scripts/lifecycle-helpers.mjs": "1219ff131d42beec406d91061108b9a01529d93e033e9acb14f07a477891a4af",
+    "scripts/lifecycle-probe.mjs": "3c2fed1cbcfec4d3c8a1f5f7a1303b3000cd07989dc8abada105ff199b65f7af",
+    "scripts/cdp-client.mjs": "d9a0a484271c1d479ce7bc426863edf7d874a5bd9356b64245f202bfee8fcea2",
+    "app/src/core/runtime.ts": "b67acca8667bdef051ecec0d9f341661e9786f4783ba5906631e7a629d2b08fd",
+    "app/src/render/renderer.ts": "9bca30251ac4d3ee6bd60d2e63b22b889582c824a6126e383ffbcb45e5d85aed",
+    "app/src/ui/strings.ts": "4ff6c8efadbbe255b60a84e45c2ae08d26dd6cfe1091a7e06a285ff453c7e90d",
+    "app/src/ui/screens/Select.tsx": "add76e7b0c4e0811d3b42a7ff1190d2e856c4b82acbf0a1c33f975efc859c9dc",
+    "app/package-lock.json": "66dc1547569b921b18b85ab19b6e22fc3166133573d1f10764aea146b0bc2bb1"
+  },
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/155.0.8059.86",
+    "revision": "@804d6b05f089b27af8342622a36558c49401a1d4",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+    "jsVersion": "15.5.35.25"
+  },
+  "protocol": {
+    "WebAudio": {
+      "commands": [
+        "enable",
+        "disable",
+        "getRealtimeData"
+      ],
+      "events": [
+        "contextCreated",
+        "contextWillBeDestroyed",
+        "contextChanged",
+        "audioListenerCreated",
+        "audioListenerWillBeDestroyed",
+        "audioNodeCreated",
+        "audioNodeWillBeDestroyed",
+        "audioParamCreated",
+        "audioParamWillBeDestroyed",
+        "nodesConnected",
+        "nodesDisconnected",
+        "nodeParamConnected",
+        "nodeParamDisconnected"
+      ]
+    },
+    "Memory": {
+      "commands": [
+        "getDOMCounters",
+        "getDOMCountersForLeakDetection",
+        "prepareForLeakDetection",
+        "forciblyPurgeJavaScriptMemory",
+        "setPressureNotificationsSuppressed",
+        "simulatePressureNotification",
+        "startSampling",
+        "stopSampling",
+        "getAllTimeSamplingProfile",
+        "getBrowserSamplingProfile",
+        "getSamplingProfile"
+      ]
+    },
+    "HeapProfiler": {
+      "commands": [
+        "addInspectedHeapObject",
+        "collectGarbage",
+        "disable",
+        "enable",
+        "getHeapObjectId",
+        "getObjectByHeapObjectId",
+        "getSamplingProfile",
+        "startSampling",
+        "startTrackingHeapObjects",
+        "stopSampling",
+        "stopTrackingHeapObjects",
+        "takeHeapSnapshot"
+      ],
+      "events": [
+        "addHeapSnapshotChunk",
+        "heapStatsUpdate",
+        "lastSeenObjectId",
+        "reportHeapSnapshotProgress",
+        "resetProfiles"
+      ]
+    },
+    "Target": {
+      "commands": [
+        "activateTarget",
+        "attachToTarget",
+        "attachToBrowserTarget",
+        "closeTarget",
+        "exposeDevToolsProtocol",
+        "createBrowserContext",
+        "getBrowserContexts",
+        "createTarget",
+        "detachFromTarget",
+        "disposeBrowserContext",
+        "getTargetInfo",
+        "getTargets",
+        "sendMessageToTarget",
+        "setAutoAttach",
+        "autoAttachRelated",
+        "setDiscoverTargets",
+        "setRemoteLocations",
+        "getDevToolsTarget",
+        "openDevTools"
+      ],
+      "events": [
+        "attachedToTarget",
+        "detachedFromTarget",
+        "receivedMessageFromTarget",
+        "targetCreated",
+        "targetDestroyed",
+        "targetCrashed",
+        "targetInfoChanged"
+      ]
+    }
+  },
+  "fixtures": {
+    "valid": {
+      "bytes": 529244,
+      "durationSec": 12,
+      "sampleRate": 22050,
+      "sha256": "66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "second": {
+      "bytes": 573344,
+      "durationSec": 13,
+      "sampleRate": 22050,
+      "sha256": "0ec8fc97d01184f7fbdc1abbde8fa96f192ce4d05d9814ca2419119eceefc6e0",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "long": {
+      "bytes": 10584044,
+      "durationSec": 240,
+      "sampleRate": 22050,
+      "sha256": "9ab3b0a21e72768474a95253e107c2fd308a2bdf0e4b467d812382d945446e09",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "short": {
+      "bytes": 44144,
+      "durationSec": 1,
+      "sampleRate": 22050,
+      "sha256": "4b18b7c0677cb7f1edd5dffa482e6943897447f02e1f175dbc793d103d07dd46",
+      "source": "original deterministic synthesized pulse/tone/noise"
+    },
+    "corrupt": {
+      "bytes": 10,
+      "sha256": "a51bc7aed5605ec18e922abbd62d0de95f30d88bbd8cf5991159f3664e6e30b5"
+    },
+    "wrong": {
+      "bytes": 33,
+      "sha256": "2e66915610e0a099910393ac799a6b8192f8c4388569eca28ec82f42280ca107"
+    },
+    "oversized": {
+      "bytes": 62914561,
+      "source": "sparse zero file; admission limit check only"
+    }
+  },
+  "measurement": {
+    "renderer": "Actual Three.js renderer.info.memory; read-only ?stats=1 diagnostics",
+    "audio": "CDP WebAudio lifetime events; only native string IDs retained; no AudioNode references",
+    "listeners": "CDP Memory.getDOMCounters.jsEventListeners after HeapProfiler.collectGarbage and the same quiet boundary",
+    "workers": "CDP Target.getTargets worker targets in the current isolated browser context",
+    "observers": "Auxiliary observe/disconnect token count, not a retained-GC metric and not a growth gate",
+    "warmup": "One complete generated-chart run, one retry cycle and one quit cycle; then three identical GC/quiet snapshots at the suspended menu boundary before 20 measured cycles"
+  },
+  "limitations": [
+    "Synthetic original WAVs/planned motion; no camera/person/recognition",
+    "Muted headless software rendering; no audible-sync or GPU-performance claim",
+    "Forced GC/resource counts are lifecycle diagnostics, not release performance evidence"
+  ],
+  "scenarios": [
+    {
+      "name": "upload",
+      "status": "not-run",
+      "checks": []
+    },
+    {
+      "name": "cancel",
+      "status": "not-run",
+      "checks": []
+    },
+    {
+      "name": "invalid",
+      "status": "not-run",
+      "checks": []
+    },
+    {
+      "name": "cache",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "unavailable: generation succeeds without cache",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-valid\",\"sourceHash\":\"66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734\",\"difficulty\":\"normal\",\"notes\":13,\"warnings\":[\"cacheUnavailable\"]}"
+        },
+        {
+          "name": "unavailable: cache failure is retained in chart warnings",
+          "ok": true,
+          "detail": "[\"cacheUnavailable\"]"
+        },
+        {
+          "name": "unavailable: visible honest cache-fallback message",
+          "ok": true,
+          "detail": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your own audio\nChoose your own audio\n\nMP3, WAV, OGG or M4A · up to 5 minutes · Use mouse or keyboard for this step.\n\n←\nPrevious\nChoose your own audio\n4 of 4\n→\nNext\n\nIllustrative upper body · camera not set up\n\nL\nSELECTED TRACK\nlifecycle-valid\n\n0:12 · 13 notes\n\nLocal cache unavailable · chart not saved\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nSet up camera\nStand back · head to hips in view\nPlay level\n80-second cut\nWatch auto-play\nDemo run\n\nEnable sound with the mouse or keyboard before starting.\n\n←\nPrevious\nReady when you are\n1 of 6\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click"
+        },
+        {
+          "name": "compact viewport keeps the cache notice visible",
+          "ok": true,
+          "detail": "SIGN SABER\nCamera not set up\nChoose your music\n1 of 4\n←\nPrevious\nP\nPamgaea\n2:48\nE\nElectro Cabello\n3:10\nC\nCipher\n3:51\n→\nNext\n\nIllustrative upper body · camera not set up\n\nlifecycle-valid · Normal · 0:12\n\nLocal cache unavailable · chart not saved\n\nEnable sound with the mouse or keyboard before starting.\n\nPlay\n1 of 7\n←\nPrevious\nEnable sound\nMouse or keyboard\nSet up camera\nStand back · head to hips in view\nPlay level\n80-second cut\nWatch auto-play\nDemo run\n→\nNext"
+        },
+        {
+          "name": "quota: generation succeeds without cache",
+          "ok": true,
+          "detail": "{\"title\":\"lifecycle-valid\",\"sourceHash\":\"66b612749396cba0fb4da11de8416455d3cb3ae63ef13e8628efdaf5e1c8c734\",\"difficulty\":\"normal\",\"notes\":13,\"warnings\":[\"cacheUnavailable\"]}"
+        },
+        {
+          "name": "quota: cache failure is retained in chart warnings",
+          "ok": true,
+          "detail": "[\"cacheUnavailable\"]"
+        },
+        {
+          "name": "quota: visible honest cache-fallback message",
+          "ok": true,
+          "detail": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your own audio\nChoose your own audio\n\nMP3, WAV, OGG or M4A · up to 5 minutes · Use mouse or keyboard for this step.\n\n←\nPrevious\nChoose your own audio\n4 of 4\n→\nNext\n\nIllustrative upper body · camera not set up\n\nL\nSELECTED TRACK\nlifecycle-valid\n\n0:12 · 13 notes\n\nLocal cache unavailable · chart not saved\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nSet up camera\nStand back · head to hips in view\nPlay level\n80-second cut\nWatch auto-play\nDemo run\n\nEnable sound with the mouse or keyboard before starting.\n\n←\nPrevious\nReady when you are\n1 of 6\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click"
+        }
+      ],
+      "startedAt": "2026-10-25T00:17:01.178Z",
+      "reproduction": "Before load, deny IndexedDB access or make real readwrite transactions throw QuotaExceededError; upload the synthesized WAV and inspect the visible fallback notice.",
+      "screenshots": [
+        "2026-10-25-lifecycle-cache-1440.webp",
+        "2026-10-25-lifecycle-cache-1024.webp"
+      ],
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-25T00:17:27.611Z"
+    },
+    {
+      "name": "context",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "menu: rigged avatar ready across two actual animation frames",
+          "ok": true,
+          "detail": "{\"geometries\":70,\"textures\":14,\"programs\":32,\"contextLost\":false,\"runtimeListeners\":13}"
+        },
+        {
+          "name": "menu: actual context-loss extension available",
+          "ok": true
+        },
+        {
+          "name": "menu: useful visible graphics failure or successful recovery",
+          "ok": true,
+          "detail": "{\"before\":{\"state\":\"SELECT\",\"pauseReason\":null,\"status\":\"\",\"error\":null,\"fatal\":\"Graphics context was lost. Reload the game to restore the arena.\",\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":false,\"trackingReady\":false,\"figureAvailable\":false,\"audioReady\":false,\"audio\":{\"contextState\":null,\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":false,\"arrangementReady\":false,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":0,\"stage\":\"\"},\"selection\":null,\"resources\":{\"geometries\":70,\"textures\":14,\"programs\":32,\"contextLost\":true,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"avatarStatus\":\"ready\",\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":0,\"durationMs\":0,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":false,\"rightPresent\":false,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null},\"after\":{\"state\":\"SELECT\",\"pauseReason\":null,\"status\":\"\",\"error\":null,\"fatal\":\"Graphics context was lost. Reload the game to restore the arena.\",\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":false,\"trackingReady\":false,\"figureAvailable\":false,\"audioReady\":false,\"audio\":{\"contextState\":null,\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":false,\"arrangementReady\":false,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":0,\"stage\":\"\"},\"selection\":null,\"resources\":{\"geometries\":70,\"textures\":14,\"programs\":32,\"contextLost\":true,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"avatarStatus\":\"ready\",\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":0,\"durationMs\":0,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":false,\"rightPresent\":false,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null},\"text\":\"SIGN SABER\\n\\nUpper-body rhythm combat\\n\\nThe arena could not start\\n\\nOpen Chrome or Edge with WebGL2 and hardware acceleration enabled.\\n\\nGraphics context was lost. Reload the game to restore the arena.\\n\\nRetry\"}"
+        },
+        {
+          "name": "menu: no zombie scoring/audio run",
+          "ok": true,
+          "detail": "{\"state\":\"SELECT\",\"songTimeMs\":null,\"audio\":{\"contextState\":null,\"activeSfxVoices\":0},\"nativeAudio\":[]}"
+        },
+        {
+          "name": "menu: no zombie render callback loop while context remains lost",
+          "ok": true,
+          "detail": "{\"callbacksAfterLoss\":0}"
+        },
+        {
+          "name": "menu: native Retry reload restores the usable song menu",
+          "ok": true
+        },
+        {
+          "name": "play: rigged avatar ready across two actual animation frames",
+          "ok": true,
+          "detail": "{\"geometries\":90,\"textures\":14,\"programs\":39,\"contextLost\":false,\"runtimeListeners\":13}"
+        },
+        {
+          "name": "play: actual context-loss extension available",
+          "ok": true
+        },
+        {
+          "name": "play: useful visible graphics failure or successful recovery",
+          "ok": true,
+          "detail": "{\"before\":{\"state\":\"PAUSED\",\"pauseReason\":\"fatal\",\"status\":\"Get ready.\",\"error\":null,\"fatal\":\"Graphics context was lost. Reload the game to restore the arena.\",\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":false,\"figureAvailable\":true,\"audioReady\":false,\"audio\":{\"contextState\":\"suspended\",\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":0,\"stage\":\"\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":90,\"textures\":14,\"programs\":40,\"contextLost\":true,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"avatarStatus\":\"ready\",\"hud\":{\"score\":100,\"combo\":1,\"multiplier\":1,\"accuracy\":1,\"songTimeMs\":2110.9910000029813,\"durationMs\":12000,\"left\":\"fist\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"perfect\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null},\"after\":{\"state\":\"PAUSED\",\"pauseReason\":\"fatal\",\"status\":\"Get ready.\",\"error\":null,\"fatal\":\"Graphics context was lost. Reload the game to restore the arena.\",\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":false,\"figureAvailable\":true,\"audioReady\":false,\"audio\":{\"contextState\":\"suspended\",\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":0,\"stage\":\"\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":90,\"textures\":14,\"programs\":40,\"contextLost\":true,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"avatarStatus\":\"ready\",\"hud\":{\"score\":100,\"combo\":1,\"multiplier\":1,\"accuracy\":1,\"songTimeMs\":2110.9910000029813,\"durationMs\":12000,\"left\":\"fist\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"perfect\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null},\"text\":\"SIGN SABER\\n\\nUpper-body rhythm combat\\n\\nThe arena could not start\\n\\nOpen Chrome or Edge with WebGL2 and hardware acceleration enabled.\\n\\nGraphics context was lost. Reload the game to restore the arena.\\n\\nRetry\"}"
+        },
+        {
+          "name": "play: no zombie scoring/audio run",
+          "ok": true,
+          "detail": "{\"state\":\"PAUSED\",\"songTimeMs\":null,\"audio\":{\"contextState\":\"suspended\",\"activeSfxVoices\":0},\"nativeAudio\":[{\"id\":\"4e23fe5c-9954-43ca-a89a-05a5461d8f59\",\"type\":\"offline\",\"state\":\"suspended\"},{\"id\":\"98343d99-8e40-4307-a0d8-bb6f5ffb06e5\",\"type\":\"realtime\",\"state\":\"suspended\"},{\"id\":\"ac735b03-8a16-4363-8e16-919ace58d742\",\"type\":\"offline\",\"state\":\"suspended\"}]}"
+        },
+        {
+          "name": "play: no zombie render callback loop while context remains lost",
+          "ok": true,
+          "detail": "{\"callbacksAfterLoss\":0}"
+        },
+        {
+          "name": "play: native Retry reload restores the usable song menu",
+          "ok": true
+        }
+      ],
+      "startedAt": "2026-10-25T00:17:27.612Z",
+      "reproduction": "On the menu and separately during performer play, call the canvas WEBGL_lose_context extension. Check visible failure/recovery, halted audio/scoring and bounded render callbacks.",
+      "avatarBeforeLoss": [
+        {
+          "phase": "menu",
+          "avatarStatus": "ready",
+          "resources": {
+            "geometries": 70,
+            "textures": 14,
+            "programs": 32,
+            "contextLost": false,
+            "runtimeListeners": 13
+          }
+        },
+        {
+          "phase": "play",
+          "avatarStatus": "ready",
+          "resources": {
+            "geometries": 90,
+            "textures": 14,
+            "programs": 39,
+            "contextLost": false,
+            "runtimeListeners": 13
+          }
+        }
+      ],
+      "screenshots": [
+        "2026-10-25-lifecycle-graphics-error-1440.webp",
+        "2026-10-25-lifecycle-graphics-error-1024.webp"
+      ],
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-25T00:18:01.015Z"
+    },
+    {
+      "name": "cycles",
+      "status": "not-run",
+      "checks": []
+    },
+    {
+      "name": "hidden",
+      "status": "pass",
+      "checks": [
+        {
+          "name": "countdown: browser actually hid the game tab",
+          "ok": true,
+          "detail": "{\"state\":\"SELECT\",\"pauseReason\":null,\"status\":\"Choose music when you are ready.\",\"error\":null,\"fatal\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":false,\"trackingReady\":true,\"figureAvailable\":true,\"audioReady\":true,\"audio\":{\"contextState\":\"running\",\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":1,\"stage\":\"ready\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":90,\"textures\":14,\"programs\":39,\"contextLost\":false,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"avatarStatus\":\"ready\",\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":-1956.1876666621965,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null}"
+        },
+        {
+          "name": "countdown: expected hidden-tab semantics",
+          "ok": true,
+          "detail": "{\"state\":\"SELECT\",\"pauseReason\":null,\"status\":\"Choose music when you are ready.\",\"error\":null,\"fatal\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":false,\"trackingReady\":true,\"figureAvailable\":true,\"audioReady\":true,\"audio\":{\"contextState\":\"running\",\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":1,\"stage\":\"ready\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":90,\"textures\":14,\"programs\":39,\"contextLost\":false,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"avatarStatus\":\"ready\",\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":-1956.1876666621965,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":null}"
+        },
+        {
+          "name": "countdown: returning alone never auto-starts",
+          "ok": true,
+          "detail": "SELECT"
+        },
+        {
+          "name": "play: browser actually hid the game tab",
+          "ok": true,
+          "detail": "{\"state\":\"PAUSED\",\"pauseReason\":\"hidden\",\"status\":\"Get ready.\",\"error\":null,\"fatal\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":true,\"figureAvailable\":true,\"audioReady\":false,\"audio\":{\"contextState\":\"suspended\",\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":1,\"stage\":\"ready\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":90,\"textures\":14,\"programs\":39,\"contextLost\":false,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"avatarStatus\":\"ready\",\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":73.46100000000024,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":208.00000000000017}"
+        },
+        {
+          "name": "play: expected hidden-tab semantics",
+          "ok": true,
+          "detail": "{\"state\":\"PAUSED\",\"pauseReason\":\"hidden\",\"status\":\"Get ready.\",\"error\":null,\"fatal\":null,\"camera\":{\"state\":\"not-set-up\",\"mode\":\"browse\",\"calibrationValid\":false,\"error\":null},\"cameraSource\":null,\"cameraStage\":\"\",\"calibrationReady\":true,\"trackingReady\":true,\"figureAvailable\":true,\"audioReady\":false,\"audio\":{\"contextState\":\"suspended\",\"activeSfxVoices\":0},\"loading\":false,\"mapReady\":true,\"arrangementReady\":true,\"countdown\":null,\"generation\":{\"active\":false,\"fraction\":1,\"stage\":\"ready\"},\"selection\":{\"title\":\"lifecycle-valid — 12.0s arrangement\",\"sourceHash\":\"c16cb29d927361800f260fc9884beec40f4d3a8b0447f7973ecb5cfc1d236450\",\"difficulty\":\"normal\",\"notes\":12,\"warnings\":[]},\"resources\":{\"geometries\":90,\"textures\":14,\"programs\":39,\"contextLost\":false,\"runtimeListeners\":13},\"quality\":{\"tier\":\"medium\",\"preset\":{\"renderScale\":1,\"bloomResolutionScale\":0.35,\"bloomMipLevels\":5,\"bloomIntensity\":1,\"chromaticAberration\":\"off\",\"antialiasing\":\"fxaa\",\"trailParticlesPerHand\":160,\"ribbonLayers\":2,\"ribbonCoreWidened\":false,\"ribbonSpineSamples\":48,\"tipSparks\":true,\"beamNoiseOctaves\":1,\"skeleton\":\"joints-and-bones\",\"maskTaps\":9,\"maskTextures\":2,\"maskTemporalBlend\":true,\"silhouetteHalo\":true,\"handGlowSpots\":true,\"fragmentCap\":192,\"smashGeometry\":\"complete-authored-or-fallback\",\"fragmentLifetimeScale\":1,\"poofSparks\":24,\"aimAssistLine\":\"optional\",\"grid\":\"antialiased\",\"maskUpload\":\"distinct-new-only\",\"dustPoints\":400,\"pylons\":14},\"renderScale\":1,\"pixelRatio\":1,\"fragmentLifetimeMs\":1400,\"bloomEnabled\":true,\"antialiasing\":\"fxaa\",\"chromaticAberration\":false,\"aimAssistLine\":false,\"implemented\":[\"render-scale\",\"bloom\",\"skeleton\",\"fragments\",\"smash-geometry\",\"poof-sparks\",\"grid\",\"dust\",\"pylons\",\"fxaa\"],\"unsupported\":[{\"feature\":\"trail-particles\",\"reason\":\"not-implemented\"},{\"feature\":\"ribbon-layers\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-sampling\",\"reason\":\"not-implemented\"},{\"feature\":\"hand-glow-spots\",\"reason\":\"not-implemented\"},{\"feature\":\"distinct-mask-upload\",\"reason\":\"not-implemented\"},{\"feature\":\"tip-sparks\",\"reason\":\"not-implemented\"},{\"feature\":\"beam-noise\",\"reason\":\"not-implemented\"},{\"feature\":\"mask-temporal-blend\",\"reason\":\"not-implemented\"},{\"feature\":\"silhouette-halo\",\"reason\":\"not-implemented\"}]},\"avatarStatus\":\"ready\",\"hud\":{\"score\":0,\"combo\":0,\"multiplier\":1,\"accuracy\":null,\"songTimeMs\":73.46100000000024,\"durationMs\":12000,\"left\":\"none\",\"right\":\"none\",\"leftPresent\":true,\"rightPresent\":true,\"leftCharge\":0,\"rightCharge\":0,\"judgement\":\"\"},\"results\":null,\"tracking\":{\"hz\":0,\"initMs\":0,\"inferenceMs\":0,\"mainToMainMs\":0,\"dropped\":0,\"delegate\":\"\",\"timestampSource\":\"callback-receipt\",\"opportunities\":0,\"skippedBusy\":0,\"submitted\":0,\"returned\":0,\"initializationError\":null,\"phase\":\"stopped\",\"cameraCallbacks\":0,\"bitmapsCreated\":0,\"lastCaptureAt\":0,\"lastBitmapAt\":0,\"lastSubmitAt\":0,\"lastResultAt\":0,\"phaseAtFailure\":null},\"songTimeMs\":208.00000000000017}"
+        },
+        {
+          "name": "play: returning alone never auto-starts",
+          "ok": true,
+          "detail": "PAUSED"
+        },
+        {
+          "name": "native Resume works after tab return",
+          "ok": true
+        }
+      ],
+      "startedAt": "2026-10-25T00:18:01.016Z",
+      "reproduction": "Activate another real Chrome tab during the start countdown and separately during play; return to the game tab and inspect cancellation/pause/manual resume.",
+      "console": [
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        },
+        {
+          "type": "warning",
+          "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+        }
+      ],
+      "finishedAt": "2026-10-25T00:18:23.408Z"
+    },
+    {
+      "name": "tiers",
+      "status": "not-run",
+      "checks": []
+    }
+  ],
+  "cleanup": {},
+  "completedAt": "2026-10-25T00:18:23.663Z",
+  "passed": false
+}

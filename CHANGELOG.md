@@ -13,6 +13,13 @@ Implementation and historical specification work are recorded below. Automated, 
 - Validation: Full `npm run check` passed. Live webcam behaviour still needs the user's hands-on test.
 - Limits: No consented live session has been recorded by the agent.
 
+## 2026-10-25T05:48:56+05:30 — Record audited recovery subset and correct camera menu guidance
+
+- Changed: Preserved the selected browser report, raw JSON and four desktop/compact screenshots under `docs/evidence/pr-audit-lifecycle/`; lifecycle notes identify the exact clean tested source `670291c`. README now names the current main-menu **Set up camera** and **Play with camera** controls instead of saying camera work is paused or setup is only in Settings.
+- Why: Confirm storage, graphics and visibility recovery after the audited bundle/library integrations and keep player instructions aligned with the existing menu.
+- Validation: Cache passed 7/7 checks, loaded-avatar menu/play context loss passed 12/12 and hidden-tab cancellation/pause/manual resume passed 7/7. Screenshots were visually inspected; owned browser/server/profile cleanup reported no errors. Five other scenarios were intentionally not run, so overall incomplete/exit 1 is expected. The clean tested source already passed full application/bundle checks; final helper/documentation and whitespace checks passed for this evidence-only increment.
+- Limits: No new full eight-case matrix, 20-cycle soak, webcam recognition, audible-sync or performance claim. This commit records earlier tested code and changes only documentation/evidence.
+
 ## 2026-10-25T05:46:45+05:30 — Integrate audited library, guides and bundle gate into lifecycle PR
 
 - Changed: Normally integrated main `0159d24`, preserving the eight-song bounded paging, current camera controls, wall scoring and fatal-pointer fix. Resolved only overlapping UI-test imports and the first-page description; the lifecycle/cache/fatal and library bounds assertions all remain. Kept merged changelog entries newest-first.

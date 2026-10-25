@@ -43,7 +43,7 @@ Sign Saber is an experimental browser rhythm game built with **TypeScript, React
 
 **Play level is the dataset trial.** It runs an 80-second arrangement using [real COCO upper-body annotations](app/public/assets/fixtures/coco-upper-body-trial.json). These independent still poses contain no hand-gesture labels or recorded swings, so notes register as misses by design.
 
-The optional webcam path uses MediaPipe. Camera integration is currently paused; a consenting person's calibrated, scored webcam session is still an open milestone. The `training/` research model is separate and is **not used by the game**.
+The optional webcam path uses MediaPipe. Choose **Set up camera** on the main music menu; matching calibration enables **Play with camera**. A consenting person's calibrated, scored webcam session is still an open milestone. The `training/` research model is separate and is **not used by the game**.
 
 ## Quick start
 
@@ -82,7 +82,7 @@ Recovery checks now cover two non-camera failures: unavailable/full chart storag
 - **No sound:** click Enable sound again and check the Settings volume. Browsers require a native user action to unlock audio.
 - **Port 5173 is busy:** stop the existing server or use the production preview. The development server uses a fixed port.
 - **A track fails to load:** choose its Retry track action; the other songs stay available.
-- **Optional camera assets:** from `app/`, run `npm run models`, then `npm run build`. Settings exposes setup and positioning preview; live Start requires matching calibration and fresh tracking. Keep head, shoulders, hands and hips visible. Raw webcam pixels stay local.
+- **Optional camera assets:** from `app/`, run `npm run models`, then `npm run build`. Use **Set up camera** on the main music menu for setup and positioning preview; **Play with camera** requires matching calibration and fresh tracking. Keep head, shoulders, hands and hips visible. Raw webcam pixels stay local.
 - **Dataset camera testing:** from the root, `node scripts/prepare-dataset-camera.mjs --coco training/data/coco2017` prepares local, ignored photos. The `?camera=dataset` testing route streams them through MediaPipe. It is separate from the annotation-based Play level mode; see the [camera trial and its limits](docs/evidence/2026-10-25-dataset-camera-trial.md).
 
 </details>

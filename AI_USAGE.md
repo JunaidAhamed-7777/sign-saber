@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Integrated browser recovery subset
+
+- Codex reran cache, loaded-avatar graphics loss and hidden-tab recovery against clean integrated source `670291c`, inspected four screenshots, and preserved all 26 passing checks with the other five scenarios explicitly unrun. README camera instructions now match the existing primary menu; no fresh webcam or performance evidence is claimed.
+
 ## 2026-10-25 — Audited PR lifecycle integration
 
 - Codex normally integrated the merged bundle, guide and eight-song changes into PR #11, preserved both paging and failure regressions, and verified the full application and bundle gates before freezing the browser-rerun source.

@@ -84,6 +84,8 @@ export const strings = Object.freeze({
   by: 'Kevin MacLeod',
   loading: 'Opening the music library…',
   libraryError: 'The local music library could not load. Retry, or choose your own audio.',
+  cacheUnavailable: 'Local cache unavailable · chart not saved',
+  graphicsLost: 'Graphics context was lost. Reload the game to restore the arena.',
   retry: 'Retry',
   cameraSetup: 'Set up camera',
   cameraReconfigure: 'Reconfigure camera',

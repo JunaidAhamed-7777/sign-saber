@@ -100,6 +100,7 @@ export class GameRuntime {
   private sessionAudioFailed = false;
   private pauseTask: Promise<void> | null = null;
   private disposed = false;
+  private graphicsFailed = false;
   private listeners: (() => void)[] = [];
   private stats: SessionStats | null = null;
   private pop = '';
@@ -116,8 +117,9 @@ export class GameRuntime {
     targets: this.countdownTargets,
   };
   private readonly onFrame = (now: number): void => {
+    if (this.disposed || this.graphicsFailed) return;
     this.frame(now);
-    if (!this.disposed) this.animation = requestAnimationFrame(this.onFrame);
+    if (!this.disposed && !this.graphicsFailed) this.animation = requestAnimationFrame(this.onFrame);
   };
 
   constructor(container: HTMLElement) {
@@ -210,7 +212,7 @@ export class GameRuntime {
     });
     const native = (): void => this.pointer.cancel(performance.now(), true);
     const resize = (): void => {
-      this.renderer?.resize();
+      if (!this.graphicsFailed) this.renderer?.resize();
       this.targets.invalidate();
     };
     const hidden = (): void => {
@@ -225,9 +227,9 @@ export class GameRuntime {
     };
     const blur = (): void => {
       native();
-      if (this.machine.state === 'PLAYING') void this.pause('manual');
     };
     const keyboard = (event: KeyboardEvent): void => {
+      if (this.graphicsFailed) return;
       if (
         event.isComposing ||
         (event.target instanceof HTMLElement && /INPUT|TEXTAREA|SELECT/.test(event.target.tagName))
@@ -277,6 +279,8 @@ export class GameRuntime {
     observe(window, 'blur', blur);
     observe(document, 'visibilitychange', hidden);
     observe(window, 'keydown', keyboard as EventListener);
+    const canvas = this.renderer?.renderer?.domElement;
+    if (canvas) observe(canvas, 'webglcontextlost', (event) => this.failGraphics(event));
     if (window.visualViewport) {
       observe(window.visualViewport, 'resize', resize);
       observe(window.visualViewport, 'scroll', resize);
@@ -314,7 +318,7 @@ export class GameRuntime {
     return this.dataset !== null;
   }
   async command(id: string, source: ActionSource = 'native'): Promise<void> {
-    if (this.disposed) return;
+    if (this.disposed || this.graphicsFailed) return;
     try {
       if (id.startsWith('song:')) {
         if (this.machine.state === 'SELECT') await this.select(id.slice(5));
@@ -1467,6 +1471,46 @@ export class GameRuntime {
     this.player?.setVolume(volume);
     display({ volume });
   }
+  /** A lost rendering context cannot safely continue an invisible scored run. Reload is explicit. */
+  private failGraphics(event: Event): void {
+    event.preventDefault();
+    if (this.disposed || this.graphicsFailed) return;
+    this.graphicsFailed = true;
+    cancelAnimationFrame(this.animation);
+    if (this.machine.state === 'PLAYING') void this.pause('fatal');
+    else if (this.machine.state === 'CALIBRATION') this.back();
+    this.lifecycle++;
+    this.selectionRequest++;
+    this.setupRequest++;
+    this.bootRequest++;
+    this.audioRequest++;
+    this.resumeAt = Infinity;
+    this.generator.cancel();
+    this.player?.stop();
+    this.sfx?.stop();
+    this.camera.stop();
+    this.pipeline.invalidateCalibration();
+    this.session = null;
+    this.dataset = null;
+    this.stats = null;
+    this.transitionBusy = false;
+    this.pointer.cancel(performance.now());
+    this.targets.invalidate();
+    display({
+      fatal: strings.graphicsLost,
+      error: null,
+      loading: false,
+      audioReady: false,
+      trackingReady: false,
+      countdown: null,
+      credits: false,
+      replay: false,
+      trialSource: null,
+      generation: { active: false, fraction: 0, stage: '' },
+      camera: { state: 'not-set-up', mode: 'browse', calibrationValid: false, error: null },
+      cameraSource: null,
+    });
+  }
   private failActiveAudio(error: unknown): void {
     this.sessionAudioFailed = true;
     this.player?.stop();
@@ -1555,6 +1599,7 @@ export class GameRuntime {
           pauseReason: s.pauseReason,
           status: s.status,
           error: s.error,
+          fatal: s.fatal,
           camera: s.camera,
           cameraSource: s.cameraSource,
           cameraStage: s.cameraStage,
@@ -1562,10 +1607,32 @@ export class GameRuntime {
           trackingReady: s.trackingReady,
           figureAvailable: s.figureAvailable,
           audioReady: s.audioReady,
+          audio: { contextState: this.context?.state ?? null, activeSfxVoices: this.sfx.activeVoices },
           loading: s.loading,
           mapReady: !!s.map,
           arrangementReady: !!s.arrangement?.ready,
           countdown: s.countdown,
+          generation: { ...s.generation },
+          selection: s.map
+            ? {
+                title: s.map.song.title,
+                sourceHash: s.map.song.sourceHash,
+                difficulty: s.map.difficulty,
+                notes: s.map.notes.length,
+                warnings: [...s.warnings],
+              }
+            : null,
+          resources: this.renderer?.renderer?.info
+            ? {
+                geometries: this.renderer.renderer.info.memory.geometries,
+                textures: this.renderer.renderer.info.memory.textures,
+                programs: this.renderer.renderer.info.programs?.length ?? 0,
+                contextLost: this.renderer.renderer.getContext().isContextLost(),
+                runtimeListeners: this.listeners.length,
+              }
+            : null,
+          quality: this.renderer?.quality ?? null,
+          avatarStatus: this.renderer?.avatarStatus ?? null,
           hud: s.hud,
           results: s.results,
           tracking: { ...this.camera.stats },

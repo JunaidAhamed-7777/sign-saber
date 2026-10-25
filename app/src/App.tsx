@@ -150,7 +150,9 @@ export function App({ runtime }: { runtime: GameRuntime }) {
     document.documentElement.dataset.motion = calm ? 'calm' : 'standard';
   }, [calm]);
   return (
-    <div className={`application state-${state.toLowerCase()}${credits ? ' showing-credits' : ''}`}>
+    <div
+      className={`application state-${fatal ? 'boot' : state.toLowerCase()}${credits ? ' showing-credits' : ''}`}
+    >
       <header className="app-header">
         <a className="wordmark" href="/" aria-label={t.title}>
           <svg viewBox="0 0 32 32" aria-hidden="true">
@@ -161,7 +163,9 @@ export function App({ runtime }: { runtime: GameRuntime }) {
         <Status />
         <span className="input-label">{t.nativeHelp}</span>
       </header>
-      {credits ? (
+      {fatal ? (
+        <Boot runtime={runtime} />
+      ) : credits ? (
         <Credits runtime={runtime} />
       ) : state === 'BOOT' ? (
         <Boot runtime={runtime} />
@@ -176,12 +180,7 @@ export function App({ runtime }: { runtime: GameRuntime }) {
       ) : (
         <Results runtime={runtime} />
       )}
-      {fatal && state !== 'BOOT' && (
-        <aside className="renderer-error" role="alert">
-          <strong>{t.fatalTitle}.</strong> {t.fatalHint}
-        </aside>
-      )}
-      {state !== 'PLAYING' && state !== 'BOOT' && <Legend replay={replay} />}
+      {!fatal && state !== 'PLAYING' && state !== 'BOOT' && <Legend replay={replay} />}
       {stats && state === 'PLAYING' && (
         <aside className="diagnostics">
           <p>{t.diagnosticsLimit}</p>
@@ -191,7 +190,7 @@ export function App({ runtime }: { runtime: GameRuntime }) {
         </aside>
       )}
       <CameraPip runtime={runtime} />
-      <Pointer />
+      {!fatal && <Pointer />}
     </div>
   );
 }

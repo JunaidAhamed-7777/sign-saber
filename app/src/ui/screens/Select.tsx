@@ -322,10 +322,17 @@ export function Select({ runtime }: { runtime: GameRuntime }) {
       </div>
     </div>
   );
-  const chips = (s.warnings.includes('lowTempoConfidence') || arrangementChip) && (
+  const chips = (s.warnings.includes('lowTempoConfidence') ||
+    s.warnings.includes('cacheUnavailable') ||
+    arrangementChip) && (
     <div className="chips">
       {arrangementChip}
       {s.warnings.includes('lowTempoConfidence') && <span className="chip gold">{t.fallback}</span>}
+      {s.warnings.includes('cacheUnavailable') && (
+        <span className="chip gold" role="status">
+          {t.cacheUnavailable}
+        </span>
+      )}
     </div>
   );
   const difficulties = (['easy', 'normal', 'hard'] as const).map((difficulty) => (

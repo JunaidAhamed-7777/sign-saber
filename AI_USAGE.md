@@ -4,6 +4,45 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Integrated browser recovery subset
+
+- Codex reran cache, loaded-avatar graphics loss and hidden-tab recovery against clean integrated source `670291c`, inspected four screenshots, and preserved all 26 passing checks with the other five scenarios explicitly unrun. README camera instructions now match the existing primary menu; no fresh webcam or performance evidence is claimed.
+
+## 2026-10-25 — Audited PR lifecycle integration
+
+- Codex normally integrated the merged bundle, guide and eight-song changes into PR #11, preserved both paging and failure regressions, and verified the full application and bundle gates before freezing the browser-rerun source. The final integrator combined both audited browser harnesses and rechecked 567 application tests plus bundle and documentation gates. Concurrent camera changes were preserved, independently checked for fatal/capture compatibility and revalidated in the final application tree. A clean-source rerun then passed all 19 selected graphics/visibility assertions, with the six other scenarios explicitly unrun and receipts retained.
+
+## 2026-10-25 — PR lifecycle audit correction
+
+- Codex reviewed PR #11, hid the stale hand cursor on fatal recovery with a rendered regression, normally integrated current main camera/menu/scoring changes, and reran application and documentation checks. Historical browser evidence was preserved without attributing it to the new integration.
+
+## 2026-10-25 — Lifecycle acceptance completion (issue #4)
+
+- Codex recorded the loaded-avatar recovery supplement, explained its intentionally incomplete overall subset result beside the complete eight-case pass, and documented native resource boundaries, actual failures/fixes and remaining evidence limits. Independent reviews remained read-only; no app code changed after the tested diagnostic checkpoint.
+
+## 2026-10-25 — Final renderer evidence and readiness review (issue #4)
+
+- Codex verified all eight cases and all 20 strict resource cycles on the integrated avatar source. A read-only agent review identified the async-avatar loading boundary; Codex exposed the existing readiness getter and strengthened only the context probe, preserving all prior reports rather than relabelling a partial rerun as full proof.
+
+## 2026-10-25 — Final avatar/lifecycle integration (issue #4)
+
+- Codex normally integrated upstream avatar checkpoint `30572bb`, resolved the App overlap without restoring removed banners or dropping fatal recovery, reran all app/doc checks and preserved earlier complete evidence separately for comparison.
+
+## 2026-10-25 — Complete clean-source lifecycle evidence (issue #4)
+
+- Codex captured and inspected the full eight-case/20-cycle browser result on clean source `96aa536`, preserving native resource IDs, graph disconnections, source hashes, earlier failures and current screenshots. The evidence is explicitly synthetic and separate from camera/audible-sync/performance claims.
+
+## 2026-10-25 — Repeatable lifecycle harness and independent acceptance review (issue #4)
+
+- Codex authored the native-CDP eight-case harness, deterministic original audio, strict retained-resource/report tests and honest failed-run artifacts. Browser failures led to visibility-owned hidden pauses and an opaque fatal shell with regression assertions. A separate agent reviewed acceptance coverage read-only and identified cancellation/native-audio assertion gaps; these were tightened. No camera, human, audible-sync or performance result is claimed.
+
+## 2026-10-25 — Lifecycle integration review (issue #4)
+
+- Codex integrated the current main audio/render implementation without rewriting history, checked the context-loss guards against the new SFX director and reran all application/doc checks. Native CDP retained-resource probes and a repeatable eight-scenario harness remain in progress.
+
+## 2026-10-25 — Lifecycle recovery fixes (issue #4)
+
+- Codex reproduced cache-warning and WebGL-loss failures in the production app using original synthesized audio and native UI actions, then added scoped recovery behavior, read-only diagnostics and runtime/UI regressions. A separate lifecycle-harness/evidence increment is still in progress; no unrun scenario is represented as passed.
 ## 2026-10-25 — Release-drill audit fix
 
 - Codex reviewed the release harness for false outcomes, cleanup and source evidence, then fixed an unhandled missing-browser spawn error with a focused regression. The integrator also replaced a stale source-banner predicate with the existing read-only evidence-lane export after combining the guides and eight-song library. It normally integrated current main, preserved README instructions and checked the unit/browser regressions plus documentation links; the final integrated journey is recorded separately. A fresh committed clone passed installation, all 560 application tests/budgets and the offline 84-hit synthetic journey; the stale-banner failure was retained alongside the corrected result. Concurrent main camera changes were subsequently integrated normally and the full application/bundle checks repeated without reassigning earlier browser evidence.

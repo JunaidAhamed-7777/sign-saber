@@ -416,7 +416,7 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `HAND_RESET_FRAMES` | 2 | Missing samples before resetting a logical slot/filter |
 | `HAND_IDENTITY_GRACE_MS` | 300 | Recent-slot label matching interval |
 | `HAND_IDENTITY_MATCH_DIST` / `HAND_IDENTITY_OVERRIDE_DIST` | 0.15 / 0.08 | Normalized-image identity matching distances |
-| `TRACK_STALL_MS` / `TRACK_RECOVERY_MS` | 1000 / 5000 | No-result pause and one worker-recreation deadline |
+| `TRACK_STALL_MS` / `TRACK_RECOVERY_MS` | 3000 / 5000 | No-result stall window (each stall first restarts capture, up to `TRACK_STALL_RESTARTS` = 3) and one worker-recreation deadline |
 | `TRACK_REGAIN_MS` | 500 | Continuous valid presence before tracking-loss resume |
 | `TRACK_RATE_TOLERANCE_MS` | 2 | Capture-rate scheduling tolerance |
 | `TRACK_STATS_WINDOW` | 30 | Diagnostic EMA/window sample count; benchmarks retain raw values |
@@ -427,6 +427,7 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `LEAN_TILT_ASSIST_DEG` | 15 | Optional shoulder-tilt assist, with translation evidence |
 | `DUCK_HYSTERESIS` | 0.03 | Normalized nose-height hysteresis [STRETCH] |
 | `CALIB_SAMPLE_MS` / `CALIB_HAND_SEEN_MS` | 500 / 2000 | Rest-pose averaging and recent-hand visibility windows |
+| `CAMERA_PIP_W` / `CAMERA_PIP_H` | 320 / 180 px | Corner camera view with live tracking overlay |
 | `CALIB_AUTO_CONFIRM_MS` | 1500 | Steady framed time that confirms camera setup and starts the live count-in without a click |
 | `CALIB_ASSUMED_SHOULDER_M` | 0.40 | Assumed shoulder span for the playful physical-speed proxy; not a measurement |
 | `SWING_REFRACTORY_MS` / `SWING_TROUGH_RATIO` | 150 / 0.5 | Motion-proxy peak separation and trough rule |

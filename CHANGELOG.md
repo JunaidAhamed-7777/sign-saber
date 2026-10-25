@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T06:30:00+05:30 — Corner camera view and steadier live tracking
+
+- Changed: Added a corner camera view (bottom right) that shows the mirrored webcam with MediaPipe pose and hand landmarks, hand labels/gestures, tracking rate, inference time and drops. The camera `<video>` is now attached to the page (invisibly) so frame callbacks keep flowing; a stall first restarts capture (up to `TRACK_STALL_RESTARTS`) and the stall window is 3 s instead of 1 s. Removed GPU/delegate wording from setup status, the GPU line from diagnostics, and the dataset-camera settings page (`?camera=dataset` still works for testing). Dev builds expose `window.signSaber` for console debugging.
+- Why: User saw "Tracking stopped producing frames" on a real webcam, wants to watch MediaPipe live in a corner, and asked to remove leftover GPU/dataset wording.
+- Validation: Full `npm run check` passed (482 tests). In the desktop app's pane the dataset camera ran through setup with the corner view showing the feed and rate; that pane is backgrounded, so its frame timing is not representative.
+- Limits: Not yet confirmed on the user's webcam.
+
 ## 2026-10-25T06:05:00+05:30 — Camera play on the main menu
 
 - Changed: **Set up camera** sits next to Enable sound on the first play page. Once calibrated, the main action becomes **Play with camera** (live play); Watch auto-play and Play level stay available. Holding a steady, framed pose for `CALIB_AUTO_CONFIRM_MS` confirms camera setup and starts the live count-in without returning to the mouse.

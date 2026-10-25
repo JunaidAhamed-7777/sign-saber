@@ -4,6 +4,13 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — PR audit and sequential integration
+
+- Codex reviewed PR #6 against current main, repaired CI budget enforcement and split the existing postprocessing dependency after measuring the oversized integrated entry. Full application/docs checks and a real production-menu browser smoke were run; live and release gates remain open.
+
+## 2026-10-25 — Issue #1 bundle budget
+
+- Codex measured the unchanged bundle and browser requests, configured Rolldown chunk groups, implemented the dependency-free emitted-byte gate and regression tests, and documented actual sizes/waterfalls and production-preview dataset/synthetic results. No gameplay changes or runtime performance gains are claimed. After new renderer work landed on main, Codex normally integrated it and repeated the actual bundle/browser checks and full 367-assertion application check, then repeated final checks after the camera-source integration and the generator-v3/target-asset integration (424 assertions), preserving the real warning and optional Windows cleanup failure.
 ## 2026-10-25 — Showcase README and real demo captures
 
 - Codex rewrote the project README using the requested showcase structure. Parallel agents captured actual production-browser auto-play, independently measured tests/charts/assets/build bytes and reviewed product facts, architecture and current button labels. The integrator reviewed media and kept dataset, synthetic, research and unverified webcam evidence explicit.

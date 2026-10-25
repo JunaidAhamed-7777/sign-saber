@@ -1,0 +1,318 @@
+{
+  "recordedAt": "2026-10-24T22:16:38.722Z",
+  "label": "after",
+  "sha": "ad41466990b7e62321b835c7261df4559dc53921",
+  "dirty": true,
+  "node": "v26.8.1",
+  "os": "win32",
+  "cacheDisabled": true,
+  "networkThrottling": "none; local loopback",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "chunks": [
+    {
+      "file": "generator.worker-B6OPcKR7.js",
+      "bytes": 22449,
+      "gzipBytes": 9056
+    },
+    {
+      "file": "index-LlutNhgn.js",
+      "bytes": 254379,
+      "gzipBytes": 79339
+    },
+    {
+      "file": "react-CTym4sTV.js",
+      "bytes": 218790,
+      "gzipBytes": 67563
+    },
+    {
+      "file": "rolldown-runtime-WkwZ5CU-.js",
+      "bytes": 599,
+      "gzipBytes": 368
+    },
+    {
+      "file": "three-B_2LwjzK.js",
+      "bytes": 222990,
+      "gzipBytes": 59159
+    },
+    {
+      "file": "three-bq-AKiay.js",
+      "bytes": 352349,
+      "gzipBytes": 84153
+    },
+    {
+      "file": "three-sRmNNit9.js",
+      "bytes": 48975,
+      "gzipBytes": 14216
+    },
+    {
+      "file": "tracking.worker-DeV5KsxN.js",
+      "bytes": 160846,
+      "gzipBytes": 47741
+    }
+  ],
+  "requests": [
+    {
+      "phase": "first-load",
+      "url": "/",
+      "type": "Document",
+      "startMs": 0,
+      "initiator": "other",
+      "status": 200,
+      "mime": "text/html",
+      "endMs": 4835.86,
+      "encodedBytes": 2418
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/index-LlutNhgn.js",
+      "type": "Script",
+      "startMs": 4844.69,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 4914.95,
+      "encodedBytes": 255010
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/rolldown-runtime-WkwZ5CU-.js",
+      "type": "Script",
+      "startMs": 4845.15,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 4876.21,
+      "encodedBytes": 1227
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/react-CTym4sTV.js",
+      "type": "Script",
+      "startMs": 4845.34,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 4919.44,
+      "encodedBytes": 219421
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/three-B_2LwjzK.js",
+      "type": "Script",
+      "startMs": 4845.48,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 4919.17,
+      "encodedBytes": 223621
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/three-bq-AKiay.js",
+      "type": "Script",
+      "startMs": 4845.6,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 4921.35,
+      "encodedBytes": 352980
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/three-sRmNNit9.js",
+      "type": "Script",
+      "startMs": 4845.71,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 4918.36,
+      "encodedBytes": 49605
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/index-D613XqhR.css",
+      "type": "Stylesheet",
+      "startMs": 4845.84,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/css",
+      "endMs": 4917.8,
+      "encodedBytes": 35553
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/fonts/orbitron.ttf",
+      "type": "Font",
+      "startMs": 4926.84,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "font/ttf",
+      "endMs": 4961.1,
+      "encodedBytes": 39184
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/armor.glb",
+      "type": "Fetch",
+      "startMs": 5044.73,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 5066.31,
+      "encodedBytes": 57949
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/beam_ring.glb",
+      "type": "Fetch",
+      "startMs": 5044.99,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 5073.25,
+      "encodedBytes": 45849
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/glyphs.glb",
+      "type": "Fetch",
+      "startMs": 5045.09,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 5073.42,
+      "encodedBytes": 10673
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/pylon.glb",
+      "type": "Fetch",
+      "startMs": 5045.19,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 5073.59,
+      "encodedBytes": 4872
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/block_fractured.glb",
+      "type": "Fetch",
+      "startMs": 5045.36,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 5084,
+      "encodedBytes": 13849
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/arena_environment.glb",
+      "type": "Fetch",
+      "startMs": 5045.47,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 5131.28,
+      "encodedBytes": 64997
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/tracks/manifest.json",
+      "type": "Fetch",
+      "startMs": 5055.37,
+      "initiator": "script",
+      "status": 200,
+      "mime": "application/json",
+      "endMs": 5111.85,
+      "encodedBytes": 5753
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/fonts/rajdhani.ttf",
+      "type": "Font",
+      "startMs": 5275.42,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "font/ttf",
+      "endMs": 5298.93,
+      "encodedBytes": 384957
+    },
+    {
+      "phase": "first-load",
+      "url": "/favicon.ico",
+      "type": "Other",
+      "startMs": 5401.08,
+      "initiator": "other",
+      "status": 404,
+      "mime": "text/plain",
+      "endMs": 5404.35,
+      "encodedBytes": 624
+    },
+    {
+      "phase": "select-and-audio",
+      "url": "/assets/tracks/pamgaea/normal.json",
+      "type": "Fetch",
+      "startMs": 7546.24,
+      "initiator": "script",
+      "status": 200,
+      "mime": "application/json",
+      "endMs": 7567.52,
+      "encodedBytes": 231937
+    },
+    {
+      "phase": "select-and-audio",
+      "url": "/assets/tracks/pamgaea/audio.mp3",
+      "type": "Fetch",
+      "startMs": 7554.42,
+      "initiator": "script",
+      "status": 200,
+      "mime": "audio/mpeg",
+      "endMs": 8783.9,
+      "encodedBytes": 6745551
+    },
+    {
+      "phase": "dataset-trial",
+      "url": "/assets/generator.worker-B6OPcKR7.js",
+      "type": "Script",
+      "startMs": 19937.42,
+      "initiator": "other"
+    },
+    {
+      "phase": "dataset-trial",
+      "url": "/assets/fixtures/coco-upper-body-trial.json",
+      "type": "Fetch",
+      "startMs": 23231.97,
+      "initiator": "script",
+      "status": 200,
+      "mime": "application/json",
+      "endMs": 23254.06,
+      "encodedBytes": 20619
+    },
+    {
+      "phase": "dataset-trial",
+      "url": "/favicon.ico",
+      "type": "Other",
+      "startMs": 25267.33,
+      "initiator": "other",
+      "status": 404,
+      "mime": "text/plain",
+      "endMs": 25269.45,
+      "encodedBytes": 624
+    }
+  ],
+  "security": [],
+  "steps": [
+    {
+      "step": "menu",
+      "pass": true
+    }
+  ],
+  "browser": "Chrome/155.0.8059.86",
+  "firstLoadText": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your music\nP\nPamgaea\nKevin MacLeod\n2:48 · Tempo unclear\nE\nElectro Cabello\nKevin MacLeod\n3:10 · Tempo unclear\nC\nCipher\nKevin MacLeod\n3:51 · Tempo unclear\n←\nPrevious\nChoose your music\n1 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nSELECTED TRACK\nSelect a track\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nMake 80-second cut\nTry level with dataset\nAnnotated poses · no webcam\nWatch synthetic performer\nPlanned motion · no camera\n\nChoose a track to begin.\n\n←\nPrevious\nReady when you are\n1 of 4\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click\n\nMouse and keyboard always work",
+  "failure": "Error: Timed out: !!document.querySelector('.hud')\nSIGN SABER\nDataset annotations · no webcam\nMouse / keyboard to browse · Esc to pause\n◆\nDATASET TRIAL · static poses, no gesture labels · no webcam\nSCORE\n0\nCOMBO\n×1\n0\nACCURACY\n0.0%\nLeft hand\nUnavailable\nNo hand data\nRight hand\nUnavailable\nNo hand data\nMISS\n0:45\n1:20\n    at wait (file:///C:/Users/Junaid/AppData/Local/Temp/sign-saber-bundle-probe.mjs:33:165)\n    at async file:///C:/Users/Junaid/AppData/Local/Temp/sign-saber-bundle-probe.mjs:39:34",
+  "passed": false
+}

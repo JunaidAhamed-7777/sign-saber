@@ -219,10 +219,11 @@ Inside `app/`:
 
 ```powershell
 npm run check
+npm run bundle:check
 npm run beatmaps
 ```
 
-`check` runs typecheck → lint → Vitest → production build. `beatmaps` regenerates and validates bundled charts using the shared DSP; it requires ffmpeg. Generated, hash-pinned chart files should only change deliberately. `npm run music` and `npm run fonts` verify/reacquire the pinned source assets when needed.
+`check` runs typecheck → lint → asserted Vitest suites → production build → the enforced [bundle-size budget](docs/16-performance-budget.md#bundle-size-budget). `bundle:check` reruns the budget tests and checks an existing build, rejecting any emitted JS chunk over 500000 bytes. `beatmaps` regenerates and validates bundled charts using the shared DSP; it requires ffmpeg. Generated, hash-pinned chart files should only change deliberately. `npm run music` and `npm run fonts` verify/reacquire the pinned source assets when needed.
 
 From the repository root:
 

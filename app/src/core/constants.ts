@@ -37,6 +37,8 @@ export const INPUT_OFFSET_DEFAULT_MS = 0,
 export const OBSTACLE_GRACE_MS = 120,
   BEAM_REFIRE_LOCK_MS = 150,
   EXTRAPOLATE_MAX_MS = 80,
+  /** Display-only easing (ms) of hand cursors/trails toward the extrapolated cursor; never used for scoring. */
+  HAND_DISPLAY_SMOOTH_MS = 45,
   INPUT_MAX_AGE_MS = 250;
 export const SCORE_PERFECT = 100,
   SCORE_GREAT = 70,
@@ -750,9 +752,9 @@ export const AVATAR_DEPTH_GAIN = 0.6,
 /** Arm segments may lengthen this much so hands reach tracked wrists. */
 export const AVATAR_STRETCH_MAX = 1.15;
 /** Exponential smoothing time constants (ms): tracked bones, joints easing to neutral, root and scale. */
-export const AVATAR_SMOOTH_MS = 55,
+export const AVATAR_SMOOTH_MS = 85,
   AVATAR_MISSING_SMOOTH_MS = 320,
-  AVATAR_ROOT_SMOOTH_MS = 70,
+  AVATAR_ROOT_SMOOTH_MS = 95,
   AVATAR_SCALE_SMOOTH_MS = 450;
 /** A briefly missing joint holds its last target this long before easing to the neutral pose. */
 export const AVATAR_HOLD_MS = 250;

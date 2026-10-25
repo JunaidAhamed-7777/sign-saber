@@ -87,7 +87,9 @@ import {
   TARGET_GLYPH_SCALE,
   SPAWN_DISTANCE,
   AVATAR_TIER_FIGURE,
+  HAND_DISPLAY_SMOOTH_MS,
 } from '../core/constants';
+import { predictCursor } from '../gestures/cursor';
 const colors = { slash: 0x19f5ff, smash: 0xff2bd6, beam: 0xffc32b };
 /** Armour plate debris tint (dark magenta metal), distinct from the glowing shard cross-sections. */
 const ARMOR_PLATE_DEBRIS_COLOR = 0x5a2050;
@@ -239,6 +241,10 @@ export class ArenaRenderer {
   /** Blade ribbons and hand particles (docs12); fed the latest measured cursors. */
   private readonly trails = new HandTrails(QUALITY_TIER_PRESETS.medium);
   private latestHands: readonly HandCursor[] = [];
+  /** Display-only eased copies of the latest cursors (60 fps between ~10 Hz samples); never scored. */
+  private readonly displayHands: HandCursor[] = [];
+  private readonly displayEased = [false, false];
+  private readonly predicted: Vec3 = { x: 0, y: 0, z: 0 };
   private readonly sparks = new SparkPool();
   private pointPixels = 1;
   private readonly rig = new CameraRig();
@@ -801,14 +807,51 @@ export class ArenaRenderer {
   hands(hands: readonly HandCursor[]): void {
     if (this.mode === 'paused' || this.mode === 'results') return;
     this.latestHands = hands;
+  }
+  /** Per frame: ease drawn cursors toward the extrapolated latest sample, then update meshes/lines. */
+  private easeHands(now: number, frameMs: number): readonly HandCursor[] {
+    const alpha = 1 - Math.exp(-Math.max(0, frameMs) / HAND_DISPLAY_SMOOTH_MS);
     for (let i = 0; i < 2; i++) {
-      const hand = hands[i];
+      const hand = this.latestHands[i];
       const mesh = this.handMeshes[i]!;
       const line = this.handLines[i]!;
+      let shown = this.displayHands[i];
+      if (!shown && hand?.present) {
+        shown = { ...hand, pos: { x: 0, y: 0, z: 0 }, tip: { x: 0, y: 0, z: 0 }, history: [] };
+        this.displayHands[i] = shown;
+      }
       mesh.visible = !!hand?.present && this.visible;
       line.visible = !!hand?.present && this.visible && hand.gesture === 'open';
-      if (!hand?.present) continue;
-      mesh.position.set(hand.pos.x, hand.pos.y, 0.05);
+      if (!hand?.present || !shown) {
+        if (shown) shown.present = false;
+        this.displayEased[i] = false;
+        continue;
+      }
+      const pos = shown.pos,
+        tip = shown.tip,
+        history = shown.history;
+      Object.assign(shown, hand);
+      shown.pos = pos;
+      shown.tip = tip;
+      shown.history = history;
+      predictCursor(hand, now, this.predicted);
+      if (this.displayEased[i]) {
+        pos.x += (this.predicted.x - pos.x) * alpha;
+        pos.y += (this.predicted.y - pos.y) * alpha;
+      } else {
+        pos.x = this.predicted.x;
+        pos.y = this.predicted.y;
+        this.displayEased[i] = true;
+      }
+      pos.z = hand.pos.z;
+      tip.x = hand.tip.x + pos.x - hand.pos.x;
+      tip.y = hand.tip.y + pos.y - hand.pos.y;
+      tip.z = hand.tip.z;
+      // Measured history with the newest sample replaced by the drawn position (array reused, no copies).
+      history.length = hand.history.length;
+      for (let j = 0; j < hand.history.length; j++) history[j] = hand.history[j]!;
+      if (history.length) history[history.length - 1] = pos;
+      mesh.position.set(pos.x, pos.y, 0.05);
       mesh.scale.setScalar(hand.gesture === 'fist' ? 0.6 : 1 + hand.charge * 0.4);
       (mesh.material as THREE.MeshBasicMaterial).color.set(
         hand.gesture === 'point'
@@ -820,14 +863,15 @@ export class ArenaRenderer {
               : HAND_TINT_RIGHT,
       );
       const positions = line.geometry.attributes.position as THREE.BufferAttribute;
-      const count = Math.min(24, hand.history.length);
+      const count = Math.min(24, history.length);
       for (let j = 0; j < count; j++) {
-        const p = hand.history[hand.history.length - count + j]!;
+        const p = history[history.length - count + j]!;
         positions.setXYZ(j, p.x, p.y, 0.04);
       }
       positions.needsUpdate = true;
       line.geometry.setDrawRange(0, count);
     }
+    return this.displayHands;
   }
   draw(
     time: number,
@@ -970,9 +1014,11 @@ export class ArenaRenderer {
         this.calm,
         this.mode === 'play' ? (SPAWN_DISTANCE / this.approachMs) * 1000 : 0,
       );
+    const drawnHands =
+      this.mode !== 'paused' && this.mode !== 'results' ? this.easeHands(now, frameMs) : this.latestHands;
     if (this.mode !== 'paused')
       this.trails.update(
-        this.latestHands,
+        drawnHands,
         this.mode !== 'results' && this.visible,
         frameMs,
         this.bands,

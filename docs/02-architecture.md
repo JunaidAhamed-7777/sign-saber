@@ -322,6 +322,7 @@ This is the shared constants registry. `core/constants.ts` now exports these nam
 | `OBSTACLE_GRACE_MS` | 120 | Frames after a wall reaches the hit plane that are not evaluated (hides tracking latency) |
 | `BEAM_REFIRE_LOCK_MS` | 150 | Lockout after a beam fire |
 | `EXTRAPOLATE_MAX_MS` | 80 | Cursor extrapolation cap |
+| `HAND_DISPLAY_SMOOTH_MS` | 45 | Display-only easing of drawn hand cursors/trails toward the extrapolated cursor (never scored) |
 | `INPUT_MAX_AGE_MS` | 250 | Maximum receipt/capture age accepted for scoring; also bounds late-result grace before a miss |
 
 ### Scoring
@@ -652,8 +653,8 @@ Used by `render/avatar*.ts` to retarget tracked, dataset, synthetic or idle join
 | `AVATAR_TIER_FIGURE` | high/medium `avatar`, low `skeleton` | Figure requested per fixed tier; GLB failure also uses the line skeleton |
 | `AVATAR_DEPTH_GAIN` / `AVATAR_DEPTH_MAX_M` | 0.6 / 1.1 m | World-landmark depth → play-space depth gain and clamp |
 | `AVATAR_STRETCH_MAX` | 1.15 | Maximum arm lengthening so hands reach tracked wrists |
-| `AVATAR_SMOOTH_MS` / `AVATAR_MISSING_SMOOTH_MS` | 55 / 320 | Rotation smoothing for tracked bones / bones easing toward neutral |
-| `AVATAR_ROOT_SMOOTH_MS` / `AVATAR_SCALE_SMOOTH_MS` | 70 / 450 | Root translation and scale smoothing |
+| `AVATAR_SMOOTH_MS` / `AVATAR_MISSING_SMOOTH_MS` | 85 / 320 | Rotation smoothing for tracked bones / bones easing toward neutral |
+| `AVATAR_ROOT_SMOOTH_MS` / `AVATAR_SCALE_SMOOTH_MS` | 95 / 450 | Root translation and scale smoothing |
 | `AVATAR_HOLD_MS` | 250 | A briefly missing joint holds its last target before easing |
 | `AVATAR_LIMITS_DEG` | torso twist 45, lean 60, head 70, clavicle 16, wrist 85, MCP −25…95, PIP −5…110, DIP −5…85, spread 22, thumb base 50, thumb −15…75 | Joint limits relative to the parent |
 | `AVATAR_RELAXED_CURL` | 0.22 | Finger curl without hand landmarks |

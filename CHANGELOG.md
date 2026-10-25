@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25 06:53 +05:30 — Smooth display of hand cursors and avatar between tracking samples
+
+- **Changed:** `app/src/render/renderer.ts` now eases drawn hand cursors, guide lines and trail/blade inputs each frame toward `predictCursor` (capped by `EXTRAPOLATE_MAX_MS`) using new display-only `HAND_DISPLAY_SMOOTH_MS = 45`; `AVATAR_SMOOTH_MS` 55→85 and `AVATAR_ROOT_SMOOTH_MS` 70→95 (`app/src/core/constants.ts`, `docs/02-architecture.md`).
+- **Why:** tracking arrives at ~9–10 Hz, so cursors and the avatar visibly stepped at 60 fps.
+- **Validation:** `npm run check` in `app/`; `node scripts/check-docs.mjs`.
+- **Limits:** display only — scoring still uses capture-time samples. Not checked with a live webcam; longer avatar smoothing adds slight visual lag.
+
 ## 2026-10-25T06:47:25+05:30 — Showcase the desktop experience and Track 4 submission
 
 - Changed: Rebuilt README around preserved gameplay GIFs, full-width fresh desktop menu/results, current local content, concise setup, architecture, reproducible evidence and the supplied **Make Room for Play** track. Updated the documentation index, player/contributor/troubleshooting guides, scripts guide and gesture/scoring specifications after normally integrating concurrent gameplay commit `8fd22f6`. Removed superseded interface WebPs and old gameplay stills; retained historical receipts and all three GIFs unchanged.

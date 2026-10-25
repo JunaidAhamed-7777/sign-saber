@@ -1,0 +1,157 @@
+{
+  "schema": 1,
+  "sourceSha": "30572bb9cdbe345b79e8e48279019bd7d8b59877",
+  "capturedAt": "2026-10-24T23:49:20.820Z",
+  "lane": "synthetic-performer-logic-replay",
+  "description": "Actual production UI. Chosen song → Enable sound → Watch auto-play. Planned synthetic landmarks pass through the game input pipeline and real judge. No webcam, recognition, injected hit or mock-up.",
+  "song": "pamgaea",
+  "difficulty": "normal",
+  "url": "http://127.0.0.1:4186",
+  "viewport": {
+    "width": 1440,
+    "height": 900,
+    "dpr": 1
+  },
+  "environment": {
+    "os": "win32 10.0.26300",
+    "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics        ",
+    "node": "v26.8.1"
+  },
+  "limitations": [
+    "Synthetic input; no live-camera or human-play claim.",
+    "Capture timings and recorded frame rate are not a performance benchmark.",
+    "GIFs are silent, resized excerpts; screenshots preserve the rendered UI."
+  ],
+  "actions": [
+    {
+      "id": "song:pamgaea",
+      "at": "2026-10-24T23:49:23.993Z"
+    },
+    {
+      "id": "audio",
+      "at": "2026-10-24T23:49:24.302Z"
+    },
+    {
+      "id": "performer-trial",
+      "at": "2026-10-24T23:49:26.953Z"
+    }
+  ],
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/155.0.8059.86",
+    "revision": "@804d6b05f089b27af8342622a36558c49401a1d4",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+    "jsVersion": "15.5.35.25"
+  },
+  "resultsText": "SIGN SABER\nPlaying\nMouse / keyboard to browse · Esc to pause\nYOUR PERFORMANCE\nPamgaea — 80.0s arrangement\n\nNormal\n\nRANK\nSS\nScore\n54,700\nAccuracy\n100.0%\nBest combo\n84\n←\nPrevious\nYour performance\n1 of 2\n→\nNext\n\n· 76.8 s\n\nPlay again\nSongs\nJUDGEMENTS\nPerfect\n84\nGreat\n0\nGood\n0\nMiss\n0\nBad cut\n0\n\nRun complete.\n\n←\nPrevious\nPlay again\n1 of 3\n→\nNext\n\nMouse/keyboard to pause or quit",
+  "console": [
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+    }
+  ],
+  "framesCaptured": 2633,
+  "recordingSeconds": 81.57271599769592,
+  "finishedAt": "2026-10-24T23:51:01.357Z",
+  "encoding": {
+    "ordering": "CDP metadata timestamp",
+    "sameTimestampFramesOmitted": 0,
+    "clockSpeed": 1
+  },
+  "media": [
+    {
+      "filename": "slice.png",
+      "frame": "000260.jpg",
+      "recordedSecond": 7.909837961196899,
+      "description": "Open-palm contact: cyan target split into two capped halves, Perfect judged.",
+      "conversion": "Captured JPEG frame losslessly encoded as PNG; no compositing or retouching.",
+      "bytes": 1168907,
+      "sha256": "0092e5b1aadfca43e7c98ffe9f1461b7f367f8a501da9cf30b262fea580d0584"
+    },
+    {
+      "filename": "smash.png",
+      "frame": "000060.jpg",
+      "recordedSecond": 1.6270420551300049,
+      "description": "Fist contact: magenta target shatters, Perfect judged.",
+      "conversion": "Captured JPEG frame losslessly encoded as PNG; no compositing or retouching.",
+      "bytes": 1187131,
+      "sha256": "1b4881696bc8212e0893203c53342b72750f9902aa1412aa6cd25c0eb79d0353"
+    },
+    {
+      "filename": "beam.png",
+      "frame": "000223.jpg",
+      "recordedSecond": 6.576117992401123,
+      "description": "Point/hold release: gold target collapses into particles, Perfect judged.",
+      "conversion": "Captured JPEG frame losslessly encoded as PNG; no compositing or retouching.",
+      "bytes": 1149600,
+      "sha256": "e63b19b25d50c85f85d11256f2c59599cab96fdead4a62c1b23c1a7353564547"
+    },
+    {
+      "filename": "hero.gif",
+      "startRecordedSecond": 50.6004900932312,
+      "endRecordedSecond": 54.6,
+      "description": "Auto-play performer leans around a wall, fires a beam and continues the combo.",
+      "conversion": "Timestamp-preserving excerpt, resized to 720×450, 8 fps GIF with a generated 64-color palette and Bayer dithering. No interpolation, compositing or retouching.",
+      "bytes": 2869133,
+      "sha256": "7cf579132e1d733c0f7ffa547c56e4a425c50f9eefa1207c2eba4e8ab2d7d267"
+    },
+    {
+      "filename": "slash.gif",
+      "startRecordedSecond": 7.505334138870239,
+      "endRecordedSecond": 10.5,
+      "description": "Open-palm slice and fist smash with real Perfect judgements.",
+      "conversion": "Timestamp-preserving excerpt, resized to 560×350, 8 fps GIF with a generated 64-color palette and Bayer dithering. No interpolation, compositing or retouching.",
+      "bytes": 1266783,
+      "sha256": "f437ae0c5e6a1c761c73b65444804098e9025c7d28440c1bc532e086e855078e"
+    },
+    {
+      "filename": "beam.gif",
+      "startRecordedSecond": 23.3768470287323,
+      "endRecordedSecond": 26.3,
+      "description": "Point-and-hold charge, gold target collapse and the next smash.",
+      "conversion": "Timestamp-preserving excerpt, resized to 560×350, 8 fps GIF with a generated 64-color palette and Bayer dithering. No interpolation, compositing or retouching.",
+      "bytes": 1550916,
+      "sha256": "598ec22e73c30eb927c1a12e946c18d2a8e0560307b64f07a177e75997f32adb"
+    },
+    {
+      "filename": "menu.png",
+      "conversion": "Native Chrome full-viewport PNG screenshot.",
+      "bytes": 508502,
+      "sha256": "7552ce741ef53d4a4a462a9005addb8fc7c7d77922783fcb4fe868ae8865908d"
+    },
+    {
+      "filename": "results.png",
+      "conversion": "Native Chrome full-viewport PNG screenshot.",
+      "bytes": 450567,
+      "sha256": "3fffee08e737a0ca1bddf987234c292a86d9b8906c73d7b5355daab6bfe8c257"
+    }
+  ],
+  "ffmpegVersion": "ffmpeg version 9.0.2-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers\r",
+  "dirtyTree": true,
+  "applicationDiffFromSourceSha": false,
+  "sourceStateNote": "README/media/capture-harness work in progress; application source unchanged from sourceSha. Production build generated by npm run check.",
+  "verification": {
+    "screenshots": "All five PNGs visually inspected; slice and smash contain actual contact/destruction; beam contains gold target collapse and Point HUD.",
+    "gifs": "Contact sheets of all three GIFs inspected; frames change through real scored hits and wall dodge.",
+    "encodedGifs": {
+      "hero": {
+        "width": 720,
+        "height": 450,
+        "frames": 32,
+        "durationSeconds": 4.01
+      },
+      "slash": {
+        "width": 560,
+        "height": 350,
+        "frames": 24,
+        "durationSeconds": 3.01
+      },
+      "beam": {
+        "width": 560,
+        "height": 350,
+        "frames": 24,
+        "durationSeconds": 3.01
+      }
+    }
+  }
+}

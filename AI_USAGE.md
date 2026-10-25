@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — PR audit: current player controls and guide links
+
+- Codex reviewed PR #7 against current main, normally integrated its showcase README/camera changes, corrected player control and cancellation instructions, repaired the removed README fragment and revalidated local documentation. Existing screenshots remain explicitly tied to their recorded source; no new runtime or live-camera evidence is claimed.
+
 ## 2026-10-25 — Guide label and avatar capture refresh at main 30572bb
 
 - Codex normally integrated the requested source checkpoint into the existing guide PR, corrected the affected button/source captions while retaining synthetic-input limits, and captured/inspected four new production-app WebPs through native UI actions. It recorded actual current results, hashes, Chrome provenance and the upstream warning/failed initial harness gate, then ran the required application/documentation checks. No application code or live-camera result was authored for this maintenance.
@@ -12,6 +16,10 @@ The development workflow also occasionally includes collaboration with **Devin**
 
 - Codex wrote and independently reviewed guides against current UI/runtime sources, exact recovery messages and the constants/evidence contracts. It captured and inspected four actual production-app WebPs, including a complete labelled synthetic-performer run, and refreshed the wording/captures after concurrent main updates. No gameplay implementation or live-camera evidence is attributed to this documentation work.
 - After the first documentation milestone, Codex normally integrated main through `52e9c81`, rechecked the exact live-play label and dataset-camera distinction, refreshed all captures (including the corrected performer footer) and repeated the full application/browser checks before opening the issue PR.
+## 2026-10-25 — Showcase README and real demo captures
+
+- Codex rewrote the project README using the requested showcase structure. Parallel agents captured actual production-browser auto-play, independently measured tests/charts/assets/build bytes and reviewed product facts, architecture and current button labels. The integrator reviewed media and kept dataset, synthetic, research and unverified webcam evidence explicit.
+- Added a reproducible headless capture script and compact verification receipts. No mock-ups, AI-generated imagery, invented benchmarks, application changes or training promotion were used. Checks and limitations are recorded in the matching changelog entry.
 
 ## 2026-10-25 — Fixed-tier integration and requested handoff
 

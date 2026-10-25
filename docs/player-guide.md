@@ -66,9 +66,9 @@ Prepare the local tracking files once while online, from `app/`:
 npm run models
 ```
 
-If using production preview, rebuild after downloading them. On the menu, page to **Settings → Camera & live play**, choose **Set up camera** with mouse or keyboard, and allow browser camera access. No song needs to be selected first.
+If using production preview, rebuild after downloading them. Choose **Set up camera** on the main menu with mouse or keyboard and allow browser camera access. The same action is available under **Settings → Camera & live play**. No song needs to be selected first.
 
-Frame your head, shoulders, hands and hips in a clear, comfortable space. Hold still until both hands and the framing checklist are ready, then choose **Confirm camera & position**. Permission alone does not establish calibration. Choose music, enable sound and use **Start live play** on the camera/live-play page, then **Confirm ready** when the pre-play guide is ready. Cancel or Esc returns to music if setup cannot complete.
+Frame your head, shoulders, hands and hips in a clear, comfortable space. Hold steady until the framing checklist is ready; setup confirms automatically after sustained readiness, or you can choose **Confirm camera & position**. Permission alone does not establish calibration. Choose music, enable sound and use **Play with camera** on the main menu or camera/live-play page. Hold steady again for the pre-play guide, or choose **Confirm ready** when ready. **Cancel** returns from camera setup; Esc cancels the pre-play guide/countdown and returns to music.
 
 After tracking is ready, an open palm moves the menu pointer. Point deliberately to click once, then open your palm again before the next click. The permission dialog, sound enable and file picker still need mouse or keyboard.
 

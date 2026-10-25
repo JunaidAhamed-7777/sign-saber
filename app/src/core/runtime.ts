@@ -57,6 +57,19 @@ export class GameRuntime {
   readonly trace = new JudgementTraceRecorder();
   readonly flags = readFlags(location.search, import.meta.env.DEV);
   readonly video = document.createElement('video');
+  /** Latest live landmarks (mirrored image space) for the corner camera view; owned copies. */
+  readonly liveView = {
+    at: 0,
+    hasPose: false,
+    pose: new Float32Array(132),
+    handCount: 0,
+    hands: [new Float32Array(63), new Float32Array(63)],
+    handedness: ['left', 'right'] as ('left' | 'right')[],
+    gestures: ['none', 'none'] as string[],
+  };
+  get cameraStats() {
+    return this.camera.stats;
+  }
   readonly renderer: ArenaRenderer | null;
   private context: AudioContext | null = null;
   private player: AudioPlayer | null = null;
@@ -108,6 +121,21 @@ export class GameRuntime {
   };
 
   constructor(container: HTMLElement) {
+    // Chrome may stop video-frame callbacks for a detached <video>; keep it in the page, invisible.
+    if (typeof this.video.setAttribute === 'function' && typeof document !== 'undefined' && document.body) {
+      this.video.setAttribute('aria-hidden', 'true');
+      Object.assign(this.video.style, {
+        position: 'fixed',
+        left: '0',
+        bottom: '0',
+        width: '2px',
+        height: '2px',
+        opacity: '0.01',
+        pointerEvents: 'none',
+        zIndex: '-1',
+      });
+      document.body.appendChild(this.video);
+    }
     try {
       this.renderer = new ArenaRenderer(container, this.machine.events, {
         tier: this.flags.tier,
@@ -1076,6 +1104,19 @@ export class GameRuntime {
   }
   private tracking(frame: TrackingFrame, now = performance.now(), source: 'live' | 'replay' = 'live'): void {
     const result = this.pipeline.process(frame, now, source);
+    if (source === 'live') {
+      const view = this.liveView;
+      view.at = performance.now();
+      view.hasPose = !!frame.pose;
+      if (frame.pose) view.pose.set(frame.pose.landmarks);
+      view.handCount = Math.min(2, frame.hands.length);
+      for (let k = 0; k < view.handCount; k++) {
+        const hand = frame.hands[k]!;
+        view.hands[k]!.set(hand.landmarks);
+        view.handedness[k] = hand.handedness;
+        view.gestures[k] = result?.hands.find((cursor) => cursor.hand === hand.handedness)?.gesture ?? 'none';
+      }
+    }
     if (!result || this.disposed) return;
     this.lastTracking = frame.tCapture;
     if (result.body.present || result.hands.some((hand) => hand.present)) this.lastPresence = frame.tCapture;

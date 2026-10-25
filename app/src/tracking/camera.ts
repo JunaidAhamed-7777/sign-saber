@@ -11,7 +11,12 @@
  * Only stream acquisition varies by source; video, worker, models, calibration and scoring are shared.
  */
 import type { HandCursor, TrackingFrame } from '../core/types';
-import { TRACK_STALL_MS, TRACK_FIRST_RESULT_TIMEOUT_MS, INPUT_MAX_AGE_MS } from '../core/constants';
+import {
+  TRACK_STALL_MS,
+  TRACK_STALL_RESTARTS,
+  TRACK_FIRST_RESULT_TIMEOUT_MS,
+  INPUT_MAX_AGE_MS,
+} from '../core/constants';
 import { TrackingClient } from './workerClient';
 import { WebcamSource, type CameraStreamSource } from './cameraSource';
 import { HAND_LABEL_MAPPING } from './protocol';
@@ -36,6 +41,7 @@ export class CameraController {
   private watchdog: ReturnType<typeof setInterval> | null = null;
   private lastResult = 0;
   private captureVisible = true;
+  private stallRestarts = 0;
   identity = '';
   settings: MediaTrackSettings | null = null;
   get stats() {
@@ -52,7 +58,7 @@ export class CameraController {
     const generation = ++this.generation;
     this.source = source;
     const dataset = source.kind === 'dataset';
-    const label = (message: string) => (dataset ? `${message} · ${source.label}` : message);
+    const label = (message: string) => message;
     try {
       onStatus(dataset ? `Starting ${source.label}` : 'Waiting for camera permission');
       let stream: MediaStream;
@@ -109,15 +115,16 @@ export class CameraController {
           return;
         }
         this.lastResult = performance.now();
+        this.stallRestarts = 0;
         if (!previewAnnounced && this.lastResult - frame.tCapture <= INPUT_MAX_AGE_MS) {
-          onStatus(label(`Camera setup preview · ${this.stats.delegate} tracking`));
+          onStatus(label('Camera ready · step back until head to hips are in view'));
           previewAnnounced = true;
         }
         source.observeFrame?.(frame);
         onFrame(frame);
       }, fail);
       if (generation !== this.generation) return;
-      onStatus(label(`Preparing the first camera sample · ${this.stats.delegate} tracking`));
+      onStatus(label('Starting tracking…'));
       this.client.start(video);
       this.captureVisible = !document.hidden;
       source.setActive?.(this.captureVisible);
@@ -130,6 +137,14 @@ export class CameraController {
         const deadline = firstSubmittedResult ? TRACK_FIRST_RESULT_TIMEOUT_MS : TRACK_STALL_MS;
         if (this.captureVisible && !document.hidden && performance.now() - this.lastResult >= deadline) {
           console.error('[Sign Saber tracking watchdog]', JSON.stringify(this.client.stats));
+          // A hitch (GC, model warm-up, focus change) should not end setup: restart capture first.
+          if (!firstSubmittedResult && this.stallRestarts < TRACK_STALL_RESTARTS && this.video) {
+            this.stallRestarts++;
+            this.lastResult = performance.now();
+            if (this.video.paused) void this.video.play().catch(() => undefined);
+            this.client.start(this.video);
+            return;
+          }
           fail(
             label(
               this.client.stats.cameraCallbacks === 0

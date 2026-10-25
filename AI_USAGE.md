@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — PR lifecycle audit correction
+
+- Codex reviewed PR #11, hid the stale hand cursor on fatal recovery with a rendered regression, normally integrated current main camera/menu/scoring changes, and reran application and documentation checks. Historical browser evidence was preserved without attributing it to the new integration.
+
 ## 2026-10-25 — Lifecycle acceptance completion (issue #4)
 
 - Codex recorded the loaded-avatar recovery supplement, explained its intentionally incomplete overall subset result beside the complete eight-case pass, and documented native resource boundaries, actual failures/fixes and remaining evidence limits. Independent reviews remained read-only; no app code changed after the tested diagnostic checkpoint.
@@ -31,6 +35,10 @@ The development workflow also occasionally includes collaboration with **Devin**
 ## 2026-10-25 — Lifecycle recovery fixes (issue #4)
 
 - Codex reproduced cache-warning and WebGL-loss failures in the production app using original synthesized audio and native UI actions, then added scoped recovery behavior, read-only diagnostics and runtime/UI regressions. A separate lifecycle-harness/evidence increment is still in progress; no unrun scenario is represented as passed.
+## 2026-10-25 — Showcase README and real demo captures
+
+- Codex rewrote the project README using the requested showcase structure. Parallel agents captured actual production-browser auto-play, independently measured tests/charts/assets/build bytes and reviewed product facts, architecture and current button labels. The integrator reviewed media and kept dataset, synthetic, research and unverified webcam evidence explicit.
+- Added a reproducible headless capture script and compact verification receipts. No mock-ups, AI-generated imagery, invented benchmarks, application changes or training promotion were used. Checks and limitations are recorded in the matching changelog entry.
 
 ## 2026-10-25 — Fixed-tier integration and requested handoff
 

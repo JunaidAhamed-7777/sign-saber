@@ -34,6 +34,7 @@ import { display, useStore } from '../state/store';
 import {
   PLAYBACK_DECODE_SR,
   CALIB_PRESENCE_MS,
+  CALIB_AUTO_CONFIRM_MS,
   COUNTDOWN_STEPS,
   INPUT_MAX_AGE_MS,
   MENU_TRACK_MAX_AGE_MS,
@@ -1304,6 +1305,17 @@ export class GameRuntime {
         else void this.pause('fatal');
       }
     if (!this.fresh(now)) this.readySince = this.freshSince = Infinity;
+    // A standing player cannot reach the mouse: hold a steady, framed pose to confirm setup and start.
+    const steady =
+      !this.dataset &&
+      Number.isFinite(this.readySince) &&
+      now - this.readySince >= CALIB_AUTO_CONFIRM_MS &&
+      this.pipeline.result.calibrationReady;
+    if (steady && state === 'SELECT' && useStore.getState().camera.mode === 'camera-setup') {
+      this.confirmCamera();
+      this.readySince = Infinity;
+    } else if (steady && state === 'CALIBRATION' && !this.session && !this.transitionBusy)
+      void this.countIn();
     if (now - this.lastTracking > MENU_TRACK_MAX_AGE_MS) this.pointer.cancel(now);
     if (now - this.lastTracking > INPUT_MAX_AGE_MS && state !== 'PAUSED' && state !== 'RESULTS')
       this.renderer?.hideTracking();

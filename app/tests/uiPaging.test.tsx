@@ -72,6 +72,19 @@ describe('figure-centred paged menu structure', () => {
     }
   });
   it('reuses the fatal error screen with a native reload instead of leaving game controls active', () => {
+    useStore.setState({
+      state: 'SELECT',
+      pointer: {
+        visible: true,
+        phase: 'confirming',
+        xCss: 500,
+        yCss: 300,
+        progress: 0.75,
+        targetId: 'performer-trial',
+        hand: 'right',
+      },
+    });
+    expect(renderToStaticMarkup(<App runtime={runtime} />)).toContain('hand-pointer confirming');
     for (const state of ['SELECT', 'PAUSED'] as const) {
       useStore.setState({ state, fatal: strings.graphicsLost });
       const html = renderToStaticMarkup(<App runtime={runtime} />);
@@ -80,6 +93,7 @@ describe('figure-centred paged menu structure', () => {
       expect(html).toContain('href="/"');
       expect(html).not.toContain('data-target="resume"');
       expect(html).not.toContain('data-target="performer-trial"');
+      expect(html).not.toContain('hand-pointer');
     }
   });
   it('shows three real starter songs, guarded actions and unique targets without camera input', () => {
@@ -91,7 +105,8 @@ describe('figure-centred paged menu structure', () => {
     const html = renderToStaticMarkup(<Select runtime={runtime} />),
       ids = targets(html);
     for (const track of manifest.tracks) expect(ids).toContain(`song:${track.slug}`);
-    expect(ids).not.toContain('camera');
+    // Camera setup is a first-page action, not buried in Settings.
+    expect(ids).toContain('camera');
     expect(ids).toContain('audio');
     expect(ids).toContain('dataset-trial');
     expect(ids).toContain('performer-trial');
@@ -120,6 +135,7 @@ describe('figure-centred paged menu structure', () => {
       'ui:compact-top:next',
       'ui:compact:previous',
       'audio',
+      'camera',
       'dataset-trial',
       'performer-trial',
       'ui:compact:next',
@@ -218,7 +234,7 @@ describe('figure-centred paged menu structure', () => {
       expect.arrayContaining(['difficulty:easy', 'difficulty:normal', 'difficulty:hard']),
     );
     expect(html).not.toMatch(/data-target="dataset-trial"[^>]*disabled/);
-    expect(html).not.toContain('data-target="camera"');
+    expect(html).toContain('data-target="camera"');
   });
   it('keeps confirmation disabled until framing, then shows preparation with persistent Back when armed', () => {
     useStore.setState({

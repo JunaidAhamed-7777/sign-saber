@@ -188,7 +188,7 @@ export function App({ runtime }: { runtime: GameRuntime }) {
           </Button>
         </aside>
       )}
-      <Pointer />
+      {!fatal && <Pointer />}
     </div>
   );
 }

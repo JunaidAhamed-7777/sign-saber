@@ -6,6 +6,13 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-25T05:41:13+05:30 — Hide stale hand input on fatal graphics recovery
+
+- Changed: `App.tsx` hides the hand pointer whenever the fatal recovery screen is visible. The existing fatal UI regression now begins with a visible confirming pointer and checks that both menu and paused failures remove it. Normally integrated `origin/main` at `97bf0d3`, preserving its current camera/menu and wall-scoring behavior; README keeps both the current setup guidance and lifecycle commands.
+- Why: Graphics loss stops application frames, so the last store pointer snapshot could otherwise remain frozen over the native reload screen after the controller itself was cancelled.
+- Validation: Targeted runtime/UI suites passed 34 tests. Full `npm run check` passed typecheck, lint, 489 tests in 55 files and production build. Lifecycle-helper/documentation tests passed 7/7; the local Markdown checker and whitespace check passed.
+- Limits: This is a rendered UI regression and integration check. Existing browser lifecycle reports retain their original source identities; no new live-camera, browser matrix or performance acceptance is claimed. The existing large production-chunk warning remains for the separate bundle PR.
+
 ## 2026-10-25T05:25:57+05:30 — Complete loaded-avatar recovery evidence and issue #4 handoff
 
 - Changed: Added the separate loaded-avatar context JSON/Markdown/screenshots and a concise evidence interpretation linking every tested source, preserved failure, complete matrix and raw resource sample. README and docs17 link the actual results. No application code changed after diagnostic checkpoint `99fe5d4`.
@@ -54,6 +61,20 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: The first native browser probes found that IndexedDB denial/quota failure was hidden despite successful generation, and context loss kept audio/scoring and 172/200 observed frame callbacks running behind an unusable arena.
 - Validation: The original synthesized WAV generated 13 notes; its actual performer results contained 12 Perfect hits and one wall dodge. Repeated storage-denial/quota and menu/play context-loss probes pass their specific checks after the fixes. The partial harness correctly remains incomplete because other issue scenarios are unrun. Thirty targeted runtime/UI assertions passed. Full `npm run check` passed typecheck, lint, 428 assertions in 50 files and production build. Root docs checks and whitespace validation run before committing.
 - Limits: This is a scoped recovery milestone, not completion of issue #4's eight-scenario/20-cycle acceptance. Native browser input and synthetic motion only; no live-camera, audible-sync or performance claim. The upstream non-indexed-geometry warning remains recorded as a warning, and the existing bundle-size warning remains assigned to issue #1.
+## 2026-10-25T06:05:00+05:30 — Camera play on the main menu
+
+- Changed: **Set up camera** sits next to Enable sound on the first play page. Once calibrated, the main action becomes **Play with camera** (live play); Watch auto-play and Play level stay available. Holding a steady, framed pose for `CALIB_AUTO_CONFIRM_MS` confirms camera setup and starts the live count-in without returning to the mouse.
+- Why: User asked to integrate the camera properly; setup and live start were hidden in Settings and required mouse clicks while standing back.
+- Validation: Full `npm run check` passed. Live webcam behaviour still needs the user's hands-on test.
+- Limits: No consented live session has been recorded by the agent.
+
+## 2026-10-25T05:45:00+05:30 — Walls only cost points
+
+- Changed: A wall hit now deducts `SCORE_WALL_PENALTY` (100, floored at zero) and no longer breaks the combo. Walls never pause or stop the run: frames without a body cannot hit a wall, and an unobserved wall passes with neither penalty nor reward. Merged the remote README showcase (#10) with the user's local README edit.
+- Why: User direction — touching a red wall should just reduce points. The old body-tracking pause during walls made live play feel like it ended whenever tracking flickered.
+- Validation: Full `npm run check` passed (482 tests), including new score and session assertions.
+- Limits: No live-camera play yet; that integration follows.
+
 ## 2026-10-25T05:35:00+05:30 — README quick start
 
 - Changed: Rewrote the README run section as a quick start: requirements, clone/install/run commands, the play flow (pick song, Enable sound, Watch auto-play or Play level, pause), gesture summary, command table and troubleshooting.
@@ -67,6 +88,13 @@ Implementation and historical specification work are recorded below. Automated, 
 - Why: exercise the real camera → MediaPipe → scoring path with a moving performer.
 - Validation: `npm run check` 424 tests in 50 files and build passed; trial: MediaPipe detected pose and both hands in 100% of rendered frames, handedness 690/690. Calibration was not accepted at 3.5 Hz / 311 ms inference under 82–86% machine load, so no notes were scored through the camera.
 - Limits: synthetic render, not a person or webcam; the avatar's head renders tilted (face error ~0.5 shoulder widths); play-to-results comparison with the logic replay still needs an idle machine.
+
+## 2026-10-25T05:22:18+05:30 — Showcase README with real browser media and measured evidence
+
+- Changed: Rebuilt `README.md` around real auto-play footage, a screenshot feature grid, exact run instructions, gesture controls, Mermaid architecture, measured numbers, source layout, roadmap and asset credits. Added `docs/media/`, the reusable `scripts/capture-readme.mjs` browser harness and `docs/evidence/2026-10-25-readme-metrics.json`; updated `AI_USAGE.md`. Application source is unchanged from remote main `30572bb9cdbe345b79e8e48279019bd7d8b59877`.
+- Why: Make the project page demonstrate its working interactions while replacing stale test/asset/training counts with source-identified evidence. Synthetic auto-play, static annotations, dataset-camera inference and separate training results retain their distinct scopes.
+- Validation: Fresh-worktree install succeeded with an isolated npm cache after the default cache failed with ENOENT/corrupt-tarball warnings. `npm run check` passed typecheck, lint, 481 tests in 55 files and production build. Targeted performer replay passed 13/13: all 1,643 notes Perfect across nine full charts, zero bad cuts/wall collisions. Chart report and asset structural checks passed; asset regressions 3/3; all 56 synthesized full/Calm renders matched the receipt. Real headless Chrome UI completed an 80-second Normal Pamgaea arrangement: 84 Perfect, zero misses/bad cuts, 100.0% accuracy, score 54,700 and rank SS. Capture script syntax and whitespace checks passed. Final documentation tests passed 2/2; 49 Markdown files and 574 local links checked with zero errors. All three GIFs/five screenshots were visually reviewed; ffprobe verified GIF dimensions/durations/frame counts, and all eight media lengths/SHA-256 hashes match the capture receipt.
+- Limits: Captures use synthetic hands through the real judge, not a webcam. Retained COCO photo and oracle-crop training measurements were not rerun. Latest main still emits a >500 kB JavaScript chunk warning; measured entry size is 1,373,350 raw / 412,107 gzip-level-9 bytes. The capture retained a Three.js non-indexed-geometry warning; no runtime exception or live-camera/FPS/latency/release claim was introduced.
 
 ## 2026-10-25T05:20:00+05:30 — Back-facing avatar and neutral run labels
 

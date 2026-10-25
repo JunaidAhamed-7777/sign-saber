@@ -1,0 +1,486 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-10-24T23:49:27.883Z",
+  "applicationSourceSha": "30572bb9cdbe345b79e8e48279019bd7d8b59877",
+  "applicationSourceClean": true,
+  "lockfileSha256": "66dc1547569b921b18b85ab19b6e22fc3166133573d1f10764aea146b0bc2bb1",
+  "scope": "Current repository source, deterministic synthetic replay and explicitly cited retained dataset/research evidence. No webcam accuracy, physical latency, human playability or FPS claim.",
+  "environment": {
+    "platform": "win32",
+    "osRelease": "10.0.26300",
+    "cpu": "AMD Ryzen 9 5900HX with Radeon Graphics        ",
+    "logicalCpus": 16,
+    "totalMemoryBytes": 16477028352,
+    "node": "v26.8.1",
+    "npm": "12.2.1"
+  },
+  "checks": {
+    "command": "cd app; npm run check",
+    "exitCode": 0,
+    "stages": [
+      "typecheck",
+      "lint",
+      "test",
+      "production build"
+    ],
+    "testFiles": 55,
+    "tests": 481,
+    "buildWarning": "Vite reports a minified JavaScript chunk larger than 500 kB. This latest-main build is not split under the separate bundle-budget issue branch.",
+    "fullCheckLogSha256": "11d94e90f4d4e7d8344212c1ee09e25fcf68acb6e915f2cadbe0a50bfcabe027",
+    "performerCommand": "cd app; npm exec -- vitest run tests/performer.test.mjs --reporter=verbose --silent=false",
+    "performerExitCode": 0,
+    "performerTests": 13
+  },
+  "charts": {
+    "command": "node scripts/chart-report.mjs",
+    "exitCode": 0,
+    "rows": [
+      {
+        "slug": "pamgaea",
+        "difficulty": "easy",
+        "durationMs": 168510.6575963719,
+        "notes": 89,
+        "slash": 45,
+        "smash": 34,
+        "beam": 10,
+        "walls": 8,
+        "notesPerSecond": 0.5281565051700101,
+        "maxVisible": 3,
+        "unplayable": 0,
+        "sha256": "dbde4e9a4bee2b3dc4312e696f7805706d315f530e74e315186c868bdf60f2ed"
+      },
+      {
+        "slug": "pamgaea",
+        "difficulty": "normal",
+        "durationMs": 168510.6575963719,
+        "notes": 178,
+        "slash": 97,
+        "smash": 69,
+        "beam": 12,
+        "walls": 16,
+        "notesPerSecond": 1.0563130103400202,
+        "maxVisible": 4,
+        "unplayable": 0,
+        "sha256": "332a345ed404f3c92ef5ba53f01c1b467cf4253f2d5234eec1994e03a02b5432"
+      },
+      {
+        "slug": "pamgaea",
+        "difficulty": "hard",
+        "durationMs": 168510.6575963719,
+        "notes": 230,
+        "slash": 112,
+        "smash": 100,
+        "beam": 18,
+        "walls": 20,
+        "notesPerSecond": 1.3648988335854195,
+        "maxVisible": 4,
+        "unplayable": 0,
+        "sha256": "c93c9a19adbf038cb0df556a3917d15f4779a409330c30b15495e89be7ab8b94"
+      },
+      {
+        "slug": "electro-cabello",
+        "difficulty": "easy",
+        "durationMs": 190769.75056689343,
+        "notes": 117,
+        "slash": 57,
+        "smash": 51,
+        "beam": 9,
+        "walls": 11,
+        "notesPerSecond": 0.6133047805132709,
+        "maxVisible": 3,
+        "unplayable": 0,
+        "sha256": "e55f85c5170fa5fd1ae4774484f52bcb3f27cc4192db2eba9c01133bd464acfc"
+      },
+      {
+        "slug": "electro-cabello",
+        "difficulty": "normal",
+        "durationMs": 190769.75056689343,
+        "notes": 176,
+        "slash": 104,
+        "smash": 64,
+        "beam": 8,
+        "walls": 11,
+        "notesPerSecond": 0.9225781313703904,
+        "maxVisible": 3,
+        "unplayable": 0,
+        "sha256": "85a7b8fdb3962c99780def9c5d1fdf33100449a5044cf8fbd8e4bb843d5d6820"
+      },
+      {
+        "slug": "electro-cabello",
+        "difficulty": "hard",
+        "durationMs": 190769.75056689343,
+        "notes": 281,
+        "slash": 132,
+        "smash": 135,
+        "beam": 14,
+        "walls": 15,
+        "notesPerSecond": 1.4729798574720436,
+        "maxVisible": 4,
+        "unplayable": 0,
+        "sha256": "d0633c8a71c4b0c837909f5392f8cb2d78638738bce335b396b42b87780f1780"
+      },
+      {
+        "slug": "cipher",
+        "difficulty": "easy",
+        "durationMs": 231200,
+        "notes": 111,
+        "slash": 59,
+        "smash": 41,
+        "beam": 11,
+        "walls": 9,
+        "notesPerSecond": 0.4801038062283737,
+        "maxVisible": 3,
+        "unplayable": 0,
+        "sha256": "ae9a54f7c748df50da6bef5ed879f6c6c1b769309701eb0c82bdb2713a762887"
+      },
+      {
+        "slug": "cipher",
+        "difficulty": "normal",
+        "durationMs": 231200,
+        "notes": 195,
+        "slash": 98,
+        "smash": 82,
+        "beam": 15,
+        "walls": 17,
+        "notesPerSecond": 0.8434256055363322,
+        "maxVisible": 3,
+        "unplayable": 0,
+        "sha256": "da2ee89e2b2eec813cb740a2ed098b5f70d2f109af7faba90047792773bbb3da"
+      },
+      {
+        "slug": "cipher",
+        "difficulty": "hard",
+        "durationMs": 231200,
+        "notes": 266,
+        "slash": 108,
+        "smash": 140,
+        "beam": 18,
+        "walls": 22,
+        "notesPerSecond": 1.1505190311418685,
+        "maxVisible": 5,
+        "unplayable": 0,
+        "sha256": "16380fc5bd751a3c1e771b5494c566d5840427dbd21d15f4c83d4fceb2d0a301"
+      }
+    ],
+    "totalNotes": 1643,
+    "totalWalls": 129,
+    "gestureTotals": {
+      "slash": 812,
+      "smash": 716,
+      "beam": 115
+    },
+    "note": "Densities are notes divided by complete source-song duration; not peak density or a human comfort measurement."
+  },
+  "performer": {
+    "lane": "synthetic-performer-logic-replay",
+    "sampleHz": 30,
+    "simulatedDeliveryLatencyMs": 45,
+    "perfectWindowMs": 60,
+    "rows": [
+      {
+        "slug": "pamgaea",
+        "difficulty": "easy",
+        "notes": 89,
+        "unplayable": 0,
+        "hits": 89,
+        "judgements": {
+          "perfect": 89
+        },
+        "badcuts": 0,
+        "obstacles": 8,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "pamgaea",
+        "difficulty": "normal",
+        "notes": 178,
+        "unplayable": 0,
+        "hits": 178,
+        "judgements": {
+          "perfect": 178
+        },
+        "badcuts": 0,
+        "obstacles": 16,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "pamgaea",
+        "difficulty": "hard",
+        "notes": 230,
+        "unplayable": 0,
+        "hits": 230,
+        "judgements": {
+          "perfect": 230
+        },
+        "badcuts": 0,
+        "obstacles": 20,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "electro-cabello",
+        "difficulty": "easy",
+        "notes": 117,
+        "unplayable": 0,
+        "hits": 117,
+        "judgements": {
+          "perfect": 117
+        },
+        "badcuts": 0,
+        "obstacles": 11,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "electro-cabello",
+        "difficulty": "normal",
+        "notes": 176,
+        "unplayable": 0,
+        "hits": 176,
+        "judgements": {
+          "perfect": 176
+        },
+        "badcuts": 0,
+        "obstacles": 11,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "electro-cabello",
+        "difficulty": "hard",
+        "notes": 281,
+        "unplayable": 0,
+        "hits": 281,
+        "judgements": {
+          "perfect": 281
+        },
+        "badcuts": 0,
+        "obstacles": 15,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "cipher",
+        "difficulty": "easy",
+        "notes": 111,
+        "unplayable": 0,
+        "hits": 111,
+        "judgements": {
+          "perfect": 111
+        },
+        "badcuts": 0,
+        "obstacles": 9,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "cipher",
+        "difficulty": "normal",
+        "notes": 195,
+        "unplayable": 0,
+        "hits": 195,
+        "judgements": {
+          "perfect": 195
+        },
+        "badcuts": 0,
+        "obstacles": 17,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "cipher",
+        "difficulty": "hard",
+        "notes": 266,
+        "unplayable": 0,
+        "hits": 266,
+        "judgements": {
+          "perfect": 266
+        },
+        "badcuts": 0,
+        "obstacles": 22,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      }
+    ],
+    "totalNotes": 1643,
+    "totalHits": 1643,
+    "perfectHits": 1643,
+    "badcuts": 0,
+    "obstacleHits": 0,
+    "unplayable": 0,
+    "note": "All nine complete charts replay through InputPipeline and GameSession. These counts are not the separately captured 80-second browser arrangement and bypass camera/MediaPipe inference."
+  },
+  "sfx": {
+    "source": "assets-src/audio/sfx-receipt.json",
+    "recipes": 28,
+    "calmVariants": 28,
+    "receiptSampleRate": 48000,
+    "receiptSha256": "336a25330e02ec8b7daccdd53077039e051a879f3685ae421818a1edd0a42bb1",
+    "note": "Original deterministic synthesis recipes, not third-party recordings."
+  },
+  "models": {
+    "check": "checkModelAssets() from scripts/check-model-assets.mjs, read-only import",
+    "structuralCheckPassed": true,
+    "pack": {
+      "models": 7,
+      "triangles": 5996,
+      "bytes": 352056
+    },
+    "avatar": {
+      "models": 1,
+      "triangles": 15134,
+      "bytes": 507252,
+      "bones": 43
+    },
+    "allGlbs": [
+      {
+        "file": "arena_environment.glb",
+        "bytes": 133928,
+        "triangles": 2528,
+        "bones": 0,
+        "sha256": "dbecbf743a031e5aaf657c82a538a3ff75538feee7d1b1669eb4a3736f7228b3",
+        "uniqueMeshTriangles": 1996
+      },
+      {
+        "file": "armor.glb",
+        "bytes": 57340,
+        "triangles": 896,
+        "bones": 0,
+        "sha256": "87aa00a6e913f43e3ed02c6a2442addbc53667011dd23305308377fb75896e71",
+        "uniqueMeshTriangles": 896
+      },
+      {
+        "file": "avatar.glb",
+        "bytes": 507252,
+        "triangles": 15134,
+        "bones": 43,
+        "sha256": "c7113801d1f30bf5a8bb9055687df8012c76d5bb8043681bc33963130e03d2d7",
+        "uniqueMeshTriangles": 15134
+      },
+      {
+        "file": "beam_ring.glb",
+        "bytes": 38796,
+        "triangles": 704,
+        "bones": 0,
+        "sha256": "4fb0a16eceae8757803ccae2089a68ab91e4937c4295e0f32cbf1f1382d43837",
+        "uniqueMeshTriangles": 704
+      },
+      {
+        "file": "block_fractured.glb",
+        "bytes": 35196,
+        "triangles": 336,
+        "bones": 0,
+        "sha256": "594a08e661ee1399450a73d17e7b90e80f6f7a7681f8055e190846dface97e39",
+        "uniqueMeshTriangles": 336
+      },
+      {
+        "file": "block_targets.glb",
+        "bytes": 21744,
+        "triangles": 280,
+        "bones": 0,
+        "sha256": "e18d9bcc477e20c9f0eb8f6fdd4a858158b64d1e62071f0b0881d06689f9a7ca",
+        "uniqueMeshTriangles": 280
+      },
+      {
+        "file": "glyphs.glb",
+        "bytes": 58212,
+        "triangles": 1176,
+        "bones": 0,
+        "sha256": "cca85e0b4c030a8c136f23c2f4f9597fc41dca8878e6bace91bb86ecdbd56e93",
+        "uniqueMeshTriangles": 1176
+      },
+      {
+        "file": "pylon.glb",
+        "bytes": 6840,
+        "triangles": 76,
+        "bones": 0,
+        "sha256": "f95806d5098359a623e4055705bd644bfd66a0e67d2be6f257a66a0806fb4893",
+        "uniqueMeshTriangles": 76
+      }
+    ],
+    "totalModels": 8,
+    "totalTriangles": 21130,
+    "totalBytes": 859308,
+    "note": "The 5,996-triangle budget applies to the seven static arena/target GLBs. The skinned avatar is a separate 15,134-triangle asset. Khronos validation was not rerun. Triangle counts include each mesh instance in the default GLB scene; uniqueMeshTriangles records stored mesh geometry separately."
+  },
+  "bundle": {
+    "command": "npm run build (within npm run check)",
+    "files": [
+      {
+        "file": "generator.worker-DvUGyHl4.js",
+        "bytes": 26028,
+        "gzipLevel6Bytes": 10531,
+        "gzipLevel9Bytes": 10527,
+        "sha256": "4cf70a2938035f417126e5ffd7fbbb55788b1d0bbe5ab34ee146c039fa5feb1c"
+      },
+      {
+        "file": "index-B3ykf-ld.js",
+        "bytes": 1373350,
+        "gzipLevel6Bytes": 413167,
+        "gzipLevel9Bytes": 412107,
+        "sha256": "a5d24d5cc7341a4cdadc80fbe7e3b621e427eca8c4f751cf246825c8215e9a05"
+      },
+      {
+        "file": "index-zMyJEfrf.css",
+        "bytes": 38128,
+        "gzipLevel6Bytes": 8059,
+        "gzipLevel9Bytes": 8033,
+        "sha256": "517e3b609c2ea2f09f4b7b32ddf340e04b4cf85315f0be80c44ecbeedc6ffd11"
+      },
+      {
+        "file": "sfxRender.worker-BfMz86U3.js",
+        "bytes": 21764,
+        "gzipLevel6Bytes": 7955,
+        "gzipLevel9Bytes": 7945,
+        "sha256": "1ea5e51b5c03787885b65550bbd964447128011606336a44c8d6aa54b22f828e"
+      },
+      {
+        "file": "tracking.worker-KnkdkfXB.js",
+        "bytes": 161250,
+        "gzipLevel6Bytes": 47944,
+        "gzipLevel9Bytes": 47837,
+        "sha256": "a5f811e70d837d8cccdcd207f5abdcad10b21e7c972f27ff827bc047dcb938eb"
+      }
+    ],
+    "note": "Byte measurements from actual minified production assets. Gzip sizes are locally recomputed at explicit levels; source maps, audio, fonts, models and optional MediaPipe assets are excluded."
+  },
+  "retainedDatasetEvidence": {
+    "source": "docs/evidence/2026-10-25-dataset-camera-trial.md",
+    "poseDetectedPhotos": 24,
+    "totalPhotos": 24,
+    "medianPerPhotoJointErrorShoulderWidths": 0.118,
+    "note": "COCO still photos through the live camera pipeline. Not live webcam evidence; calibration and play were not reached under the recorded machine load. This task did not rerun it."
+  },
+  "retainedTrainingEvidence": {
+    "source": "training/STATUS.json",
+    "completedSteps": 1800,
+    "plannedSteps": 7210,
+    "trainPeople": 46137,
+    "validationPeople": 3776,
+    "pooledPckAt02": 0.3337,
+    "untrainedPooledPckAt02": 0.0159,
+    "meanPosePooledPckAt02": 0.0932,
+    "promotedToGame": false,
+    "note": "Partial CPU research run on COCO+MPII; held-out oracle ground-truth person crops. Not production inference, COCO AP, or game camera accuracy. This task did not rerun training."
+  },
+  "additionalVerification": {
+    "mediaHashesMatched": 8,
+    "docsRegressionTestsPassed": 2,
+    "mediaCaptureReceipt": "docs/media/capture.json",
+    "mediaScope": "Real production-browser UI with planned synthetic hands; no camera input or performance claim.",
+    "sfxCommand": "node scripts/render-sfx.mjs --check",
+    "checkedAt": "2026-10-24T23:55:04.0494446+00:00",
+    "docsErrors": 0,
+    "assetRegressionCommand": "node --test scripts/check-model-assets.test.mjs",
+    "screenshotCount": 5,
+    "sfxReceiptRendersMatched": 56,
+    "totalMediaBytes": 10151539,
+    "localLinksChecked": 574,
+    "gifBytes": 5686832,
+    "gifCount": 3,
+    "assetRegressionTestsPassed": 3,
+    "markdownFiles": 49
+  }
+}

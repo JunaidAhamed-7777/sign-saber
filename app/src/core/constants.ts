@@ -831,9 +831,3 @@ export const HIT_SPARK_POOL = 10,
 export const CAMERA_SHAKE_HZ = 12,
   CAMERA_BASS_FOV_DEG = 0.5;
 export const TRAUMA_PERFECT = 0.15;
-// render: dark glossy side panels (docs/13 constants table)
-export const REFLECT_ENV_INTENSITY = 0.25,
-  REFLECT_ROUGHNESS = 0.3,
-  REFLECT_METALNESS = 0.6,
-  REFLECT_BASE_COLOR = 0x07080f,
-  REFLECT_LANE_CLEARANCE_X = 3.2;

@@ -6,13 +6,6 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
-## 2026-10-25T08:40:00+05:30 — Dark reflective side panels
-
-- Changed: new `app/src/render/reflections.ts` adds dark glossy floor strips and two upright chrome panels outside the lanes (|x| > `REFLECT_LANE_CLEARANCE_X`), lit by a tiny gradient equirect env map at `REFLECT_ENV_INTENSITY` 0.25; hooked into `renderer.ts` and disposed with it. Constants in `core/constants.ts`, row in docs/13, `REFLECT_*` prefix in docs/02.
-- Why: User asked for slightly reflective arena elements that never overpower notes or the avatar.
-- Checks: `npm run check` (app), `node scripts/check-docs.mjs`.
-- Limitations: not visually verified in a browser.
-
 ## 2026-10-25T08:20:00+05:30 — README: camera play and smoothness
 
 - Changed: README gains "Play with your camera" (models, hands-free setup, corner tracking view) and "Built to feel smooth" (slower approach, 2.5× zones, wide lanes, beam auto-aim, wall penalty, display easing, CPU tracking with alternate-frame pose, flicker hold, stall restart, baked arena transforms), plus refreshed controls/roadmap rows.

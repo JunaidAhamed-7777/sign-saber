@@ -256,7 +256,6 @@ This is the environment/post-FX rendering sub-registry linked from [02](02-archi
 | `ARENA_BASE_EMISSION` / `ARENA_REACTIVE_GAIN` | 0.4 / 2 | Steady arena emission / measured analyser-band gain |
 | `BG_COLOR` | `#05060D` | Background / fog colour |
 | `GRID_LINE_COLOR` | `#1A2BFF` | Base grid colour |
-| `REFLECT_ENV_INTENSITY` / `REFLECT_ROUGHNESS` / `REFLECT_METALNESS` / `REFLECT_BASE_COLOR` / `REFLECT_LANE_CLEARANCE_X` | 0.25 / 0.3 / 0.6 / `#07080F` / 3.2 m | Dark glossy side floor strips and panels (`render/reflections.ts`); tiny gradient equirect env, kept outside the lane |
 | `TRAUMA_DECAY_S` | 0.6 | Linear trauma decay |
 | `SHAKE_MAX_M` / `SHAKE_MAX_ROLL_DEG` | 0.08 / 1.5 | Shake caps at trauma 1 |
 | `TRAUMA_KICK` / `TRAUMA_DROP` / `TRAUMA_HIT` / `TRAUMA_BADCUT` / `TRAUMA_OBSTACLE` | 0.25 / 0.7 / 0.12 / 0.18 / 0.5 | Trauma adds (× intensity for music events) |

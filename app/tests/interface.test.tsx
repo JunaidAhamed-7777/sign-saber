@@ -134,10 +134,13 @@ describe('pause and trial labelling', () => {
     expect(html).toContain('23 · ×4');
     expect(html).toContain('100.0%');
   });
-  it('never labels the synthetic performer as dataset footage', () => {
-    const performer = trialCopy('performer');
-    for (const value of Object.values(performer)) expect(value.toLowerCase()).not.toContain('dataset');
-    expect(trialCopy('annotations').controls).toBe(strings.datasetControls);
+  it('uses neutral copy for camera-free runs', () => {
+    for (const source of ['performer', 'annotations'] as const)
+      for (const value of Object.values(trialCopy(source))) {
+        expect(value.toLowerCase()).not.toContain('dataset');
+        expect(value.toLowerCase()).not.toContain('synthetic');
+      }
+    expect(trialCopy('performer').controls).toBe(strings.runControls);
   });
 });
 describe('results presentation', () => {
@@ -166,7 +169,7 @@ describe('results presentation', () => {
     const shown = [...html.matchAll(/class="count">(\d+)</g)].map((match) => Number(match[1]));
     expect(shown).toEqual([3, 2, 1, 4, 0]);
     expect(html).toContain('scaleX(0.75)');
-    expect(html).toContain(strings.datasetResults);
+    expect(html).toContain(strings.results);
   });
   it('colours ranks by the documented tone mapping', () => {
     expect(rankTone('SS')).toBe('gold');

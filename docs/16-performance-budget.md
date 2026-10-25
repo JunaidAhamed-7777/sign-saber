@@ -1,6 +1,88 @@
 # 16 — Performance Budget
 
-Pillar P5: smooth delivery with fresh input. `TARGET_FPS = 60`, `FLOOR_FPS = 40`; a target frame on a 60 Hz display is 16.67 ms and the sustained floor corresponds to 25 ms. **All numbers here are engineering targets or estimates, not measured results.** [24 — Benchmark & Evidence Protocol](24-benchmark-and-evidence.md) owns metric definitions, thresholds and run procedures; this document assigns subsystem budgets.
+Pillar P5: smooth delivery with fresh input. `TARGET_FPS = 60`, `FLOOR_FPS = 40`; a target frame on a 60 Hz display is 16.67 ms and the sustained floor corresponds to 25 ms. **Frame, tracking and memory numbers here are engineering targets or estimates, not measured results.** The bundle evidence below is explicitly measured. [24 — Benchmark & Evidence Protocol](24-benchmark-and-evidence.md) owns metric definitions, thresholds and run procedures; this document assigns subsystem budgets.
+
+## Bundle-size budget
+
+This build-only sub-registry applies to emitted production JavaScript, including entries, shared chunks and workers. `MAX_JS_CHUNK_BYTES = 500000` in [check-bundle.mjs](../scripts/check-bundle.mjs) is an enforced **uncompressed byte** limit per `.js`/`.mjs` file, recursively under `app/dist/assets`; source maps, CSS and source assets are excluded. Exactly 500000 bytes passes; 500001 fails. Missing/empty builds and unknown CLI flags fail too. Gzip sizes are reported for comparison, not used to admit an oversized chunk.
+
+`BUILD_CHUNK_TARGET_BYTES = 450000` in [vite.config.ts](../app/vite.config.ts) is Rolldown's pre-minification grouping target for Three.js modules, not an emitted-size guarantee. React and postprocessing have their own groups; application code remains separate. No warning limit is raised. Static module preloads allow parallel requests while preserving the arena behind the camera-free menu and the existing asset/renderer error behavior. The runtime and security policy are unchanged. CI runs `npm run check`, including the emitted-byte gate after the production build.
+
+From `app/`, `npm run bundle:check` runs the parser/boundary/CLI regression tests and reads the actual build. `npm run check` runs it after production build. From the root, `node scripts/check-bundle.mjs` checks an existing build; an optional assets-directory argument supports fixtures.
+
+### Measured bundle and request evidence — 2026-10-25
+
+The controlled [before](evidence/2026-10-25-bundle-before.json) and [after](evidence/2026-10-25-bundle-after.json) runs used application source `ad41466990b7e62321b835c7261df4559dc53921`, Node 26.8.1, Chrome 155.0.8059.86 on Windows, fresh browser profiles, 1440×900 at DPR 1, disabled browser cache, unthrottled loopback HTTP and headless SwiftShader. Both worktrees were dirty (the after build includes this chunk configuration); this is scoped build/browser evidence, not a release SHA or performance benchmark. Gzip bytes below use Node `gzipSync` defaults consistently, rather than Vite's display calculation.
+
+| Build | JavaScript file | Emitted bytes | Gzip bytes |
+| --- | --- | ---: | ---: |
+| Before | `index-tWIDsd3B.js` | 1096061 | 301973 |
+| Before | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| Before | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+| After | `index-LlutNhgn.js` | 254379 | 79339 |
+| After | `react-CTym4sTV.js` | 218790 | 67563 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 599 | 368 |
+| After | `three-B_2LwjzK.js` | 222990 | 59159 |
+| After | `three-bq-AKiay.js` | 352349 | 84153 |
+| After | `three-sRmNNit9.js` | 48975 | 14216 |
+| After | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| After | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+
+CDP's actual first-load script waterfall follows (milliseconds relative to the document request). Full JSON also retains fonts, assets, catalog, selected music and worker requests, HTTP status, initiator and transferred bytes.
+
+| Build | Script | Request start → finish (ms) |
+| --- | --- | ---: |
+| Before | `index-tWIDsd3B.js` | 23.50 → 43.26 |
+| After | `index-LlutNhgn.js` | 17.73 → 65.61 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 18.23 → 48.65 |
+| After | `react-CTym4sTV.js` | 18.31 → 85.10 |
+| After | `three-B_2LwjzK.js` | 18.50 → 67.75 |
+| After | `three-bq-AKiay.js` | 18.58 → 95.75 |
+| After | `three-sRmNNit9.js` | 18.65 → 104.17 |
+
+The unchanged build emitted Vite's >500 kB warning and the budget command failed as expected. The split build emitted no warning and all eight JS files passed. An actual `npm run preview -- --port 4181` run retained the menu arena, then completed Pamgaea's arranged dataset trial (131 Miss, zero invented hits) and synthetic performer (131 Perfect, zero misses), returning to Songs after each. No runtime console errors or CSP security log entries were observed. This establishes request topology and scoped functionality; these single unthrottled runs show **no measured FPS or load-time improvement**.
+
+Two preliminary probe failures are retained: [audio-unlock predicate](evidence/2026-10-25-bundle-probe-failure.json) and [HUD selector](evidence/2026-10-25-bundle-probe-selector-failure.json). They were harness mistakes (waiting for a trial to enable before audio unlock, then looking for `.hud` instead of `.game-hud`), not app failures; the corrected probe completed both real sessions.
+
+After normally integrating main `1fa1827`, `npm run check` passed again (363 application assertions plus three budget tests) with no build warning. Its final entry is `index-D9QxVp5f.js` at 254784 raw/79408 gzip bytes; the other seven JS files retain the sizes above. The controlled browser comparison remains explicitly tied to `ad41466`, rather than being relabelled as a browser run of the newer source.
+
+### Latest-main bundle recheck — 2026-10-25T04:10:13+05:30
+
+After main's new arena/postprocessing work landed, it was normally integrated at `74325fa783b0fadac7a96d704f87a0abfe39b7ac` (main parent `cfdcc40`). A new controlled baseline used a temporary config copied verbatim from `origin/main:app/vite.config.ts`; the temporary file was removed, and the after build used the versioned split configuration. Application source was identical in this pair. The [integrated before](evidence/2026-10-25-bundle-before-integrated.json) and [integrated after](evidence/2026-10-25-bundle-after-integrated.json) JSON retain actual request timing/status and byte counts. Same browser/environment/cache method as above; worktrees were dirty from evidence/config files. This pair supersedes the earlier sizes for current source; it does not erase that earlier result.
+
+| Build | File | Raw bytes | Gzip bytes |
+| --- | --- | ---: | ---: |
+| Before | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| Before | `index-ClNtYw27.js` | 1283738 | 383171 |
+| Before | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+| After | `generator.worker-B6OPcKR7.js` | 22449 | 9056 |
+| After | `index-CqGRHEWt.js` | 441271 | 160410 |
+| After | `react-CTym4sTV.js` | 218790 | 67563 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 599 | 368 |
+| After | `three-C_uIrsIZ.js` | 352336 | 84187 |
+| After | `three-CqvON9a6.js` | 223814 | 59453 |
+| After | `three-CvPEqDHz.js` | 48975 | 14256 |
+| After | `tracking.worker-DeV5KsxN.js` | 160846 | 47741 |
+
+| Build | Script | Request start → finish (ms) |
+| --- | --- | ---: |
+| Before | `index-ClNtYw27.js` | 4566.72 → 5096.78 |
+| After | `index-CqGRHEWt.js` | 22.90 → 156.89 |
+| After | `rolldown-runtime-WkwZ5CU-.js` | 23.41 → 33.26 |
+| After | `react-CTym4sTV.js` | 23.49 → 165.22 |
+| After | `three-CqvON9a6.js` | 23.55 → 177.13 |
+| After | `three-C_uIrsIZ.js` | 23.65 → 212.36 |
+| After | `three-CvPEqDHz.js` | 23.71 → 159.68 |
+
+The current unsplit main entry is 1283738 bytes; every emitted split JS chunk is below 500000 bytes (largest 441271). The new-source `npm run check` passed typecheck, lint, all 367 assertions in 48 suites, production build without the size warning, and all three budget regressions. The actual prepared preview again completed the dataset and synthetic sessions and returned to Songs; detailed counts are in the JSON. Runtime console and CSP security logs were empty. No FPS, loading-speed, camera or release-gate claim is made.
+
+### Final integration check — 2026-10-25T04:17:49+05:30
+
+After normally integrating main `752acf3`, application source `8da67439a6597cc02f9a9ddd557497a48725915e` passed full `npm run check` again (367 assertions in 48 suites, typecheck/lint/build and three budget tests). Its entry is `index-BXoj8iPG.js` (441521 raw/160440 gzip bytes); tracking is `tracking.worker-CRawvhz1.js` (160846 raw/47741 gzip bytes); the other six sizes match the previous table. All eight JS files remain below the enforced limit, without changing Vite's warning threshold. A [fresh final preview run](evidence/2026-10-25-bundle-after-final.json) again completed the dataset trial (131 misses, zero hits), synthetic performer (131 Perfect, zero misses), and Songs returns, with empty runtime console/CSP logs. This later functionality run is separate from the controlled before/after pair. Later UI/training work on main is outside this explicitly tested checkpoint; no performance or release claim is added.
+
+### Chart-v3 integration check — 2026-10-25T04:38:46+05:30
+
+After normally integrating main `87032d0` (charts v3, avatar/target assets and UI), source `18745d446601dee57176078eef22ea87ab5d2a5c` passed full `npm run check`: typecheck/lint, 424 assertions in 50 suites, build with no chunk-size warning, and three budget regressions. The [current preview receipt](evidence/2026-10-25-bundle-after-current.json) records all eight emitted chunks below 500000 bytes; its entry is `index-Dg_hB1Dd.js` at 443013 raw/161024 gzip bytes. Both actual 80-second trials finished and returned to Songs: 86 dataset misses/zero invented hits and 86 synthetic Perfect/zero misses. The [menu](evidence/2026-10-25-bundle-current-menu.webp) and [performer](evidence/2026-10-25-bundle-current-performer.webp) captures were visually inspected: the arena remains visible behind the menu and during play. No application runtime errors or CSP entries occurred. One upstream `THREE.BufferGeometry.toNonIndexed` warning is retained, along with the unrelated favicon 404 requests. The temporary probe exited 1 **after** these assertions because Windows kept its disposable Chrome-profile lockfile busy during optional cleanup; the receipt explicitly separates application assertion success from that cleanup failure. The locked profile was left in place. This is no FPS/load-time/webcam or release-gate claim.
 
 ## Main-thread frame budget
 

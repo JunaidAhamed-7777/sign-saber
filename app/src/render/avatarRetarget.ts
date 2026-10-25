@@ -95,6 +95,8 @@ export const ANCHOR_NAMES = [
   'thumb.L',
   'thumb.R',
 ] as const;
+/** Avatar side of each J entry (from its anchor name). */
+const JOINT_SIDE: readonly Side[] = ANCHOR_NAMES.map((name) => (name.endsWith('.R') ? 'R' : 'L'));
 /** MediaPipe pose indices for each J entry: [anatomical-left index, anatomical-right index] or single. */
 const POSE_SOURCE: readonly (readonly [number, number] | number)[] = [
   [23, 24],
@@ -237,7 +239,7 @@ export function targetsFromTracking(
   const source = (j: number): number => {
     const entry = POSE_SOURCE[j]!;
     if (typeof entry === 'number') return entry;
-    const side: Side = j % 2 === 0 ? 'L' : 'R';
+    const side: Side = JOINT_SIDE[j]!;
     return entry[anatomical(side, options.mirror)];
   };
   // Play-plane x/y.
@@ -367,7 +369,7 @@ export function targetsFromJoints(input: AvatarJointInput, out: AvatarTargets): 
   if (input.pose.length < 25 * 3) throw new RangeError('Avatar joint input needs 25 upper-body joints.');
   for (let j = 0; j < JOINT_COUNT; j++) {
     const entry = POSE_SOURCE[j]!;
-    const i = typeof entry === 'number' ? entry : entry[anatomical(j % 2 === 0 ? 'L' : 'R', mirror)];
+    const i = typeof entry === 'number' ? entry : entry[anatomical(JOINT_SIDE[j]!, mirror)];
     const x = input.pose[i * 3]!,
       y = input.pose[i * 3 + 1]!,
       z = input.pose[i * 3 + 2]!;

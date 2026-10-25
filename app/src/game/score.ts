@@ -15,6 +15,7 @@ import {
   SCORE_GREAT,
   SCORE_GOOD,
   SCORE_DODGE,
+  SCORE_WALL_PENALTY,
   MULTIPLIER_LADDER,
   RANK_THRESHOLDS,
 } from '../core/constants';
@@ -90,10 +91,13 @@ export class ScoreState {
     this.resolvedBase += SCORE_PERFECT;
     this.breakCombo();
   }
-  obstacleHit(): void {
+  /** A wall hit only costs points (never below zero); the combo and the run continue. */
+  obstacleHit(): number {
     this.counts.obstaclesHit++;
     this.resolvedBase += SCORE_DODGE;
-    this.breakCombo();
+    const penalty = Math.min(this.score, SCORE_WALL_PENALTY);
+    this.score -= penalty;
+    return -penalty;
   }
   dodge(): number {
     const delta = SCORE_DODGE * this.multiplier;

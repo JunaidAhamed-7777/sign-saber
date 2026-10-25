@@ -190,7 +190,7 @@ describe('capture-only deterministic session', () => {
     run.consume(1000, [point(1000)]);
     expect(run.events.filter(([kind]) => kind === 'note:hit')).toHaveLength(1);
   });
-  it('evaluates wall samples once and requires body evidence instead of awarding an absent-body dodge', () => {
+  it('evaluates wall samples once and never pauses or rewards an unobserved wall', () => {
     const wall = { id: 0, t: 1000, durationMs: 600, kind: 'wallLeft' as const };
     const safe = fixture(map([], [wall]));
     for (let time = 1120; time <= 1600; time += 80) safe.consume(time, [], body(time, 'right'));
@@ -208,7 +208,7 @@ describe('capture-only deterministic session', () => {
     absent.tick(1900);
     expect(absent.session.stats.counts.obstaclesDodged).toBe(0);
     expect(absent.session.stats.counts.obstaclesHit).toBe(0);
-    expect(absent.session.needsTrackingPause).toContain('body observation');
+    expect(absent.session.needsTrackingPause).toBeNull();
   });
   it('drops paused inputs and resets the sweep and capture epoch boundary at resume', () => {
     const run = fixture(map([note(0, 1000)]));

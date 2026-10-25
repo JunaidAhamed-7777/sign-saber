@@ -330,6 +330,7 @@ This is the shared constants registry. `core/constants.ts` now exports these nam
 | --- | --- |
 | `SCORE_PERFECT` / `SCORE_GREAT` / `SCORE_GOOD` | 100 / 70 / 40 |
 | `SCORE_DODGE` | 50 |
+| `SCORE_WALL_PENALTY` | 100 | Points removed (never below zero) when the body touches a wall; walls never break the combo, pause or end the run |
 | `MULTIPLIER_LADDER` | `[[0,1],[5,2],[15,4],[30,8]]` (combo ≥ threshold → multiplier) |
 | `RANK_THRESHOLDS` | SS ≥ 0.95, S ≥ 0.90, A ≥ 0.80, B ≥ 0.65, C ≥ 0.50, else D (accuracy uses unmultiplied base points; see [07]) |
 | `HAND_MASS_KG` | 2.5 (hand + forearm effective mass for kinetic energy) |
@@ -426,6 +427,7 @@ These were previously inline thresholds in [06](06-gesture-recognition.md). They
 | `LEAN_TILT_ASSIST_DEG` | 15 | Optional shoulder-tilt assist, with translation evidence |
 | `DUCK_HYSTERESIS` | 0.03 | Normalized nose-height hysteresis [STRETCH] |
 | `CALIB_SAMPLE_MS` / `CALIB_HAND_SEEN_MS` | 500 / 2000 | Rest-pose averaging and recent-hand visibility windows |
+| `CALIB_AUTO_CONFIRM_MS` | 1500 | Steady framed time that confirms camera setup and starts the live count-in without a click |
 | `CALIB_ASSUMED_SHOULDER_M` | 0.40 | Assumed shoulder span for the playful physical-speed proxy; not a measurement |
 | `SWING_REFRACTORY_MS` / `SWING_TROUGH_RATIO` | 150 / 0.5 | Motion-proxy peak separation and trough rule |
 

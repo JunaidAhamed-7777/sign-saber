@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { resolve, join } from "node:path";
+import { resolve, join, sep, basename } from "node:path";
 import { mkdtemp, readFile, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import {
@@ -9,7 +9,29 @@ import {
   reportSummary,
   writeEvidence,
 } from "./release-drill.mjs";
-import { CdpConnection } from "./cdp-client.mjs";
+import { CdpConnection, launchChrome } from "./cdp-client.mjs";
+
+test("a missing browser rejects normally so the drill can record failure and clean up", async () => {
+  const directory = await mkdtemp(
+    join(tmpdir(), "sign-saber-browser-launch-test-"),
+  );
+  try {
+    await assert.rejects(
+      launchChrome({
+        binary: join(directory, "missing-chrome"),
+        profile: join(directory, "profile"),
+        headless: true,
+      }),
+      /Could not start Chrome: .*ENOENT/,
+    );
+  } finally {
+    assert.ok(resolve(directory).startsWith(resolve(tmpdir()) + sep));
+    assert.ok(
+      basename(directory).startsWith("sign-saber-browser-launch-test-"),
+    );
+    await rm(directory, { recursive: true, force: true });
+  }
+});
 
 test("offline request policy permits loopback and local data, rejects outside destinations", () => {
   for (const url of [

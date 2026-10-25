@@ -1,0 +1,412 @@
+{
+  "recordedAt": "2026-10-24T23:00:56.170Z",
+  "label": "after-current",
+  "sha": "18745d446601dee57176078eef22ea87ab5d2a5c",
+  "dirty": false,
+  "node": "v26.8.1",
+  "os": "win32",
+  "cacheDisabled": true,
+  "networkThrottling": "none; local loopback",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "chunks": [
+    {
+      "file": "generator.worker-C7D-rt8y.js",
+      "bytes": 25406,
+      "gzipBytes": 10287
+    },
+    {
+      "file": "index-Dg_hB1Dd.js",
+      "bytes": 443013,
+      "gzipBytes": 161024
+    },
+    {
+      "file": "react-CTym4sTV.js",
+      "bytes": 218790,
+      "gzipBytes": 67563
+    },
+    {
+      "file": "rolldown-runtime-WkwZ5CU-.js",
+      "bytes": 599,
+      "gzipBytes": 368
+    },
+    {
+      "file": "three-C_uIrsIZ.js",
+      "bytes": 352336,
+      "gzipBytes": 84187
+    },
+    {
+      "file": "three-CqvON9a6.js",
+      "bytes": 223814,
+      "gzipBytes": 59453
+    },
+    {
+      "file": "three-CvPEqDHz.js",
+      "bytes": 48975,
+      "gzipBytes": 14256
+    },
+    {
+      "file": "tracking.worker-KnkdkfXB.js",
+      "bytes": 161250,
+      "gzipBytes": 47944
+    }
+  ],
+  "requests": [
+    {
+      "phase": "first-load",
+      "url": "/",
+      "type": "Document",
+      "startMs": 0,
+      "initiator": "other",
+      "status": 200,
+      "mime": "text/html",
+      "endMs": 36.58,
+      "encodedBytes": 2418
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/index-Dg_hB1Dd.js",
+      "type": "Script",
+      "startMs": 59.14,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 429.39,
+      "encodedBytes": 443644
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/rolldown-runtime-WkwZ5CU-.js",
+      "type": "Script",
+      "startMs": 59.69,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 87.47,
+      "encodedBytes": 1227
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/react-CTym4sTV.js",
+      "type": "Script",
+      "startMs": 59.76,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 419.1,
+      "encodedBytes": 219421
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/three-CqvON9a6.js",
+      "type": "Script",
+      "startMs": 59.83,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 419.4,
+      "encodedBytes": 224445
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/three-C_uIrsIZ.js",
+      "type": "Script",
+      "startMs": 59.89,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 484.4,
+      "encodedBytes": 352967
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/three-CvPEqDHz.js",
+      "type": "Script",
+      "startMs": 59.98,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/javascript",
+      "endMs": 431.24,
+      "encodedBytes": 49605
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/index-BqbgyMsW.css",
+      "type": "Stylesheet",
+      "startMs": 60.04,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "text/css",
+      "endMs": 88.03,
+      "encodedBytes": 36327
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/fonts/orbitron.ttf",
+      "type": "Font",
+      "startMs": 149.24,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "font/ttf",
+      "endMs": 485.49,
+      "encodedBytes": 39184
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/armor.glb",
+      "type": "Fetch",
+      "startMs": 595.16,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 605.36,
+      "encodedBytes": 57957
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/beam_ring.glb",
+      "type": "Fetch",
+      "startMs": 595.36,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 605.65,
+      "encodedBytes": 39413
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/glyphs.glb",
+      "type": "Fetch",
+      "startMs": 595.49,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 605.5,
+      "encodedBytes": 58829
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/pylon.glb",
+      "type": "Fetch",
+      "startMs": 595.6,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 605.12,
+      "encodedBytes": 7456
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/block_fractured.glb",
+      "type": "Fetch",
+      "startMs": 595.7,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 765.03,
+      "encodedBytes": 35813
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/arena_environment.glb",
+      "type": "Fetch",
+      "startMs": 595.81,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 764.82,
+      "encodedBytes": 134546
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/models/block_targets.glb",
+      "type": "Fetch",
+      "startMs": 595.9,
+      "initiator": "script",
+      "status": 200,
+      "mime": "model/gltf-binary",
+      "endMs": 797.25,
+      "encodedBytes": 22361
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/tracks/manifest.json",
+      "type": "Fetch",
+      "startMs": 603.21,
+      "initiator": "script",
+      "status": 200,
+      "mime": "application/json",
+      "endMs": 797.65,
+      "encodedBytes": 5753
+    },
+    {
+      "phase": "first-load",
+      "url": "/assets/fonts/rajdhani.ttf",
+      "type": "Font",
+      "startMs": 1311.86,
+      "initiator": "parser",
+      "status": 200,
+      "mime": "font/ttf",
+      "endMs": 1340.64,
+      "encodedBytes": 384957
+    },
+    {
+      "phase": "first-load",
+      "url": "/favicon.ico",
+      "type": "Other",
+      "startMs": 1710.27,
+      "initiator": "other",
+      "status": 404,
+      "mime": "text/plain",
+      "endMs": 1715.14,
+      "encodedBytes": 624
+    },
+    {
+      "phase": "select-and-audio",
+      "url": "/assets/tracks/pamgaea/normal.json",
+      "type": "Fetch",
+      "startMs": 11884.68,
+      "initiator": "script",
+      "status": 200,
+      "mime": "application/json",
+      "endMs": 11981.16,
+      "encodedBytes": 219603
+    },
+    {
+      "phase": "select-and-audio",
+      "url": "/assets/tracks/pamgaea/audio.mp3",
+      "type": "Fetch",
+      "startMs": 11885.11,
+      "initiator": "script",
+      "status": 200,
+      "mime": "audio/mpeg",
+      "endMs": 17933.09,
+      "encodedBytes": 6745551
+    },
+    {
+      "phase": "dataset-trial",
+      "url": "/assets/generator.worker-C7D-rt8y.js",
+      "type": "Script",
+      "startMs": 49388.68,
+      "initiator": "other"
+    },
+    {
+      "phase": "dataset-trial",
+      "url": "/assets/fixtures/coco-upper-body-trial.json",
+      "type": "Fetch",
+      "startMs": 55387.83,
+      "initiator": "script",
+      "status": 200,
+      "mime": "application/json",
+      "endMs": 55517.27,
+      "encodedBytes": 20619
+    },
+    {
+      "phase": "dataset-trial",
+      "url": "/favicon.ico",
+      "type": "Other",
+      "startMs": 60267.25,
+      "initiator": "other",
+      "status": 404,
+      "mime": "text/plain",
+      "endMs": 60271.88,
+      "encodedBytes": 624
+    }
+  ],
+  "security": [],
+  "steps": [
+    {
+      "step": "menu",
+      "pass": true
+    },
+    {
+      "step": "dataset-trial plays",
+      "pass": true,
+      "text": "SIGN SABER\nDataset annotations · no webcam\nMouse / keyboard to browse · Esc to pause\n◆\nDATASET TRIAL · static poses, no gesture labels · no webcam\nSCORE\n0\nCOMBO\n×1\n0\nACCURACY\n—\nLeft hand\nUnavailable\nNo hand data\nRight hand\nUnavailable\nNo hand data\n0:00\n1:20"
+    },
+    {
+      "step": "dataset-trial results",
+      "pass": true,
+      "counts": [
+        {
+          "label": "Perfect",
+          "count": 0
+        },
+        {
+          "label": "Great",
+          "count": 0
+        },
+        {
+          "label": "Good",
+          "count": 0
+        },
+        {
+          "label": "Miss",
+          "count": 86
+        },
+        {
+          "label": "Bad cut",
+          "count": 0
+        }
+      ],
+      "hits": 0
+    },
+    {
+      "step": "performer-trial plays",
+      "pass": true,
+      "text": "SIGN SABER\nSYNTHETIC PERFORMER · planned motion · no camera\nMouse / keyboard to browse · Esc to pause\n◆\nSYNTHETIC PERFORMER · planned motion · no camera\nSCORE\n0\nCOMBO\n×1\n0\nACCURACY\n—\nLeft hand\nNo gesture\n0%\nBeam charge\nRight hand\nNo gesture\n0%\nBeam charge\n0:00\n1:20"
+    },
+    {
+      "step": "performer-trial results",
+      "pass": true,
+      "counts": [
+        {
+          "label": "Perfect",
+          "count": 86
+        },
+        {
+          "label": "Great",
+          "count": 0
+        },
+        {
+          "label": "Good",
+          "count": 0
+        },
+        {
+          "label": "Miss",
+          "count": 0
+        },
+        {
+          "label": "Bad cut",
+          "count": 0
+        }
+      ],
+      "hits": 86
+    }
+  ],
+  "browser": "Chrome/155.0.8059.86",
+  "firstLoadText": "SIGN SABER\nCamera not set up\nMouse / keyboard to browse · Esc to pause\nMUSIC LIBRARY\nChoose your music\nP\nPamgaea\nKevin MacLeod\n2:48 · Tempo unclear\nE\nElectro Cabello\nKevin MacLeod\n3:10 · Tempo unclear\nC\nCipher\nKevin MacLeod\n3:51 · Tempo unclear\n←\nPrevious\nChoose your music\n1 of 2\n→\nNext\n\nIllustrative upper body · camera not set up\n\nSELECTED TRACK\nSelect a track\nDIFFICULTY\nEasy\nNormal\nHard\nEnable sound\nMouse or keyboard\nWatch synthetic performer\nPlanned motion · no camera\nTry level with dataset\nAnnotated poses · no webcam\n\nChoose a track to begin.\n\n←\nPrevious\nReady when you are\n1 of 6\n→\nNext\n\nOpen palm to move. Point to click. Open again before the next click.\n\nOpen palm · move\nPoint · click\nOpen again before the next click",
+  "screenshots": [
+    "2026-10-25-bundle-current-menu.webp",
+    "2026-10-25-bundle-current-performer.webp"
+  ],
+  "console": [
+    {
+      "type": "warning",
+      "text": "THREE.BufferGeometry.toNonIndexed(): BufferGeometry is already non-indexed."
+    }
+  ],
+  "passed": true,
+  "applicationAssertionsPassed": true,
+  "probePassed": false,
+  "probeProcessExitCode": 1,
+  "cleanup": {
+    "status": "failed",
+    "code": "EBUSY",
+    "message": "Temporary Chrome profile/lockfile remained locked after Browser.close; optional profile removal failed after application assertions completed.",
+    "profileRetained": true
+  },
+  "validationScope": "passed applies to the browser application assertions; probePassed includes the later optional temporary-profile cleanup and is false."
+}

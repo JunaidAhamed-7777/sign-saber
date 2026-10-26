@@ -6,6 +6,14 @@ Record each meaningful project change, newest first. Update this file in the sam
 
 Implementation and historical specification work are recorded below. Automated, dataset, browser-audio and live-camera evidence are identified separately.
 
+## 2026-10-26T02:53:00Z — Fresh cloud gameplay and product-led README
+
+- Changed: Rebuilt the README around the standalone game's mechanics, soundtrack, local setup and engineering; removed event/track/submission framing while retaining authorship, dependency/music credits, AI contribution history and clear limitations. Repaired incoming project-status links.
+- Media: Replaced all five previous README gameplay media files with a new cloud capture from merged application source `16d97d2cafa1455ea1c00930f61e2597e67360fe`, and added one recorded gameplay still. Three GIFs show genuine auto-play cuts, wall dodges and beam releases at original speed; menu and results are fresh, with exact hashes/timestamps in `docs/media/cloud-capture.json`.
+- Validation: Full application gate passed 574 tests, typecheck, lint, production build and bundle budgets. A separate 28-test performer run verified 4,447 hits across 24 charts without misses/bad cuts/wall collisions. All 56 SFX renders matched their receipt. Documentation checker tests passed 2/2, all local links passed, and media hashes, dimensions, GIF frames/durations and replacement of all five prior files were checked.
+- Actual browser result: Pamgaea Normal, 80-second arrangement; 25,060 score, 84 hits, zero misses/bad cuts, 84 best combo, 45.8% accuracy, D rank. Native Firefox ESR 153.5.0 with default protections and a temporary local null-audio sink; no live camera or audible-output claim.
+- Limits: Recording/GIF frame rates are file properties, not performance measurements. Footage is synthetic auto-play through the normal game pipeline; no injected hits, altered scores, retouching or compositing. Historical receipts remain explicitly historical. No application code changed.
+
 ## 2026-10-25T11:36:00Z — Refine the rear-facing avatar through Blender MCP
 
 - Changed: Smoother suit surface, fine rear shoulder-yoke and waist seams, explicit pre-rig topology repair, and hard pre-rig/export triangle guards. Regenerated source `.blend`, runtime GLB and exact manifest in a dedicated cloud Blender 4.3.2 GUI through the pinned official MCP bridge. Preserved the 43-bone rest/anchor contract, materials, upper-body scope and scoring inputs.

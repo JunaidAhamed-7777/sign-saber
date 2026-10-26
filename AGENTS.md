@@ -48,5 +48,5 @@ This is the working agreement for humans and coding agents in this repository. T
 
 - The actual event's rules, judging rubric, deadline and submission channel are not supplied. Record them when known; do not import another hackathon's assumptions.
 - Before release, run the clean-clone setup, manual QA, offline exercise and evidence protocol. Record failures as well as passes.
-- Keep the release SHA, evidence links, music attributions, actual team and demo recording in the [README submission section](README.md#submission). Avoid a self-referential SHA claim: tag or record a tested release commit, and identify subsequent documentation-only commits separately.
+- Keep the release SHA, evidence links, music attributions, actual team and demo recording in the [README project status](README.md#project-status). Avoid a self-referential SHA claim: tag or record a tested release commit, and identify subsequent documentation-only commits separately.
 - Rehearse [20 — Demo & Judging](docs/20-demo-and-judging.md). Show the strongest verified interaction first and use measured numbers only.

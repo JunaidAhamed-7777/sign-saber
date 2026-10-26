@@ -1,0 +1,135 @@
+{
+  "schema": 2,
+  "sourceSha": "16d97d2cafa1455ea1c00930f61e2597e67360fe",
+  "capturedAt": "2026-10-26T02:39:47Z",
+  "recordingSeconds": 150,
+  "framesCaptured": 4500,
+  "recordingFPS": 30,
+  "viewport": {
+    "width": 1364,
+    "height": 1024,
+    "dpr": 1
+  },
+  "applicationSourceChanged": false,
+  "avatarSha256": "68d8ef98ac7db0963e505e1cc216a9688bdd2319eed1d8b6ec97f50eeed46304",
+  "browser": "Firefox ESR 153.5.0, native Linux cloud desktop, default security and graphics settings",
+  "audio": "Private temporary PulseAudio null output; real Web Audio clock, no hardware microphone and no audible-listening claim.",
+  "input": "Watch auto-play: synthetic landmarks through the actual input pipeline and judge; native mouse/keyboard only for UI controls.",
+  "track": "Pamgaea",
+  "difficulty": "Normal",
+  "arrangementSeconds": 80,
+  "actions": [
+    "Open prepared production build",
+    "Select Pamgaea",
+    "Enable sound",
+    "Watch auto-play",
+    "Wait for genuine results"
+  ],
+  "results": {
+    "rank": "D",
+    "score": 25060,
+    "accuracyPercent": 45.8,
+    "bestCombo": 84,
+    "perfect": 5,
+    "great": 0,
+    "good": 79,
+    "miss": 0,
+    "badcut": 0
+  },
+  "rawRecording": {
+    "file": "gameplay.mkv (retained locally, not committed)",
+    "bytes": 217512943,
+    "sha256": "59d3a5a486b29b77deab3f3e5730c7ebb41ff457cadf2df0b533f362463953e1",
+    "codec": "H.264 CRF 16, yuv420p, no audio"
+  },
+  "clockSpeed": 1,
+  "media": [
+    {
+      "filename": "hero.gif",
+      "startRecordedSecond": 82,
+      "endRecordedSecond": 86,
+      "sourceFrameRangeZeroBased": [
+        2460,
+        2579
+      ],
+      "width": 768,
+      "height": 577,
+      "frames": 40,
+      "durationMs": 4000,
+      "fps": 10,
+      "bytes": 5898056,
+      "sha256": "9b0f079cadbaccfd1e0dd040c6a647e07bd56d79afd25c3825ab853c252a94c7",
+      "filter": "fps=10,scale=768:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=full[p];[b][p]paletteuse=dither=none:diff_mode=rectangle"
+    },
+    {
+      "filename": "slash.gif",
+      "startRecordedSecond": 64.5,
+      "endRecordedSecond": 67.5,
+      "sourceFrameRangeZeroBased": [
+        1935,
+        2024
+      ],
+      "width": 560,
+      "height": 420,
+      "frames": 30,
+      "durationMs": 3000,
+      "fps": 10,
+      "bytes": 2796283,
+      "sha256": "894dfe9fd12fc9af3f9a6321cd060576143988408290c33801ea064fb48f3cfe",
+      "filter": "fps=10,scale=560:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=full[p];[b][p]paletteuse=dither=none:diff_mode=rectangle"
+    },
+    {
+      "filename": "beam.gif",
+      "startRecordedSecond": 119,
+      "endRecordedSecond": 122.5,
+      "sourceFrameRangeZeroBased": [
+        3570,
+        3674
+      ],
+      "width": 560,
+      "height": 420,
+      "frames": 35,
+      "durationMs": 3500,
+      "fps": 10,
+      "bytes": 2858839,
+      "sha256": "a985f40847c787b6758d38813c1969e831540643d07a9eb5607c6f2f5f029f7d",
+      "filter": "fps=10,scale=560:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=full[p];[b][p]paletteuse=dither=none:diff_mode=rectangle"
+    },
+    {
+      "filename": "gameplay.png",
+      "recordedSecond": 83.7,
+      "sourceFrameZeroBased": 2511,
+      "width": 1364,
+      "height": 1024,
+      "bytes": 1775915,
+      "sha256": "3604cd1817ffa239c3177969a2b0c47da517bf346dc51a8d8acedf6e235fbca5"
+    },
+    {
+      "filename": "menu.png",
+      "width": 1364,
+      "height": 1024,
+      "bytes": 724414,
+      "sha256": "88a57403a0510c39203123a50880e1ef72d72ff546d2827736ad6d151f6ebf0e",
+      "description": "Selected Pamgaea Normal after enabling audio",
+      "processing": "Decoded recorded video frame 1050, after browser notice dismissal; no crop, retouch or compositing.",
+      "recordedSecond": 35,
+      "sourceFrameZeroBased": 1050
+    },
+    {
+      "filename": "results.png",
+      "width": 1364,
+      "height": 1024,
+      "bytes": 793626,
+      "sha256": "b4a745f3345847f8e8e6962171ec17a1306e27be914fb8ec182d39e093106d55",
+      "description": "Completed 80-second synthetic-performer run",
+      "processing": "Native screenshot API returned JPEG; decoded to PNG without cropping, retouching or compositing."
+    }
+  ],
+  "limitations": [
+    "Synthetic input, not live-webcam evidence.",
+    "Recording and GIF frame rates describe files, not gameplay performance.",
+    "GIFs are silent, full-frame resized/palette-quantized excerpts at original speed.",
+    "No fabricated hits, score edits, compositing or retouching; original pointer may remain visible.",
+    "Browser start/loading and notice-banner footage excluded from selected gameplay excerpts."
+  ]
+}

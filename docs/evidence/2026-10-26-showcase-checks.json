@@ -1,0 +1,409 @@
+{
+  "sourceSha": "16d97d2cafa1455ea1c00930f61e2597e67360fe",
+  "verifiedAt": "2026-10-26T02:49:30.613784+00:00",
+  "applicationGate": {
+    "command": "npm run check",
+    "passed": true,
+    "tests": 574,
+    "testFiles": 55,
+    "includes": [
+      "typecheck",
+      "lint",
+      "tests",
+      "production build",
+      "bundle budget"
+    ]
+  },
+  "replay": {
+    "command": "vitest run tests/performer.test.mjs --reporter=verbose --silent=false",
+    "passed": true,
+    "tests": 28,
+    "summary": {
+      "charts": 24,
+      "hits": 4447,
+      "notes": 4447,
+      "unplayable": 0,
+      "badcuts": 0,
+      "obstacleHits": 0,
+      "obstacles": 324
+    },
+    "charts": [
+      {
+        "slug": "pamgaea",
+        "difficulty": "easy",
+        "notes": 89,
+        "unplayable": 0,
+        "hits": 89,
+        "judgements": {
+          "good": 79,
+          "perfect": 10
+        },
+        "badcuts": 0,
+        "obstacles": 8,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "pamgaea",
+        "difficulty": "normal",
+        "notes": 178,
+        "unplayable": 0,
+        "hits": 178,
+        "judgements": {
+          "good": 166,
+          "perfect": 12
+        },
+        "badcuts": 0,
+        "obstacles": 16,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "pamgaea",
+        "difficulty": "hard",
+        "notes": 230,
+        "unplayable": 0,
+        "hits": 230,
+        "judgements": {
+          "good": 212,
+          "perfect": 18
+        },
+        "badcuts": 0,
+        "obstacles": 20,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "electro-cabello",
+        "difficulty": "easy",
+        "notes": 117,
+        "unplayable": 0,
+        "hits": 117,
+        "judgements": {
+          "good": 108,
+          "perfect": 9
+        },
+        "badcuts": 0,
+        "obstacles": 11,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "electro-cabello",
+        "difficulty": "normal",
+        "notes": 176,
+        "unplayable": 0,
+        "hits": 176,
+        "judgements": {
+          "good": 168,
+          "perfect": 8
+        },
+        "badcuts": 0,
+        "obstacles": 11,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "electro-cabello",
+        "difficulty": "hard",
+        "notes": 281,
+        "unplayable": 0,
+        "hits": 281,
+        "judgements": {
+          "good": 267,
+          "perfect": 14
+        },
+        "badcuts": 0,
+        "obstacles": 15,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "cipher",
+        "difficulty": "easy",
+        "notes": 111,
+        "unplayable": 0,
+        "hits": 111,
+        "judgements": {
+          "good": 100,
+          "perfect": 11
+        },
+        "badcuts": 0,
+        "obstacles": 9,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "cipher",
+        "difficulty": "normal",
+        "notes": 195,
+        "unplayable": 0,
+        "hits": 195,
+        "judgements": {
+          "perfect": 15,
+          "good": 180
+        },
+        "badcuts": 0,
+        "obstacles": 17,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "cipher",
+        "difficulty": "hard",
+        "notes": 266,
+        "unplayable": 0,
+        "hits": 266,
+        "judgements": {
+          "good": 248,
+          "perfect": 18
+        },
+        "badcuts": 0,
+        "obstacles": 22,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "chipper-doodle-v2",
+        "difficulty": "easy",
+        "notes": 89,
+        "unplayable": 0,
+        "hits": 89,
+        "judgements": {
+          "good": 80,
+          "perfect": 9
+        },
+        "badcuts": 0,
+        "obstacles": 7,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "chipper-doodle-v2",
+        "difficulty": "normal",
+        "notes": 161,
+        "unplayable": 0,
+        "hits": 161,
+        "judgements": {
+          "good": 150,
+          "perfect": 11
+        },
+        "badcuts": 0,
+        "obstacles": 15,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "chipper-doodle-v2",
+        "difficulty": "hard",
+        "notes": 218,
+        "unplayable": 0,
+        "hits": 218,
+        "judgements": {
+          "good": 205,
+          "perfect": 13
+        },
+        "badcuts": 0,
+        "obstacles": 19,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "funkorama",
+        "difficulty": "easy",
+        "notes": 112,
+        "unplayable": 0,
+        "hits": 112,
+        "judgements": {
+          "good": 99,
+          "perfect": 13
+        },
+        "badcuts": 0,
+        "obstacles": 10,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "funkorama",
+        "difficulty": "normal",
+        "notes": 211,
+        "unplayable": 0,
+        "hits": 211,
+        "judgements": {
+          "good": 197,
+          "perfect": 14
+        },
+        "badcuts": 0,
+        "obstacles": 10,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "funkorama",
+        "difficulty": "hard",
+        "notes": 257,
+        "unplayable": 0,
+        "hits": 257,
+        "judgements": {
+          "good": 235,
+          "perfect": 22
+        },
+        "badcuts": 0,
+        "obstacles": 26,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "cut-and-run",
+        "difficulty": "easy",
+        "notes": 123,
+        "unplayable": 0,
+        "hits": 123,
+        "judgements": {
+          "good": 117,
+          "perfect": 6
+        },
+        "badcuts": 0,
+        "obstacles": 11,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "cut-and-run",
+        "difficulty": "normal",
+        "notes": 236,
+        "unplayable": 0,
+        "hits": 236,
+        "judgements": {
+          "good": 230,
+          "perfect": 6
+        },
+        "badcuts": 0,
+        "obstacles": 12,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "cut-and-run",
+        "difficulty": "hard",
+        "notes": 309,
+        "unplayable": 0,
+        "hits": 309,
+        "judgements": {
+          "good": 301,
+          "perfect": 8
+        },
+        "badcuts": 0,
+        "obstacles": 15,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "rhinoceros",
+        "difficulty": "easy",
+        "notes": 114,
+        "unplayable": 0,
+        "hits": 114,
+        "judgements": {
+          "good": 106,
+          "perfect": 8
+        },
+        "badcuts": 0,
+        "obstacles": 6,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "rhinoceros",
+        "difficulty": "normal",
+        "notes": 214,
+        "unplayable": 0,
+        "hits": 214,
+        "judgements": {
+          "good": 205,
+          "perfect": 9
+        },
+        "badcuts": 0,
+        "obstacles": 13,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "rhinoceros",
+        "difficulty": "hard",
+        "notes": 296,
+        "unplayable": 0,
+        "hits": 296,
+        "judgements": {
+          "good": 282,
+          "perfect": 14
+        },
+        "badcuts": 0,
+        "obstacles": 17,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "marty-gots-a-plan",
+        "difficulty": "easy",
+        "notes": 93,
+        "unplayable": 0,
+        "hits": 93,
+        "judgements": {
+          "good": 84,
+          "perfect": 9
+        },
+        "badcuts": 0,
+        "obstacles": 6,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "marty-gots-a-plan",
+        "difficulty": "normal",
+        "notes": 161,
+        "unplayable": 0,
+        "hits": 161,
+        "judgements": {
+          "good": 148,
+          "perfect": 13
+        },
+        "badcuts": 0,
+        "obstacles": 12,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      },
+      {
+        "slug": "marty-gots-a-plan",
+        "difficulty": "hard",
+        "notes": 210,
+        "unplayable": 0,
+        "hits": 210,
+        "judgements": {
+          "good": 192,
+          "perfect": 18
+        },
+        "badcuts": 0,
+        "obstacles": 16,
+        "obstacleHits": 0,
+        "missedPlayable": []
+      }
+    ]
+  },
+  "sfx": {
+    "command": "node scripts/render-sfx.mjs --check",
+    "passed": true,
+    "renders": 56
+  },
+  "chartPlan": {
+    "command": "node scripts/chart-report.mjs",
+    "charts": 24,
+    "unplayable": 0
+  },
+  "notMeasured": [
+    "live-camera performance",
+    "physical latency",
+    "human playability",
+    "GPU/frame-time benchmark"
+  ]
+}

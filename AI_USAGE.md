@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-26 — Gameplay media and README refresh
+
+- Codex ran the merged production build in a cloud browser, recorded an actual camera-free auto-play round, selected and verified new GIFs/screenshots, and rewrote the README as a standalone game showcase. Attribution, actual results, capture provenance and validation limits are retained; no application code or scores were changed.
+
 ## 2026-10-25 — Blender avatar asset refinement
 
 - Codex authored rear suit seams and surface refinement through the official Blender MCP bridge, regenerated the skinned asset/source, repaired topology before skinning, and added independent asset integrity/corruption checks to CI. Actual Blender comparisons, unchanged rig/anchors, application tests and the inherited validation warning are documented without claiming new live-camera or runtime-browser evidence.

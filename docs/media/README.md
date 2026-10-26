@@ -1,51 +1,61 @@
-# Demo media
+# Gameplay media
 
-The README combines preserved gameplay GIFs with fresh screenshots of the polished desktop interface. Every image comes from the running application. There are no mock-ups, generated images, injected hits, altered scores or composited controls.
+Every active README photo and GIF was replaced with a fresh cloud capture on **2026-10-26**, after the avatar refinement was merged. The application source is **`16d97d2cafa1455ea1c00930f61e2597e67360fe`**. No application code changed for capture.
 
-## Current desktop interface
+[cloud-capture.json](cloud-capture.json) records the source/asset hashes, file dimensions, exact clip boundaries, encoding, native UI actions and actual results. [Verification results](../evidence/2026-10-26-showcase-checks.json) record the fresh application gate, full-chart replays and SFX integrity check.
 
-[interface-capture.json](interface-capture.json) records a complete production-browser run on **2026-10-25 (+05:30)** at application source **`8f0e318a9077b1a06f80cf19ab17c83b5c4ca03a`**. Application source was unchanged during capture; documentation edits were in progress.
+## What the footage shows
 
-- [menu.png](menu.png): native **1440 × 900 PNG**, captured after **Pamgaea → Enable sound**. Shows the new geometric sleeves, music rows, difficulty, support actions, primary Play control and central illustrative upper-body avatar.
-- [results.png](results.png): native **1440 × 900 PNG** after **Watch auto-play** completed the actual 80-second arrangement. The current forgiving contact mode produced **84 hits, 0 misses, 0 bad cuts, 84 best combo, 25,060 score and 45.8% accuracy** (5 Perfect, 79 Good, D rank). These are the real results, preserved without adjustment.
+This is the actual production build running in native **Firefox ESR 153.5.0** on the cloud Linux desktop, using its default graphics/security settings. Native mouse/keyboard actions selected **Pamgaea → Normal → Enable sound → Watch auto-play**. The synthetic performer's landmarks passed through the real input pipeline and judge; no hits, scores, clocks or game state were injected.
 
-The receipt includes the source SHA, browser version, actual native UI actions, timestamps, screenshot byte sizes/SHA-256 hashes and console output. The only console warning was Three.js reporting an already non-indexed geometry. This is a synthetic-performer run; it makes no live-camera, human-performance or frame-rate claim.
+The browser used a private, temporary PulseAudio null output so Web Audio's normal playback clock could run. No microphone was enabled and no audible-output/listening claim is made. This is camera-free auto-play, not a live-webcam demonstration.
 
-[menu-refined.png](menu-refined.png) remains the separate source-hashed frontend verification capture referenced by the [frontend browser receipt](../evidence/2026-10-25-frontend-polish.json). The active README and player guide use the newer `menu.png` above. Old interface WebP files and superseded gameplay stills were removed from the active documentation assets.
+The run reached genuine results: **25,060 score · 84 hits · 0 misses · 0 bad cuts · 84 best combo · 45.8% accuracy · D rank** (5 Perfect, 0 Great, 79 Good). The recorded result was not upgraded or retouched.
 
-## Preserved gameplay GIFs
+## Current files
 
-These files remain **byte-for-byte unchanged** from their original browser capture at application source **`30572bb9cdbe345b79e8e48279019bd7d8b59877`**:
+| File | Actual content | Source and dimensions |
+| --- | --- | --- |
+| [hero.gif](hero.gif) | Slice, wall dodge and smash sequence | Recorded seconds **82–86**, **768 × 577**, 4 seconds |
+| [slash.gif](slash.gif) | Smash, open-palm cut and the next impact | Recorded seconds **64.5–67.5**, **560 × 420**, 3 seconds |
+| [beam.gif](beam.gif) | Point-and-hold charge, gold release and return to slicing | Recorded seconds **119–122.5**, **560 × 420**, 3.5 seconds |
+| [gameplay.png](gameplay.png) | Wall dodge with an open-palm cut | Recorded second **83.700**, frame **2511**, **1364 × 1024** |
+| [menu.png](menu.png) | Pamgaea selected, Normal difficulty, sound enabled | Recorded second **35**, frame **1050**, **1364 × 1024**, after the browser notice was dismissed |
+| [results.png](results.png) | Completed 80-second arrangement and actual judgement counts | Native screenshot after completion, **1364 × 1024** |
 
-- [hero.gif](hero.gif): wall dodge, beam release, slices and smashes; recorded seconds **50.6–54.6**, encoded at **720 × 450**.
-- [slash.gif](slash.gif): a cyan slice followed by a magenta smash; recorded seconds **7.5–10.5**, encoded at **560 × 350**.
-- [beam.gif](beam.gif): point-and-hold charge, gold target collapse and the next smash; recorded seconds **23.3–26.3**, encoded at **560 × 350**.
+The raw screen recording is **150 seconds / 4,500 frames / 30 fps**, H.264 CRF 16, with no audio. The three GIFs are silent **10 fps** excerpts at the original clock speed, resized with Lanczos and quantized to **128 colors** without dithering. Their combined size is **11,553,178 bytes**. These frame rates describe the recording/files, not measured game performance.
 
-All three show synthetic auto-play through the real input pipeline and judge. They are silent excerpts at the original clock speed, encoded at 8 fps with a 64-color palette and Bayer dithering. That cadence describes the files, not game performance. Their combined size is **5,686,832 bytes**. The new interface receipt independently verifies that their SHA-256 hashes are unchanged.
+No frame is cropped, retouched or composited, and no score is changed. The original pointer may remain visible. Initial browser/loading/notice footage is not part of the selected gameplay. `results.png` was decoded from the native screenshot API's JPEG output into PNG; it is not claimed to originate as a lossless PNG screenshot. The other PNGs are decoded recording frames.
 
-The [original capture receipt](capture.json) preserves the original 84-Perfect Pamgaea run, compositor timestamps and historical file hashes. It also identifies retired still images; its hashes and results belong to that original source, rather than the replacement screenshots. The corresponding Git history preserves those originals.
+## Reproduction
 
-## Reproduce
+Build and serve the unmodified app:
 
-Use Node 22+, Chrome (or `BROWSER_BINARY`) and ffmpeg on `PATH`. From `app/`:
-
-```powershell
+```sh
+cd app
+npm ci
 npm run build
 npm run preview -- --port 4186
 ```
 
-From the repository root:
+Open the local address in a WebGL2-capable desktop browser, choose the track, enable sound and start **Watch auto-play**. Keep the game foregrounded through results. On the X11 capture desktop, the recording command was:
 
-```powershell
-node scripts/capture-readme.mjs --url http://127.0.0.1:4186 --song pamgaea
+```sh
+ffmpeg -f x11grab -draw_mouse 0 -framerate 30 -video_size 1364x1024 \
+  -i "$DISPLAY" -t 150 -an -c:v libx264 -preset ultrafast -crf 16 \
+  -threads 2 -pix_fmt yuv420p gameplay.mkv
 ```
 
-The [capture script](../../scripts/capture-readme.mjs) drives real UI controls, captures the menu and completed results, and records raw compositor frames in a temporary directory. It overwrites `menu.png`, `results.png` and `capture.json`, so retain any historical receipt you need before recapturing. Inspect the screenshots, actual results and source attribution before committing new media.
+The clip boundaries are recording timestamps, not song timestamps: startup/menu time is included before the round. Select timestamps from a newly inspected run rather than assuming they will repeat. For this exact recording, the hero encoder was:
 
-The optional render pass regenerates GIFs and gameplay stills from those temporary frames:
-
-```powershell
-node scripts/capture-readme.mjs --render "<temporary directory printed by capture>"
+```sh
+ffmpeg -ss 82 -t 4 -i gameplay.mkv \
+  -filter_complex "fps=10,scale=768:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=full[p];[b][p]paletteuse=dither=none:diff_mode=rectangle" \
+  -loop 0 hero.gif
 ```
 
-Do not run the render pass when preserving the existing GIFs. The current refresh captured only new menu/results PNGs and wrote `interface-capture.json`; the original GIFs and original `capture.json` were preserved.
+The same filter uses width 560 for the shorter clips. Exact intervals, hashes and frame counts are retained in [cloud-capture.json](cloud-capture.json). The existing [Chrome capture harness](../../scripts/capture-readme.mjs) remains an alternative on a compatible Chrome environment; it was not the capture route used for these files.
+
+## Historical evidence
+
+[capture.json](capture.json), [interface-capture.json](interface-capture.json) and [menu-refined.png](menu-refined.png) retain earlier source-specific evidence. They do **not** describe the replacement files' current hashes. Their original media remains available in Git history; none of those older gameplay GIFs is reused in the active README.

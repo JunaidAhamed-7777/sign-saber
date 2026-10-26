@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-24T22:08:47.744325+00:00",
+  "generatedAt": "2026-10-25T11:31:15.193486+00:00",
   "id": "avatar",
   "path": "/assets/models/avatar.glb",
   "sourceBlend": "assets-src/blender/signsaber_avatar.blend",
   "sourceGenerator": "assets-src/blender/generate_avatar.py",
   "authoringRoute": "official Blender MCP add-on JSON TCP execute_code; dedicated local instance",
-  "blenderVersion": "5.2.2 LTS",
-  "blenderBuildHash": "d13f752e3b9c",
+  "blenderVersion": "4.3.2",
+  "blenderBuildHash": "Unknown",
   "gltfExporter": "Blender bundled io_scene_gltf2",
   "mcp": {
     "upstream": "https://github.com/ahujasid/blender-mcp",
@@ -27,6 +27,18 @@
     "suit": 0,
     "hand_L": 0,
     "hand_R": 0
+  },
+  "meshRepairsBeforeRigging": {
+    "avatar_suit_part": {
+      "before": {
+        "vertices": 2302,
+        "triangles": 4600
+      },
+      "after": {
+        "vertices": 2302,
+        "triangles": 4598
+      }
+    }
   },
   "mesh": "avatar_body",
   "armature": "avatar_rig",
@@ -83,14 +95,14 @@
     "hair": "avatar_hair"
   },
   "materialTriangles": {
-    "avatar_suit": 4296,
+    "avatar_suit": 4598,
     "avatar_skin": 7500,
     "avatar_hair": 650,
     "avatar_eye": 336,
-    "avatar_accent": 2352
+    "avatar_accent": 2736
   },
   "parts": {
-    "avatar_suit_part": 4298,
+    "avatar_suit_part": 4598,
     "avatar_head_part": 3500,
     "avatar_hair_part": 650,
     "avatar_hand_part_L": 2000,
@@ -100,21 +112,25 @@
     "accent_arm_L": 264,
     "accent_chest_L": 112,
     "accent_side_L": 128,
+    "accent_back_yoke_L": 80,
+    "accent_back_contour_L": 112,
     "accent_arm_R": 264,
     "accent_chest_R": 112,
     "accent_side_R": 128,
+    "accent_back_yoke_R": 80,
+    "accent_back_contour_R": 112,
     "accent_collar": 256,
     "accent_belt": 384,
     "accent_hip_rim": 384,
     "accent_cuff_L": 160,
     "accent_cuff_R": 160,
-    "total": 15136
+    "total": 15820
   },
-  "triangles": 15134,
-  "vertices": 7590,
+  "triangles": 15820,
+  "vertices": 7941,
   "triangleBudget": 16000,
-  "bytes": 507252,
-  "sha256": "c7113801d1f30bf5a8bb9055687df8012c76d5bb8043681bc33963130e03d2d7",
+  "bytes": 529672,
+  "sha256": "68d8ef98ac7db0963e505e1cc216a9688bdd2319eed1d8b6ec97f50eeed46304",
   "anchors": {
     "nose": [
       0.0,
@@ -225,6 +241,6 @@
   "rigVersion": 1,
   "license": "MIT",
   "provenance": "Original script-authored geometry. No scans, marketplace, generative or third-party meshes/textures.",
-  "sourceBlendSha256": "0168b9b1399e72c2eed92090410c1096c960f27d3e9d5120b2068bf9d8f95cb6",
-  "sourceGeneratorSha256": "690b59fcc041695aaeae4b3ab063fc6a95464d7c72a0e0b8a4991eeb60c4a24c"
+  "sourceBlendSha256": "27db3f98a8e5b621d72ca05af03d5625777ef50a9e793074a854cce370039bf1",
+  "sourceGeneratorSha256": "5fb2577082274f7eff065fcbfbad33c051a4a7e12ba5fe68d708f7be720d7048"
 }

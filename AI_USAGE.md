@@ -4,6 +4,10 @@ Brief contribution summaries; no transcripts, credentials or private recordings.
 
 The development workflow also occasionally includes collaboration with **Devin**, as reported by the project owner. Record specific Devin contributions alongside other AI assistance when they occur; no Devin contribution is attributed to this documentation pass.
 
+## 2026-10-25 — Blender avatar asset refinement
+
+- Codex authored rear suit seams and surface refinement through the official Blender MCP bridge, regenerated the skinned asset/source, repaired topology before skinning, and added independent asset integrity/corruption checks to CI. Actual Blender comparisons, unchanged rig/anchors, application tests and the inherited validation warning are documented without claiming new live-camera or runtime-browser evidence.
+
 ## 2026-10-25 — Isolated Blender bridge safeguards
 
 - Codex tightened bootstrap privacy/readiness behavior and added five offline mocked regression tests. Actual Blender MCP scene inspection and baseline asset renders were exercised separately in a dedicated cloud authoring scene.

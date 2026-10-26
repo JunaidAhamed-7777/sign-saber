@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "triangles": 15820,
+  "exportedVerticesIncludingMaterialSplits": 7941,
+  "skinJoints": 43,
+  "degenerateTriangles": 0,
+  "maxWeightSumError": 1.1920928955078125e-07,
+  "minimumLocalY": -0.06199999898672104,
+  "bytes": 529672,
+  "sha256": "68d8ef98ac7db0963e505e1cc216a9688bdd2319eed1d8b6ec97f50eeed46304"
+}
